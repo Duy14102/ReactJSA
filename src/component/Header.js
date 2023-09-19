@@ -4,7 +4,7 @@ import Cookies from "universal-cookie";
 function Header() {
     $(function () {
         // Sticky Navbar
-        $(window).scroll(function () {
+        $(window).on("scroll", function () {
             if ($(this).scrollTop() > 45) {
                 $('.navbar').addClass('sticky-top shadow-sm');
             } else {
@@ -18,20 +18,20 @@ function Header() {
         const $dropdownMenu = $(".dropdown-menu");
         const showClass = "show";
 
-        $dropdown.hover(
-            function () {
-                const $this = $(this);
-                $this.addClass(showClass);
-                $this.find($dropdownToggle).attr("aria-expanded", "true");
-                $this.find($dropdownMenu).addClass(showClass);
-            },
-            function () {
-                const $this = $(this);
-                $this.removeClass(showClass);
-                $this.find($dropdownToggle).attr("aria-expanded", "false");
-                $this.find($dropdownMenu).removeClass(showClass);
-            }
-        );
+        $dropdown.on("mouseenter", function () {
+            const $this = $(this);
+            $this.addClass(showClass);
+            $this.find($dropdownToggle).attr("aria-expanded", "true");
+            $this.find($dropdownMenu).addClass(showClass);
+        })
+
+        $dropdown.on("mouseleave", function () {
+            const $this = $(this);
+            $this.removeClass(showClass);
+            $this.find($dropdownToggle).attr("aria-expanded", "false");
+            $this.find($dropdownMenu).removeClass(showClass);
+        })
+
     })
     const cookies = new Cookies();
     const token = cookies.get("TOKEN");

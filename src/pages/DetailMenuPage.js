@@ -21,25 +21,23 @@ function DetailMenuPage() {
         const $tabLink = $('#myTab .nav-link');
         const $tabBody = $('#myTabContent .tab-pane');
         let timerOpacity;
-        $(document).ready(function () {
-            $(".testimonial-carousel2").owlCarousel({
-                smartSpeed: 2000,
-                center: true,
-                margin: 15,
-                loop: true,
-                nav: true,
-                responsive: {
-                    0: {
-                        items: 1
-                    },
-                    768: {
-                        items: 2
-                    },
-                    992: {
-                        items: 3
-                    },
-                }
-            });
+        $(".testimonial-carousel2").owlCarousel({
+            smartSpeed: 1000,
+            center: true,
+            margin: 15,
+            loop: true,
+            nav: true,
+            responsive: {
+                0: {
+                    items: 1
+                },
+                768: {
+                    items: 2
+                },
+                992: {
+                    items: 3
+                },
+            }
         });
 
         // Toggle Class
