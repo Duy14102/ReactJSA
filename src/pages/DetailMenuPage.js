@@ -1,5 +1,4 @@
 import '../css/DetailMenuPage.css';
-import $ from 'jquery';
 import Header from '../component/Header';
 import Footer from '../component/Footer';
 import { useState } from 'react';
@@ -7,35 +6,40 @@ import { NavLink, useLocation } from 'react-router-dom';
 import NotFound from '../component/NotFound';
 import { useEffect } from 'react';
 import axios from 'axios';
+import jQuery from "jquery";
+import "../lib/owlcarousel/assets/owl.carousel.min.css";
+import { Fragment } from 'react';
+window.jQuery = jQuery
 require('owl.carousel')
 function DetailMenuPage() {
     let Location = useLocation();
     const [detail, setDetail] = useState([]);
     const [menu, setMenu] = useState([]);
     var [quantity, setQuantity] = useState(0)
-    $(function () {
+    jQuery(function ($) {
         // Variables
         const $tabLink = $('#myTab .nav-link');
         const $tabBody = $('#myTabContent .tab-pane');
         let timerOpacity;
-
-        $(".testimonial-carousel2").owlCarousel({
-            smartSpeed: 2000,
-            center: true,
-            margin: 15,
-            loop: true,
-            nav: true,
-            responsive: {
-                0: {
-                    items: 1
-                },
-                768: {
-                    items: 2
-                },
-                992: {
-                    items: 3
-                },
-            }
+        $(document).ready(function () {
+            $(".testimonial-carousel2").owlCarousel({
+                smartSpeed: 2000,
+                center: true,
+                margin: 15,
+                loop: true,
+                nav: true,
+                responsive: {
+                    0: {
+                        items: 1
+                    },
+                    768: {
+                        items: 2
+                    },
+                    992: {
+                        items: 3
+                    },
+                }
+            });
         });
 
         // Toggle Class
@@ -127,7 +131,7 @@ function DetailMenuPage() {
                     quantity = i.foodquantity;
                 }
                 return (
-                    <>
+                    <Fragment key={i._id}>
                         <div className="container py-5">
                             <p><NavLink className="Allright" to="/">Home</NavLink> / <NavLink className="Allright">{i.foodcategory}</NavLink> / <NavLink to="/DetailMenuPage" state={{ id: i._id }} className="Allright">{i.foodname}</NavLink></p>
                             <div className="d-flex">
@@ -217,30 +221,34 @@ function DetailMenuPage() {
                                         <h3 className="mb-5">
                                             Similar product</h3>
                                     </div>
-                                    <div className="owl-carousel testimonial-carousel2">
-                                        {menu.map(a => {
-                                            return (
-                                                <>
-                                                    {a.foodcategory === i.foodcategory && a._id !== i._id ? (
-                                                        <div className="testimonial-item bg-transparent">
-                                                            <NavLink onClick={handleLoop} to="/DetailMenuPage" state={{ id: a._id }}>
-                                                                <img alt='' height={200} src={a.foodimage} />
-                                                            </NavLink>
-                                                            <p style={{ margin: 0 }} className='text-center'>{a.foodcategory}</p>
-                                                            <NavLink className="text-center" onClick={handleLoop} to="/DetailMenuPage" state={{ id: a._id }}>
-                                                                <p style={{ margin: 0, color: "#FEA116" }}><b>{a.foodname}</b></p>
-                                                            </NavLink>
-                                                            <h6 style={{ margin: 0 }} className='text-center'>{a.foodprice}</h6>
-                                                        </div>
-                                                    ) : null}
-                                                </>
-                                            )
-                                        })}
-                                    </div>
+                                    {menu.length > 0 ?
+                                        <div className="owl-carousel testimonial-carousel2">
+                                            {menu.map(a => {
+                                                return (
+                                                    <Fragment key={a._id}>
+                                                        {a.foodcategory === i.foodcategory && a._id !== i._id ? (
+                                                            <>
+                                                                <div className="testimonial-item bg-transparent">
+                                                                    <NavLink onClick={handleLoop} to="/DetailMenuPage" state={{ id: a._id }}>
+                                                                        <img alt='' height={200} src={a.foodimage} />
+                                                                    </NavLink>
+                                                                    <p style={{ margin: 0 }} className='text-center'>{a.foodcategory}</p>
+                                                                    <NavLink className="text-center" onClick={handleLoop} to="/DetailMenuPage" state={{ id: a._id }}>
+                                                                        <p style={{ margin: 0, color: "#FEA116" }}><b>{a.foodname}</b></p>
+                                                                    </NavLink>
+                                                                    <h6 style={{ margin: 0 }} className='text-center'>{a.foodprice}</h6>
+                                                                </div>
+                                                            </>
+                                                        ) : null}
+                                                    </Fragment>
+                                                )
+                                            })}
+                                        </div>
+                                        : ""}
                                 </div>
                             </div>
                         </div>
-                    </>
+                    </Fragment>
                 )
             })}
             <Footer />

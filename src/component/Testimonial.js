@@ -1,11 +1,11 @@
-import $ from 'jquery';
-import jQuery from 'jquery'
+import jQuery from "jquery";
+import "../lib/owlcarousel/assets/owl.carousel.min.css";
 window.jQuery = jQuery
 require('owl.carousel')
 function Testimonial() {
-    $(function () {
+    jQuery(function ($) {
         // Testimonials carousel
-        $(".testimonial-carousel").owlCarousel({
+        $('.testimonial-carousel').owlCarousel({
             autoplay: true,
             smartSpeed: 1000,
             center: true,

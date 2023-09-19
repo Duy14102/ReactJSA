@@ -49,7 +49,7 @@ function CategoryPage() {
                     <div className="grid-x grid-margin-x small-up-1 medium-up-2 large-up-4 grid-x-wrapper">
                         {Object.values(Category).map(i => {
                             return (
-                                <div className="product-box column p-0">
+                                <div className="product-box column p-0" key={i._id}>
                                     <a href="/#" className="product-item">
                                         <div className="product-item-image">
                                             <img src={i.foodimage} alt="" />

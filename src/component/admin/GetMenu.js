@@ -179,40 +179,38 @@ function GetMenu() {
                         convertToBase64()
                     }
                     return (
-                        <>
-                            <div className='p-3'>
-                                <form onSubmit={(e) => handleSubmit(e, i._id)} className="login100-form validate-form">
-                                    <div className='d-flex mx-auto'>
-                                        <div>
-                                            <img alt='' width={300} height={300} src={i.foodimage} />
-                                        </div>
-                                        <div className='text-left' style={{ paddingLeft: 10 + "px" }}>
-                                            <label>Name</label>
-                                            <input className='form-control' type='text' name='updatename' value={updatename} onChange={(e) => setFoodname(e.target.value)} placeholder={i.foodname}></input>
-                                            <label>Category</label>
-                                            <input className='form-control' type='text' name='updatecategory' value={updatecategory} onChange={(e) => setFoodcategory(e.target.value)} placeholder={i.foodcategory}></input>
-                                            <label>Price</label>
-                                            <input className='form-control' type='number' name='updateprice' value={updateprice} onChange={(e) => setFoodprice(e.target.value)} placeholder={i.foodprice}></input>
-                                            <label>Quantity</label>
-                                            <input className='form-control' type='number' name='updatequantity' value={updatequantity} onChange={(e) => setFoodquantity(e.target.value)} placeholder={i.foodquantity}></input>
-                                            <label>Description</label>
-                                            <input className='form-control' type='text' name='updatedescription' value={updatedescription} onChange={(e) => setFooddescription(e.target.value)} placeholder={i.fooddescription}></input>
-                                            <label>Image</label>
-                                            <input className='form-control' type='file' name='updateimage' onChange={convertToBase64} />
-                                        </div>
-                                    </div>
-                                    <hr />
-                                </form>
-                                <div className='d-flex justify-content-around mt-3'>
+                        <div className='p-3' key={i._id}>
+                            <form onSubmit={(e) => handleSubmit(e, i._id)} className="login100-form validate-form">
+                                <div className='d-flex mx-auto'>
                                     <div>
-                                        <button type='submit' onClick={(e) => handleSubmit(e, i._id)} className='btn btn-success'>Update</button>
+                                        <img alt='' width={300} height={300} src={i.foodimage} />
                                     </div>
-                                    <div>
-                                        <button onClick={() => DeleteMenu(i._id)} className='btn btn-danger'>Delete</button>
+                                    <div className='text-left' style={{ paddingLeft: 10 + "px" }}>
+                                        <label>Name</label>
+                                        <input className='form-control' type='text' name='updatename' value={updatename} onChange={(e) => setFoodname(e.target.value)} placeholder={i.foodname}></input>
+                                        <label>Category</label>
+                                        <input className='form-control' type='text' name='updatecategory' value={updatecategory} onChange={(e) => setFoodcategory(e.target.value)} placeholder={i.foodcategory}></input>
+                                        <label>Price</label>
+                                        <input className='form-control' type='number' name='updateprice' value={updateprice} onChange={(e) => setFoodprice(e.target.value)} placeholder={i.foodprice}></input>
+                                        <label>Quantity</label>
+                                        <input className='form-control' type='number' name='updatequantity' value={updatequantity} onChange={(e) => setFoodquantity(e.target.value)} placeholder={i.foodquantity}></input>
+                                        <label>Description</label>
+                                        <input className='form-control' type='text' name='updatedescription' value={updatedescription} onChange={(e) => setFooddescription(e.target.value)} placeholder={i.fooddescription}></input>
+                                        <label>Image</label>
+                                        <input className='form-control' type='file' name='updateimage' onChange={convertToBase64} />
                                     </div>
                                 </div>
-                            </div >
-                        </>
+                                <hr />
+                            </form>
+                            <div className='d-flex justify-content-around mt-3'>
+                                <div>
+                                    <button type='submit' onClick={(e) => handleSubmit(e, i._id)} className='btn btn-success'>Update</button>
+                                </div>
+                                <div>
+                                    <button onClick={() => DeleteMenu(i._id)} className='btn btn-danger'>Delete</button>
+                                </div>
+                            </div>
+                        </div >
                     )
                 })}
                 <button className='closeModal' onClick={() => setModalOpenDetail(false)}>x</button>

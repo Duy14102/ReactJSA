@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import { Fragment } from 'react';
 import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 function Menu() {
@@ -94,7 +95,7 @@ function Menu() {
                                         return null;
                                     }
                                     return (
-                                        <>
+                                        <Fragment key={i._id}>
                                             {i.foodcategory === "Meat" ? (
                                                 <div className="col-lg-6 p-2">
                                                     <NavLink to="/DetailMenuPage" state={{ id: i._id }}>
@@ -114,7 +115,7 @@ function Menu() {
                                                     </NavLink>
                                                 </div>
                                             ) : null}
-                                        </>
+                                        </Fragment>
                                     )
                                 })}
                             </div>
@@ -127,7 +128,7 @@ function Menu() {
                                         return null;
                                     }
                                     return (
-                                        <>
+                                        <Fragment key={i._id}>
                                             {i.foodcategory === "Vegetables" ? (
                                                 <div className="col-lg-6 p-2">
                                                     <NavLink to="/DetailMenuPage" state={{ id: i._id }}>
@@ -147,7 +148,7 @@ function Menu() {
                                                     </NavLink>
                                                 </div>
                                             ) : null}
-                                        </>
+                                        </Fragment>
                                     )
                                 })}
                             </div>
@@ -160,7 +161,7 @@ function Menu() {
                                         return null;
                                     }
                                     return (
-                                        <>
+                                        <Fragment key={i._id}>
                                             {i.foodcategory === "Drink" ? (
                                                 <div className="col-lg-6 p-2">
                                                     <NavLink to="/DetailMenuPage" state={{ id: i._id }}>
@@ -180,7 +181,7 @@ function Menu() {
                                                     </NavLink>
                                                 </div>
                                             ) : null}
-                                        </>
+                                        </Fragment>
                                     )
                                 })}
                             </div>

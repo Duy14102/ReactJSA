@@ -18,7 +18,6 @@ import Cookies from "universal-cookie";
 import NotFound from "./component/NotFound";
 import "./css/bootstrap.min.css";
 import "./lib/animate/animate.min.css";
-import "./lib/owlcarousel/assets/owl.carousel.min.css";
 import "./lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css";
 import jwtDecode from "jwt-decode";
 import DetailMenuPage from "./pages/DetailMenuPage";
@@ -54,7 +53,7 @@ function Wrapped() {
                     <Route path="/" element={<App />} />
                     <Route path="AboutSite" element={<AboutSite />} />
                     <Route path="ServicesSite" element={<MainServices />} />
-                    <Route path="CategorySite" element={<CategoryPage />} />
+                    <Route path="CategorySite/:id" element={<CategoryPage />} />
                     <Route path="BookingSite" element={<BookingSite />} />
                     <Route path="ContactSite" element={<ContactSite />} />
                     <Route path="TestiSite" element={<TestiSite />} />

@@ -86,7 +86,7 @@ function GetUser() {
                 </thead>
                 {data.map(i => {
                     return (
-                        <tbody>
+                        <tbody key={i._id}>
                             <tr>
                                 <td>{i.email}</td>
                                 <td>{i.fullname}</td>
@@ -131,22 +131,20 @@ function GetUser() {
                             setFullname(i.fullname)
                         }
                         return (
-                            <>
-                                <div className='p-3'>
-                                    <form onSubmit={(e) => handleSubmit(e, i._id)} className="login100-form validate-form">
-                                        <label>Email</label>
-                                        <input className='form-control' type='text' name='updateemail' value={updateemail} onChange={(e) => setEmail(e.target.value)} placeholder={i.email}></input>
-                                        <label>Password</label>
-                                        <input className='form-control' type='password' name='updatepassword' value={updatepassword} onChange={(e) => setPassword(e.target.value)}></input>
-                                        <label>Fullname</label>
-                                        <input className='form-control' type='text' name='updatefullname' value={updatefullname} onChange={(e) => setFullname(e.target.value)} placeholder={i.fullname}></input>
-                                        <hr />
-                                    </form>
-                                    <div className="text-center mt-3">
-                                        <button type='submit' onClick={(e) => handleSubmit(e, i._id)} className='btn btn-success'>Update</button>
-                                    </div>
-                                </div >
-                            </>
+                            <div className='p-3' key={i._id}>
+                                <form onSubmit={(e) => handleSubmit(e, i._id)} className="login100-form validate-form">
+                                    <label>Email</label>
+                                    <input className='form-control' type='text' name='updateemail' value={updateemail} onChange={(e) => setEmail(e.target.value)} placeholder={i.email}></input>
+                                    <label>Password</label>
+                                    <input className='form-control' type='password' name='updatepassword' value={updatepassword} onChange={(e) => setPassword(e.target.value)}></input>
+                                    <label>Fullname</label>
+                                    <input className='form-control' type='text' name='updatefullname' value={updatefullname} onChange={(e) => setFullname(e.target.value)} placeholder={i.fullname}></input>
+                                    <hr />
+                                </form>
+                                <div className="text-center mt-3">
+                                    <button type='submit' onClick={(e) => handleSubmit(e, i._id)} className='btn btn-success'>Update</button>
+                                </div>
+                            </div >
                         )
                     })}
                     <button className='closeModal' onClick={() => setModalOpenDetail(false)}>x</button>

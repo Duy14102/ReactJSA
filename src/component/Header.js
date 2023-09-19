@@ -56,9 +56,9 @@ function Header() {
                     <div id="headups" className="nav-item dropdown">
                         <a href="/#" className="nav-link dropdown-toggle" data-bs-toggle="dropdown">Menu</a>
                         <div className="dropdown-menu m-0">
-                            <NavLink to="/CategorySite" state={{ category: "Meat" }} className="dropdown-item">Meat</NavLink>
-                            <NavLink to="/CategorySite" state={{ category: "Drink" }} className="dropdown-item">Drink</NavLink>
-                            <NavLink to="/CategorySite" state={{ category: "Vegetables" }} className="dropdown-item">Vegetables</NavLink>
+                            <NavLink to="/CategorySite/Meat" state={{ category: "Meat" }} className="dropdown-item">Meat</NavLink>
+                            <NavLink to="/CategorySite/Drink" state={{ category: "Drink" }} className="dropdown-item">Drink</NavLink>
+                            <NavLink to="/CategorySite/Vegetables" state={{ category: "Vegetables" }} className="dropdown-item">Vegetables</NavLink>
                         </div>
                     </div>
                     <NavLink to="/AboutSite" className="nav-item nav-link">About</NavLink>
