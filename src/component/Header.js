@@ -1,6 +1,8 @@
 import { NavLink } from "react-router-dom";
 import $ from 'jquery';
 import Cookies from "universal-cookie";
+import Modal from 'react-modal'
+import { useState } from "react";
 function Header() {
     $(function () {
         // Sticky Navbar
@@ -35,6 +37,7 @@ function Header() {
     })
     const cookies = new Cookies();
     const token = cookies.get("TOKEN");
+    const [logout, setLogout] = useState(false);
 
     const logoutThis = () => {
         cookies.remove("TOKEN");
@@ -42,45 +45,70 @@ function Header() {
         window.location.href = '/';
     }
     return (
-        <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-4 px-lg-5 py-3 py-lg-0">
-            <a href="/" className="navbar-brand p-0">
-                <h1 className="text-primary m-0"><i className="fa fa-utensils me-3"></i>EatCom</h1>
-                {/*<img src="img/logo.png" alt="Logo">*/}
-            </a>
-            <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-                <span className="fa fa-bars"></span>
-            </button>
-            <div className="collapse navbar-collapse" id="navbarCollapse">
-                <div className="navbar-nav ms-auto py-0 pe-4">
-                    <NavLink to="/" activeclassname="active" className="nav-item nav-link">Home</NavLink>
-                    <div id="headups" className="nav-item dropdown">
-                        <a href="/#" className="nav-link dropdown-toggle" data-bs-toggle="dropdown">Menu</a>
-                        <div className="dropdown-menu m-0">
-                            <NavLink to="/CategorySite/Meat" state={{ category: "Meat" }} className="dropdown-item">Meat</NavLink>
-                            <NavLink to="/CategorySite/Drink" state={{ category: "Drink" }} className="dropdown-item">Drink</NavLink>
-                            <NavLink to="/CategorySite/Vegetables" state={{ category: "Vegetables" }} className="dropdown-item">Vegetables</NavLink>
+        <>
+            <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-4 px-lg-5 py-3 py-lg-0">
+                <a href="/" className="navbar-brand p-0">
+                    <h1 className="text-primary m-0"><i className="fa fa-utensils me-3"></i>EatCom</h1>
+                    {/*<img src="img/logo.png" alt="Logo">*/}
+                </a>
+                <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+                    <span className="fa fa-bars"></span>
+                </button>
+                <div className="collapse navbar-collapse" id="navbarCollapse">
+                    <div className="navbar-nav ms-auto py-0 pe-4">
+                        <button onClick={setLogout} className="nav-item nav-link" to="/"><i class="fa-solid fa-magnifying-glass"></i></button>
+                        <NavLink reloadDocument to="/" activeclassname="active" className="nav-item nav-link">Home</NavLink>
+                        <div id="headups" className="nav-item dropdown">
+                            <a href="/#" className="nav-link dropdown-toggle" data-bs-toggle="dropdown">Menu</a>
+                            <div className="dropdown-menu m-0">
+                                <NavLink reloadDocument to="/CategorySite/Meat/nto" className="dropdown-item">Meat</NavLink>
+                                <NavLink reloadDocument to="/CategorySite/Drink/nto" className="dropdown-item">Drink</NavLink>
+                                <NavLink reloadDocument to="/CategorySite/Vegetables/nto" className="dropdown-item">Vegetables</NavLink>
+                            </div>
+                        </div>
+                        <NavLink reloadDocument to="/AboutSite" className="nav-item nav-link">About</NavLink>
+                        <NavLink reloadDocument to="/ServicesSite" className="nav-item nav-link">Services</NavLink>
+                        <NavLink reloadDocument to="/ContactSite" className="nav-item nav-link">Contact</NavLink>
+                        <div id="headups" className="nav-item dropdown">
+                            <a href="/#" className="nav-link dropdown-toggle" data-bs-toggle="dropdown">More</a>
+                            <div className="dropdown-menu m-0">
+                                <NavLink reloadDocument to="/BookingSite" className="dropdown-item">Booking</NavLink>
+                                <NavLink reloadDocument to="/TeamSite" className="dropdown-item">Our Team</NavLink>
+                                <NavLink reloadDocument to="/TestiSite" className="dropdown-item">Testimonial</NavLink>
+                            </div>
                         </div>
                     </div>
-                    <NavLink to="/AboutSite" className="nav-item nav-link">About</NavLink>
-                    <NavLink to="/ServicesSite" className="nav-item nav-link">Services</NavLink>
-                    <NavLink to="/ContactSite" className="nav-item nav-link">Contact</NavLink>
-                    <div id="headups" className="nav-item dropdown">
-                        <a href="/#" className="nav-link dropdown-toggle" data-bs-toggle="dropdown">More</a>
-                        <div className="dropdown-menu m-0">
-                            <NavLink to="/BookingSite" className="dropdown-item">Booking</NavLink>
-                            <NavLink to="/TeamSite" className="dropdown-item">Our Team</NavLink>
-                            <NavLink to="/TestiSite" className="dropdown-item">Testimonial</NavLink>
-                        </div>
-                    </div>
+                    {token ? (
+                        <button onClick={logoutThis} className="btn btn-primary py-2 px-4">Logout</button>
+                    ) : (
+                        <NavLink reloadDocument to="/LoginSite" className="btn btn-primary py-2 px-4">Login</NavLink>
+                    )}
                 </div>
-                {token ? (
-                    <button onClick={logoutThis} className="btn btn-primary py-2 px-4">Logout</button>
-                ) : (
-                    <NavLink to="/LoginSite" className="btn btn-primary py-2 px-4">Login</NavLink>
-                )}
-            </div>
-        </nav>
-
+            </nav>
+            <Modal
+                isOpen={logout} onRequestClose={() => setLogout(false)} ariaHideApp={false}
+                style={{
+                    overlay: {
+                        backgroundColor: 'rgb(33 33 33 / 75%)'
+                    },
+                    content: {
+                        borderRadius: "99px",
+                        border: "none",
+                        padding: "7px",
+                        top: "50%",
+                        left: "50%",
+                        right: "auto",
+                        bottom: "auto",
+                        marginRight: "-50%",
+                        transform: "translate(-50%, -50%)",
+                        backgroundColor: "white",
+                        width: 400,
+                        overflow: "hidden",
+                    },
+                }}>
+                <input className="inputSearch"></input>
+            </Modal>
+        </>
     );
 }
 export default Header;

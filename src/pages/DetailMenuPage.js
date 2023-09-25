@@ -2,8 +2,8 @@ import '../css/DetailMenuPage.css';
 import Header from '../component/Header';
 import Footer from '../component/Footer';
 import { useState } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
-import NotFound from '../component/NotFound';
+import { NavLink, useParams } from 'react-router-dom';
+import NotFound from '../component/outOfBorder/NotFound';
 import { useEffect } from 'react';
 import axios from 'axios';
 import jQuery from "jquery";
@@ -12,7 +12,7 @@ import { Fragment } from 'react';
 window.jQuery = jQuery
 require('owl.carousel')
 function DetailMenuPage() {
-    let Location = useLocation();
+    let appler = useParams()
     const [detail, setDetail] = useState([]);
     const [menu, setMenu] = useState([]);
     var [quantity, setQuantity] = useState(0)
@@ -81,9 +81,6 @@ function DetailMenuPage() {
         setQuantity(quantity - 1)
     }
 
-    const handleLoop = () => {
-        window.location.reload();
-    }
     if (quantity < 1) {
         quantity = 1;
     }
@@ -104,7 +101,7 @@ function DetailMenuPage() {
                 method: "get",
                 url: "http://localhost:3000/GetDetailMenu",
                 params: {
-                    foodid: Location.state.id
+                    foodid: appler.id
                 }
             };
             axios(configuration)
@@ -116,9 +113,9 @@ function DetailMenuPage() {
                 });
         }
         DetailMenu();
-    }, [Location.state.id])
+    }, [appler.id])
 
-    if (!Location.state) {
+    if (!appler) {
         return NotFound();
     }
     return (
@@ -131,9 +128,9 @@ function DetailMenuPage() {
                 return (
                     <Fragment key={i._id}>
                         <div className="container py-5">
-                            <p><NavLink className="Allright" to="/">Home</NavLink> / <NavLink className="Allright">{i.foodcategory}</NavLink> / <NavLink to="/DetailMenuPage" state={{ id: i._id }} className="Allright">{i.foodname}</NavLink></p>
+                            <p><NavLink reloadDocument className="Allright" to="/">Home</NavLink> / <NavLink reloadDocument className="Allright" to={`/CategorySite/${i.foodcategory}`}>{i.foodcategory}</NavLink> / <NavLink to="/DetailMenuPage" state={{ id: i._id }} className="Allright">{i.foodname}</NavLink></p>
                             <div className="d-flex">
-                                <img alt='' src={i.foodimage} width={600} height={400} />
+                                <img loading="lazy" alt='' src={i.foodimage} width={600} height={400} />
                                 <div className='px-3'>
                                     <div className="product-dtl">
                                         <div className="product-info">
@@ -169,7 +166,7 @@ function DetailMenuPage() {
                                 </ul>
                                 <div className="tab-content mt-5" id="myTabContent">
                                     <div className="tab-pane active activeThis" id="description">
-                                        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.
+                                        {i.fooddescription}
                                     </div>
                                     <div className="tab-pane" id="review">
                                         <div className="review-heading">REVIEWS</div>
@@ -196,7 +193,7 @@ function DetailMenuPage() {
                                                 <label>Your message</label>
                                                 <textarea className="form-control" rows="10"></textarea>
                                             </div>
-                                            <div className="row">
+                                            <div className="row pt-4">
                                                 <div className="col-md-6">
                                                     <div className="form-group">
                                                         <input type="text" name="" className="form-control" placeholder="Name*" />
@@ -227,11 +224,11 @@ function DetailMenuPage() {
                                                         {a.foodcategory === i.foodcategory && a._id !== i._id ? (
                                                             <>
                                                                 <div className="testimonial-item bg-transparent">
-                                                                    <NavLink onClick={handleLoop} to="/DetailMenuPage" state={{ id: a._id }}>
-                                                                        <img alt='' height={200} src={a.foodimage} />
+                                                                    <NavLink reloadDocument to={`/DetailMenuPage/${a._id}`}>
+                                                                        <img loading="lazy" alt='' height={200} src={a.foodimage} />
                                                                     </NavLink>
                                                                     <p style={{ margin: 0 }} className='text-center'>{a.foodcategory}</p>
-                                                                    <NavLink className="text-center" onClick={handleLoop} to="/DetailMenuPage" state={{ id: a._id }}>
+                                                                    <NavLink className="text-center" reloadDocument to={`/DetailMenuPage/${a._id}`}>
                                                                         <p style={{ margin: 0, color: "#FEA116" }}><b>{a.foodname}</b></p>
                                                                     </NavLink>
                                                                     <h6 style={{ margin: 0 }} className='text-center'>{a.foodprice}</h6>

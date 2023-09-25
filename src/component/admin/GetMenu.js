@@ -68,7 +68,7 @@ function GetMenu() {
             });
     }
 
-    //Update Menu
+    // Image Menu
     function convertToBase64(e) {
         var reader = new FileReader();
         reader.readAsDataURL(e.target.files[0]);
@@ -80,6 +80,7 @@ function GetMenu() {
         }
     }
 
+    //Update Menu
     const handleSubmit = (e, id) => {
         // prevent the form from refreshing the whole page
         e.preventDefault();
@@ -183,7 +184,7 @@ function GetMenu() {
                             <form onSubmit={(e) => handleSubmit(e, i._id)} className="login100-form validate-form">
                                 <div className='d-flex mx-auto'>
                                     <div>
-                                        <img alt='' width={300} height={300} src={i.foodimage} />
+                                        <img loading="lazy" alt='' width={300} height={300} src={i.foodimage} />
                                     </div>
                                     <div className='text-left' style={{ paddingLeft: 10 + "px" }}>
                                         <label>Name</label>

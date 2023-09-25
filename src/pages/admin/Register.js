@@ -7,7 +7,7 @@ import Swal from 'sweetalert2';
 import Header from '../../component/Header';
 import Footer from '../../component/Footer';
 import Cookies from 'universal-cookie';
-import NotFound from '../../component/NotFound';
+import NotFound from '../../component/outOfBorder/NotFound';
 function LoginSite() {
     document.title = "EatCom - Signup";
     $(function () {

@@ -1,7 +1,5 @@
 import $ from 'jquery';
-import { Fragment } from 'react';
-import { useEffect, useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import ItemMenuComponent from './outOfBorder/ItemMenuComponent';
 function Menu() {
     $(function () {
         // Variables
@@ -42,14 +40,6 @@ function Menu() {
             init();
         });
     });
-    const [menu, setMenu] = useState([]);
-    useEffect(() => {
-        fetch("http://localhost:3000/GetThisMenu", {
-            method: "get",
-        }).then((res) => res.json()).then((menu) => {
-            setMenu(menu.data);
-        })
-    }, [])
     return (
         <div className="container-fluid py-5">
             <div className="container">
@@ -90,100 +80,19 @@ function Menu() {
                     <div className="tab-content">
                         < div id="tab-1" className="tab-pane p-0 active activeThis">
                             <div className="row d-flex" >
-                                {menu.map((i, index) => {
-                                    if (index > 9) {
-                                        return null;
-                                    }
-                                    return (
-                                        <Fragment key={i._id}>
-                                            {i.foodcategory === "Meat" ? (
-                                                <div className="col-lg-6 p-2">
-                                                    <NavLink to="/DetailMenuPage" state={{ id: i._id }}>
-                                                        <div className="hexThis d-flex align-items-center" style={{ padding: 2 + "%" }}>
-                                                            <img className="flex-shrink-0 img-fluid rounded" src={i.foodimage} alt="" style={{ width: 80 + "px", height: 80 + "px" }} />
-                                                            <div className="w-100 d-flex flex-column text-start ps-4">
-                                                                <h5 className="d-flex justify-content-between border-bottom pb-2">
-                                                                    <span>{i.foodname}</span>
-                                                                    <span className="text-primary">{i.foodprice} đ</span>
-                                                                </h5>
-                                                                <div className='d-flex justify-content-between'>
-                                                                    <small className="fst-italic text-secondary">{i.fooddescription}</small>
-                                                                    <i className="fa fa-cart-shopping text-primary"></i>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </NavLink>
-                                                </div>
-                                            ) : null}
-                                        </Fragment>
-                                    )
-                                })}
+                                <ItemMenuComponent Name={"Meat"} />
                             </div>
                         </div >
 
                         < div id="tab-2" className="tab-pane p-0">
                             <div className="row d-flex" >
-                                {menu.map((i, index) => {
-                                    if (index > 9) {
-                                        return null;
-                                    }
-                                    return (
-                                        <Fragment key={i._id}>
-                                            {i.foodcategory === "Vegetables" ? (
-                                                <div className="col-lg-6 p-2">
-                                                    <NavLink to="/DetailMenuPage" state={{ id: i._id }}>
-                                                        <div className="hexThis d-flex align-items-center" style={{ padding: 2 + "%" }}>
-                                                            <img className="flex-shrink-0 img-fluid rounded" src={i.foodimage} alt="" style={{ width: 80 + "px", height: 80 + "px" }} />
-                                                            <div className="w-100 d-flex flex-column text-start ps-4">
-                                                                <h5 className="d-flex justify-content-between border-bottom pb-2">
-                                                                    <span>{i.foodname}</span>
-                                                                    <span className="text-primary">{i.foodprice} đ</span>
-                                                                </h5>
-                                                                <div className='d-flex justify-content-between'>
-                                                                    <small className="fst-italic text-secondary">{i.fooddescription}</small>
-                                                                    <i className="fa fa-cart-shopping text-primary"></i>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </NavLink>
-                                                </div>
-                                            ) : null}
-                                        </Fragment>
-                                    )
-                                })}
+                                <ItemMenuComponent Name={"Vegetables"} />
                             </div>
                         </div >
 
                         < div id="tab-3" className="tab-pane p-0">
                             <div className="row d-flex" >
-                                {menu.map((i, index) => {
-                                    if (index > 9) {
-                                        return null;
-                                    }
-                                    return (
-                                        <Fragment key={i._id}>
-                                            {i.foodcategory === "Drink" ? (
-                                                <div className="col-lg-6 p-2">
-                                                    <NavLink to="/DetailMenuPage" state={{ id: i._id }}>
-                                                        <div className="hexThis d-flex align-items-center" style={{ padding: 2 + "%" }}>
-                                                            <img className="flex-shrink-0 img-fluid rounded" src={i.foodimage} alt="" style={{ width: 80 + "px", height: 80 + "px" }} />
-                                                            <div className="w-100 d-flex flex-column text-start ps-4">
-                                                                <h5 className="d-flex justify-content-between border-bottom pb-2">
-                                                                    <span>{i.foodname}</span>
-                                                                    <span className="text-primary">{i.foodprice} đ</span>
-                                                                </h5>
-                                                                <div className='d-flex justify-content-between'>
-                                                                    <small className="fst-italic text-secondary">{i.fooddescription}</small>
-                                                                    <i className="fa fa-cart-shopping text-primary"></i>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </NavLink>
-                                                </div>
-                                            ) : null}
-                                        </Fragment>
-                                    )
-                                })}
+                                <ItemMenuComponent Name={"Drink"} />
                             </div>
                         </div >
                     </div>

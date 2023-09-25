@@ -39,7 +39,7 @@ function Testimonial() {
                             <i className="fa fa-quote-left fa-2x text-primary mb-3"></i>
                             <p>Dolor et eos labore, stet justo sed est sed. Diam sed sed dolor stet amet eirmod eos labore diam</p>
                             <div className="d-flex align-items-center">
-                                <img className="img-fluid flex-shrink-0 rounded-circle" alt="" src="img/testimonial-1.jpg" style={{ width: 50 + "px", height: 50 + "px" }} />
+                                <img loading="lazy" className="img-fluid flex-shrink-0 rounded-circle" alt="" src="img/testimonial-1.jpg" style={{ width: 50 + "px", height: 50 + "px" }} />
                                 <div className="ps-3">
                                     <h5 className="mb-1">Client Name</h5>
                                     <small>Profession</small>
@@ -50,7 +50,7 @@ function Testimonial() {
                             <i className="fa fa-quote-left fa-2x text-primary mb-3"></i>
                             <p>Dolor et eos labore, stet justo sed est sed. Diam sed sed dolor stet amet eirmod eos labore diam</p>
                             <div className="d-flex align-items-center">
-                                <img className="img-fluid flex-shrink-0 rounded-circle" alt="" src="img/testimonial-2.jpg" style={{ width: 50 + "px", height: 50 + "px" }} />
+                                <img loading="lazy" className="img-fluid flex-shrink-0 rounded-circle" alt="" src="img/testimonial-2.jpg" style={{ width: 50 + "px", height: 50 + "px" }} />
                                 <div className="ps-3">
                                     <h5 className="mb-1">Client Name</h5>
                                     <small>Profession</small>
@@ -61,7 +61,7 @@ function Testimonial() {
                             <i className="fa fa-quote-left fa-2x text-primary mb-3"></i>
                             <p>Dolor et eos labore, stet justo sed est sed. Diam sed sed dolor stet amet eirmod eos labore diam</p>
                             <div className="d-flex align-items-center">
-                                <img className="img-fluid flex-shrink-0 rounded-circle" alt="" src="img/testimonial-3.jpg" style={{ width: 50 + "px", height: 50 + "px" }} />
+                                <img loading="lazy" className="img-fluid flex-shrink-0 rounded-circle" alt="" src="img/testimonial-3.jpg" style={{ width: 50 + "px", height: 50 + "px" }} />
                                 <div className="ps-3">
                                     <h5 className="mb-1">Client Name</h5>
                                     <small>Profession</small>
@@ -72,7 +72,7 @@ function Testimonial() {
                             <i className="fa fa-quote-left fa-2x text-primary mb-3"></i>
                             <p>Dolor et eos labore, stet justo sed est sed. Diam sed sed dolor stet amet eirmod eos labore diam</p>
                             <div className="d-flex align-items-center">
-                                <img className="img-fluid flex-shrink-0 rounded-circle" alt="" src="img/testimonial-4.jpg" style={{ width: 50 + "px", height: 50 + "px" }} />
+                                <img loading="lazy" className="img-fluid flex-shrink-0 rounded-circle" alt="" src="img/testimonial-4.jpg" style={{ width: 50 + "px", height: 50 + "px" }} />
                                 <div className="ps-3">
                                     <h5 className="mb-1">Client Name</h5>
                                     <small>Profession</small>

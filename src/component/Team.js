@@ -11,7 +11,7 @@ function Team() {
                     <div className="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
                         <div className="team-item text-center rounded overflow-hidden">
                             <div className="rounded-circle overflow-hidden m-4">
-                                <img className="img-fluid" src="img/team-1.jpg" alt="" />
+                                <img loading="lazy" className="img-fluid" src="img/team-1.jpg" alt="" />
                             </div>
                             <h5 className="mb-0">Full Name</h5>
                             <small>Designation</small>
@@ -25,7 +25,7 @@ function Team() {
                     <div className="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
                         <div className="team-item text-center rounded overflow-hidden">
                             <div className="rounded-circle overflow-hidden m-4">
-                                <img className="img-fluid" src="img/team-2.jpg" alt="" />
+                                <img loading="lazy" className="img-fluid" src="img/team-2.jpg" alt="" />
                             </div>
                             <h5 className="mb-0">Full Name</h5>
                             <small>Designation</small>
@@ -39,7 +39,7 @@ function Team() {
                     <div className="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
                         <div className="team-item text-center rounded overflow-hidden">
                             <div className="rounded-circle overflow-hidden m-4">
-                                <img className="img-fluid" src="img/team-3.jpg" alt="" />
+                                <img loading="lazy" className="img-fluid" src="img/team-3.jpg" alt="" />
                             </div>
                             <h5 className="mb-0">Full Name</h5>
                             <small>Designation</small>
@@ -53,7 +53,7 @@ function Team() {
                     <div className="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.7s">
                         <div className="team-item text-center rounded overflow-hidden">
                             <div className="rounded-circle overflow-hidden m-4">
-                                <img className="img-fluid" src="img/team-4.jpg" alt="" />
+                                <img loading="lazy" className="img-fluid" src="img/team-4.jpg" alt="" />
                             </div>
                             <h5 className="mb-0">Full Name</h5>
                             <small>Designation</small>

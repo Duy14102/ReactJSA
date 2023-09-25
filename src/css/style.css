@@ -2,6 +2,7 @@
 @import url(https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css);
 @import url(https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css);
 @import url(https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Nunito:wght@600;700;800&family=Pacifico&display=swap);
+
 :root {
     --primary: #FEA116;
     --light: #F1F8FF;
@@ -131,6 +132,11 @@
 .navbar-dark .navbar-nav .nav-link:hover,
 .navbar-dark .navbar-nav .nav-link.active {
     color: var(--primary) !important;
+}
+
+.inputSearch {
+    padding: 2%;
+    width: 100%;
 }
 
 .navbar-dark .navbar-brand img {

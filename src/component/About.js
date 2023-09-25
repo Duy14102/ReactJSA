@@ -7,16 +7,16 @@ function About() {
                     <div className="col-lg-6">
                         <div className="row g-3">
                             <div className="col-6 text-start">
-                                <img className="img-fluid rounded w-100 wow zoomIn" data-wow-delay="0.1s" src="img/about-1.jpg" alt="about1" />
+                                <img loading="lazy" className="img-fluid rounded w-100 wow zoomIn" data-wow-delay="0.1s" src="img/about-1.jpg" alt="about1" />
                             </div>
                             <div className="col-6 text-start">
-                                <img className="img-fluid rounded w-75 wow zoomIn" data-wow-delay="0.3s" src="img/about-2.jpg" alt="about2" style={{ marginTop: 3 + "rem" }} />
+                                <img loading="lazy" className="img-fluid rounded w-75 wow zoomIn" data-wow-delay="0.3s" src="img/about-2.jpg" alt="about2" style={{ marginTop: 3 + "rem" }} />
                             </div>
                             <div className="col-6 text-end">
-                                <img className="img-fluid rounded w-75 wow zoomIn" data-wow-delay="0.5s" src="img/about-3.jpg" alt="about3" />
+                                <img loading="lazy" className="img-fluid rounded w-75 wow zoomIn" data-wow-delay="0.5s" src="img/about-3.jpg" alt="about3" />
                             </div>
                             <div className="col-6 text-end">
-                                <img className="img-fluid rounded w-100 wow zoomIn" data-wow-delay="0.7s" src="img/about-4.jpg" alt="about4" />
+                                <img loading="lazy" className="img-fluid rounded w-100 wow zoomIn" data-wow-delay="0.7s" src="img/about-4.jpg" alt="about4" />
                             </div>
                         </div>
                     </div>
