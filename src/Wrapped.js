@@ -22,6 +22,7 @@ import "./lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css";
 import jwtDecode from "jwt-decode";
 import DetailMenuPage from "./pages/DetailMenuPage";
 import CategoryPage from "./pages/CategoryPage";
+import SearchSite from "./pages/SearchSite";
 
 const cookies = new Cookies();
 const token = cookies.get("TOKEN");
@@ -54,6 +55,7 @@ function Wrapped() {
                     <Route path="AboutSite" element={<AboutSite />} />
                     <Route path="ServicesSite" element={<MainServices />} />
                     <Route path="CategorySite/:id/:fil" element={<CategoryPage />} />
+                    <Route path="SearchSite/:id/:fil" element={<SearchSite />} />
                     <Route path="BookingSite" element={<BookingSite />} />
                     <Route path="ContactSite" element={<ContactSite />} />
                     <Route path="TestiSite" element={<TestiSite />} />

@@ -3,7 +3,12 @@ import $ from 'jquery';
 import Cookies from "universal-cookie";
 import Modal from 'react-modal'
 import { useState } from "react";
+import axios from "axios";
 function Header() {
+    const cookies = new Cookies();
+    const token = cookies.get("TOKEN");
+    const [logout, setLogout] = useState(false);
+    const [search, setSearch] = useState("")
     $(function () {
         // Sticky Navbar
         $(window).on("scroll", function () {
@@ -35,9 +40,22 @@ function Header() {
         })
 
     })
-    const cookies = new Cookies();
-    const token = cookies.get("TOKEN");
-    const [logout, setLogout] = useState(false);
+    const SearchType = () => {
+        const configuration = {
+            method: "get",
+            url: "http://localhost:3000/GetSearch",
+            params: {
+                foodSearch: search
+            }
+        };
+        axios(configuration)
+            .then((res) => {
+                window.location.href = `/SearchSite/${search}/nto`
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }
 
     const logoutThis = () => {
         cookies.remove("TOKEN");
@@ -56,7 +74,7 @@ function Header() {
                 </button>
                 <div className="collapse navbar-collapse" id="navbarCollapse">
                     <div className="navbar-nav ms-auto py-0 pe-4">
-                        <button onClick={setLogout} className="nav-item nav-link" to="/"><i class="fa-solid fa-magnifying-glass"></i></button>
+                        <button onClick={setLogout} className="nav-item nav-link" to="/"><i className="fa-solid fa-magnifying-glass"></i></button>
                         <NavLink reloadDocument to="/" activeclassname="active" className="nav-item nav-link">Home</NavLink>
                         <div id="headups" className="nav-item dropdown">
                             <a href="/#" className="nav-link dropdown-toggle" data-bs-toggle="dropdown">Menu</a>
@@ -106,7 +124,12 @@ function Header() {
                         overflow: "hidden",
                     },
                 }}>
-                <input className="inputSearch"></input>
+                <div className="d-flex justify-content-between">
+                    <form className="SearchForm">
+                        <input className="inputSearch" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search something..."></input>
+                    </form>
+                    <button className="SearchSubmit" onClick={() => SearchType()} type="submit"><i className="fa-solid fa-magnifying-glass"></i></button>
+                </div>
             </Modal>
         </>
     );

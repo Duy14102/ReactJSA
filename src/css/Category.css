@@ -142,12 +142,10 @@
 .slider__track {
     background-color: #ced4da;
     width: 100%;
-    z-index: 1;
 }
 
 .slider__range {
     background-color: #9fe5e1;
-    z-index: 2;
 }
 
 .slider__left-value,
@@ -181,11 +179,11 @@
 }
 
 .thumb--left {
-    z-index: 3;
+    z-index: 1;
 }
 
 .thumb--right {
-    z-index: 4;
+    z-index: 2;
 }
 
 /* For Chrome browsers */
