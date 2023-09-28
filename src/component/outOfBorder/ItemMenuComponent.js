@@ -11,6 +11,11 @@ const ItemMenuComponent = ({ Name }) => {
             setMenu(menu.data);
         })
     }, [])
+
+    const VND = new Intl.NumberFormat('vi-VN', {
+        style: 'currency',
+        currency: 'VND',
+    });
     return (
         <>
             {menu.filter(menu => menu.foodcategory === Name).slice(0, 8).map((i) => {
@@ -23,7 +28,7 @@ const ItemMenuComponent = ({ Name }) => {
                                     <div className="w-100 d-flex flex-column text-start ps-4">
                                         <h5 className="d-flex justify-content-between border-bottom pb-2">
                                             <span>{i.foodname}</span>
-                                            <span className="text-primary">{i.foodprice} đ</span>
+                                            <span className="text-primary">{VND.format(i.foodprice)}</span>
                                         </h5>
                                         <div className='d-flex justify-content-between'>
                                             <small className="fst-italic text-secondary">{i.fooddescription}</small>

@@ -115,6 +115,11 @@ function GetMenu() {
                 )
             });
     }
+
+    const VND = new Intl.NumberFormat('vi-VN', {
+        style: 'currency',
+        currency: 'VND',
+    });
     return (
         <>
             <table className='table table-bordered text-center'>
@@ -132,7 +137,7 @@ function GetMenu() {
                         <tbody key={i._id}>
                             <tr>
                                 <td>{i.foodname}</td>
-                                <td>{i.foodprice}</td>
+                                <td>{VND.format(i.foodprice)}</td>
                                 <td>{i.foodquantity}</td>
                                 <td>{i.foodcategory}</td>
                                 <td onClick={setModalOpenDetail}><button onClick={() => DetailMenu(i._id)} className='btn btn-success'>Detail</button></td>

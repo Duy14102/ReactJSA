@@ -275,7 +275,29 @@ app.get("/GetSearch", async (req, res) => {
     try {
         const regex = new RegExp(req.query.foodSearch, 'i')
         const getSearch = await getThisMenu.find({ foodname: regex })
-        res.send({ data: getSearch });
+        const page = parseInt(req.query.page)
+        const limit = parseInt(req.query.limit)
+
+        const start = (page - 1) * limit
+        const end = page * limit
+
+        const results = {}
+        results.total = getSearch.length
+        results.pageCount = Math.ceil(getSearch.length / limit)
+
+        if (end < getSearch.length) {
+            results.next = {
+                page: page + 1
+            }
+        }
+        if (start > 0) {
+            results.prev = {
+                page: page - 1
+            }
+        }
+
+        results.result = getSearch.slice(start, end)
+        res.send({ results });
     } catch (e) {
         console.log(e);
     }
@@ -285,7 +307,30 @@ app.get("/GetSearch", async (req, res) => {
 app.get("/GetCategoryMenu", async (req, res) => {
     try {
         const getIt = await getThisMenu.find({ foodcategory: req.query.category });
-        res.send({ data: getIt });
+
+        const page = parseInt(req.query.page)
+        const limit = parseInt(req.query.limit)
+
+        const start = (page - 1) * limit
+        const end = page * limit
+
+        const results = {}
+        results.total = getIt.length
+        results.pageCount = Math.ceil(getIt.length / limit)
+
+        if (end < getIt.length) {
+            results.next = {
+                page: page + 1
+            }
+        }
+        if (start > 0) {
+            results.prev = {
+                page: page - 1
+            }
+        }
+
+        results.result = getIt.slice(start, end)
+        res.send({ results });
     } catch (e) {
         console.log(e);
     }

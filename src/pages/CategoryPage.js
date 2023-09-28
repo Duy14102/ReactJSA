@@ -2,36 +2,52 @@ import '../css/Category.css';
 import Footer from '../component/Footer';
 import Header from '../component/Header';
 import { NavLink, useParams } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import NotFound from '../component/outOfBorder/NotFound';
-import Range from '../component/outOfBorder/Range'
 import axios from 'axios';
 import $ from 'jquery'
+import ReactPaginate from 'react-paginate';
+
 function CategoryPage() {
     let appler = useParams()
     const [Category, setCategory] = useState([]);
     const [Count, setCount] = useState([]);
+    const [pageCount, setPageCount] = useState(6);
+    const currentPage = useRef();
+    const limit = 9
     //Get Detail
     useEffect(() => {
-        const DetailMenu = () => {
-            const configuration = {
-                method: "get",
-                url: "http://localhost:3000/GetCategoryMenu",
-                params: {
-                    category: appler.id
-                }
-            };
-            axios(configuration)
-                .then((result) => {
-                    setCategory(result.data.data);
-                    setCount(result.data.data.length)
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
-        }
-        DetailMenu();
-    }, [appler.id])
+        currentPage.current = 1;
+        getPagination();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
+    /*      Pagination     */
+    function handlePageClick(e) {
+        currentPage.current = e.selected + 1
+        getPagination();
+    }
+
+    function getPagination() {
+        const configuration = {
+            method: "get",
+            url: "http://localhost:3000/GetCategoryMenu",
+            params: {
+                category: appler.id,
+                page: currentPage.current,
+                limit: limit
+            }
+        };
+        axios(configuration)
+            .then((result) => {
+                setCategory(result.data.results.result);
+                setCount(result.data.results.total)
+                setPageCount(result.data.results.pageCount)
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }
 
     switch (appler.fil) {
         case "nto":
@@ -71,6 +87,11 @@ function CategoryPage() {
         $("#select").val(appler.fil);
     })
 
+    const VND = new Intl.NumberFormat('vi-VN', {
+        style: 'currency',
+        currency: 'VND',
+    });
+
     if (!appler) {
         return NotFound();
     }
@@ -93,14 +114,10 @@ function CategoryPage() {
                 </div>
                 <div className='ruler pt-4'>
                     <div className='FirstRow'>
-                        <h5>Filter by price</h5>
-                        <hr style={{ width: 15 + "%", height: 3 + "px" }} />
-                        <Range min={0} max={1000} onChange={({ min, max }) => ({})} />
-                        <button className='btn btn-secondary mt-2'>Filter</button>
-                        <div className='mt-4 nOthing'>
+                        <div className='nOthing'>
                             <h5>Product Category</h5>
                             <hr style={{ width: 15 + "%", height: 3 + "px" }} />
-                            <NavLink reloadDocument to={`/CategorySite/Meat/${appler.fil}`} activeClassName='active' className="text-black"><p>Meat</p></NavLink>
+                            <NavLink reloadDocument to={`/CategorySite/Meat/${appler.fil}`} activeclassname='active' className="text-black"><p>Meat</p></NavLink>
                             <NavLink reloadDocument to={`/CategorySite/Drink/${appler.fil}`} className="text-black" ><p>Drink</p></NavLink>
                             <NavLink reloadDocument to={`/CategorySite/Vegetables/${appler.fil}`} className="text-black"><p>Vegetables</p></NavLink>
                         </div>
@@ -123,13 +140,32 @@ function CategoryPage() {
                                                 {i.foodname}
                                             </div>
                                             <div className="product-item-price">
-                                                {i.foodprice}
+                                                {VND.format(i.foodprice)}
                                             </div>
                                         </div>
                                     </NavLink>
                                 </div>
                             )
                         })}
+                        <ReactPaginate
+                            breakLabel="..."
+                            nextLabel="next >"
+                            onPageChange={handlePageClick}
+                            pageRangeDisplayed={5}
+                            pageCount={pageCount}
+                            previousLabel="< previous"
+                            renderOnZeroPageCount={null}
+                            marginPagesDisplayed={2}
+                            containerClassName="pagination justify-content-center"
+                            pageClassName="page-item"
+                            pageLinkClassName="page-link"
+                            previousClassName="page-item"
+                            previousLinkClassName="page-link"
+                            nextClassName="page-item"
+                            nextLinkClassName="page-link"
+                            activeClassName="active"
+                            forcePage={currentPage.current - 1}
+                        />
                     </div>
                 </div>
             </div>

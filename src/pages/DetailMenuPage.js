@@ -118,6 +118,11 @@ function DetailMenuPage() {
     if (!appler) {
         return NotFound();
     }
+
+    const VND = new Intl.NumberFormat('vi-VN', {
+        style: 'currency',
+        currency: 'VND',
+    });
     return (
         <>
             <Header />
@@ -136,7 +141,7 @@ function DetailMenuPage() {
                                         <div className="product-info">
                                             <div className="product-name">{i.foodname}</div>
                                             <div className="product-category">{i.foodcategory}</div>
-                                            <div className="product-price-discount"><span>{i.foodprice} đ</span></div>
+                                            <div className="product-price-discount"><span>{VND.format(i.foodprice)}</span></div>
                                         </div>
 
                                         <p>Quantity : {i.foodquantity}</p>
@@ -231,7 +236,7 @@ function DetailMenuPage() {
                                                                     <NavLink className="text-center" reloadDocument to={`/DetailMenuPage/${a._id}`}>
                                                                         <p style={{ margin: 0, color: "#FEA116" }}><b>{a.foodname}</b></p>
                                                                     </NavLink>
-                                                                    <h6 style={{ margin: 0 }} className='text-center'>{a.foodprice}</h6>
+                                                                    <h6 style={{ margin: 0 }} className='text-center'>{VND.format(a.foodprice)}</h6>
                                                                 </div>
                                                             </>
                                                         ) : null}
