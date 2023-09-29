@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import Header from "../component/Header";
 import Footer from "../component/Footer";
 import "../css/style.css";
+import LazyLoad from "react-lazyload";
+
 function AboutSite() {
     document.title = "EatCom - About";
     return (
@@ -22,9 +24,13 @@ function AboutSite() {
                 </div>
             </div>
 
-            <About />
+            <LazyLoad>
+                <About />
+            </LazyLoad>
 
-            <Team />
+            <LazyLoad>
+                <Team />
+            </LazyLoad>
 
             <Footer />
         </>

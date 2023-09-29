@@ -3,10 +3,13 @@ import { Link } from "react-router-dom";
 import Header from "../component/Header";
 import Footer from "../component/Footer";
 import "../css/style.css";
+import LazyLoad from "react-lazyload";
+
 function ServicesSite() {
     document.title = "EatCom - Services";
     return (
         <>
+
             <Header />
 
             <div className="py-5 bg-dark hero-header mb-5">
@@ -20,10 +23,13 @@ function ServicesSite() {
                     </nav>
                 </div>
             </div>
+            <LazyLoad>
+                <Services />
+            </LazyLoad>
 
-            <Services />
 
             <Footer />
+
         </>
     );
 }

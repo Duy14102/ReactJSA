@@ -7,6 +7,7 @@ import NotFound from '../component/outOfBorder/NotFound';
 import axios from 'axios';
 import $ from 'jquery'
 import ReactPaginate from 'react-paginate';
+import LazyLoad from 'react-lazyload';
 
 function CategoryPage() {
     let appler = useParams()
@@ -126,24 +127,26 @@ function CategoryPage() {
                         {Object.values(Category).map(i => {
                             return (
                                 <div className="product-box column p-0 col-4" key={i._id}>
-                                    <NavLink reloadDocument to={`/DetailMenuPage/${i._id}`} className="product-item">
-                                        <div className="product-item-image">
-                                            <img loading='lazy' src={i.foodimage} alt="" />
-                                            <div className="product-item-image-hover">
+                                    <LazyLoad>
+                                        <NavLink reloadDocument to={`/DetailMenuPage/${i.foodname}/${i.foodcategory}`} className="product-item">
+                                            <div className="product-item-image">
+                                                <img loading='lazy' src={i.foodimage} alt="" />
+                                                <div className="product-item-image-hover">
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div className="product-item-content">
-                                            <div className="product-item-category">
-                                                {i.foodcategory}
+                                            <div className="product-item-content">
+                                                <div className="product-item-category">
+                                                    {i.foodcategory}
+                                                </div>
+                                                <div className="product-item-title">
+                                                    {i.foodname}
+                                                </div>
+                                                <div className="product-item-price">
+                                                    {VND.format(i.foodprice)}
+                                                </div>
                                             </div>
-                                            <div className="product-item-title">
-                                                {i.foodname}
-                                            </div>
-                                            <div className="product-item-price">
-                                                {VND.format(i.foodprice)}
-                                            </div>
-                                        </div>
-                                    </NavLink>
+                                        </NavLink>
+                                    </LazyLoad>
                                 </div>
                             )
                         })}

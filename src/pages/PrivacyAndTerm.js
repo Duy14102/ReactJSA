@@ -3,10 +3,13 @@ import { Link } from "react-router-dom";
 import Header from "../component/Header";
 import Footer from "../component/Footer";
 import "../css/style.css";
+import LazyLoad from "react-lazyload";
+
 function PrivacyAndTerm() {
     document.title = "EatCom - Privacy and policy || Term and conditions";
     return (
         <>
+
             <Header />
 
             <div className="py-5 bg-dark hero-header mb-5">
@@ -20,11 +23,14 @@ function PrivacyAndTerm() {
                     </nav>
                 </div>
             </div>
-
-            <PAndT />
+            <LazyLoad>
+                <PAndT />
+            </LazyLoad>
 
             <Footer />
+
         </>
+
     );
 }
 export default PrivacyAndTerm;

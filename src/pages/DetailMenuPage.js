@@ -9,6 +9,7 @@ import axios from 'axios';
 import jQuery from "jquery";
 import "../lib/owlcarousel/assets/owl.carousel.min.css";
 import { Fragment } from 'react';
+import { useCallback } from 'react';
 window.jQuery = jQuery
 require('owl.carousel')
 function DetailMenuPage() {
@@ -86,34 +87,35 @@ function DetailMenuPage() {
     }
 
     //Get Bonus
-    useEffect(() => {
-        fetch("http://localhost:3000/GetThisMenu", {
+    const FetchMenu = useCallback(() => {
+        fetch(`http://localhost:3000/GetThisMenu?Name=${appler.cate}`, {
             method: "get",
         }).then((res) => res.json()).then((menu) => {
             setMenu(menu.data);
         })
-    }, [])
+    }, [appler.cate])
 
-    //Get Detail
-    useEffect(() => {
-        const DetailMenu = () => {
-            const configuration = {
-                method: "get",
-                url: "http://localhost:3000/GetDetailMenu",
-                params: {
-                    foodid: appler.id
-                }
-            };
-            axios(configuration)
-                .then((result) => {
-                    setDetail(result.data);
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
-        }
-        DetailMenu();
+    const FetchDetail = useCallback(() => {
+        const configuration = {
+            method: "get",
+            url: "http://localhost:3000/GetDetailMenu",
+            params: {
+                foodid: appler.id
+            }
+        };
+        axios(configuration)
+            .then((result) => {
+                setDetail(result.data);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     }, [appler.id])
+
+    useEffect(() => {
+        FetchMenu()
+        FetchDetail()
+    }, [FetchMenu, FetchDetail])
 
     if (!appler) {
         return NotFound();
@@ -229,7 +231,7 @@ function DetailMenuPage() {
                                                         {a.foodcategory === i.foodcategory && a._id !== i._id ? (
                                                             <>
                                                                 <div className="testimonial-item bg-transparent">
-                                                                    <NavLink reloadDocument to={`/DetailMenuPage/${a._id}`}>
+                                                                    <NavLink reloadDocument to={`/DetailMenuPage/${a.foodname}/${a.foodcategory}`}>
                                                                         <img loading="lazy" alt='' height={200} src={a.foodimage} />
                                                                     </NavLink>
                                                                     <p style={{ margin: 0 }} className='text-center'>{a.foodcategory}</p>

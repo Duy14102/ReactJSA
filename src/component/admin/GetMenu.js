@@ -15,7 +15,7 @@ function GetMenu() {
     const [updateimage, setFoodimage] = useState();
 
     useEffect(() => {
-        fetch("http://localhost:3000/GetThisMenu", {
+        fetch("http://localhost:3000/GetAdminMenu", {
             method: "get",
         }).then((res) => res.json()).then((menu) => {
             setMenu(menu.data);

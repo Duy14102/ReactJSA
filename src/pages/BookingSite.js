@@ -3,10 +3,13 @@ import { Link } from "react-router-dom";
 import Header from "../component/Header";
 import Footer from "../component/Footer";
 import "../css/style.css";
+import LazyLoad from "react-lazyload";
+
 function BookingSite() {
     document.title = "EatCom - Booking";
     return (
         <>
+
             <Header />
 
             <div className="py-5 bg-dark hero-header mb-5">
@@ -20,10 +23,12 @@ function BookingSite() {
                     </nav>
                 </div>
             </div>
-
-            <Reservation />
+            <LazyLoad>
+                <Reservation />
+            </LazyLoad>
 
             <Footer />
+
         </>
     );
 }

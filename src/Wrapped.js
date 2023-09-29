@@ -63,7 +63,7 @@ function Wrapped() {
                     <Route path="PAndT" element={<PrivacyAndTerm />} />
                     <Route path="LoginSite" element={<LoginSite />} />
                     <Route path="SignupSite" element={<SignupSite />} />
-                    <Route path="DetailMenuPage/:id" element={<DetailMenuPage />} />
+                    <Route path="DetailMenuPage/:id/:cate" element={<DetailMenuPage />} />
                     <Route path="*" element={<NotFound />} />
                     <Route path="AdminPanel" element={<PrivateRoute><AdminPanel /></PrivateRoute>} />
                 </Routes>

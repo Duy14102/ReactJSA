@@ -8,6 +8,7 @@ import Modal from 'react-modal';
 import Cookies from 'universal-cookie';
 import MainMenu from '../../component/admin/MainMenu';
 import MainUser from '../../component/admin/MainUser';
+import LazyLoad from 'react-lazyload';
 function AdminPanel() {
 
     $(function () {
@@ -60,7 +61,9 @@ function AdminPanel() {
     }
     return (
         <>
-            <Waves />
+            <LazyLoad>
+                <Waves />
+            </LazyLoad>
             <div className="site-wrapper">
                 <section className="tabs-wrapper">
                     <div className="tabs-container">

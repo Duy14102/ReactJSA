@@ -4,6 +4,7 @@ import Cookies from "universal-cookie";
 import Modal from 'react-modal'
 import { useState } from "react";
 import axios from "axios";
+import LazyLoad from "react-lazyload";
 function Header() {
     const cookies = new Cookies();
     const token = cookies.get("TOKEN");
@@ -63,7 +64,7 @@ function Header() {
         window.location.href = '/';
     }
     return (
-        <>
+        <LazyLoad>
             <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-4 px-lg-5 py-3 py-lg-0">
                 <a href="/" className="navbar-brand p-0">
                     <h1 className="text-primary m-0"><i className="fa fa-utensils me-3"></i>EatCom</h1>
@@ -74,7 +75,7 @@ function Header() {
                 </button>
                 <div className="collapse navbar-collapse" id="navbarCollapse">
                     <div className="navbar-nav ms-auto py-0 pe-4">
-                        <button onClick={setLogout} className="nav-item nav-link" to="/"><i className="fa-solid fa-magnifying-glass"></i></button>
+                        <button onClick={setLogout} className="nav-item nav-link nav-link-button" to="/"><i className="fa-solid fa-magnifying-glass"></i></button>
                         <NavLink reloadDocument to="/" activeclassname="active" className="nav-item nav-link">Home</NavLink>
                         <div id="headups" className="nav-item dropdown">
                             <a href="/#" className="nav-link dropdown-toggle" data-bs-toggle="dropdown">Menu</a>
@@ -131,7 +132,7 @@ function Header() {
                     <button className="SearchSubmit" onClick={() => SearchType()} type="submit"><i className="fa-solid fa-magnifying-glass"></i></button>
                 </div>
             </Modal>
-        </>
+        </LazyLoad>
     );
 }
 export default Header;

@@ -253,17 +253,26 @@ app.post("/UploadMenu", (request, response) => {
 const getThisMenu = mongoose.model("Menu");
 app.get("/GetThisMenu", async (req, res) => {
     try {
-        const getIt = await getThisMenu.find({});
+        const getIt = await getThisMenu.find({ foodcategory: req.query.Name });
         res.send({ data: getIt });
     } catch (e) {
         console.log(e);
     }
 })
 
+//Get Menu 4 Admin
+app.get("/GetAdminMenu", async (req, res) => {
+    try {
+        const getIt = await getThisMenu.find({});
+        res.send({ data: getIt });
+    } catch (e) {
+        console.log(e);
+    }
+})
 //Get Detail Menu
 app.get("/GetDetailMenu", async (req, res) => {
     try {
-        const getMenuDetail = await getThisMenu.findOne({ _id: req.query.foodid })
+        const getMenuDetail = await getThisMenu.findOne({ foodname: req.query.foodid })
         res.send({ data: getMenuDetail });
     } catch (e) {
         console.log(e);
