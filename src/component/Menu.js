@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import ItemMenuComponent from './outOfBorder/ItemMenuComponent';
+
 function Menu() {
     $(function () {
         // Variables
