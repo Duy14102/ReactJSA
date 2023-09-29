@@ -11,6 +11,7 @@ If warning onSetupMiddleware :
 * Go to vtca-app/node_modules/react-scripts/config/webpackDevServer.config.js
 
 * Replace 
+    ```
     onBeforeSetupMiddleware(devServer) {
       devServer.app.use(evalSourceMapMiddleware(devServer));
 
@@ -22,8 +23,10 @@ If warning onSetupMiddleware :
       devServer.app.use(redirectServedPath(paths.publicUrlOrPath));
       devServer.app.use(noopServiceWorkerMiddleware(paths.publicUrlOrPath));
     },
+    ```
 
 * To
+    ```
     setupMiddlewares: (middlewares, devServer) => {
       if(!devServer){
         throw new Error("webpack-dev-server is not defined")
@@ -40,3 +43,4 @@ If warning onSetupMiddleware :
       )
       return middlewares
     }
+    ```
