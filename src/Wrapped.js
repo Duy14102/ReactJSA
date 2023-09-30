@@ -5,7 +5,6 @@ import LoginSite from "./pages/admin/LoginSite";
 import SignupSite from "./pages/admin/Register";
 import App from "./pages/App";
 import AboutSite from "./pages/AboutSite";
-import MainServices from "./pages/ServicesSite";
 import BookingSite from "./pages/BookingSite";
 import ContactSite from "./pages/ContactSite";
 import TestiSite from "./pages/TestiSite";
@@ -23,6 +22,7 @@ import jwtDecode from "jwt-decode";
 import DetailMenuPage from "./pages/DetailMenuPage";
 import CategoryPage from "./pages/CategoryPage";
 import SearchSite from "./pages/SearchSite";
+import Cart from "./pages/Cart";
 
 const cookies = new Cookies();
 const token = cookies.get("TOKEN");
@@ -53,7 +53,6 @@ function Wrapped() {
                 <Routes>
                     <Route path="/" element={<App />} />
                     <Route path="AboutSite" element={<AboutSite />} />
-                    <Route path="ServicesSite" element={<MainServices />} />
                     <Route path="CategorySite/:id/:fil" element={<CategoryPage />} />
                     <Route path="SearchSite/:id/:fil" element={<SearchSite />} />
                     <Route path="BookingSite" element={<BookingSite />} />
@@ -63,6 +62,7 @@ function Wrapped() {
                     <Route path="PAndT" element={<PrivacyAndTerm />} />
                     <Route path="LoginSite" element={<LoginSite />} />
                     <Route path="SignupSite" element={<SignupSite />} />
+                    <Route path="Cart" element={<Cart />} />
                     <Route path="DetailMenuPage/:id/:cate" element={<DetailMenuPage />} />
                     <Route path="*" element={<NotFound />} />
                     <Route path="AdminPanel" element={<PrivateRoute><AdminPanel /></PrivateRoute>} />

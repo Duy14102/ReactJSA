@@ -117,6 +117,34 @@ function DetailMenuPage() {
         FetchDetail()
     }, [FetchMenu, FetchDetail])
 
+    function addToCart(name, quantity) {
+        var stored = JSON.parse(localStorage.getItem("cart"));
+        if (!stored) {
+            var students = [];
+            var student1 = { name: name, quantity: quantity };
+            students.push(student1);
+            localStorage.setItem("cart", JSON.stringify(students));
+            window.location.reload()
+        } else {
+            var sameItem = JSON.parse(localStorage.getItem("cart")) || [];
+            for (var i = 0; i < sameItem.length; i++) {
+                if (name === sameItem[i].name) {
+                    sameItem[i].quantity += quantity;
+                    localStorage.setItem('cart', JSON.stringify(sameItem))
+                    window.location.reload()
+                } else if(i === sameItem.length - 1) {
+                    var stored2 = JSON.parse(localStorage.getItem("cart"));
+                    var student2 = { name: name, quantity: quantity };
+                    stored2.push(student2);
+                    localStorage.setItem("cart", JSON.stringify(stored2));
+                    window.location.reload()
+                }
+            }
+        }
+    }
+
+    // localStorage.clear()
+
     if (!appler) {
         return NotFound();
     }
@@ -158,7 +186,7 @@ function DetailMenuPage() {
                                                 <button onClick={handleIncrement} className="btn btn-secondary">+</button>
                                             </div>
                                         </div>
-                                        <a href="# " className="round-black-btn">Add to Cart</a>
+                                        <button onClick={() => addToCart(i.foodname, quantity)} className="round-black-btn">Add to Cart</button>
                                     </div>
                                 </div>
                             </div>

@@ -244,6 +244,24 @@
     background: var(--primary);
 }
 
+.badge {
+    padding-left: 9px;
+    padding-right: 9px;
+    -webkit-border-radius: 9px;
+    -moz-border-radius: 9px;
+    border-radius: 99px;
+}
+
+#lblCartCount {
+    border-radius: 99px;
+    font-size: 12px;
+    background: var(--primary);
+    color: #fff;
+    padding: 0 5px;
+    vertical-align: top;
+    margin-left: -2px;
+}
+
 .section-title.text-start::before,
 .section-title.text-end::after {
     display: none;

@@ -260,6 +260,16 @@ app.get("/GetThisMenu", async (req, res) => {
     }
 })
 
+//Get Cart Item
+app.get("/GetCartItem", async (req, res) => {
+    try {
+        const getIt = await getThisMenu.find({ foodname: req.query.name });
+        res.send({ data: getIt, quantity: req.query.quantity});
+    } catch (e) {
+        console.log(e);
+    }
+})
+
 //Get Menu 4 Admin
 app.get("/GetAdminMenu", async (req, res) => {
     try {

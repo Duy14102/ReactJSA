@@ -5,6 +5,7 @@ import Header from "../component/Header";
 import Footer from "../component/Footer";
 import "../css/style.css";
 import LazyLoad from "react-lazyload";
+import Services from "../component/Services";
 
 function AboutSite() {
     document.title = "EatCom - About";
@@ -23,6 +24,10 @@ function AboutSite() {
                     </nav>
                 </div>
             </div>
+
+            <LazyLoad>
+                <Services />
+            </LazyLoad>
 
             <LazyLoad>
                 <About />

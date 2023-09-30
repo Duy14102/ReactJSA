@@ -140,7 +140,7 @@ function GetMenu() {
                                 <td>{VND.format(i.foodprice)}</td>
                                 <td>{i.foodquantity}</td>
                                 <td>{i.foodcategory}</td>
-                                <td onClick={setModalOpenDetail}><button onClick={() => DetailMenu(i._id)} className='btn btn-success'>Detail</button></td>
+                                <td onClick={setModalOpenDetail}><button onClick={() => DetailMenu(i.foodname)} className='btn btn-success'>Detail</button></td>
                             </tr>
                         </tbody>
                     )

@@ -86,7 +86,6 @@ function Header() {
                             </div>
                         </div>
                         <NavLink reloadDocument to="/AboutSite" className="nav-item nav-link">About</NavLink>
-                        <NavLink reloadDocument to="/ServicesSite" className="nav-item nav-link">Services</NavLink>
                         <NavLink reloadDocument to="/ContactSite" className="nav-item nav-link">Contact</NavLink>
                         <div id="headups" className="nav-item dropdown">
                             <a href="/#" className="nav-link dropdown-toggle" data-bs-toggle="dropdown">More</a>
@@ -96,6 +95,10 @@ function Header() {
                                 <NavLink reloadDocument to="/TestiSite" className="dropdown-item">Testimonial</NavLink>
                             </div>
                         </div>
+                        <NavLink reloadDocument to="/Cart" className="nav-item nav-link">
+                            <i className="fa-solid fa-cart-shopping"></i>
+                            <span className='badge' id='lblCartCount'> 5 </span>
+                        </NavLink>
                     </div>
                     {token ? (
                         <button onClick={logoutThis} className="btn btn-primary py-2 px-4">Logout</button>
