@@ -10,7 +10,6 @@ const ItemMenuComponent = ({ Name }) => {
         fetch(`http://localhost:3000/GetThisMenu?Name=${Name}`, {
             method: "get",
         }).then((res) => res.json()).then((menu) => {
-            console.log(menu.data)
             setMenu(menu.data);
         })
     }, [Name])

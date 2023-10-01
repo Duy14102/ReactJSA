@@ -23,6 +23,7 @@ import DetailMenuPage from "./pages/DetailMenuPage";
 import CategoryPage from "./pages/CategoryPage";
 import SearchSite from "./pages/SearchSite";
 import Cart from "./pages/Cart";
+import Checkout from "./pages/Checkout";
 
 const cookies = new Cookies();
 const token = cookies.get("TOKEN");
@@ -63,6 +64,7 @@ function Wrapped() {
                     <Route path="LoginSite" element={<LoginSite />} />
                     <Route path="SignupSite" element={<SignupSite />} />
                     <Route path="Cart" element={<Cart />} />
+                    <Route path="Checkout" element={<Checkout />} />
                     <Route path="DetailMenuPage/:id/:cate" element={<DetailMenuPage />} />
                     <Route path="*" element={<NotFound />} />
                     <Route path="AdminPanel" element={<PrivateRoute><AdminPanel /></PrivateRoute>} />

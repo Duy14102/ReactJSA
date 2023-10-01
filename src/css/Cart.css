@@ -91,6 +91,7 @@
 }
 
 .btnCheckout {
+    display: block;
     border: 1px solid #FEA116;
     color: white;
     background: #FEA116;
@@ -101,10 +102,52 @@
 }
 
 .btnCheckout:hover {
+    color: white;
     background: #d88914;
 }
 
 .Xtd {
-    width: 5%;
+    width: 35px;
     text-align: center;
+}
+
+.Xtd .insideXtd:hover {
+    background: lightgray;
+    border-radius: 50%;
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.ReturnH {
+    background: #FEA116;
+    color: #fff;
+    padding: 0.9% 1.5% 0.9% 1.5%;
+    width: 100%;
+    text-align: center;
+    transition: all 0.2s;
+}
+
+.ReturnH:hover {
+    color: rgba(0, 0, 0, 0.7);
+}
+
+.businessWay {
+    color: gray;
+    font-size: xx-large;
+}
+
+.businessWay a {
+    color: gray;
+    transition: all 0.2s;
+}
+
+.businessWay a:hover {
+    color: #FEA116;
+}
+
+.businessWay .active {
+    pointer-events: none;
+    color: rgb(94, 94, 94);
+    font-weight: bold;
 }

@@ -69,22 +69,22 @@ function AdminPanel() {
                     <div className="tabs-container">
                         <div className="tabs-block">
                             <div id="tabs-section" className="tabs">
-                                <ul className="tab-head">
+                                <ul className="tab-head text-center">
                                     <li>
-                                        <a href="#tab-1" className="tab-link active"> <span className="material-icons tab-icon">home</span> <span className="tab-label">Home</span></a>
+                                        <a href="#tab-1" className="tab-link active"> <i class="fa-solid fa-house w-100"></i><span className="tab-label">Home</span></a>
                                     </li>
                                     <li>
-                                        <a href="#tab-2" className="tab-link"> <span className="material-icons tab-icon">shopping_cart</span> <span className="tab-label">Order</span></a>
+                                        <a href="#tab-2" className="tab-link"><i class="fas fa-shopping-cart w-100"></i><span className="tab-label">Order</span></a>
                                     </li>
                                     <li>
-                                        <a href="#tab-3" className="tab-link"> <span className="material-icons tab-icon">restaurant</span> <span className="tab-label">Menu</span></a>
+                                        <a href="#tab-3" className="tab-link"><i class="fa-solid fa-utensils w-100"></i><span className="tab-label">Menu</span></a>
                                     </li>
                                     <li>
-                                        <a href="#tab-4" className="tab-link"> <span className="material-icons tab-icon">person</span> <span className="tab-label">Account</span></a>
+                                        <a href="#tab-4" className="tab-link"><i class="fa-solid fa-user w-100"></i><span className="tab-label">Account</span></a>
                                     </li>
                                     <li>
                                         <a href='# ' onClick={setLogout}>
-                                            <span className="material-icons tab-icon">logout</span><span className="tab-label">Logout</span></a>
+                                            <i class="fa-solid fa-right-from-bracket w-100"></i><span className="tab-label">Logout</span></a>
                                     </li>
                                 </ul>
                                 <Modal

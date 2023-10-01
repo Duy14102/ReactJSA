@@ -6,6 +6,13 @@ import { useState } from "react";
 import axios from "axios";
 import LazyLoad from "react-lazyload";
 function Header() {
+    const val = JSON.parse(localStorage.getItem('cart'))
+    var countVal = 0
+    if (val) {
+        countVal = val.length
+    } else {
+        countVal = 0
+    }
     const cookies = new Cookies();
     const token = cookies.get("TOKEN");
     const [logout, setLogout] = useState(false);
@@ -50,7 +57,7 @@ function Header() {
             }
         };
         axios(configuration)
-            .then((res) => {
+            .then(() => {
                 window.location.href = `/SearchSite/${search}/nto`
             })
             .catch((error) => {
@@ -97,7 +104,7 @@ function Header() {
                         </div>
                         <NavLink reloadDocument to="/Cart" className="nav-item nav-link">
                             <i className="fa-solid fa-cart-shopping"></i>
-                            <span className='badge' id='lblCartCount'> 5 </span>
+                            <span className='badge' id='lblCartCount'> {countVal} </span>
                         </NavLink>
                     </div>
                     {token ? (
