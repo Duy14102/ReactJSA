@@ -134,8 +134,13 @@
 }
 
 .inputSearch {
+    border: none;
     padding: 2%;
     width: 100%;
+}
+
+.inputSearch:focus-visible {
+    outline: none;
 }
 
 .navbar-dark .navbar-brand img {

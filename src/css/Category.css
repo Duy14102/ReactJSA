@@ -62,11 +62,22 @@
 }
 
 .ThirdRow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-basis: 200;
     width: 25%;
     margin: 0;
 }
 
+.allover3 {
+    margin: 0;
+    width: 100%;
+    flex-basis: 200;
+}
+
 .FilterDrop {
+    flex-basis: 200;
     border: 1px solid #ddd;
     background: #fff;
     box-shadow: 0 10px 40px -3px rgba(0, 0, 0, 0.1);
@@ -83,6 +94,11 @@
     width: 100%;
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.encot {
+    flex-basis: 200;
 }
 
 .FirstRow .nOthing .active {

@@ -8,6 +8,7 @@ import Header from '../../component/Header';
 import Footer from '../../component/Footer';
 import Cookies from 'universal-cookie';
 import NotFound from '../../component/outOfBorder/NotFound';
+
 function LoginSite() {
     document.title = "EatCom - Signup";
     $(function () {
@@ -98,6 +99,7 @@ function LoginSite() {
     const [fullname, setFullname] = useState("");
     const [password, setPassword] = useState("");
     const [confirm, setConfirm] = useState("");
+    const [phone, setPhone] = useState("");
     const [error, displayError] = useState(false);
 
     const handleSubmit = (e) => {
@@ -110,31 +112,31 @@ function LoginSite() {
                 email,
                 password,
                 fullname,
+                phone,
             },
         };
         if (password != confirm) {
             displayError(true);
-        } else {
-            axios(configuration)
-                .then((result) => {
-                    Swal.fire(
-                        'Register Successfully!',
-                        'Welcome ' + result.data.fullname,
-                        'success'
-                    ).then(function () {
-                        location.reload();
-                    })
-                })
-                .catch(() => {
-                    Swal.fire(
-                        'Register Fail!',
-                        '',
-                        'error'
-                    ).then(function () {
-                        location.reload();
-                    })
-                });
         }
+        axios(configuration)
+            .then((result) => {
+                Swal.fire(
+                    'Register Successfully!',
+                    'Welcome ' + result.data.fullname,
+                    'success'
+                ).then(function () {
+                    location.reload();
+                })
+            })
+            .catch(() => {
+                Swal.fire(
+                    'Register Fail!',
+                    ``,
+                    'error'
+                ).then(function () {
+                    location.reload();
+                })
+            });
     }
     const cookies = new Cookies();
     const token = cookies.get("TOKEN");
@@ -158,11 +160,6 @@ function LoginSite() {
                                 <span className="focus-input100" data-placeholder="Email"></span>
                             </div>
 
-                            <div className="wrap-input100 validate-input" data-validate="Enter Fullname">
-                                <input className="input100" type="text" name="fullname" value={fullname} onChange={(e) => setFullname(e.target.value)} />
-                                <span className="focus-input100" data-placeholder="Fullname"></span>
-                            </div>
-
                             <div className="wrap-input100 validate-input" data-validate="Enter password">
                                 <span className="btn-show-pass">
                                     <i className="fa fa-eye"></i>
@@ -183,6 +180,17 @@ function LoginSite() {
                             ) : (
                                 <input type='hidden' />
                             )}
+
+                            <div className="wrap-input100 validate-input" data-validate="Enter Fullname">
+                                <input className="input100" type="text" name="fullname" value={fullname} onChange={(e) => setFullname(e.target.value)} />
+                                <span className="focus-input100" data-placeholder="Fullname"></span>
+                            </div>
+
+                            <div className="wrap-input100 validate-input" data-validate="Enter Phone Number">
+                                <input className="input100" type="number" name="phone" value={phone} onChange={(e) => setPhone(e.target.value)} />
+                                <span className="focus-input100" data-placeholder="Enter Phone Number"></span>
+                            </div>
+
                             <div className="container-login100-form-btn">
                                 <div className="wrap-login100-form-btn">
                                     <div className="login100-form-bgbtn"></div>

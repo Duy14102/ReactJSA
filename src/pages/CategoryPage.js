@@ -101,9 +101,9 @@ function CategoryPage() {
             <Header />
             <div className='container'>
                 <div className='ruler pt-3'>
-                    <p style={{ margin: 0 }}><NavLink className="textNavlink" to="/">Home</NavLink> / <NavLink reloadDocument className="textNavlink" to={`/CategorySite/${appler.id}/nto`}><b>{appler.id}</b></NavLink></p>
-                    <div className='d-flex justify-content-between align-items-center ThirdRow'>
-                        <p style={{ margin: 0, width: 100 + "%" }}>Display all {Count} results</p>
+                    <p className='encot' style={{ margin: 0 }}><NavLink className="textNavlink" to="/">Home</NavLink> / <NavLink reloadDocument className="textNavlink" to={`/CategorySite/${appler.id}/nto`}><b>{appler.id}</b></NavLink></p>
+                    <div className='ThirdRow'>
+                        <p className='allover3'>Display all {Count} results</p>
                         <select id='select' onChange={(e) => Filter(e.target.value)} className='FilterDrop'>
                             <option value={"nto"}>New to old</option>
                             <option value={"otn"}>Old to new</option>

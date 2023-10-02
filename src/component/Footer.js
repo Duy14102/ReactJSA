@@ -7,9 +7,8 @@ function Footer() {
                 <div className="row g-5">
                     <div className="col-lg-3 col-md-6">
                         <h4 className="section-title ff-secondary text-start text-primary fw-normal mb-4">Company</h4>
-                        <NavLink reloadDocument to="/AboutSite" className="btn btn-link" >About Us</NavLink>
+                        <NavLink reloadDocument to="/TrackOrder" className="btn btn-link" >Tracking Order</NavLink>
                         <NavLink reloadDocument to="/ContactSite" className="btn btn-link" >Contact Us</NavLink>
-                        <NavLink reloadDocument to="/BookingSite" className="btn btn-link" >Reservation</NavLink>
                         <NavLink reloadDocument to="/PAndT" className="btn btn-link" >Privacy Policy</NavLink>
                         <NavLink reloadDocument to="/PAndT" className="btn btn-link" >Terms & Condition</NavLink>
                     </div>
@@ -50,7 +49,6 @@ function Footer() {
                         </div>
                         <div className="col-md-6 text-center text-md-end">
                             <div className="footer-menu">
-                                <NavLink to="/" >Home</NavLink>
                                 <NavLink to="/" >Cookies</NavLink>
                                 <NavLink to="/" >Help</NavLink>
                                 <NavLink to="/" >FQAs</NavLink>

@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useState } from 'react';
 import '../../css/main.css';
 import '../../css/util.css';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import Header from '../../component/Header';
 import Footer from '../../component/Footer';
 import Swal from 'sweetalert2';
@@ -179,7 +179,7 @@ function LoginSite() {
                                 <span className="txt1">
                                     Don't have an account?
                                 </span>
-                                <Link to="/SignupSite" className="txt2" >Signup</Link>
+                                <NavLink reloadDocument to="/SignupSite" className="txt2" >Signup</NavLink>
                             </div>
                         </form>
                     </div>

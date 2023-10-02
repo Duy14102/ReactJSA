@@ -237,11 +237,6 @@ footer .credits {
 }
 
 @media (min-width: 768px) {
-
-    body {
-        font-size: 1.125rem;
-    }
-
     .tabs-container {
         padding: 4rem 4rem;
     }
@@ -261,4 +256,29 @@ footer .credits {
 .closeModal:hover {
     background: #a7a7a7;
     border-radius: 50vh;
+}
+
+/*      Tracking     */
+.outsider {
+    display: flex;
+    justify-content: space-between;
+    width: 40%;
+    border: 1px solid gray;
+    background: #fff;
+    border-radius: 99px;
+    padding: 0.9%;
+}
+
+.outsider input {
+    border: none;
+    width: 100%;
+}
+
+.outsider input:focus {
+    outline: none;
+}
+
+.overOutsider {
+    display: flex;
+    justify-content: center;
 }

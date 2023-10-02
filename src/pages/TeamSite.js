@@ -1,5 +1,5 @@
 import Team from "../component/Team";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import Header from "../component/Header";
 import Footer from "../component/Footer";
 import "../css/style.css";
@@ -17,7 +17,7 @@ function TeamSite() {
                     <h1 className="display-3 text-white mb-3 animated slideInDown">Team</h1>
                     <nav aria-label="breadcrumb">
                         <ol className="breadcrumb align-items-center justify-content-center text-uppercase">
-                            <li className="breadcrumb-item"><Link to="/" className="nav-item nav-link active">Home</Link></li>
+                            <li className="breadcrumb-item"><NavLink reloadDocument to="/" className="nav-item nav-link active">Home</NavLink></li>
                             <li className="breadcrumb-item text-white active" aria-current="page">Team</li>
                         </ol>
                     </nav>

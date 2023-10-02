@@ -25,6 +25,7 @@ app.listen(3000);
 // Register
 const bcrypt = require("bcrypt");
 const User = require("./model/Users");
+const getUserD = mongoose.model("Users");
 
 app.post("/Register", (request, response) => {
     // hash the password
@@ -36,6 +37,7 @@ app.post("/Register", (request, response) => {
                 email: request.body.email,
                 password: hashedPassword,
                 fullname: request.body.fullname,
+                phonenumber: request.body.phone,
                 role: 1,
             });
 
@@ -170,7 +172,6 @@ app.post("/Login", (request, response) => {
 });
 
 //Get User Data
-const getUserD = mongoose.model("Users");
 app.get("/GetAllUser", async (req, res) => {
     const sort = { role: -1 }
     try {
@@ -180,7 +181,6 @@ app.get("/GetAllUser", async (req, res) => {
         console.log(e);
     }
 })
-
 
 //Get Detail User
 app.get("/GetDetailUser", async (req, res) => {
@@ -249,6 +249,48 @@ app.post("/UploadMenu", (request, response) => {
         });
 });
 
+// Add Order
+const Order = require('./model/Order');
+app.post("/UploadOrder", (req, res) => {
+    const date = new Date().toLocaleDateString()
+    const time = new Date().toLocaleTimeString()
+    const getdatetime = date + " - " + time
+    const order = new Order({
+        datetime: getdatetime,
+        fullname: req.body.fullname,
+        phonenumber: req.body.phonenumber,
+        address: req.body.address,
+        paymentmethod: req.body.paymentmethod,
+        totalprice: req.body.totalprice,
+        status: 1,
+        orderitems: req.body.orderitems
+    })
+
+    order.save()
+        .then((result) => {
+            res.status(201).send({
+                message: result._id
+            });
+        })
+        .catch((error) => {
+            res.status(500).send({
+                message: "Error creating user",
+                error,
+            });
+        })
+})
+
+//Get Order
+const getThisOrder = mongoose.model("Orders");
+app.get("/GetThisOrder", async (req, res) => {
+    try {
+        const getIt = await getThisOrder.find({ _id: req.query.id });
+        res.send({ data: getIt });
+    } catch (e) {
+        console.log(e);
+    }
+})
+
 //Get Menu
 const getThisMenu = mongoose.model("Menu");
 app.get("/GetThisMenu", async (req, res) => {
@@ -264,7 +306,7 @@ app.get("/GetThisMenu", async (req, res) => {
 app.get("/GetCartItem", async (req, res) => {
     try {
         const getIt = await getThisMenu.find({ foodname: req.query.name });
-        res.send({ data: getIt, quantity: req.query.quantity});
+        res.send({ data: getIt, quantity: req.query.quantity });
     } catch (e) {
         console.log(e);
     }

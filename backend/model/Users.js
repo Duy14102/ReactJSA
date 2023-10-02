@@ -10,13 +10,21 @@ const UserSchema = new mongoose.Schema({
     password: {
         type: String,
         required: [true, "Please provide a password!"],
-        unique: false,
     },
 
     fullname: {
         type: String,
         required: [true, "Please provide a name!"],
-        unique: [true, "Name Exist"],
+    },
+
+    phonenumber: {
+        type: Number,
+        required: [true, "Please provide a name!"],
+        unique: [true, "Phone Number Exist"],
+    },
+
+    address: {
+        type: Array
     },
 
     role: {
