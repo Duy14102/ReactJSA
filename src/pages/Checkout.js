@@ -3,20 +3,77 @@ import Footer from "../component/Footer";
 import Header from "../component/Header";
 import NotFound from "../component/outOfBorder/NotFound";
 import '../css/Category.css'
-import { useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import axios from "axios";
+import Cookies from "universal-cookie";
+import jwtDecode from "jwt-decode";
 
 function Checkout() {
     var paymentmethod = 0
     const orderitems = []
+    const havePhone = []
     const ahoe = localStorage.getItem("complete")
     const [Card, setCard] = useState(false)
+    const [SaveAddress, setSaveAddress] = useState(false)
+    const [AccountAddress, setAccountAddress] = useState(false)
     const [Firstname, setFirstname] = useState("")
     const [Lastname, setLastname] = useState("")
     const [phonenumber, setPhonenumber] = useState("")
     const [address, setAddress] = useState("")
-    var fullname = Firstname + " " + Lastname
+    const [FullnameToken, setFullnameToken] = useState("")
+    const [LoadAddress, setLoadAddress] = useState([])
+    var fullname = ""
     let location = useLocation()
+    const cookies = new Cookies();
+    const token = cookies.get("TOKEN");
+    havePhone.push(address)
+
+    useEffect(() => {
+        const getDetailUser = () => {
+            const decoded = jwtDecode(token);
+            const configuration = {
+                method: "get",
+                url: "http://localhost:3000/GetDetailUser",
+                params: {
+                    userid: decoded.userId
+                }
+            };
+            axios(configuration)
+                .then((result) => {
+                    setLoadAddress(result.data)
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        }
+
+        if (AccountAddress) {
+            getDetailUser()
+        }
+        if (token) {
+            getDetailUser()
+        }
+    }, [AccountAddress, token])
+
+    useEffect(() => {
+        let pro = ""
+        let pre = ""
+        Object.values(LoadAddress).map((k) => {
+            pro = k.fullname
+            pre = k.phonenumber
+            return (
+                null
+            )
+        })
+        setFullnameToken(pro)
+        setPhonenumber(pre)
+    }, [LoadAddress])
+
+    if (token) {
+        fullname = FullnameToken
+    } else {
+        fullname = Firstname + " " + Lastname
+    }
 
     if (!location.state) {
         return NotFound()
@@ -77,6 +134,23 @@ function Checkout() {
         }
         axios(configuration)
             .then((result) => {
+                if (SaveAddress) {
+                    const decode = jwtDecode(token);
+                    const configuration = {
+                        method: "post",
+                        url: "http://localhost:3000/AddAddressUser",
+                        data: {
+                            id: decode.userId,
+                            address: havePhone
+                        }
+                    }
+                    axios(configuration)
+                        .then(() => {
+                            console.log("success");
+                        }).catch((e) => {
+                            console.log(e);
+                        })
+                }
                 const data = result.data.message
                 window.history.replaceState({}, document.title)
                 localStorage.clear()
@@ -87,6 +161,23 @@ function Checkout() {
                 console.log(e);
             });
     }
+
+    const handleCheckbox = (e) => {
+        if (e.target.checked) {
+            setAccountAddress(true)
+        } else if (!e.target.checked) {
+            setAccountAddress(false)
+        }
+    }
+
+    const handleCheckbox2 = (e) => {
+        if (e.target.checked) {
+            setSaveAddress(true)
+        } else if (!e.target.checked) {
+            setSaveAddress(false)
+        }
+    }
+
     return (
         <>
             <Header />
@@ -125,48 +216,92 @@ function Checkout() {
                     <div className="col-md-8 order-md-1">
                         <h4 className="mb-3">Address</h4>
                         <form onSubmit={(e) => handleSubmit(e)} className="needs-validation">
-                            <div className="row">
-                                <div className="col-md-6 mb-3 inputC">
-                                    <label htmlFor="firstName">First name</label>
-                                    <input onInput={(e) => setFirstname(e.target.value)} type="text" className="form-control" id="firstName" placeholder="John" required />
+                            {token ? null : (
+                                <>
+                                    <div className="row">
+                                        <div className="col-md-6 mb-3 inputC">
+                                            <label htmlFor="firstName">First name</label>
+                                            <input onInput={(e) => setFirstname(e.target.value)} type="text" className="form-control" id="firstName" placeholder="John" required />
+                                            <div className="invalid-feedback">
+                                                Valid first name is required.
+                                            </div>
+                                        </div>
+                                        <div className="col-md-6 mb-3 inputC">
+                                            <label htmlFor="lastName">Last name</label>
+                                            <input onInput={(e) => setLastname(e.target.value)} type="text" className="form-control" id="lastName" placeholder="Doe" required />
+                                            <div className="invalid-feedback">
+                                                Valid last name is required.
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="mb-3 inputC">
+                                        <label htmlFor="email">Phone Number</label>
+                                        <input type="number" name="phonenumber" value={phonenumber} onChange={(e) => setPhonenumber(e.target.value)} className="form-control" id="email" placeholder="0123456789" />
+                                        <div className="invalid-feedback">
+                                            Please enter a valid email address for shipping updates.
+                                        </div>
+                                    </div>
+                                </>
+                            )}
+
+                            {AccountAddress ? (
+                                <div className="mb-3">
+                                    <label htmlFor="address">Address</label><br />
+                                    <select name="address" onChange={(e) => setAddress(e.target.value)} className="selectA" id="address" required>
+                                        <option selected disabled hidden>Select your address</option>
+                                        {Object.values(LoadAddress).map((i) => {
+                                            return (
+                                                <Fragment key={i._id}>
+                                                    {i.address.map((a) => {
+                                                        return (
+                                                            <Fragment key={a}>
+                                                                <option value={a}>{a}</option>
+                                                            </Fragment>
+                                                        )
+                                                    })}
+                                                </Fragment>
+                                            )
+                                        })}
+                                    </select>
+                                </div>
+                            ) : (
+                                <div className="mb-3 inputC">
+                                    <label htmlFor="address">Address</label>
+                                    <input type="text" name="address" value={address} onChange={(e) => setAddress(e.target.value)} className="form-control" id="address" placeholder="123 - Ha Noi - Vietnam" required />
                                     <div className="invalid-feedback">
-                                        Valid first name is required.
+                                        Please enter your shipping address.
                                     </div>
                                 </div>
-                                <div className="col-md-6 mb-3 inputC">
-                                    <label htmlFor="lastName">Last name</label>
-                                    <input onInput={(e) => setLastname(e.target.value)} type="text" className="form-control" id="lastName" placeholder="Doe" required />
-                                    <div className="invalid-feedback">
-                                        Valid last name is required.
-                                    </div>
-                                </div>
-                            </div>
+                            )}
 
-                            <div className="mb-3 inputC">
-                                <label htmlFor="email">Phone Number</label>
-                                <input type="number" name="phonenumber" value={phonenumber} onChange={(e) => setPhonenumber(e.target.value)} className="form-control" id="email" placeholder="0123456789" />
-                                <div className="invalid-feedback">
-                                    Please enter a valid email address for shipping updates.
-                                </div>
-                            </div>
-
-                            <div className="mb-3 inputC">
-                                <label htmlFor="address">Address</label>
-                                <input type="text" name="address" value={address} onChange={(e) => setAddress(e.target.value)} className="form-control" id="address" placeholder="123 - Ha Noi - Vietnam" required />
-                                <div className="invalid-feedback">
-                                    Please enter your shipping address.
-                                </div>
-                            </div>
-
-                            <div className="custom-control custom-checkbox">
-                                <input type="checkbox" className="custom-control-input" id="same-address" />
-                                <label className="custom-control-label" htmlFor="same-address"> Use the account address</label>
-                            </div>
-                            <div className="custom-control custom-checkbox">
-                                <input type="checkbox" className="custom-control-input" id="save-address" />
-                                <label className="custom-control-label" htmlFor="save-address"> Save this address</label>
-                            </div>
-                            <hr className="mb-4" />
+                            {token ? (
+                                <>
+                                    {SaveAddress ? (
+                                        <div style={{ pointerEvents: "none", opacity: 0.4 }} className="custom-control custom-checkbox">
+                                            <input onClick={(e) => handleCheckbox(e)} type="checkbox" className="custom-control-input" id="same-address" />
+                                            <label className="custom-control-label" htmlFor="same-address"> Use the account address</label>
+                                        </div>
+                                    ) : (
+                                        <div className="custom-control custom-checkbox">
+                                            <input onClick={(e) => handleCheckbox(e)} type="checkbox" className="custom-control-input" id="same-address" />
+                                            <label className="custom-control-label" htmlFor="same-address"> Use the account address</label>
+                                        </div>
+                                    )}
+                                    {AccountAddress ? (
+                                        <div style={{ pointerEvents: "none", opacity: 0.4 }} className="custom-control custom-checkbox">
+                                            <input onInput={(e) => handleCheckbox2(e)} type="checkbox" className="custom-control-input" id="save-address" />
+                                            <label className="custom-control-label" htmlFor="save-address"> Save this address</label>
+                                        </div>
+                                    ) : (
+                                        <div className="custom-control custom-checkbox">
+                                            <input onInput={(e) => handleCheckbox2(e)} type="checkbox" className="custom-control-input" id="save-address" />
+                                            <label className="custom-control-label" htmlFor="save-address"> Save this address</label>
+                                        </div>
+                                    )}
+                                    <hr className="mb-4" />
+                                </>
+                            ) : null}
 
                             <h4 className="mb-3">Payment</h4>
 

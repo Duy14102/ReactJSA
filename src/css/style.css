@@ -139,8 +139,16 @@
     width: 100%;
 }
 
+.imgUser {
+    border-radius: 50%;
+}
+
 .inputSearch:focus-visible {
     outline: none;
+}
+
+.dropdown-menu {
+    right: 0px;
 }
 
 .navbar-dark .navbar-brand img {

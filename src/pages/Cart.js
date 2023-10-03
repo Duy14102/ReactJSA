@@ -105,7 +105,7 @@ function Cart() {
             <Header />
             <div className="container">
                 <div className="py-5 text-center businessWay">
-                    <NavLink to="/Cart"> Shopping Cart</NavLink> ˃ <NavLink to="/Checkout" state={{ valid: pushData, fulltotal: fulltotal }}>Checkout Details</NavLink> ˃ {ahoe ? (<NavLink to="/">Order Complete</NavLink>) : (<NavLink style={{ pointerEvents: "none" }} to="/">Order Complete</NavLink>)}
+                    <NavLink to="/Cart"> Shopping Cart</NavLink> ˃ <NavLink to="/Checkout" state={{ valid: pushData, fulltotal: fulltotal, shippingFee: shippingFee, total2: total2 }}>Checkout Details</NavLink> ˃ {ahoe ? (<NavLink to="/">Order Complete</NavLink>) : (<NavLink style={{ pointerEvents: "none" }} to="/">Order Complete</NavLink>)}
                 </div>
                 {checkVal ? (
                     <div style={{ height: 45 + "vh" }} className="pt-4 pb-4 text-center">

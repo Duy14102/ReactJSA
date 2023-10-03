@@ -87,8 +87,7 @@ app.post("/AddAdmin", (request, response) => {
             user
                 .save()
                 // return success if the new user is added to the database successfully
-                .then((result) => {
-                    console.log(result);
+                .then(() => {
                     response.status(201).send({
                         message: "User Created Successfully",
                         fullname: user.fullname,
@@ -170,6 +169,23 @@ app.post("/Login", (request, response) => {
             });
         });
 });
+
+//Add address user cart
+app.post("/AddAddressUser", async (req, res) => {
+    try {
+        getUserD.updateOne({ _id: req.body.id }, {
+            $push: {
+                address: req.body.address
+            }
+        }).then(() => {
+            res.send("success")
+        }).catch((err) => {
+            console.log(err);
+        })
+    } catch (e) {
+        console.log(e);
+    }
+})
 
 //Get User Data
 app.get("/GetAllUser", async (req, res) => {

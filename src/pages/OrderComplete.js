@@ -7,7 +7,6 @@ import '../css/Cart.css'
 function OrderComplete() {
     function goAway() {
         localStorage.clear()
-        window.location.href = "/";
     }
 
     setTimeout(() => {

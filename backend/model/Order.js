@@ -11,7 +11,7 @@ const OrderSchema = new mongoose.Schema({
     },
 
     phonenumber: {
-        type: Number,
+        type: String,
         required: [true, "Please provide a phone numbers!"],
     },
 

@@ -18,13 +18,18 @@ const UserSchema = new mongoose.Schema({
     },
 
     phonenumber: {
-        type: Number,
+        type: String,
         required: [true, "Please provide a name!"],
         unique: [true, "Phone Number Exist"],
     },
 
     address: {
         type: Array
+    },
+
+    userimage: {
+        default: null,
+        type: String
     },
 
     role: {
