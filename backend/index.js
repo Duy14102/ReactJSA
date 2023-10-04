@@ -192,7 +192,29 @@ app.get("/GetAllUser", async (req, res) => {
     const sort = { role: -1 }
     try {
         const getuser = await getUserD.find().sort(sort);
-        res.send({ data: getuser });
+        const page = parseInt(req.query.page)
+        const limit = parseInt(req.query.limit)
+
+        const start = (page - 1) * limit
+        const end = page * limit
+
+        const results = {}
+        results.total = getuser.length
+        results.pageCount = Math.ceil(getuser.length / limit)
+
+        if (end < getuser.length) {
+            results.next = {
+                page: page + 1
+            }
+        }
+        if (start > 0) {
+            results.prev = {
+                page: page - 1
+            }
+        }
+
+        results.result = getuser.slice(start, end)
+        res.send({ results });
     } catch (e) {
         console.log(e);
     }
@@ -307,6 +329,48 @@ app.get("/GetThisOrder", async (req, res) => {
     }
 })
 
+//Get all order
+app.get("/GetAllOrder", async (req, res) => {
+    const filter = { datetime: -1 }
+    try {
+        const getOrder = await getThisOrder.find({}).sort(filter)
+        res.send({ data: getOrder })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Update status order
+app.post("/UpdateStatusOrder", (req, res) => {
+    try {
+        getThisOrder.updateOne({ _id: req.query.id }, {
+            status: req.query.status
+        }).then(() => {
+            res.send({ data: "Updated" })
+        }).catch((err) => {
+            console.log(err);
+        })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Deny Order status
+app.post("/DenyOrder", (req, res) => {
+    try {
+        getThisOrder.updateOne({ _id: req.query.id }, {
+            denyreason: req.query.reason,
+            status: req.query.status
+        }).then(() => {
+            res.send({ data: "Updated" })
+        }).catch((err) => {
+            console.log(err);
+        })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
 //Get Menu
 const getThisMenu = mongoose.model("Menu");
 app.get("/GetThisMenu", async (req, res) => {
@@ -332,7 +396,29 @@ app.get("/GetCartItem", async (req, res) => {
 app.get("/GetAdminMenu", async (req, res) => {
     try {
         const getIt = await getThisMenu.find({});
-        res.send({ data: getIt });
+        const page = parseInt(req.query.page)
+        const limit = parseInt(req.query.limit)
+
+        const start = (page - 1) * limit
+        const end = page * limit
+
+        const results = {}
+        results.total = getIt.length
+        results.pageCount = Math.ceil(getIt.length / limit)
+
+        if (end < getIt.length) {
+            results.next = {
+                page: page + 1
+            }
+        }
+        if (start > 0) {
+            results.prev = {
+                page: page - 1
+            }
+        }
+
+        results.result = getIt.slice(start, end)
+        res.send({ results });
     } catch (e) {
         console.log(e);
     }

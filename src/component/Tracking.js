@@ -65,20 +65,25 @@ function Tracking() {
                                     }
                                     if (i.status === 1) {
                                         statusCheck = "Pending"
-                                    } else if (i.status === 2) {
-                                        statusCheck = "Complete"
+                                    }
+                                    else if (i.status === 2) {
+                                        statusCheck = "Accept"
+                                    } else if (i.status === 3) {
+                                        statusCheck = "Deny"
+                                    }
+                                    else if (i.status === 4) {
+                                        statusCheck = "Cancel"
                                     }
                                     return (
                                         <Fragment key={i._id}>
-                                            <tr>
+                                            <tr style={{ verticalAlign: "middle" }}>
                                                 <td>{i.fullname}</td>
                                                 <td>{i.phonenumber}</td>
                                                 <td>{i.datetime}</td>
                                                 <td>{statusCheck}</td>
                                                 <td><button onClick={setModalOpenDetail} className='btn btn-success'>Detail</button></td>
                                             </tr>
-                                            <Modal
-                                                isOpen={modalOpenDetail} onRequestClose={() => setModalOpenDetail(false)} ariaHideApp={false}
+                                            <Modal isOpen={modalOpenDetail} onRequestClose={() => setModalOpenDetail(false)} ariaHideApp={false}
                                                 style={{
                                                     overlay: {
                                                         backgroundColor: 'rgb(33 33 33 / 75%)'
@@ -96,9 +101,11 @@ function Tracking() {
                                                     },
                                                 }}>
                                                 <h2 className='text-center'>Order Detail</h2>
+                                                <div className="coverNOut">
+                                                    <p className="m-0"><b>Id</b> : {i._id}</p>
+                                                    <p className="m-0"><b>Date</b> : {i.datetime}</p>
+                                                </div>
                                                 <hr />
-                                                <p><b>Id</b> : {i._id}</p>
-                                                <p><b>Date</b> : {i.datetime}</p>
                                                 <p><b>Fullname</b> : {i.fullname}</p>
                                                 <p><b>Phone number</b> : {i.phonenumber}</p>
                                                 <p><b>Address</b> : {i.address}</p>
@@ -130,6 +137,21 @@ function Tracking() {
                                                         </tr>
                                                     </tbody>
                                                 </table>
+                                                <div className="pt-2">
+                                                    {i.status === 2 ? (
+                                                        <p>✅ Order has been <b>Complete</b></p>
+                                                    ) : i.status === 3 ? (
+                                                        <>
+                                                            <p>❌ Order has been <b>Denied</b></p>
+                                                            <p>Reason : {i.denyreason}</p>
+                                                        </>
+                                                    ) : i.status === 4 ? (
+                                                        <>
+                                                            <p>❌ Order has been <b>Canceled</b></p>
+                                                            <p>Reason : {i.denyreason}</p>
+                                                        </>
+                                                    ) : null}
+                                                </div>
                                                 <button className='closeModal' onClick={() => setModalOpenDetail(false)}>x</button>
                                             </Modal>
                                         </Fragment>

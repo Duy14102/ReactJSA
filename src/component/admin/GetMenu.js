@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Modal from 'react-modal';
 import axios from "axios";
 import Swal from "sweetalert2";
+import ReactPaginate from 'react-paginate';
+
 function GetMenu() {
     const [menu, setMenu] = useState([]);
     const [detail, setDetail] = useState([]);
@@ -14,13 +16,39 @@ function GetMenu() {
     const [updatedescription, setFooddescription] = useState();
     const [updateimage, setFoodimage] = useState();
 
+    const [pageCount, setPageCount] = useState(6);
+    const currentPage = useRef();
+    const limit = 8
+
     useEffect(() => {
-        fetch("http://localhost:3000/GetAdminMenu", {
-            method: "get",
-        }).then((res) => res.json()).then((menu) => {
-            setMenu(menu.data);
-        })
+        currentPage.current = 1;
+        getPagination()
     }, [])
+
+    /*      Pagination     */
+    function handlePageClick(e) {
+        currentPage.current = e.selected + 1
+        getPagination();
+    }
+
+    function getPagination() {
+        const configuration = {
+            method: "get",
+            url: "http://localhost:3000/GetAdminMenu",
+            params: {
+                page: currentPage.current,
+                limit: limit
+            }
+        };
+        axios(configuration)
+            .then((result) => {
+                setMenu(result.data.results.result);
+                setPageCount(result.data.results.pageCount)
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }
 
     // Detail Menu
     const DetailMenu = (id) => {
@@ -146,6 +174,25 @@ function GetMenu() {
                     )
                 })}
             </table>
+            <ReactPaginate
+                breakLabel="..."
+                nextLabel="next >"
+                onPageChange={handlePageClick}
+                pageRangeDisplayed={5}
+                pageCount={pageCount}
+                previousLabel="< previous"
+                renderOnZeroPageCount={null}
+                marginPagesDisplayed={2}
+                containerClassName="pagination justify-content-center"
+                pageClassName="page-item"
+                pageLinkClassName="page-link"
+                previousClassName="page-item"
+                previousLinkClassName="page-link"
+                nextClassName="page-item"
+                nextLinkClassName="page-link"
+                activeClassName="active"
+                forcePage={currentPage.current - 1}
+            />
             <Modal
                 isOpen={modalOpenDetail} onRequestClose={() => setModalOpenDetail(false)} ariaHideApp={false}
                 style={{

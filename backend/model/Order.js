@@ -28,6 +28,11 @@ const OrderSchema = new mongoose.Schema({
         type: Number
     },
 
+    denyreason: {
+        default: null,
+        type: String
+    },
+
     status: {
         type: Number
     },

@@ -1,6 +1,5 @@
 import '../../css/Admin.css';
 import '../../css/style.css';
-import Footer from '../../component/Footer';
 import Waves from '../../component/admin/Waves';
 import $ from 'jquery';
 import { useState } from 'react';
@@ -9,6 +8,9 @@ import Cookies from 'universal-cookie';
 import MainMenu from '../../component/admin/MainMenu';
 import MainUser from '../../component/admin/MainUser';
 import LazyLoad from 'react-lazyload';
+import GetOrder from '../../component/admin/GetOrder';
+import GetOrderHistory from '../../component/admin/GetOrderHistory';
+
 function AdminPanel() {
 
     $(function () {
@@ -71,20 +73,23 @@ function AdminPanel() {
                             <div id="tabs-section" className="tabs">
                                 <ul className="tab-head text-center">
                                     <li>
-                                        <a href="#tab-1" className="tab-link active"> <i class="fa-solid fa-house w-100"></i><span className="tab-label">Home</span></a>
+                                        <a href="#tab-1" className="tab-link active"> <i className="fa-solid fa-house w-100"></i><span className="tab-label">Home</span></a>
                                     </li>
                                     <li>
-                                        <a href="#tab-2" className="tab-link"><i class="fas fa-shopping-cart w-100"></i><span className="tab-label">Order</span></a>
+                                        <a href="#tab-2" className="tab-link"><i className="fas fa-shopping-cart w-100"></i><span className="tab-label">Order</span></a>
                                     </li>
                                     <li>
-                                        <a href="#tab-3" className="tab-link"><i class="fa-solid fa-utensils w-100"></i><span className="tab-label">Menu</span></a>
+                                        <a href="#tab-3" className="tab-link"><i className="fas fa-history w-100"></i><span className="tab-label">Order History</span></a>
                                     </li>
                                     <li>
-                                        <a href="#tab-4" className="tab-link"><i class="fa-solid fa-user w-100"></i><span className="tab-label">Account</span></a>
+                                        <a href="#tab-4" className="tab-link"><i className="fa-solid fa-utensils w-100"></i><span className="tab-label">Menu</span></a>
+                                    </li>
+                                    <li>
+                                        <a href="#tab-5" className="tab-link"><i className="fa-solid fa-user w-100"></i><span className="tab-label">Account</span></a>
                                     </li>
                                     <li>
                                         <a href='# ' onClick={setLogout}>
-                                            <i class="fa-solid fa-right-from-bracket w-100"></i><span className="tab-label">Logout</span></a>
+                                            <i className="fa-solid fa-right-from-bracket w-100"></i><span className="tab-label">Logout</span></a>
                                     </li>
                                 </ul>
                                 <Modal
@@ -116,16 +121,19 @@ function AdminPanel() {
                                 <section id="tab-1" className="tab-body entry-content active active-content">
                                     <h1>Home</h1>
                                 </section>
-
                                 <section id="tab-2" className="tab-body entry-content">
-                                    <h2>Order</h2>
+                                    <GetOrder />
                                 </section>
 
                                 <section id="tab-3" className="tab-body entry-content">
-                                    <MainMenu />
+                                    <GetOrderHistory />
                                 </section>
 
                                 <section id="tab-4" className="tab-body entry-content">
+                                    <MainMenu />
+                                </section>
+
+                                <section id="tab-5" className="tab-body entry-content">
                                     <MainUser />
                                 </section>
                             </div>
@@ -133,7 +141,6 @@ function AdminPanel() {
                     </div>
                 </section >
             </div >
-            <Footer />
         </>
     );
 }
