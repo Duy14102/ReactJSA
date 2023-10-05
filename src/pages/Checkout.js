@@ -12,6 +12,7 @@ function Checkout() {
     var paymentmethod = 0
     const orderitems = []
     const havePhone = []
+    const user = []
     const ahoe = localStorage.getItem("complete")
     const [Card, setCard] = useState(false)
     const [SaveAddress, setSaveAddress] = useState(false)
@@ -70,9 +71,14 @@ function Checkout() {
     }, [LoadAddress])
 
     if (token) {
+        const decode3 = jwtDecode(token)
         fullname = FullnameToken
+        const nit = { id: decode3.userId, fullname: fullname }
+        user.push(nit)
     } else {
         fullname = Firstname + " " + Lastname
+        const nat = { id: "none", fullname: fullname }
+        user.push(nat)
     }
 
     if (!location.state) {
@@ -88,9 +94,14 @@ function Checkout() {
     });
 
     const locationMap = location.state.valid
-    const totalprice = location.state.fulltotal
+    const shippingfee = location.state.shippingFee
+    var total2 = 0
+    var fulltotal = 0
 
     const mero = (i) => {
+        var total = i.quantity * i.data.foodprice
+        total2 += total
+        fulltotal = total2 + shippingfee
         const allpush = { data: i.data, quantity: i.quantity }
         orderitems.push(allpush)
         return (
@@ -124,11 +135,11 @@ function Checkout() {
             method: "post",
             url: "http://localhost:3000/UploadOrder",
             data: {
-                fullname,
+                user,
                 phonenumber,
                 address,
                 paymentmethod,
-                totalprice,
+                shippingfee,
                 orderitems
             }
         }
@@ -184,7 +195,7 @@ function Checkout() {
 
             <div className="container">
                 <div className="py-5 text-center businessWay">
-                    <NavLink to="/Cart"> Shopping Cart</NavLink> ˃ <NavLink to="/Checkout" state={{ valid: location.state.data, fulltotal: location.state.fulltotal }}>Checkout Details</NavLink> ˃ {ahoe ? (<NavLink to="/">Order Complete</NavLink>) : (<NavLink style={{ pointerEvents: "none" }} to="/">Order Complete</NavLink>)}
+                    <NavLink to="/Cart"> Shopping Cart</NavLink> ˃ <NavLink to="/Checkout" >Checkout Details</NavLink> ˃ {ahoe ? (<NavLink to="/">Order Complete</NavLink>) : (<NavLink style={{ pointerEvents: "none" }} to="/">Order Complete</NavLink>)}
                 </div>
 
                 <div className="row pb-5">
@@ -201,15 +212,15 @@ function Checkout() {
                             })}
                             <li className="list-group-item d-flex justify-content-between">
                                 <span>Total</span>
-                                <span className="text-muted">{VND.format(location.state.total2)}</span>
+                                <span className="text-muted">{VND.format(total2)}</span>
                             </li>
                             <li className="list-group-item d-flex justify-content-between">
                                 <span>Shipping</span>
-                                <span className="text-muted">{VND.format(location.state.shippingFee)}</span>
+                                <span className="text-muted">{VND.format(shippingfee)}</span>
                             </li>
                             <li className="list-group-item d-flex justify-content-between">
                                 <span>Fulltotal</span>
-                                <strong>{VND.format(totalprice)}</strong>
+                                <strong>{VND.format(fulltotal)}</strong>
                             </li>
                         </ul>
                     </div>

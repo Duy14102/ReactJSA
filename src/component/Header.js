@@ -141,8 +141,7 @@ function Header() {
                                             <Fragment key={i._id}>
                                                 <img data-bs-toggle="dropdown" className="nav-link dropdown-toggle imgUser" src={i.userimage} width={75} height={50} alt="" />
                                                 <div className="dropdown-menu m-0 text-center">
-                                                    <NavLink reloadDocument to="/BookingSite" className="dropdown-item">Booking</NavLink>
-                                                    <NavLink reloadDocument to="/TeamSite" className="dropdown-item">Our Team</NavLink>
+                                                    <NavLink reloadDocument to={`/UserPanel/${i._id}`} className="dropdown-item">Account</NavLink>
                                                     <button onClick={() => logoutThis()} className="dropdown-item"><i className="fa-solid fa-right-from-bracket"></i> Logout</button>
                                                 </div>
                                             </Fragment>
@@ -152,10 +151,9 @@ function Header() {
                                     else {
                                         return (
                                             <Fragment key={i._id}>
-                                                <img data-bs-toggle="dropdown" className="nav-link dropdown-toggle imgUser" src="img/userDefault.jpg" width={70} height={55} alt="" />
+                                                <img data-bs-toggle="dropdown" className="nav-link dropdown-toggle imgUser" src="https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg" width={70} height={55} alt="" />
                                                 <div className="dropdown-menu m-0 text-center">
-                                                    <NavLink reloadDocument to="/BookingSite" className="dropdown-item">Booking</NavLink>
-                                                    <NavLink reloadDocument to="/TeamSite" className="dropdown-item">Our Team</NavLink>
+                                                    <NavLink reloadDocument to={`/UserPanel/${i._id}`} className="dropdown-item">Account</NavLink>
                                                     <button onClick={() => logoutThis()} className="dropdown-item"><i className="fa-solid fa-right-from-bracket"></i> Logout</button>
                                                 </div>
                                             </Fragment>

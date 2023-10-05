@@ -25,6 +25,7 @@ import Checkout from "./pages/Checkout";
 import OrderComplete from "./pages/OrderComplete";
 import TrackOrder from "./pages/TrackOrder";
 import ContactSite from "./pages/ContactSite";
+import UserPanel from "./pages/admin/UserPanel";
 
 const cookies = new Cookies();
 const token = cookies.get("TOKEN");
@@ -38,6 +39,19 @@ const PrivateRoute = ({ children }) => {
         }
     } else {
         return NotFound();
+    }
+}
+
+const PrivateRoute2 = ({ children }) => {
+    if (token) {
+        const decode2 = jwtDecode(token);
+        if (decode2.userRole === 1) {
+            return children;
+        } else {
+            return NotFound();
+        }
+    } else {
+        return LoginSite();
     }
 }
 
@@ -69,6 +83,7 @@ function Wrapped() {
                     <Route path="OrderComplete" element={<OrderComplete />} />
                     <Route path="DetailMenuPage/:id/:cate" element={<DetailMenuPage />} />
                     <Route path="*" element={<NotFound />} />
+                    <Route path="UserPanel/:id" element={<PrivateRoute2><UserPanel /></PrivateRoute2>} />
                     <Route path="AdminPanel" element={<PrivateRoute><AdminPanel /></PrivateRoute>} />
                 </Routes>
                 <Backtotop />

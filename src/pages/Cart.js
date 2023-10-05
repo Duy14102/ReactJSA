@@ -105,7 +105,7 @@ function Cart() {
             <Header />
             <div className="container">
                 <div className="py-5 text-center businessWay">
-                    <NavLink to="/Cart"> Shopping Cart</NavLink> ˃ <NavLink to="/Checkout" state={{ valid: pushData, fulltotal: fulltotal, shippingFee: shippingFee, total2: total2 }}>Checkout Details</NavLink> ˃ {ahoe ? (<NavLink to="/">Order Complete</NavLink>) : (<NavLink style={{ pointerEvents: "none" }} to="/">Order Complete</NavLink>)}
+                    <NavLink to="/Cart"> Shopping Cart</NavLink> ˃ <NavLink to="/Checkout" state={{ valid: pushData, shippingFee: shippingFee }}>Checkout Details</NavLink> ˃ {ahoe ? (<NavLink to="/">Order Complete</NavLink>) : (<NavLink style={{ pointerEvents: "none" }} to="/">Order Complete</NavLink>)}
                 </div>
                 {checkVal ? (
                     <div style={{ height: 45 + "vh" }} className="pt-4 pb-4 text-center">
@@ -158,7 +158,7 @@ function Cart() {
                                 </tr>
                                 <tr>
                                     <td colSpan={2}>
-                                        <NavLink to="/Checkout" state={{ valid: pushData, fulltotal: fulltotal, shippingFee: shippingFee, total2: total2 }} className="btnCheckout"><b>Checkout</b></NavLink>
+                                        <NavLink to="/Checkout" state={{ valid: pushData, shippingFee: shippingFee }} className="btnCheckout"><b>Checkout</b></NavLink>
                                         <p className="pt-3" style={{ margin: 0 }}> <i className="fa-solid fa-tag"></i> Coupon</p>
                                     </td>
                                 </tr>

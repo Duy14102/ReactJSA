@@ -3,6 +3,7 @@ import Modal from 'react-modal';
 
 function GetOrderHistory() {
     const [Order, setOrder] = useState([])
+    const [ModalData, setModalData] = useState([])
     const [modalOpenDetail, setModalOpenDetail] = useState(false);
     useEffect(() => {
         fetch("http://localhost:3000/GetAllOrder", {
@@ -16,6 +17,10 @@ function GetOrderHistory() {
         style: 'currency',
         currency: 'VND',
     });
+    var statusCheck = ""
+    var paymentCheck = ""
+    var total2 = 0
+    var fulltotal = 0
 
     return (
         <>
@@ -31,8 +36,6 @@ function GetOrderHistory() {
                 </thead>
                 <tbody>
                     {Order.map((i) => {
-                        var statusCheck = ""
-                        var paymentCheck = ""
                         if (i.paymentmethod === 1) {
                             paymentCheck = "ATM"
                         } else if (i.paymentmethod === 2) {
@@ -51,88 +54,110 @@ function GetOrderHistory() {
                                 {i.status === 1 ? null : (
                                     <>
                                         <tr style={{ verticalAlign: "middle" }}>
-                                            <td>{i.fullname}</td>
+                                            {i.user.map((z) => {
+                                                return (
+                                                    <td>{z.fullname}</td>
+                                                )
+                                            })}
                                             <td>{i.phonenumber}</td>
                                             <td>{i.datetime}</td>
                                             <td>{statusCheck}</td>
-                                            <td><button onClick={setModalOpenDetail} className='btn btn-success'>Detail</button></td>
+                                            <td onClick={setModalOpenDetail}><button onClick={() => setModalData(i)} className='btn btn-success'>Detail</button></td>
                                         </tr>
-                                        <Modal isOpen={modalOpenDetail} onRequestClose={() => setModalOpenDetail(false)} ariaHideApp={false}
-                                            style={{
-                                                overlay: {
-                                                    backgroundColor: 'rgb(33 33 33 / 75%)'
-                                                },
-                                                content: {
-                                                    top: "50%",
-                                                    left: "50%",
-                                                    right: "auto",
-                                                    bottom: "auto",
-                                                    marginRight: "-50%",
-                                                    transform: "translate(-50%, -50%)",
-                                                    backgroundColor: "white",
-                                                    width: 800,
-                                                    overflow: "hidden",
-                                                },
-                                            }}>
-                                            <h2 className='text-center'>Order Detail</h2>
-                                            <div className="coverNOut">
-                                                <p className="m-0"><b>Id</b> : {i._id}</p>
-                                                <p className="m-0"><b>Date</b> : {i.datetime}</p>
-                                            </div>
-                                            <hr />
-                                            <p><b>Fullname</b> : {i.fullname}</p>
-                                            <p><b>Phone number</b> : {i.phonenumber}</p>
-                                            <p><b>Address</b> : {i.address}</p>
-                                            <p><b>Payment method</b> : {paymentCheck}</p>
-                                            <p><b>Status</b> : {statusCheck}</p>
-                                            <table className='table table-bordered'>
-                                                <thead>
-                                                    <tr>
-                                                        <th>Name</th>
-                                                        <th>Category</th>
-                                                        <th>Quantity</th>
-                                                        <th>Price</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {i.orderitems.map((a) => {
-                                                        return (
-                                                            <tr key={a.data._id}>
-                                                                <td>{a.data.foodname}</td>
-                                                                <td>{a.data.foodcategory}</td>
-                                                                <td>{a.quantity}</td>
-                                                                <td>{VND.format(a.data.foodprice)}</td>
-                                                            </tr>
-                                                        )
-                                                    })}
-                                                    <tr className='actorVid'>
-                                                        <th colSpan={3}>Fulltotal</th>
-                                                        <th>{VND.format(i.totalprice)}</th>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                            <h5 className="text-center pt-2">Order Processing</h5>
-                                            <hr />
-                                            {i.status === 2 ? (
-                                                <p>✅ Order has been <b>Accepted</b></p>
-                                            ) : i.status === 3 ? (
-                                                <>
-                                                    <p>❌ Order has been <b>Denied</b></p>
-                                                    <p>Reason : {i.denyreason}</p>
-                                                </>
-                                            ) : i.status === 4 ? (
-                                                <>
-                                                    <p>❌ Order has been <b>Canceled</b></p>
-                                                    <p>Reason : {i.denyreason}</p>
-                                                </>
-                                            ) : null}
-                                            <button className='closeModal' onClick={() => setModalOpenDetail(false)}>x</button>
-                                        </Modal>
                                     </>
                                 )}
                             </Fragment>
                         )
                     })}
+                    <Modal isOpen={modalOpenDetail} onRequestClose={() => setModalOpenDetail(false)} ariaHideApp={false}
+                        style={{
+                            overlay: {
+                                backgroundColor: 'rgb(33 33 33 / 75%)'
+                            },
+                            content: {
+                                top: "50%",
+                                left: "50%",
+                                right: "auto",
+                                bottom: "auto",
+                                marginRight: "-50%",
+                                transform: "translate(-50%, -50%)",
+                                backgroundColor: "white",
+                                width: 800,
+                                overflow: "hidden",
+                            },
+                        }}>
+                        <h2 className='text-center'>Order Detail</h2>
+                        <div className="coverNOut">
+                            <p className="m-0"><b>Id</b> : {ModalData._id}</p>
+                            <p className="m-0"><b>Date</b> : {ModalData.datetime}</p>
+                        </div>
+                        <hr />
+                        {ModalData.user?.map((t) => {
+                            var textSp = "( visisting guests )"
+                            return (
+                                <>
+                                    {t.id === "none" ? (
+                                        <p><b>Fullname</b> : {t.fullname} {textSp}</p>
+                                    ) : (
+                                        <p><b>Fullname</b> : {t.fullname}</p>
+                                    )}
+                                </>
+                            )
+                        })}
+                        <p><b>Phone number</b> : {ModalData.phonenumber}</p>
+                        <p><b>Address</b> : {ModalData.address}</p>
+                        <p><b>Payment method</b> : {paymentCheck}</p>
+                        <p><b>Status</b> : {statusCheck}</p>
+                        <table className='table table-bordered'>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Category</th>
+                                    <th>Quantity</th>
+                                    <th>Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {ModalData.orderitems?.map((a) => {
+                                    var total = a.quantity * a.data.foodprice
+                                    total2 += total
+                                    fulltotal = total2 + ModalData.shippingfee
+                                    return (
+                                        <tr key={a.data._id}>
+                                            <td>{a.data.foodname}</td>
+                                            <td>{a.data.foodcategory}</td>
+                                            <td>{a.quantity}</td>
+                                            <td>{VND.format(a.data.foodprice)}</td>
+                                        </tr>
+                                    )
+                                })}
+                                <tr className='actorVid'>
+                                    <td colSpan={3}>Shipping</td>
+                                    <td>{VND.format(ModalData.shippingfee)}</td>
+                                </tr>
+                                <tr className='actorVid'>
+                                    <th colSpan={3}>Fulltotal</th>
+                                    <th>{VND.format(fulltotal)}</th>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <h5 className="text-center pt-2">Order Processing</h5>
+                        <hr />
+                        {ModalData.status === 2 ? (
+                            <p>✅ Order has been <b>Accepted</b></p>
+                        ) : ModalData.status === 3 ? (
+                            <>
+                                <p>❌ Order has been <b>Denied</b></p>
+                                <p>Reason : {ModalData.denyreason}</p>
+                            </>
+                        ) : ModalData.status === 4 ? (
+                            <>
+                                <p>❌ Order has been <b>Canceled</b></p>
+                                <p>Reason : {ModalData.denyreason}</p>
+                            </>
+                        ) : null}
+                        <button className='closeModal' onClick={() => setModalOpenDetail(false)}>x</button>
+                    </Modal>
                 </tbody>
             </table>
         </>

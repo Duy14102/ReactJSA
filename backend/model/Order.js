@@ -5,9 +5,9 @@ const OrderSchema = new mongoose.Schema({
         type: String
     },
 
-    fullname: {
-        type: String,
-        required: [true, "Please provide an name!"],
+    user: {
+        default: null,
+        type: Array
     },
 
     phonenumber: {
@@ -24,7 +24,8 @@ const OrderSchema = new mongoose.Schema({
         type: Number
     },
 
-    totalprice: {
+    shippingfee: {
+        default: null,
         type: Number
     },
 

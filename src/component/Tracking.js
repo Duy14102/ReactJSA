@@ -58,6 +58,8 @@ function Tracking() {
                                 {Order.map((i) => {
                                     var statusCheck = ""
                                     var paymentCheck = ""
+                                    var total2 = 0
+                                    var fulltotal = 0
                                     if (i.paymentmethod === 1) {
                                         paymentCheck = "ATM"
                                     } else if (i.paymentmethod === 2) {
@@ -77,7 +79,11 @@ function Tracking() {
                                     return (
                                         <Fragment key={i._id}>
                                             <tr style={{ verticalAlign: "middle" }}>
-                                                <td>{i.fullname}</td>
+                                                {i.user.map((z) => {
+                                                    return (
+                                                        <td>{z.fullname}</td>
+                                                    )
+                                                })}
                                                 <td>{i.phonenumber}</td>
                                                 <td>{i.datetime}</td>
                                                 <td>{statusCheck}</td>
@@ -106,7 +112,18 @@ function Tracking() {
                                                     <p className="m-0"><b>Date</b> : {i.datetime}</p>
                                                 </div>
                                                 <hr />
-                                                <p><b>Fullname</b> : {i.fullname}</p>
+                                                {i.user.map((t) => {
+                                                    var textSp = "( visisting guests )"
+                                                    return (
+                                                        <>
+                                                            {t.id === "none" ? (
+                                                                <p><b>Fullname</b> : {t.fullname} {textSp}</p>
+                                                            ) : (
+                                                                <p><b>Fullname</b> : {t.fullname}</p>
+                                                            )}
+                                                        </>
+                                                    )
+                                                })}
                                                 <p><b>Phone number</b> : {i.phonenumber}</p>
                                                 <p><b>Address</b> : {i.address}</p>
                                                 <p><b>Payment method</b> : {paymentCheck}</p>
@@ -122,6 +139,9 @@ function Tracking() {
                                                     </thead>
                                                     <tbody>
                                                         {i.orderitems.map((a) => {
+                                                            var total = a.quantity * a.data.foodprice
+                                                            total2 += total
+                                                            fulltotal = total2 + i.shippingfee
                                                             return (
                                                                 <tr key={a.data._id}>
                                                                     <td>{a.data.foodname}</td>
@@ -132,8 +152,12 @@ function Tracking() {
                                                             )
                                                         })}
                                                         <tr className='actorVid'>
+                                                            <td colSpan={3}>Shipping</td>
+                                                            <td>{VND.format(i.shippingfee)}</td>
+                                                        </tr>
+                                                        <tr className='actorVid'>
                                                             <th colSpan={3}>Fulltotal</th>
-                                                            <th>{VND.format(i.totalprice)}</th>
+                                                            <th>{VND.format(fulltotal)}</th>
                                                         </tr>
                                                     </tbody>
                                                 </table>

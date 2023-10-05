@@ -295,11 +295,11 @@ app.post("/UploadOrder", (req, res) => {
     const getdatetime = date + " - " + time
     const order = new Order({
         datetime: getdatetime,
-        fullname: req.body.fullname,
+        user: req.body.user,
         phonenumber: req.body.phonenumber,
         address: req.body.address,
         paymentmethod: req.body.paymentmethod,
-        totalprice: req.body.totalprice,
+        shippingfee: req.body.shippingfee,
         status: 1,
         orderitems: req.body.orderitems
     })
@@ -324,6 +324,16 @@ app.get("/GetThisOrder", async (req, res) => {
     try {
         const getIt = await getThisOrder.find({ _id: req.query.id });
         res.send({ data: getIt });
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Get Order UserPanel
+app.get("/GetOrderUserPanel", async (req, res) => {
+    try {
+        const datad = await getThisOrder.find({ user: { $elemMatch: { id: req.query.id } } })
+        res.send({ data: datad })
     } catch (e) {
         console.log(e);
     }
