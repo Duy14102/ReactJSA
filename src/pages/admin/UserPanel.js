@@ -5,20 +5,21 @@ import Footer from "../../component/Footer"
 import '../../css/Admin.css'
 import { useState, useEffect } from "react";
 import UserDataPanel from "../../component/admin/UserDataPanel";
-import Modal from 'react-modal';
 import { Fragment } from 'react';
 import axios from "axios";
 import Swal from "sweetalert2";
 
 function UserPanel() {
     let appler = useParams()
+    const [updateemail, setEmail] = useState()
+    const [updatepassword, setPassword] = useState()
+    const [updatephone, setPhonenumber] = useState()
+    const [updatefullname, setFullName] = useState()
+    const [updateimage, setImage] = useState();
+    // const [Address, setAddress] = useState("")
     const [Edit, setEdit] = useState(false)
     const [GetUser, setGetUser] = useState([])
     const [GetOrder, setGetOrder] = useState([])
-    const [ModalData, setModalData] = useState([])
-    const [Accept, setAccept] = useState(false)
-    const [DenyReason, setDenyReason] = useState("")
-    const [modalOpenDetail, setModalOpenDetail] = useState(false);
 
     useEffect(() => {
         fetch(`http://localhost:3000/GetDetailUser?userid=${appler.id}`, {
@@ -40,46 +41,132 @@ function UserPanel() {
         return NotFound()
     }
 
-    const VND = new Intl.NumberFormat('vi-VN', {
-        style: 'currency',
-        currency: 'VND',
+    document.addEventListener("change", function (event) {
+        if (event.target.classList.contains("uploadProfileInput")) {
+            var triggerInput = event.target;
+            var currentImg = triggerInput.closest(".pic-holder").querySelector(".pic")
+                .src;
+            var holder = triggerInput.closest(".pic-holder");
+            var wrapper = triggerInput.closest(".profile-pic-wrapper");
+
+            var alerts = wrapper.querySelectorAll('[role="alert"]');
+            alerts.forEach(function (alert) {
+                alert.remove();
+            });
+
+            triggerInput.blur();
+            var files = triggerInput.files || [];
+            if (!files.length || !window.FileReader) {
+                return;
+            }
+
+            if (/^image/.test(files[0].type)) {
+                var reader = new FileReader();
+                reader.readAsDataURL(files[0]);
+
+                reader.onloadend = function () {
+                    holder.classList.add("uploadInProgress");
+                    holder.querySelector(".pic").src = this.result;
+
+                    var loader = document.createElement("div");
+                    loader.classList.add("upload-loader");
+                    loader.innerHTML =
+                        '<div className="spinner-border text-primary" role="status"><span className="sr-only">Loading...</span></div>';
+                    holder.appendChild(loader);
+
+                    setTimeout(function () {
+                        holder.classList.remove("uploadInProgress");
+                        loader.remove();
+
+                        var random = Math.random();
+                        if (random < 0.9) {
+                            wrapper.innerHTML +=
+                                '<div className="snackbar show" role="alert"><i className="fa fa-check-circle text-success"></i> Profile image updated successfully</div>';
+                            triggerInput.value = "";
+                            setTimeout(function () {
+                                wrapper.querySelector('[role="alert"]').remove();
+                            }, 3000);
+                        } else {
+                            holder.querySelector(".pic").src = currentImg;
+                            wrapper.innerHTML +=
+                                '<div className="snackbar show" role="alert"><i className="fa fa-times-circle text-danger"></i> There is an error while uploading! Please try again later.</div>';
+                            triggerInput.value = "";
+                            setTimeout(function () {
+                                wrapper.querySelector('[role="alert"]').remove();
+                            }, 3000);
+                        }
+                    }, 1500);
+                };
+            } else {
+                wrapper.innerHTML +=
+                    '<div className="alert alert-danger d-inline-block p-2 small" role="alert">Please choose a valid image.</div>';
+                setTimeout(function () {
+                    var invalidAlert = wrapper.querySelector('[role="alert"]');
+                    if (invalidAlert) {
+                        invalidAlert.remove();
+                    }
+                }, 3000);
+            }
+        }
     });
 
-    const denyOrder = (e, id) => {
+    function dropdownThis() {
+        document.getElementById("myDropdownThis").classList.toggle("show");
+    }
+
+    // Close the dropdown if the user clicks outside of it
+    window.onclick = function (event) {
+        if (!event.target.matches('.dropbtn')) {
+            var dropdowns = document.getElementsByClassName("dropdown-content");
+            var i;
+            for (i = 0; i < dropdowns.length; i++) {
+                var openDropdown = dropdowns[i];
+                if (openDropdown.classList.contains('show')) {
+                    openDropdown.classList.remove('show');
+                }
+            }
+        }
+    }
+
+    function convertToBase64(e) {
+        var reader = new FileReader();
+        reader.readAsDataURL(e.target.files[0]);
+        reader.onload = () => {
+            setImage(reader.result);
+        };
+        reader.onerror = error => {
+            console.log(error);
+        }
+    }
+    const handleSubmit = (e, id) => {
+        // prevent the form from refreshing the whole page
         e.preventDefault();
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/DenyOrder",
-            params: {
-                id: id,
-                reason: DenyReason,
-                status: 4
-            }
-        }
+            url: "http://localhost:3000/UpdateUser",
+            data: {
+                updateid: id,
+                updateemail,
+                updatepassword,
+                updatefullname,
+                updatephone,
+                base64: updateimage
+            },
+        };
         axios(configuration)
             .then(() => {
                 Swal.fire(
-                    'Denied successfully!',
+                    'Update Successfully!',
                     '',
                     'success'
                 ).then(function () {
                     window.location.reload();
                 })
-            }).catch((e) => {
-                Swal.fire(
-                    'Denied fail!',
-                    '',
-                    'error'
-                ).then(function () {
-                    console.log(e);
-                })
             })
+            .catch((e) => {
+                console.log(e);
+            });
     }
-
-    var total2 = 0
-    var fulltotal = 0
-    var statusCheck = ""
-    var paymentCheck = ""
 
     return (
         <>
@@ -87,183 +174,154 @@ function UserPanel() {
 
             <div className="container py-4">
                 <div className="coverUser">
-                    <div className="headOverview">
-                        <h5 className="m-0">User id : {appler.id}</h5>
-                        {Edit ? (
-                            <button className="button4Edit" onClick={() => setEdit(false)}>Done</button>
-                        ) : (
-                            <button className="button4Edit" onClick={() => setEdit(true)}>Edit</button>
-                        )}
-                    </div>
-                    <div className="BossLvMax pt-3">
-                        <UserDataPanel Data={GetUser} Edit={Edit} />
-                    </div>
-                    <hr />
-                    <h6 className="text-center">Your Order</h6>
-                    {GetOrder ? (
-                        <>
-                            <div className="px-4">
-                                <table className='table table-bordered text-center'>
-                                    <thead>
-                                        <tr>
-                                            <th>Fullname</th>
-                                            <th>Phone Number</th>
-                                            <th>Date</th>
-                                            <th>Status</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {Object.values(GetOrder).map((i) => {
-                                            if (i.paymentmethod === 1) {
-                                                paymentCheck = "ATM"
-                                            } else if (i.paymentmethod === 2) {
-                                                paymentCheck = "COD"
-                                            }
-                                            if (i.status === 1) {
-                                                statusCheck = "Pending"
-                                            }
-                                            else if (i.status === 2) {
-                                                statusCheck = "Accept"
-                                            } else if (i.status === 3) {
-                                                statusCheck = "Deny"
-                                            }
-                                            else if (i.status === 4) {
-                                                statusCheck = "Cancel"
-                                            }
-                                            return (
-                                                <Fragment key={i._id}>
-                                                    <tr style={{ verticalAlign: "middle" }}>
-                                                        {i.user.map((z) => {
+                    <form onSubmit={(e) => handleSubmit(e, appler.id)}>
+                        <div className="headOverview">
+                            <h5 className="m-0">User id : {appler.id}</h5>
+                            {Edit ? (
+                                <div style={{ gap: 5 + "%" }} className="d-flex">
+                                    <button type="submit" className="button4Edit" >Comfirm</button>
+                                    <button type="button" className="button4Edit" onClick={() => setEdit(false)}>Cancel</button>
+                                </div>
+                            ) : (
+                                <button type="button" className="button4Edit" onClick={() => setEdit(true)}>Edit</button>
+                            )}
+                        </div>
+                        <div className="BossLvMax pt-3">
+                            {Object.values(GetUser).map((i) => {
+                                return (
+                                    <Fragment key={i._id}>
+                                        {Edit ? (
+                                            <div className="profile-pic-wrapper okImFirst">
+                                                <div className="pic-holder">
+                                                    {i.userimage ? (
+                                                        <>
+                                                            <img id="profilePic" className="pic" src={i.userimage} alt="" />
+                                                            <input onChange={convertToBase64} className="uploadProfileInput" type="file" name="updateimage" id="newProfilePhoto" style={{ opacity: 0 }} />
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <img id="profilePic" className="pic" src="https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg" alt="" />
+                                                            <input onChange={convertToBase64} className="uploadProfileInput" type="file" name="updateimage" id="newProfilePhoto" style={{ opacity: 0 }} />
+                                                        </>
+                                                    )}
+                                                    <label htmlFor="newProfilePhoto" className="upload-file-block">
+                                                        <div className="text-center">
+                                                            <div className="mb-2">
+                                                                <i className="fa fa-camera fa-2x"></i>
+                                                            </div>
+                                                            <div className="text-uppercase">
+                                                                Update <br /> Profile Photo
+                                                            </div>
+                                                        </div>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div style={{ pointerEvents: "none" }} className="profile-pic-wrapper okImFirst">
+                                                <div className="pic-holder">
+                                                    {i.userimage ? (
+                                                        <img id="profilePic" className="pic" src={i.userimage} alt="" />
+                                                    ) : (
+                                                        <img id="profilePic" className="pic" src="https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg" alt="" />
+                                                    )}
+                                                    <input className="uploadProfileInput" type="file" name="profile_pic" id="newProfilePhoto" style={{ opacity: 0 }} />
+                                                    <label htmlFor="newProfilePhoto" className="upload-file-block">
+                                                        <div className="text-center">
+                                                            <div className="mb-2">
+                                                                <i className="fa fa-camera fa-2x"></i>
+                                                            </div>
+                                                            <div className="text-uppercase">
+                                                                Update <br /> Profile Photo
+                                                            </div>
+                                                        </div>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        )}
+                                        <div className="okImSecond pt-3">
+                                            {Edit ? (
+                                                <div>
+                                                    <div className="makeItDoe">
+                                                        <div className="emailInsideSecond">
+                                                            <label htmlFor="email">Email</label>
+                                                            <input name="updateemail" defaultValue={i.email} value={updateemail} onChange={(e) => setEmail(e.target.value)} type="email" className="inputInsideSecond" id="email" />
+                                                        </div>
+                                                        <div className="emailInsideSecond">
+                                                            <label htmlFor="password">Password</label>
+                                                            <input name="updatepassword" value={updatepassword} onChange={(e) => setPassword(e.target.value)} type="password" className="inputInsideSecond" id="password" />
+                                                        </div>
+                                                    </div>
+                                                    <div className="makeItDoe pt-3">
+                                                        <div className="emailInsideSecond">
+                                                            <label htmlFor="fullname">Name</label>
+                                                            <input name="uppdatefullname" defaultValue={i.fullname} value={updatefullname} onChange={(e) => setFullName(e.target.value)} type="text" className="inputInsideSecond" id="fullname" />
+                                                        </div>
+                                                        <div className="emailInsideSecond">
+                                                            <label htmlFor="phonenumber">Phone Number</label>
+                                                            <input name="updatephone" defaultValue={i.phonenumber} value={updatephone} onChange={(e) => setPhonenumber(e.target.value)} type="number" className="inputInsideSecond" id="phonenumber" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <div style={{ pointerEvents: "none" }}>
+                                                    <div className="makeItDoe">
+                                                        <div className="emailInsideSecond">
+                                                            <label htmlFor="email">Email</label>
+                                                            <input name="updatemail" defaultValue={i.email} type="email" className="inputInsideSecond" id="email" />
+                                                        </div>
+                                                        <div className="emailInsideSecond">
+                                                            <label htmlFor="password">Password</label>
+                                                            <input name="updatepassword" type="password" className="inputInsideSecond" id="password" placeholder="●●●●●●●●●●" />
+                                                        </div>
+                                                    </div>
+                                                    <div className="makeItDoe pt-3">
+                                                        <div className="emailInsideSecond">
+                                                            <label htmlFor="fullname">Name</label>
+                                                            <input name="uppdatefullname" defaultValue={i.fullname} type="text" className="inputInsideSecond" id="fullname" />
+                                                        </div>
+                                                        <div className="emailInsideSecond">
+                                                            <label htmlFor="phonenumber">Phone Number</label>
+                                                            <input name="updatephone" defaultValue={i.phonenumber} type="number" className="inputInsideSecond" id="phonenumber" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
+                                            <div className="emailInsideSecond py-3">
+                                                <label htmlFor="address">Address</label>
+                                                <div id="address" className="dropdown">
+                                                    <div style={{ gap: 5 + "%" }} className="d-flex">
+                                                        {i.address.length === 0 ? (
+                                                            <button type="button" className="dropbtn">
+                                                                Address empty
+                                                            </button>
+                                                        ) : (
+                                                            <button type="button" onClick={() => dropdownThis()} className="dropbtn">
+                                                                Touch me
+                                                            </button>
+                                                        )}
+                                                        {Edit ? (
+                                                            <button type="button" className="plusElf"><i className="fas fa-edit"></i></button>
+                                                        ) : null}
+                                                    </div>
+                                                    <div id="myDropdownThis" className="dropdown-content">
+                                                        {i.address.map((a) => {
                                                             return (
-                                                                <td key={z}>{z.fullname}</td>
+                                                                <p key={a} className="m-0">{a}</p>
                                                             )
                                                         })}
-                                                        <td>{i.phonenumber}</td>
-                                                        <td>{i.datetime}</td>
-                                                        <td>{statusCheck}</td>
-                                                        <td onClick={setModalOpenDetail}><button onClick={() => setModalData(i)} className='btn btn-success'>Detail</button></td>
-                                                    </tr>
-                                                </Fragment>
-                                            )
-                                        })}
-                                    </tbody>
-                                </table>
-                            </div>
-                            <Modal isOpen={modalOpenDetail} onRequestClose={() => setModalOpenDetail(false)} ariaHideApp={false}
-                                style={{
-                                    overlay: {
-                                        backgroundColor: 'rgb(33 33 33 / 75%)'
-                                    },
-                                    content: {
-                                        top: "50%",
-                                        left: "50%",
-                                        right: "auto",
-                                        bottom: "auto",
-                                        marginRight: "-50%",
-                                        transform: "translate(-50%, -50%)",
-                                        backgroundColor: "white",
-                                        width: 650,
-                                        overflow: "hidden",
-                                    },
-                                }}>
-                                <h2 className='text-center'>Order Detail</h2>
-                                <div className="coverNOut">
-                                    <p className="m-0"><b>Id</b> : {ModalData._id}</p>
-                                    <p className="m-0"><b>Date</b> : {ModalData.datetime}</p>
-                                </div>
-                                <hr />
-                                {ModalData.user?.map((t) => {
-                                    var textSp = "( visisting guests )"
-                                    return (
-                                        <Fragment key={t}>
-                                            {t.id === "none" ? (
-                                                <p><b>Fullname</b> : {t.fullname} {textSp}</p>
-                                            ) : (
-                                                <p><b>Fullname</b> : {t.fullname}</p>
-                                            )}
-                                        </Fragment>
-                                    )
-                                })}
-                                <p><b>Phone number</b> : {ModalData.phonenumber}</p>
-                                <p><b>Address</b> : {ModalData.address}</p>
-                                <p><b>Payment method</b> : {paymentCheck}</p>
-                                <p><b>Status</b> : {statusCheck}</p>
-                                <table className='table table-bordered'>
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Category</th>
-                                            <th>Quantity</th>
-                                            <th>Price</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {ModalData.orderitems?.map((a) => {
-                                            var total = a.quantity * a.data.foodprice
-                                            total2 += total
-                                            fulltotal = total2 + ModalData.shippingfee
-                                            return (
-                                                <tr key={a.data._id}>
-                                                    <td>{a.data.foodname}</td>
-                                                    <td>{a.data.foodcategory}</td>
-                                                    <td>{a.quantity}</td>
-                                                    <td>{VND.format(a.data.foodprice)}</td>
-                                                </tr>
-                                            )
-                                        })}
-                                        <tr className='actorVid'>
-                                            <td colSpan={3}>Shipping</td>
-                                            <td>{VND.format(ModalData.shippingfee)}</td>
-                                        </tr>
-                                        <tr className='actorVid'>
-                                            <th colSpan={3}>Fulltotal</th>
-                                            <th>{VND.format(fulltotal)}</th>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                {ModalData.status === 1 ? (
-                                    <>
-                                        <div className="text-center">
-                                            <button onClick={() => setAccept(true)} className="btn btn-danger">Cancel</button>
-                                        </div>
-                                        {Accept ? (
-                                            <div className="pt-3">
-                                                <p>Reason why deny : </p>
-                                                <form onSubmit={(e) => denyOrder(e, ModalData._id)}>
-                                                    <textarea value={DenyReason} onChange={(e) => setDenyReason(e.target.value)} className="textDeny" required />
-                                                    <div style={{ gap: 1 + "%" }} className="d-flex mt-2">
-                                                        <button type="submit" className="btn btn-primary ">Comfirm</button>
-                                                        <button onClick={() => setAccept(false)} className="btn btn-secondary ">Cancel</button>
                                                     </div>
-                                                </form>
+                                                </div>
                                             </div>
-                                        ) : null}
-                                    </>
-                                ) : null}
-                                <div className="pt-2">
-                                    {ModalData.status === 2 ? (
-                                        <p>✅ Order has been <b>Complete</b></p>
-                                    ) : ModalData.status === 3 ? (
-                                        <>
-                                            <p>❌ Order has been <b>Denied</b></p>
-                                            <p>Reason : {ModalData.denyreason}</p>
-                                        </>
-                                    ) : ModalData.status === 4 ? (
-                                        <>
-                                            <p>❌ Order has been <b>Canceled</b></p>
-                                            <p>Reason : {ModalData.denyreason}</p>
-                                        </>
-                                    ) : null}
-                                </div>
-                                <button className='closeModal' onClick={() => setModalOpenDetail(false)}>x</button>
-                            </Modal>
-                        </>
-                    ) : (
-                        <p className="text-center">There's nothing here yet! Go Shopping Now</p>
-                    )}
+                                        </div>
+                                    </Fragment>
+                                )
+                            })}
+                        </div>
+                    </form>
+                    <hr />
+                    <UserDataPanel Data={GetOrder} />
                 </div>
-            </div>
+            </div >
 
             <Footer />
         </>

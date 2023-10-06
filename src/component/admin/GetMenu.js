@@ -213,24 +213,6 @@ function GetMenu() {
                 }}>
 
                 {Object.values(detail).map(i => {
-                    if (updatename === null) {
-                        setFoodname(i.foodname)
-                    }
-                    if (updatecategory === null) {
-                        setFoodcategory(i.foodcategory)
-                    }
-                    if (updateprice === null) {
-                        setFoodprice(i.foodprice)
-                    }
-                    if (updatequantity === null) {
-                        setFoodquantity(i.foodquantity)
-                    }
-                    if (updatedescription === null) {
-                        setFooddescription(i.fooddescription)
-                    }
-                    if (updateimage === null) {
-                        convertToBase64()
-                    }
                     return (
                         <div className='p-3' key={i._id}>
                             <form onSubmit={(e) => handleSubmit(e, i._id)} className="login100-form validate-form">
@@ -240,15 +222,15 @@ function GetMenu() {
                                     </div>
                                     <div className='text-left' style={{ paddingLeft: 10 + "px" }}>
                                         <label>Name</label>
-                                        <input className='form-control' type='text' name='updatename' value={updatename} onChange={(e) => setFoodname(e.target.value)} placeholder={i.foodname}></input>
+                                        <input className='form-control' type='text' name='updatename' defaultValue={i.foodname} value={updatename} onChange={(e) => setFoodname(e.target.value)}></input>
                                         <label>Category</label>
-                                        <input className='form-control' type='text' name='updatecategory' value={updatecategory} onChange={(e) => setFoodcategory(e.target.value)} placeholder={i.foodcategory}></input>
+                                        <input className='form-control' type='text' name='updatecategory' defaultValue={i.foodcategory} value={updatecategory} onChange={(e) => setFoodcategory(e.target.value)} ></input>
                                         <label>Price</label>
-                                        <input className='form-control' type='number' name='updateprice' value={updateprice} onChange={(e) => setFoodprice(e.target.value)} placeholder={i.foodprice}></input>
+                                        <input className='form-control' type='number' name='updateprice' defaultValue={i.foodprice} value={updateprice} onChange={(e) => setFoodprice(e.target.value)} ></input>
                                         <label>Quantity</label>
-                                        <input className='form-control' type='number' name='updatequantity' value={updatequantity} onChange={(e) => setFoodquantity(e.target.value)} placeholder={i.foodquantity}></input>
+                                        <input className='form-control' type='number' name='updatequantity' defaultValue={i.foodquantity} value={updatequantity} onChange={(e) => setFoodquantity(e.target.value)} ></input>
                                         <label>Description</label>
-                                        <input className='form-control' type='text' name='updatedescription' value={updatedescription} onChange={(e) => setFooddescription(e.target.value)} placeholder={i.fooddescription}></input>
+                                        <input className='form-control' type='text' name='updatedescription' defaultValue={i.fooddescription} value={updatedescription} onChange={(e) => setFooddescription(e.target.value)}></input>
                                         <label>Image</label>
                                         <input className='form-control' type='file' name='updateimage' onChange={convertToBase64} />
                                     </div>

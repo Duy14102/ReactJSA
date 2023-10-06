@@ -13,6 +13,7 @@ function GetUser() {
     const [updateemail, setEmail] = useState();
     const [updatepassword, setPassword] = useState();
     const [updatefullname, setFullname] = useState();
+    const [updatephone, setUpdatephone] = useState();
 
     const [pageCount, setPageCount] = useState(6);
     const currentPage = useRef();
@@ -66,7 +67,7 @@ function GetUser() {
     }
 
     //Update User
-    const handleSubmit = (e, id) => {
+    const handleSubmit2 = (e, id) => {
         // prevent the form from refreshing the whole page
         e.preventDefault();
         const configuration = {
@@ -76,7 +77,8 @@ function GetUser() {
                 updateid: id,
                 updateemail,
                 updatepassword,
-                updatefullname
+                updatefullname,
+                updatephone
             },
         };
         axios(configuration)
@@ -171,26 +173,25 @@ function GetUser() {
                 }}>
 
                 {Object.values(detail).map(i => {
-                    if (updateemail === null) {
-                        setEmail(i.email)
-                    }
-                    if (updatefullname === null) {
-                        setFullname(i.fullname)
+                    if (updatepassword === null) {
+                        setPassword(i.password)
                     }
                     return (
                         <div className='p-3' key={i._id}>
-                            <form onSubmit={(e) => handleSubmit(e, i._id)} className="login100-form validate-form">
+                            <form onSubmit={(e) => handleSubmit2(e, i._id)} className="login100-form validate-form">
                                 <label>Email</label>
-                                <input className='form-control' type='text' name='updateemail' value={updateemail} onChange={(e) => setEmail(e.target.value)} placeholder={i.email}></input>
+                                <input className='form-control' defaultValue={i.email} value={updateemail} type='email' name='updateemail' onChange={(e) => setEmail(e.target.value)} />
                                 <label>Password</label>
-                                <input className='form-control' type='password' name='updatepassword' value={updatepassword} onChange={(e) => setPassword(e.target.value)}></input>
+                                <input className='form-control' value={updatepassword} type='password' name='updatepassword' onChange={(e) => setPassword(e.target.value)} placeholder="●●●●●●●●●●" />
                                 <label>Fullname</label>
-                                <input className='form-control' type='text' name='updatefullname' value={updatefullname} onChange={(e) => setFullname(e.target.value)} placeholder={i.fullname}></input>
+                                <input className='form-control' defaultValue={i.fullname} value={updatefullname} type='text' name='updatefullname' onChange={(e) => setFullname(e.target.value)} />
+                                <label>Phone number</label>
+                                <input className='form-control' defaultValue={i.phonenumber} value={updatephone} type='number' name='updatephone' onChange={(e) => setUpdatephone(e.target.value)} />
                                 <hr />
+                                <div className="text-center mt-3">
+                                    <button type='submit' className='btn btn-success'>Update</button>
+                                </div>
                             </form>
-                            <div className="text-center mt-3">
-                                <button type='submit' onClick={(e) => handleSubmit(e, i._id)} className='btn btn-success'>Update</button>
-                            </div>
                         </div >
                     )
                 })}

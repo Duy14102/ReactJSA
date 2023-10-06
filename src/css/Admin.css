@@ -350,11 +350,6 @@ footer .credits {
     align-items: center;
 }
 
-.highestElf {
-    display: flex;
-    gap: 5%;
-}
-
 .plusElf {
     padding: 2%;
     background: rgba(236, 236, 236, 0.5);

@@ -113,7 +113,7 @@ function OrderAdmin({ Data }) {
                                 <tr style={{ verticalAlign: "middle" }}>
                                     {i.user.map((z) => {
                                         return (
-                                            <td>{z.fullname}</td>
+                                            <td key={z}>{z.fullname}</td>
                                         )
                                     })}
                                     <td>{i.phonenumber}</td>

@@ -232,27 +232,37 @@ app.get("/GetDetailUser", async (req, res) => {
 
 //Update User
 app.post("/UpdateUser", async (req, res) => {
-    bcrypt
-        .hash(req.body.updatepassword, 10)
-        .then((hashedPassword) => {
-            try {
-                getUserD.updateOne({ _id: req.body.updateid },
-                    {
-                        email: req.body.updateemail,
-                        password: hashedPassword,
-                        fullname: req.body.updatefullname
-                    }
-                ).then(() => {
-                    res.send({ data: "Updated" })
-                }).catch((err) => {
-                    res.send({ data: err })
-                })
-            } catch (e) {
-                console.log(e);
+    const { base64 } = req.body;
+    try {
+        User.findOne({ _id: req.body.updateid }).then(async (user) => {
+            var hashed = ""
+            if (req.body.updatepassword) {
+                const compare = await bcrypt.compare(req.body.updatepassword, user.password)
+                if (compare) {
+                    hashed = user.password
+                } else {
+                    hashed = await bcrypt.hash(req.body.updatepassword, 10)
+                }
+            } else {
+                hashed = user.password
             }
-        }).catch((e) => {
-            console.log(e);
+            getUserD.updateOne({ _id: req.body.updateid },
+                {
+                    email: req.body.updateemail,
+                    password: hashed,
+                    fullname: req.body.updatefullname,
+                    phonenumber: req.body.updatephone,
+                    userimage: base64
+                }
+            ).then(() => {
+                res.send({ data: "Updated" })
+            }).catch((err) => {
+                res.send({ data: err })
+            })
         })
+    } catch (e) {
+        console.log(e);
+    }
 })
 
 // Add Menu

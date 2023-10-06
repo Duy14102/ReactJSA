@@ -92,8 +92,8 @@ function Header() {
     }, [token])
 
     const logoutThis = () => {
-        cookies.remove("TOKEN");
-        window.location.reload()
+        window.location.href = "/"
+        cookies.remove("TOKEN", { path: '/' });
     }
     return (
         <LazyLoad>
