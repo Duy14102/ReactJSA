@@ -51,7 +51,8 @@ function Header() {
         })
 
     })
-    const SearchType = () => {
+    const SearchType = (e) => {
+        e.preventDefault();
         const configuration = {
             method: "get",
             url: "http://localhost:3000/GetSearch",
@@ -189,10 +190,11 @@ function Header() {
                     },
                 }}>
                 <div className="d-flex justify-content-between">
-                    <form className="SearchForm">
-                        <input className="inputSearch" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search something..."></input>
+                    <form onSubmit={(e) => SearchType(e)} className="SearchForm">
+                        <input className="inputSearch" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search something..." required />
+                        <input type="submit" style={{ display: "none" }}></input>
                     </form>
-                    <button className="SearchSubmit" onClick={() => SearchType()} type="submit"><i className="fa-solid fa-magnifying-glass"></i></button>
+                    <button className="SearchSubmit" onClick={(e) => SearchType(e)} type="submit"><i className="fa-solid fa-magnifying-glass"></i></button>
                 </div>
             </Modal>
         </LazyLoad >

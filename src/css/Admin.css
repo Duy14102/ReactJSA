@@ -260,8 +260,6 @@ footer .credits {
 
 /*      Tracking     */
 .outsider {
-    display: flex;
-    justify-content: space-between;
     width: 40%;
     border: 1px solid gray;
     background: #fff;
@@ -351,7 +349,7 @@ footer .credits {
 }
 
 .plusElf {
-    padding: 2%;
+    padding: 1%;
     background: rgba(236, 236, 236, 0.5);
     color: rgba(0, 0, 0, 0.7);
     border: 1px solid rgba(0, 0, 0, 0.15);

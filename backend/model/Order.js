@@ -1,10 +1,6 @@
 const mongoose = require("mongoose");
 
 const OrderSchema = new mongoose.Schema({
-    datetime: {
-        type: String
-    },
-
     user: {
         default: null,
         type: Array
@@ -42,6 +38,6 @@ const OrderSchema = new mongoose.Schema({
         require: true,
         type: Array
     }
-})
+}, { timestamps: { createdAt: true, updatedAt: false } })
 
 module.exports = mongoose.model.Orders || mongoose.model("Orders", OrderSchema);

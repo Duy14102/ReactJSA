@@ -152,11 +152,11 @@ function CategoryPage() {
                         })}
                         <ReactPaginate
                             breakLabel="..."
-                            nextLabel="next >"
+                            nextLabel="Next >"
                             onPageChange={handlePageClick}
                             pageRangeDisplayed={5}
                             pageCount={pageCount}
-                            previousLabel="< previous"
+                            previousLabel="< Previous"
                             renderOnZeroPageCount={null}
                             marginPagesDisplayed={2}
                             containerClassName="pagination justify-content-center"

@@ -8,6 +8,7 @@ import UserDataPanel from "../../component/admin/UserDataPanel";
 import { Fragment } from 'react';
 import axios from "axios";
 import Swal from "sweetalert2";
+import UserAddressControl from "../../component/admin/UserAddressControl";
 
 function UserPanel() {
     let appler = useParams()
@@ -44,8 +45,6 @@ function UserPanel() {
     document.addEventListener("change", function (event) {
         if (event.target.classList.contains("uploadProfileInput")) {
             var triggerInput = event.target;
-            var currentImg = triggerInput.closest(".pic-holder").querySelector(".pic")
-                .src;
             var holder = triggerInput.closest(".pic-holder");
             var wrapper = triggerInput.closest(".profile-pic-wrapper");
 
@@ -77,24 +76,6 @@ function UserPanel() {
                     setTimeout(function () {
                         holder.classList.remove("uploadInProgress");
                         loader.remove();
-
-                        var random = Math.random();
-                        if (random < 0.9) {
-                            wrapper.innerHTML +=
-                                '<div className="snackbar show" role="alert"><i className="fa fa-check-circle text-success"></i> Profile image updated successfully</div>';
-                            triggerInput.value = "";
-                            setTimeout(function () {
-                                wrapper.querySelector('[role="alert"]').remove();
-                            }, 3000);
-                        } else {
-                            holder.querySelector(".pic").src = currentImg;
-                            wrapper.innerHTML +=
-                                '<div className="snackbar show" role="alert"><i className="fa fa-times-circle text-danger"></i> There is an error while uploading! Please try again later.</div>';
-                            triggerInput.value = "";
-                            setTimeout(function () {
-                                wrapper.querySelector('[role="alert"]').remove();
-                            }, 3000);
-                        }
                     }, 1500);
                 };
             } else {
@@ -109,24 +90,6 @@ function UserPanel() {
             }
         }
     });
-
-    function dropdownThis() {
-        document.getElementById("myDropdownThis").classList.toggle("show");
-    }
-
-    // Close the dropdown if the user clicks outside of it
-    window.onclick = function (event) {
-        if (!event.target.matches('.dropbtn')) {
-            var dropdowns = document.getElementsByClassName("dropdown-content");
-            var i;
-            for (i = 0; i < dropdowns.length; i++) {
-                var openDropdown = dropdowns[i];
-                if (openDropdown.classList.contains('show')) {
-                    openDropdown.classList.remove('show');
-                }
-            }
-        }
-    }
 
     function convertToBase64(e) {
         var reader = new FileReader();
@@ -248,7 +211,7 @@ function UserPanel() {
                                                         </div>
                                                         <div className="emailInsideSecond">
                                                             <label htmlFor="password">Password</label>
-                                                            <input name="updatepassword" value={updatepassword} onChange={(e) => setPassword(e.target.value)} type="password" className="inputInsideSecond" id="password" />
+                                                            <input name="updatepassword" value={updatepassword} onChange={(e) => setPassword(e.target.value)} type="password" className="inputInsideSecond" id="password" placeholder="●●●●●●●●●●" />
                                                         </div>
                                                     </div>
                                                     <div className="makeItDoe pt-3">
@@ -288,29 +251,7 @@ function UserPanel() {
                                             )}
                                             <div className="emailInsideSecond py-3">
                                                 <label htmlFor="address">Address</label>
-                                                <div id="address" className="dropdown">
-                                                    <div style={{ gap: 5 + "%" }} className="d-flex">
-                                                        {i.address.length === 0 ? (
-                                                            <button type="button" className="dropbtn">
-                                                                Address empty
-                                                            </button>
-                                                        ) : (
-                                                            <button type="button" onClick={() => dropdownThis()} className="dropbtn">
-                                                                Touch me
-                                                            </button>
-                                                        )}
-                                                        {Edit ? (
-                                                            <button type="button" className="plusElf"><i className="fas fa-edit"></i></button>
-                                                        ) : null}
-                                                    </div>
-                                                    <div id="myDropdownThis" className="dropdown-content">
-                                                        {i.address.map((a) => {
-                                                            return (
-                                                                <p key={a} className="m-0">{a}</p>
-                                                            )
-                                                        })}
-                                                    </div>
-                                                </div>
+                                                <UserAddressControl address={i.address} edit={Edit} userid={appler.id} />
                                             </div>
                                         </div>
                                     </Fragment>

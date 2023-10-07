@@ -74,6 +74,33 @@
 
 .inputC input[type="text"]:focus {
     box-shadow: 0 0 5px #ccc;
+    outline: none;
+}
+
+.holeInWall .tab-body {
+    display: none;
+}
+
+.holeInWall .active {
+    display: table-row;
+}
+
+.Lunatic .active {
+    color: rgba(0, 0, 0, 0.7);
+    background: rgba(196, 195, 195, 0.5);
+}
+
+.noPlusElf {
+    padding: 0.7%;
+    background: rgba(236, 236, 236, 0.5);
+    color: gray;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    transition: all 0.2s;
+}
+
+.noPlusElf:hover {
+    color: rgba(0, 0, 0, 0.7);
+    background: rgba(215, 215, 215, 1);
 }
 
 .btnCoupon {

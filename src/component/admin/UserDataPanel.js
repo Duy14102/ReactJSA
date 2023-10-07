@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { Fragment, useState } from "react";
 import Swal from "sweetalert2";
 import Modal from 'react-modal';
+import $ from 'jquery'
 
 function UserDataPanel({ Data }) {
     const [ModalData, setModalData] = useState([])
@@ -46,63 +47,129 @@ function UserDataPanel({ Data }) {
             })
     }
 
+    $(function () {
+        // Variables
+        const $tabLink = $('#tabs-section .tab-link');
+        const $tabBody = $('#tabs-section .tab-body');
+        let timerOpacity;
+
+        // Toggle Class
+        const init = () => {
+            // Menu Click
+            $tabLink.off('click').on('click', function (e) {
+                // Prevent Default
+                e.preventDefault();
+                e.stopPropagation();
+
+                // Clear Timers
+                window.clearTimeout(timerOpacity);
+
+                // Toggle Class Logic
+                // Remove Active Classes
+                $tabLink.removeClass('active ');
+                $tabBody.removeClass('active ');
+                $tabBody.removeClass('active-content');
+
+                // Add Active Classes
+                $(this).addClass('active');
+                $($(this).attr('href')).addClass('active');
+
+                // Opacity Transition Class
+                timerOpacity = setTimeout(() => {
+                    $($(this).attr('href')).addClass('active-content');
+                }, 50);
+            });
+        };
+
+        // Document Ready
+        $(function () {
+            init();
+        });
+    });
+
     var total2 = 0
     var fulltotal = 0
     var statusCheck = ""
     var paymentCheck = ""
-
+    const datemodal = new Date(ModalData.createdAt)
     return (
         <>
             <h6 className="text-center">Your Order</h6>
             {Data.length > 0 ? (
                 <>
-                    <div className="px-4">
-                        <table className='table table-bordered text-center'>
-                            <thead>
-                                <tr>
-                                    <th>Fullname</th>
-                                    <th>Phone Number</th>
-                                    <th>Date</th>
-                                    <th>Status</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {Object.values(Data).map((i) => {
-                                    if (i.paymentmethod === 1) {
-                                        paymentCheck = "ATM"
-                                    } else if (i.paymentmethod === 2) {
-                                        paymentCheck = "COD"
-                                    }
-                                    if (i.status === 1) {
-                                        statusCheck = "Pending"
-                                    }
-                                    else if (i.status === 2) {
-                                        statusCheck = "Accept"
-                                    } else if (i.status === 3) {
-                                        statusCheck = "Deny"
-                                    }
-                                    else if (i.status === 4) {
-                                        statusCheck = "Cancel"
-                                    }
-                                    return (
-                                        <Fragment key={i._id}>
-                                            <tr style={{ verticalAlign: "middle" }}>
-                                                {i.user.map((z) => {
-                                                    return (
-                                                        <td key={z}>{z.fullname}</td>
-                                                    )
-                                                })}
-                                                <td>{i.phonenumber}</td>
-                                                <td>{i.datetime}</td>
-                                                <td>{statusCheck}</td>
-                                                <td onClick={setModalOpenDetail}><button onClick={() => setModalData(i)} className='btn btn-success'>Detail</button></td>
-                                            </tr>
-                                        </Fragment>
-                                    )
-                                })}
-                            </tbody>
-                        </table>
+                    <div id="tabs-section">
+                        <div className="d-flex px-4 pb-3 Lunatic" style={{ gap: 1 + "%" }}>
+                            <a href="#active" className="noPlusElf tab-link active">Active</a>
+                            <a href="#inactive" className="noPlusElf tab-link">History</a>
+                        </div>
+                        <div className="px-4">
+                            <table className='table table-bordered text-center'>
+                                <thead>
+                                    <tr>
+                                        <th>Fullname</th>
+                                        <th>Phone Number</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody className="holeInWall">
+                                    {Object.values(Data).map((i) => {
+                                        const datetime = new Date(i.createdAt)
+                                        if (i.paymentmethod === 1) {
+                                            paymentCheck = "ATM"
+                                        } else if (i.paymentmethod === 2) {
+                                            paymentCheck = "COD"
+                                        }
+                                        if (i.status === 1) {
+                                            statusCheck = "Pending"
+                                        }
+                                        else if (i.status === 2) {
+                                            statusCheck = "Accept"
+                                        } else if (i.status === 3) {
+                                            statusCheck = "Deny"
+                                        }
+                                        else if (i.status === 4) {
+                                            statusCheck = "Cancel"
+                                        }
+                                        return (
+                                            <Fragment key={i._id}>
+                                                {i.status === 1 ? (
+                                                    <tr id="active" className="tab-body active active-content" style={{ verticalAlign: "middle" }}>
+                                                        <>
+                                                            {i.user.map((z) => {
+                                                                return (
+                                                                    <td key={z}>{z.fullname}</td>
+                                                                )
+                                                            })}
+                                                            <td>{i.phonenumber}</td>
+                                                            <td>{datetime.toLocaleString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })}</td>
+                                                            <td>{statusCheck}</td>
+                                                            <td onClick={setModalOpenDetail}><button onClick={() => setModalData(i)} className='btn btn-success'>Detail</button></td>
+                                                        </>
+                                                    </tr>
+                                                ) : null}
+                                                {i.status !== 1 ? (
+                                                    <tr id="inactive" className="tab-body" style={{ verticalAlign: "middle" }}>
+                                                        <>
+                                                            {i.user.map((z) => {
+                                                                return (
+                                                                    <td key={z}>{z.fullname}</td>
+                                                                )
+                                                            })}
+                                                            <td>{i.phonenumber}</td>
+                                                            <td>{datetime.toLocaleString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })}</td>
+                                                            <td>{statusCheck}</td>
+                                                            <td onClick={setModalOpenDetail}><button onClick={() => setModalData(i)} className='btn btn-success'>Detail</button></td>
+                                                        </>
+                                                    </tr>
+                                                ) : null}
+                                            </Fragment>
+                                        )
+                                    })}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                     <Modal isOpen={modalOpenDetail} onRequestClose={() => setModalOpenDetail(false)} ariaHideApp={false}
                         style={{
@@ -124,7 +191,7 @@ function UserDataPanel({ Data }) {
                         <h2 className='text-center'>Order Detail</h2>
                         <div className="coverNOut">
                             <p className="m-0"><b>Id</b> : {ModalData._id}</p>
-                            <p className="m-0"><b>Date</b> : {ModalData.datetime}</p>
+                            <p className="m-0"><b>Date</b> : {datemodal.toLocaleString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })}</p>
                         </div>
                         <hr />
                         {ModalData.user?.map((t) => {

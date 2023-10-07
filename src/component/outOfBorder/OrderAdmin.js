@@ -87,9 +87,11 @@ function OrderAdmin({ Data }) {
     var paymentCheck = ""
     var total2 = 0
     var fulltotal = 0
+    const datemodal = new Date(ModalData.createdAt)
     return (
         <>
             {Data.map(i => {
+                const datetime = new Date(i.createdAt)
                 if (i.paymentmethod === 1) {
                     paymentCheck = "ATM"
                 } else if (i.paymentmethod === 2) {
@@ -117,7 +119,7 @@ function OrderAdmin({ Data }) {
                                         )
                                     })}
                                     <td>{i.phonenumber}</td>
-                                    <td>{i.datetime}</td>
+                                    <td>{datetime.toLocaleString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })}</td>
                                     <td>{statusCheck}</td>
                                     <td onClick={setModalOpenDetail2}><button onClick={() => setModalData(i)} className='btn btn-success'>Detail</button></td>
                                 </tr>
@@ -146,7 +148,7 @@ function OrderAdmin({ Data }) {
                 <h2 className='text-center'>Order Detail</h2>
                 <div className="coverNOut">
                     <p className="m-0"><b>Id</b> : {ModalData._id}</p>
-                    <p className="m-0"><b>Date</b> : {ModalData.datetime}</p>
+                    <p className="m-0"><b>Date</b> : {datemodal.toLocaleString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })}</p>
                 </div>
                 <hr />
                 {ModalData.user?.map((t) => {

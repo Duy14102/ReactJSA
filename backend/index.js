@@ -187,6 +187,23 @@ app.post("/AddAddressUser", async (req, res) => {
     }
 })
 
+//Remove address user
+app.post("/RemoveAddressUser", (req, res) => {
+    try {
+        getUserD.updateOne({ _id: req.body.userid }, {
+            $pull: {
+                address: req.body.address
+            }
+        }).then(() => {
+            res.send("success")
+        }).catch((err) => {
+            console.log(err);
+        })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
 //Get User Data
 app.get("/GetAllUser", async (req, res) => {
     const sort = { role: -1 }
@@ -300,11 +317,7 @@ app.post("/UploadMenu", (request, response) => {
 // Add Order
 const Order = require('./model/Order');
 app.post("/UploadOrder", (req, res) => {
-    const date = new Date().toLocaleDateString()
-    const time = new Date().toLocaleTimeString()
-    const getdatetime = date + " - " + time
     const order = new Order({
-        datetime: getdatetime,
         user: req.body.user,
         phonenumber: req.body.phonenumber,
         address: req.body.address,
@@ -332,10 +345,12 @@ app.post("/UploadOrder", (req, res) => {
 const getThisOrder = mongoose.model("Orders");
 app.get("/GetThisOrder", async (req, res) => {
     try {
-        const getIt = await getThisOrder.find({ _id: req.query.id });
+        const getIt = await getThisOrder.find({ _id: req.query.id })
         res.send({ data: getIt });
     } catch (e) {
-        console.log(e);
+        res.status(500).send({
+            message: "Error",
+        });
     }
 })
 

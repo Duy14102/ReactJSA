@@ -10,7 +10,8 @@ function Tracking() {
     const [Displaytable, setDisplaytable] = useState(false)
     const [modalOpenDetail, setModalOpenDetail] = useState(false);
 
-    const searchorder = () => {
+    const searchorder = (e) => {
+        e.preventDefault();
         const configuration = {
             method: 'get',
             url: 'http://localhost:3000/GetThisOrder',
@@ -22,8 +23,8 @@ function Tracking() {
             .then((res) => {
                 setOrder(res.data.data)
                 setDisplaytable(true)
-            }).catch((e) => {
-                console.log(e);
+            }).catch((err) => {
+                console.log(err);
             })
     }
 
@@ -38,8 +39,13 @@ function Tracking() {
                 <h2 className='text-center'>Input your order id</h2>
                 <div className='overOutsider'>
                     <div className='outsider'>
-                        <input onInput={(e) => setOrderid(e.target.value)} placeholder='#Id' />
-                        <button onClick={() => searchorder()} className="SearchSubmit" type="submit"><i className="fa-solid fa-magnifying-glass"></i></button>
+                        <form onSubmit={(e) => searchorder(e)}>
+                            <input type='submit' style={{ display: "none" }} />
+                            <div className='d-flex justify-content-between w-100'>
+                                <input onInput={(e) => setOrderid(e.target.value)} placeholder='#Id' required />
+                                <button className="SearchSubmit" type="submit"><i className="fa-solid fa-magnifying-glass"></i></button>
+                            </div>
+                        </form>
                     </div>
                 </div>
                 <div className='pt-4'>
@@ -56,6 +62,7 @@ function Tracking() {
                             </thead>
                             <tbody>
                                 {Order.map((i) => {
+                                    const datetime = new Date(i.createdAt)
                                     var statusCheck = ""
                                     var paymentCheck = ""
                                     var total2 = 0
@@ -81,11 +88,11 @@ function Tracking() {
                                             <tr style={{ verticalAlign: "middle" }}>
                                                 {i.user.map((z) => {
                                                     return (
-                                                        <td>{z.fullname}</td>
+                                                        <td key={z}>{z.fullname}</td>
                                                     )
                                                 })}
                                                 <td>{i.phonenumber}</td>
-                                                <td>{i.datetime}</td>
+                                                <td>{datetime.toLocaleString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })}</td>
                                                 <td>{statusCheck}</td>
                                                 <td><button onClick={setModalOpenDetail} className='btn btn-success'>Detail</button></td>
                                             </tr>
@@ -109,19 +116,19 @@ function Tracking() {
                                                 <h2 className='text-center'>Order Detail</h2>
                                                 <div className="coverNOut">
                                                     <p className="m-0"><b>Id</b> : {i._id}</p>
-                                                    <p className="m-0"><b>Date</b> : {i.datetime}</p>
+                                                    <p className="m-0"><b>Date</b> : {datetime.toLocaleString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })}</p>
                                                 </div>
                                                 <hr />
                                                 {i.user.map((t) => {
                                                     var textSp = "( visisting guests )"
                                                     return (
-                                                        <>
+                                                        <Fragment key={t}>
                                                             {t.id === "none" ? (
                                                                 <p><b>Fullname</b> : {t.fullname} {textSp}</p>
                                                             ) : (
                                                                 <p><b>Fullname</b> : {t.fullname}</p>
                                                             )}
-                                                        </>
+                                                        </Fragment>
                                                     )
                                                 })}
                                                 <p><b>Phone number</b> : {i.phonenumber}</p>
