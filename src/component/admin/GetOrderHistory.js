@@ -27,7 +27,7 @@ function GetOrderHistory() {
         <>
             <table className='table table-bordered text-center'>
                 <thead>
-                    <tr>
+                    <tr className="text-white" style={{ background: "#374148" }}>
                         <th>Fullname</th>
                         <th>Phone Number</th>
                         <th>Date</th>
@@ -55,7 +55,7 @@ function GetOrderHistory() {
                             <Fragment key={i._id}>
                                 {i.status === 1 ? null : (
                                     <>
-                                        <tr style={{ verticalAlign: "middle" }}>
+                                        <tr style={{ background: "#2C343A", color: "lightgray", verticalAlign: "middle" }}>
                                             {i.user.map((z) => {
                                                 return (
                                                     <td>{z.fullname}</td>
@@ -74,6 +74,8 @@ function GetOrderHistory() {
                     <Modal isOpen={modalOpenDetail} onRequestClose={() => setModalOpenDetail(false)} ariaHideApp={false}
                         style={{
                             overlay: {
+                                position: 'fixed',
+                                zIndex: 998,
                                 backgroundColor: 'rgb(33 33 33 / 75%)'
                             },
                             content: {
@@ -86,6 +88,7 @@ function GetOrderHistory() {
                                 backgroundColor: "white",
                                 width: 800,
                                 overflow: "hidden",
+                                zIndex: 999
                             },
                         }}>
                         <h2 className='text-center'>Order Detail</h2>

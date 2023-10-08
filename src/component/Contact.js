@@ -1,4 +1,56 @@
+import axios from "axios";
+import jwtDecode from "jwt-decode";
+import { useEffect, useState } from "react";
+import Swal from "sweetalert2";
+import Cookies from "universal-cookie";
+
 function Contact() {
+    const cookies = new Cookies()
+    const token = cookies.get("TOKEN");
+    const [name, setName] = useState()
+    const [email, setEmail] = useState()
+    const [title, setTitle] = useState()
+    const [message, setMessage] = useState()
+
+    useEffect(() => {
+        if (token) {
+            const decode = jwtDecode(token)
+            setName(decode.userName)
+            setEmail(decode.userEmail)
+        }
+    }, [token])
+    
+    const addcontact = (e) => {
+        e.preventDefault()
+        const configuration = {
+            method: "post",
+            url: "http://localhost:3000/AddContact",
+            data: {
+                name,
+                email,
+                title,
+                message
+            }
+        }
+        axios(configuration)
+            .then(() => {
+                Swal.fire(
+                    'Successfully!',
+                    '',
+                    'success'
+                ).then(function () {
+                    window.location.reload();
+                })
+            }).catch(() => {
+                Swal.fire(
+                    'Failed!',
+                    '',
+                    'error'
+                ).then(function () {
+                    window.location.reload();
+                })
+            })
+    }
     return (
         <div className="container-xxl py-5">
             <div className="container">
@@ -33,29 +85,33 @@ function Contact() {
                     </div>
                     <div className="col-md-6">
                         <div className="wow fadeInUp" data-wow-delay="0.2s">
-                            <form>
+                            <form onSubmit={(e) => addcontact(e)}>
                                 <div className="row g-3">
-                                    <div className="col-md-6">
+                                    {token ? null : (
+                                        <>
+                                            <div className="col-md-6">
+                                                <div className="form-floating">
+                                                    <input onChange={(e) => setName(e.target.value)} value={name} type="text" className="form-control" id="name" placeholder="Your Name" required />
+                                                    <label htmlFor="name">Your Name</label>
+                                                </div>
+                                            </div>
+                                            <div className="col-md-6">
+                                                <div className="form-floating">
+                                                    <input onChange={(e) => setEmail(e.target.value)} value={email} type="email" className="form-control" id="email" placeholder="Your Email" required />
+                                                    <label htmlFor="email">Your Email</label>
+                                                </div>
+                                            </div>
+                                        </>
+                                    )}
+                                    <div className="col-12">
                                         <div className="form-floating">
-                                            <input type="text" className="form-control" id="name" placeholder="Your Name" />
-                                            <label htmlFor="name">Your Name</label>
-                                        </div>
-                                    </div>
-                                    <div className="col-md-6">
-                                        <div className="form-floating">
-                                            <input type="email" className="form-control" id="email" placeholder="Your Email" />
-                                            <label htmlFor="email">Your Email</label>
+                                            <input onChange={(e) => setTitle(e.target.value)} value={title} type="text" className="form-control" id="subject" placeholder="Title" required />
+                                            <label htmlFor="subject">Title</label>
                                         </div>
                                     </div>
                                     <div className="col-12">
                                         <div className="form-floating">
-                                            <input type="text" className="form-control" id="subject" placeholder="Subject" />
-                                            <label htmlFor="subject">Subject</label>
-                                        </div>
-                                    </div>
-                                    <div className="col-12">
-                                        <div className="form-floating">
-                                            <textarea className="form-control" placeholder="Leave a message here" id="message" style={{ height: 150 + "px" }}></textarea>
+                                            <textarea onChange={(e) => setMessage(e.target.value)} value={message} className="form-control" placeholder="Leave a message here" id="message" style={{ height: 150 + "px" }} required></textarea>
                                             <label htmlFor="message">Message</label>
                                         </div>
                                     </div>

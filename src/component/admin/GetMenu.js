@@ -152,7 +152,7 @@ function GetMenu() {
         <>
             <table className='table table-bordered text-center'>
                 <thead>
-                    <tr>
+                    <tr className="text-white" style={{ background: "#374148" }}>
                         <th className="text-center">Name</th>
                         <th className="text-center">Price</th>
                         <th className="text-center">Quantity</th>
@@ -163,7 +163,7 @@ function GetMenu() {
                 {menu.map(i => {
                     return (
                         <tbody key={i._id}>
-                            <tr>
+                            <tr style={{ background: "#2C343A", color: "lightgray", verticalAlign: "middle" }}>
                                 <td>{i.foodname}</td>
                                 <td>{VND.format(i.foodprice)}</td>
                                 <td>{i.foodquantity}</td>
@@ -197,6 +197,8 @@ function GetMenu() {
                 isOpen={modalOpenDetail} onRequestClose={() => setModalOpenDetail(false)} ariaHideApp={false}
                 style={{
                     overlay: {
+                        position: 'fixed',
+                        zIndex: 998,
                         backgroundColor: 'rgb(33 33 33 / 75%)'
                     },
                     content: {
@@ -209,6 +211,7 @@ function GetMenu() {
                         backgroundColor: "white",
                         width: 650,
                         overflow: "hidden",
+                        zIndex: 999
                     },
                 }}>
 

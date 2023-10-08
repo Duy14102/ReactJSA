@@ -1,147 +1,336 @@
 import '../../css/Admin.css';
 import '../../css/style.css';
-import Waves from '../../component/admin/Waves';
 import $ from 'jquery';
-import { useState } from 'react';
-import Modal from 'react-modal';
+import { useEffect, useState } from 'react';
 import Cookies from 'universal-cookie';
 import MainMenu from '../../component/admin/MainMenu';
 import MainUser from '../../component/admin/MainUser';
-import LazyLoad from 'react-lazyload';
 import GetOrder from '../../component/admin/GetOrder';
 import GetOrderHistory from '../../component/admin/GetOrderHistory';
+import jwtDecode from 'jwt-decode';
+import GetContact from '../../component/admin/GetContact';
+import axios from 'axios';
+import Swal from 'sweetalert2';
 
 function AdminPanel() {
+    const cookies = new Cookies();
+    const token = cookies.get("TOKEN");
+    const name = jwtDecode(token)
+    const [CountData, setCountData] = useState()
+    const [GetUser, setGetUser] = useState([])
+    const [UserImage, setImage] = useState()
+
+    useEffect(() => {
+        fetch("http://localhost:3000/GetData4Admin", {
+            method: "get",
+        }).then((res) => res.json()).then((data) => {
+            setCountData(data)
+        })
+
+        fetch(`http://localhost:3000/GetDetailUser?userid=${name.userId}`, {
+            method: "get",
+        }).then((res) => res.json()).then((data) => {
+            setGetUser(data)
+        })
+    }, [name.userId])
 
     $(function () {
-        // Variables
-        const $tabLink = $('#tabs-section .tab-link');
-        const $tabBody = $('#tabs-section .tab-body');
-        let timerOpacity;
+        $('.menu a[data-menu]').on('click', function () {
+            var menu = $(this).data('menu');
+            $('.menu a.active').removeClass('active');
+            $(this).addClass('active');
+            $('.active[data-page]').removeClass('active');
+            $('[data-page="' + menu + '"]').addClass('active');
+        });
 
-        // Toggle Class
-        const init = () => {
-            // Menu Click
-            $tabLink.off('click').on('click', function (e) {
-                // Prevent Default
-                e.preventDefault();
-                e.stopPropagation();
+        $('body').on('click', '[data-dialog]', function () {
+            var action = $(this).data('dialog');
+            switch (action) {
+                case 'logout':
+                    $('.dialog').addClass('active');
+                    break;
+                default: break;
+            }
+        });
 
-                // Clear Timers
-                window.clearTimeout(timerOpacity);
+        $('body').on('click', '[data-dialog-action]', function () {
+            var action = $(this).data('dialog-action');
+            switch (action) {
+                case 'cancel':
+                    $(this).closest('.dialog.active').toggleClass('active');
+                    break;
+                default: break;
+            }
+        });
 
-                // Toggle Class Logic
-                // Remove Active Classes
-                $tabLink.removeClass('active ');
-                $tabBody.removeClass('active ');
-                $tabBody.removeClass('active-content');
-
-                // Add Active Classes
-                $(this).addClass('active');
-                $($(this).attr('href')).addClass('active');
-
-                // Opacity Transition Class
-                timerOpacity = setTimeout(() => {
-                    $($(this).attr('href')).addClass('active-content');
-                }, 50);
-            });
-        };
-
-        // Document Ready
-        $(function () {
-            init();
+        $(".uploadProfileInput").on("change", function () {
+            setTimeout(function () {
+                $("#clickThisSubmit").trigger("click");
+            }, 1600);
         });
     });
 
-    const [logout, setLogout] = useState(false);
+    function convertToBase64(e) {
+        var reader = new FileReader();
+        reader.readAsDataURL(e.target.files[0]);
+        reader.onload = () => {
+            setImage(reader.result);
+        };
+        reader.onerror = error => {
+            console.log(error);
+        }
+    }
 
-    const cookies = new Cookies();
+    document.addEventListener("change", function (event) {
+        if (event.target.classList.contains("uploadProfileInput")) {
+            var triggerInput = event.target;
+            var holder = triggerInput.closest(".pic-holder2");
+            var wrapper = triggerInput.closest(".profile-pic-wrapper");
+
+            var alerts = wrapper.querySelectorAll('[role="alert"]');
+            alerts.forEach(function (alert) {
+                alert.remove();
+            });
+
+            triggerInput.blur();
+            var files = triggerInput.files || [];
+            if (!files.length || !window.FileReader) {
+                return;
+            }
+
+            if (/^image/.test(files[0].type)) {
+                var reader = new FileReader();
+                reader.readAsDataURL(files[0]);
+
+                reader.onloadend = function () {
+                    holder.classList.add("uploadInProgress");
+                    holder.querySelector(".pic").src = this.result;
+
+                    var loader = document.createElement("div");
+                    loader.classList.add("upload-loader");
+                    loader.innerHTML =
+                        '<div className="spinner-border text-primary" role="status"><span className="sr-only">...</span></div>';
+                    holder.appendChild(loader);
+
+                    setTimeout(function () {
+                        holder.classList.remove("uploadInProgress");
+                        loader.remove();
+                    }, 1500);
+                };
+            } else {
+                wrapper.innerHTML +=
+                    '<div className="alert alert-danger d-inline-block p-2 small" role="alert">Please choose a valid image.</div>';
+                setTimeout(function () {
+                    var invalidAlert = wrapper.querySelector('[role="alert"]');
+                    if (invalidAlert) {
+                        invalidAlert.remove();
+                    }
+                }, 3000);
+            }
+        }
+    });
+
+    const changeImage = (e, id) => {
+        e.preventDefault()
+        const configuration = {
+            method: "post",
+            url: "http://localhost:3000/ChangeImageAdmin",
+            data: {
+                id: id,
+                base64: UserImage
+            }
+        }
+        axios(configuration)
+            .then(() => {
+                Swal.fire(
+                    'Upload image success!',
+                    '',
+                    'success'
+                ).then(function () {
+                    window.location.reload();
+                })
+            }).catch(() => {
+                Swal.fire(
+                    'Upload image fail!',
+                    '',
+                    'error'
+                ).then(function () {
+                    window.location.reload();
+                })
+            })
+    }
+
     const logoutThis = () => {
         cookies.remove("TOKEN");
         localStorage.clear();
         window.location.href = '/';
     }
     return (
-        <>
-            <LazyLoad>
-                <Waves />
-            </LazyLoad>
-            <div className="site-wrapper">
-                <section className="tabs-wrapper">
-                    <div className="tabs-container">
-                        <div className="tabs-block">
-                            <div id="tabs-section" className="tabs">
-                                <ul className="tab-head text-center">
-                                    <li>
-                                        <a href="#tab-1" className="tab-link active"> <i className="fa-solid fa-house w-100"></i><span className="tab-label">Home</span></a>
-                                    </li>
-                                    <li>
-                                        <a href="#tab-2" className="tab-link"><i className="fas fa-shopping-cart w-100"></i><span className="tab-label">Order</span></a>
-                                    </li>
-                                    <li>
-                                        <a href="#tab-3" className="tab-link"><i className="fas fa-history w-100"></i><span className="tab-label">Order History</span></a>
-                                    </li>
-                                    <li>
-                                        <a href="#tab-4" className="tab-link"><i className="fa-solid fa-utensils w-100"></i><span className="tab-label">Menu</span></a>
-                                    </li>
-                                    <li>
-                                        <a href="#tab-5" className="tab-link"><i className="fa-solid fa-user w-100"></i><span className="tab-label">Account</span></a>
-                                    </li>
-                                    <li>
-                                        <a href='# ' onClick={setLogout}>
-                                            <i className="fa-solid fa-right-from-bracket w-100"></i><span className="tab-label">Logout</span></a>
-                                    </li>
-                                </ul>
-                                <Modal
-                                    isOpen={logout} onRequestClose={() => setLogout(false)} ariaHideApp={false}
-                                    style={{
-                                        overlay: {
-                                            backgroundColor: 'rgb(33 33 33 / 75%)'
-                                        },
-                                        content: {
-                                            top: "50%",
-                                            left: "50%",
-                                            right: "auto",
-                                            bottom: "auto",
-                                            marginRight: "-50%",
-                                            transform: "translate(-50%, -50%)",
-                                            backgroundColor: "white",
-                                            width: 400,
-                                            overflow: "hidden",
-                                        },
-                                    }}>
-                                    <h5>Are you sure you want to logout?</h5>
-                                    <hr />
-                                    <div className='d-flex justify-content-around'>
-                                        <button className='btn btn-warning' onClick={logoutThis}>Yes</button>
-                                        <button className='btn btn-secondary' onClick={() => setLogout(false)}>No</button>
+        <div style={{ height: 100 + "vh" }}>
+            <div className="subOver">
+                <div className="drawer pt-4">
+                    {Object.values(GetUser).map((a) => {
+                        return (
+                            <form key={a._id} className='thisSubmitChange' onSubmit={(e) => changeImage(e, a._id)}>
+                                <div className="profile-pic-wrapper">
+                                    <div className="pic-holder2">
+                                        {a.userimage ? (
+                                            <>
+                                                <img id="profilePic" className="pic" src={a.userimage} alt="" />
+                                                <input onChange={convertToBase64} className="uploadProfileInput" type="file" name="updateimage" id="newProfilePhoto" style={{ opacity: 0 }} />
+                                            </>
+                                        ) : (
+                                            <>
+                                                <img id="profilePic" className="pic" src="https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg" alt="" />
+                                                <input onChange={convertToBase64} className="uploadProfileInput" type="file" name="updateimage" id="newProfilePhoto" style={{ opacity: 0 }} />
+                                            </>
+                                        )}
+                                        <label htmlFor="newProfilePhoto" className="upload-file-block">
+                                            <div className="text-center">
+                                                <i className="fa fa-camera fa-2x"></i>
+                                            </div>
+                                        </label>
                                     </div>
-                                    <button className='closeModal' onClick={() => setLogout(false)}>x</button>
-                                </Modal>
-                                <section id="tab-1" className="tab-body entry-content active active-content">
-                                    <h1>Home</h1>
-                                </section>
-                                <section id="tab-2" className="tab-body entry-content">
-                                    <GetOrder />
-                                </section>
-
-                                <section id="tab-3" className="tab-body entry-content">
-                                    <GetOrderHistory />
-                                </section>
-
-                                <section id="tab-4" className="tab-body entry-content">
-                                    <MainMenu />
-                                </section>
-
-                                <section id="tab-5" className="tab-body entry-content">
-                                    <MainUser />
-                                </section>
+                                </div>
+                                <button id='clickThisSubmit' type='submit' style={{ display: "none" }}></button>
+                            </form>
+                        )
+                    })}
+                    <div className="menu">
+                        <a data-menu="dashboard" href="# " className="active"><i className="fa-solid fa-house"></i></a>
+                        <a data-menu="users" href="# "><i className="fa-solid fa-user"></i></a>
+                        <a data-menu="download" href="# "><i className="fa-solid fa-utensils"></i></a>
+                        <a data-menu="about" href="# "><i className="fa-solid fa-cart-shopping"></i></a>
+                        <a data-menu="history" href="# "><i className="fa-solid fa-clock-rotate-left"></i></a>
+                        <a data-dialog="logout" href="# "><i className="fa-solid fa-right-from-bracket"></i></a>
+                    </div>
+                </div>
+                <div className="content">
+                    <div className="page active" data-page="dashboard">
+                        <div className="header">
+                            <div className="title">
+                                <h2>Dashboard</h2>
+                            </div>
+                        </div>
+                        <div className="grid pt-4">
+                            <div className="card-verticle ">
+                                <div className="card-small" style={{ background: "#2298F1" }}>
+                                    <span className="title">
+                                        Total Users
+                                    </span>
+                                    <h2 className="text">{CountData?.userLength}</h2>
+                                    <hr />
+                                    <p className='m-0 text-white'>1% increase</p>
+                                </div>
+                            </div>
+                            <div className="card-verticle">
+                                <div className="card-small" style={{ background: "#66B92E" }}>
+                                    <span className="title">
+                                        Active Order
+                                    </span>
+                                    <h2 className="text">{CountData?.orderLength}</h2>
+                                    <hr />
+                                    <p className='m-0 text-white'>5% increase</p>
+                                </div>
+                            </div>
+                            <div className="card-verticle">
+                                <div className="card-small" style={{ background: "#FEA116" }}>
+                                    <span className="title">
+                                        Active Table
+                                    </span>
+                                    <h2 className="text">12</h2>
+                                    <hr />
+                                    <p className='m-0 text-white'>9% increase</p>
+                                </div>
+                            </div>
+                            <div className="card-verticle">
+                                <div className="card-small" style={{ background: "#D65B4A" }}>
+                                    <span className="title">
+                                        Total Menu
+                                    </span>
+                                    <h2 className="text">{CountData?.menuLength}</h2>
+                                    <hr />
+                                    <p className='m-0 text-white'>0% increase</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div className='d-flex justify-content-around'>
+                            <div className='w-100 p-5'>
+                                <h4 className='text-center text-white'>Revenue</h4>
+                                <div className="card-verticle">
+                                    <div style={{ background: "#2C343A", borderRadius: 3 + "px" }}>
+                                        <div className='d-flex' style={{ gap: 1 + "%" }}>
+                                            <button data-menu="day" className='btn btn-secondary w-100'>Day</button>
+                                            <button className='btn btn-secondary w-100'>Month</button>
+                                            <button className='btn btn-secondary w-100'>Year</button>
+                                        </div>
+                                        <div data-page="day">
+                                            <h5 className='text-white p-3'>Today Income : </h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="w-100 p-5">
+                                <h4 className='text-center text-white'>Contact</h4>
+                                <GetContact />
                             </div>
                         </div>
                     </div>
-                </section >
-            </div >
-        </>
+                    <div className="page noflex" data-page="users">
+                        <div className="header">
+                            <div className="title">
+                                <h2>Users</h2>
+                            </div>
+                        </div>
+                        <div className='px-5'>
+                            <MainUser />
+                        </div>
+                    </div>
+                    <div className="page noflex" data-page="download">
+                        <div className="header">
+                            <div className="title">
+                                <h2>Menu</h2>
+                            </div>
+                        </div>
+                        <div className='px-5'>
+                            <MainMenu />
+                        </div>
+                    </div>
+                    <div className="page noflex" data-page="about">
+                        <div className="header">
+                            <div className="title">
+                                <h2>Order</h2>
+                            </div>
+                        </div>
+                        <div className='px-5'>
+                            <GetOrder />
+                        </div>
+                    </div>
+                    <div className="page noflex" data-page="history">
+                        <div className="header">
+                            <div className="title">
+                                <h2>Order History</h2>
+                            </div>
+                        </div>
+                        <div className='px-5'>
+                            <GetOrderHistory />
+                        </div>
+                    </div>
+                </div>
+                <div className="sidebar">
+
+                </div>
+                <div className="dialog">
+                    <div className="dialog-block">
+                        <h4 className='text-center text-white pt-4'>Are you sure you want to logout?</h4>
+                        <div className="controls">
+                            <button data-dialog-action="cancel" className="btn btn-secondary">Cancel</button>
+                            <button onClick={() => logoutThis()} className="btn btn-warning">Logout</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     );
 }
 export default AdminPanel;

@@ -6,7 +6,7 @@ function MainMenu() {
     const [modalOpen, setModalOpen] = useState(false);
     return (
         <>
-            <div className='text-right'>
+            <div className='text-right pb-3'>
                 {/* <NavLink to="/UploadMenuReal" className="btn btn-primary" >Add</NavLink> */}
                 <button className='btn btn-primary' onClick={setModalOpen}>
                     Add Menu
@@ -16,6 +16,8 @@ function MainMenu() {
                 isOpen={modalOpen} onRequestClose={() => setModalOpen(false)} ariaHideApp={false}
                 style={{
                     overlay: {
+                        position: 'fixed',
+                        zIndex: 998,
                         backgroundColor: 'rgb(33 33 33 / 75%)'
                     },
                     content: {
@@ -28,6 +30,7 @@ function MainMenu() {
                         backgroundColor: "white",
                         width: 400,
                         overflow: "hidden",
+                        zIndex: 999
                     },
                 }}>
                 <UploadMenuReal />

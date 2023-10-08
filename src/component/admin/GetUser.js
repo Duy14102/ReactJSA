@@ -106,7 +106,7 @@ function GetUser() {
         <>
             <table className='table table-bordered text-center'>
                 <thead>
-                    <tr>
+                    <tr className="text-white" style={{ background: "#374148" }}>
                         <th>Email</th>
                         <th>FullName</th>
                         <th>Role</th>
@@ -116,7 +116,7 @@ function GetUser() {
                 {data.map(i => {
                     return (
                         <tbody key={i._id}>
-                            <tr>
+                            <tr style={{ background: "#2C343A", color: "lightgray", verticalAlign: "middle" }}>
                                 <td>{i.email}</td>
                                 <td>{i.fullname}</td>
                                 {i.role === 1 ? (
@@ -157,6 +157,8 @@ function GetUser() {
                 isOpen={modalOpenDetail} onRequestClose={() => setModalOpenDetail(false)} ariaHideApp={false}
                 style={{
                     overlay: {
+                        position: 'fixed',
+                        zIndex: 998,
                         backgroundColor: 'rgb(33 33 33 / 75%)'
                     },
                     content: {
@@ -169,6 +171,7 @@ function GetUser() {
                         backgroundColor: "white",
                         width: 400,
                         overflow: "hidden",
+                        zIndex: 999
                     },
                 }}>
 

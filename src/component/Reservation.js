@@ -27,7 +27,7 @@ function Reservation() {
                                     </div>
                                     <div className="col-md-6">
                                         <div className="form-floating date" id="date3" data-target-input="nearest">
-                                            <input type="text" className="form-control datetimepicker-input" id="datetime" placeholder="Date & Time" data-target="#date3" data-toggle="datetimepicker" />
+                                            <input type="datetime-local" className="form-control datetimepicker-input" id="datetime" placeholder="Date & Time" data-target="#date3" data-toggle="datetimepicker" />
                                             <label htmlFor="datetime">Date & Time</label>
                                         </div>
                                     </div>

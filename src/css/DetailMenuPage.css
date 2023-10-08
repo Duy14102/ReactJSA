@@ -317,14 +317,6 @@
     float: left;
 }
 
-.active>div {
-    display: none;
-}
-
-.active>div:first-child {
-    display: block;
-}
-
 .block {
     width: 306px;
     height: 230px;

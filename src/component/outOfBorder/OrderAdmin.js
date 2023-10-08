@@ -112,7 +112,7 @@ function OrderAdmin({ Data }) {
                     <Fragment key={i._id}>
                         {i.status === 1 ? (
                             <>
-                                <tr style={{ verticalAlign: "middle" }}>
+                                <tr style={{ verticalAlign: "middle", background: "#2C343A", color: "lightgray" }}>
                                     {i.user.map((z) => {
                                         return (
                                             <td key={z}>{z.fullname}</td>
@@ -132,6 +132,8 @@ function OrderAdmin({ Data }) {
             <Modal id="otpModal" isOpen={modalOpenDetail2} onRequestClose={() => setModalOpenDetail2(false)} ariaHideApp={false}
                 style={{
                     overlay: {
+                        position: 'fixed',
+                        zIndex: 998,
                         backgroundColor: 'rgb(33 33 33 / 75%)'
                     },
                     content: {
@@ -143,6 +145,7 @@ function OrderAdmin({ Data }) {
                         transform: "translate(-50%, -50%)",
                         backgroundColor: "white",
                         width: 800,
+                        zIndex: 999
                     },
                 }}>
                 <h2 className='text-center'>Order Detail</h2>

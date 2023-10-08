@@ -17,7 +17,7 @@ function GetOrder() {
         <>
             <table className='table table-bordered text-center'>
                 <thead>
-                    <tr>
+                    <tr className="text-white" style={{ background: "#374148" }}>
                         <th>Fullname</th>
                         <th>Phone Number</th>
                         <th>Date</th>

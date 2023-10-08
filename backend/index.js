@@ -46,7 +46,6 @@ app.post("/Register", (request, response) => {
                 .save()
                 // return success if the new user is added to the database successfully
                 .then((result) => {
-                    console.log(result);
                     response.status(201).send({
                         message: "User Created Successfully",
                         fullname: user.fullname,
@@ -138,6 +137,7 @@ app.post("/Login", (request, response) => {
                     const token = jwt.sign(
                         {
                             userId: user._id,
+                            userName: user.fullname,
                             userEmail: user.email,
                             userRole: user.role,
                         },
@@ -242,6 +242,22 @@ app.get("/GetDetailUser", async (req, res) => {
     try {
         const getMenuDetail = await getUserD.findOne({ _id: req.query.userid })
         res.send({ data: getMenuDetail });
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Change image admin
+app.post("/ChangeImageAdmin", (req, res) => {
+    const { base64 } = req.body
+    try {
+        getUserD.updateOne({ _id: req.body.id }, {
+            userimage: base64
+        }).then(() => {
+            res.send({ data: "succeed" })
+        }).catch((err) => {
+            console.log(err);
+        })
     } catch (e) {
         console.log(e);
     }
@@ -565,6 +581,87 @@ app.post("/UpdateMenu", async (req, res) => {
         }).catch((err) => {
             res.send({ data: err })
         })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Get Data For Home Admin
+app.get("/GetData4Admin", async (req, res) => {
+    try {
+        const getUserLength = await getUserD.find({ role: 1 })
+        const getOrderLength = await getThisOrder.find({ status: 1 })
+        const getMenuLength = await getThisMenu.find({})
+        res.send({ userLength: getUserLength.length, orderLength: getOrderLength.length, menuLength: getMenuLength.length })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Add Contact
+const Contact = require("./model/Contact");
+const getContactNow = mongoose.model("Contact");
+app.post("/AddContact", (req, res) => {
+    try {
+        const contact = new Contact({
+            name: req.body.name,
+            email: req.body.email,
+            title: req.body.title,
+            message: req.body.message
+        });
+
+        contact.save().then(() => {
+            res.status(201).send({
+                message: "Successfully",
+            });
+        })
+            .catch((error) => {
+                response.status(500).send({
+                    message: "Error",
+                    error,
+                });
+            });
+
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+app.post("/DeleteContact", (req, res) => {
+    try {
+        getContactNow.deleteOne({ _id: req.body.id }).then(() => { res.send({ data: "succeed" }) }).catch((err) => { console.log(err); })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Get Admin Contact
+app.get("/GetContact", async (req, res) => {
+    try {
+        const getIt = await getContactNow.find({});
+        const page = parseInt(req.query.page)
+        const limit = parseInt(req.query.limit)
+
+        const start = (page - 1) * limit
+        const end = page * limit
+
+        const results = {}
+        results.total = getIt.length
+        results.pageCount = Math.ceil(getIt.length / limit)
+
+        if (end < getIt.length) {
+            results.next = {
+                page: page + 1
+            }
+        }
+        if (start > 0) {
+            results.prev = {
+                page: page - 1
+            }
+        }
+
+        results.result = getIt.slice(start, end)
+        res.send({ results });
     } catch (e) {
         console.log(e);
     }
