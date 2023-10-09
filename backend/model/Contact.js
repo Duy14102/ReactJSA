@@ -15,7 +15,7 @@ const ContactSchema = new mongoose.Schema({
 
     message: {
         type: String
-    }
+    },
 }, { timestamps: { createdAt: true, updatedAt: false } })
 
 module.exports = mongoose.model.Menu || mongoose.model("Contact", ContactSchema);

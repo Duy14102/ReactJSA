@@ -5,8 +5,6 @@ import LoginSite from "./pages/admin/LoginSite";
 import SignupSite from "./pages/admin/Register";
 import App from "./pages/App";
 import BookingSite from "./pages/BookingSite";
-import TestiSite from "./pages/TestiSite";
-import TeamSite from "./pages/TeamSite";
 import Backtotop from "./component/outOfBorder/Backtotop";
 import PrivacyAndTerm from "./pages/PrivacyAndTerm";
 import AdminPanel from "./pages/admin/AdminPanel";
@@ -26,32 +24,25 @@ import OrderComplete from "./pages/OrderComplete";
 import TrackOrder from "./pages/TrackOrder";
 import ContactSite from "./pages/ContactSite";
 import UserPanel from "./pages/admin/UserPanel";
+import EmployeePanel from "./pages/admin/EmployeePanel";
 
 const cookies = new Cookies();
 const token = cookies.get("TOKEN");
 const PrivateRoute = ({ children }) => {
     if (token) {
         const decode = jwtDecode(token);
-        if (decode.userRole === 2) {
-            return children;
-        } else {
-            return NotFound();
+        switch (decode.userRole) {
+            case 1:
+                return children
+            case 2:
+                return children
+            case 3:
+                return children
+            default:
+                return NotFound()
         }
     } else {
         return NotFound();
-    }
-}
-
-const PrivateRoute2 = ({ children }) => {
-    if (token) {
-        const decode2 = jwtDecode(token);
-        if (decode2.userRole === 1) {
-            return children;
-        } else {
-            return NotFound();
-        }
-    } else {
-        return LoginSite();
     }
 }
 
@@ -73,8 +64,6 @@ function Wrapped() {
                     <Route path="SearchSite/:id/:fil" element={<SearchSite />} />
                     <Route path="BookingSite" element={<BookingSite />} />
                     <Route path="TrackOrder" element={<TrackOrder />} />
-                    <Route path="TestiSite" element={<TestiSite />} />
-                    <Route path="TeamSite" element={<TeamSite />} />
                     <Route path="PAndT" element={<PrivacyAndTerm />} />
                     <Route path="LoginSite" element={<LoginSite />} />
                     <Route path="SignupSite" element={<SignupSite />} />
@@ -83,7 +72,8 @@ function Wrapped() {
                     <Route path="OrderComplete" element={<OrderComplete />} />
                     <Route path="DetailMenuPage/:id/:cate" element={<DetailMenuPage />} />
                     <Route path="*" element={<NotFound />} />
-                    <Route path="UserPanel/:id" element={<PrivateRoute2><UserPanel /></PrivateRoute2>} />
+                    <Route path="UserPanel/:id" element={<PrivateRoute><UserPanel /></PrivateRoute>} />
+                    <Route path="EmployeePanel" element={<PrivateRoute><EmployeePanel /></PrivateRoute>} />
                     <Route path="AdminPanel" element={<PrivateRoute><AdminPanel /></PrivateRoute>} />
                 </Routes>
                 <Backtotop />

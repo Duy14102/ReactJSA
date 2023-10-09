@@ -79,6 +79,7 @@ app.post("/AddAdmin", (request, response) => {
                 email: request.body.email,
                 password: hashedPassword,
                 fullname: request.body.fullname,
+                phonenumber: request.body.phonenumber,
                 role: 2,
             });
 
@@ -232,6 +233,23 @@ app.get("/GetAllUser", async (req, res) => {
 
         results.result = getuser.slice(start, end)
         res.send({ results });
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Give Employee Task
+app.post("/GiveTaskEmployee", (req, res) => {
+    try {
+        getUserD.updateOne({ _id: req.body.id }, {
+            $push: {
+                task: req.body.task
+            }
+        }).then(() => {
+            res.send({ data: "succeed" })
+        }).catch((err) => {
+            console.log(err);
+        })
     } catch (e) {
         console.log(e);
     }
@@ -395,7 +413,8 @@ app.get("/GetAllOrder", async (req, res) => {
 app.post("/UpdateStatusOrder", (req, res) => {
     try {
         getThisOrder.updateOne({ _id: req.query.id }, {
-            status: req.query.status
+            status: req.query.status,
+            employee: req.query.employee
         }).then(() => {
             res.send({ data: "Updated" })
         }).catch((err) => {
@@ -411,6 +430,9 @@ app.post("/DenyOrder", (req, res) => {
     try {
         getThisOrder.updateOne({ _id: req.query.id }, {
             denyreason: req.query.reason,
+            $push: {
+                employee: req.query.employee
+            },
             status: req.query.status
         }).then(() => {
             res.send({ data: "Updated" })
@@ -586,18 +608,6 @@ app.post("/UpdateMenu", async (req, res) => {
     }
 })
 
-//Get Data For Home Admin
-app.get("/GetData4Admin", async (req, res) => {
-    try {
-        const getUserLength = await getUserD.find({ role: 1 })
-        const getOrderLength = await getThisOrder.find({ status: 1 })
-        const getMenuLength = await getThisMenu.find({})
-        res.send({ userLength: getUserLength.length, orderLength: getOrderLength.length, menuLength: getMenuLength.length })
-    } catch (e) {
-        console.log(e);
-    }
-})
-
 //Add Contact
 const Contact = require("./model/Contact");
 const getContactNow = mongoose.model("Contact");
@@ -662,6 +672,188 @@ app.get("/GetContact", async (req, res) => {
 
         results.result = getIt.slice(start, end)
         res.send({ results });
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+const Booking = require("./model/Booking");
+const GetBooking = mongoose.model("Booking");
+app.post("/AddNewBooking", (req, res) => {
+    try {
+        const booking = new Booking({
+            name: req.body.name,
+            email: req.body.email,
+            date: req.body.date,
+            people: req.body.people,
+            status: 1,
+            message: req.body.message
+        })
+
+        booking.save().then(() => {
+            res.status(201).send({
+                message: "Table Created Successfully",
+            });
+        })
+            // catch error if the new user wasn't added successfully to the database
+            .catch((error) => {
+                res.status(500).send({
+                    message: "Error creating table",
+                    error,
+                });
+            });
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Get All Booking
+app.get("/GetBookingActive", async (req, res) => {
+    try {
+        const getIt = await GetBooking.find({ status: 1 });
+        const page = parseInt(req.query.page)
+        const limit = parseInt(req.query.limit)
+
+        const start = (page - 1) * limit
+        const end = page * limit
+
+        const results = {}
+        results.total = getIt.length
+        results.pageCount = Math.ceil(getIt.length / limit)
+
+        if (end < getIt.length) {
+            results.next = {
+                page: page + 1
+            }
+        }
+        if (start > 0) {
+            results.prev = {
+                page: page - 1
+            }
+        }
+
+        results.result = getIt.slice(start, end)
+        res.send({ results });
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+const Table = require("./model/Table");
+const GetTable = mongoose.model("Table");
+app.get("/GetAllTableActive", async (req, res) => {
+    try {
+        const getSome = await GetTable.find({ tablestatus: 1 })
+        res.send({ data: getSome })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Add Table when booking
+app.post("/AddTableCustomer", (req, res) => {
+    try {
+        GetTable.updateOne({ _id: req.body.tableid }, {
+            customerid: req.body.cusid,
+            tablestatus: 2
+        }).then(() => {
+            GetBooking.updateOne({ _id: req.body.cusid }, {
+                status: 2
+            }).then(() => {
+                res.send({ data: "succeed" })
+            }).catch((e) => {
+                console.log(e);
+            })
+        }).catch((err) => {
+            console.log(err);
+        })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Get Active Table
+app.get("/GetTableUse", async (req, res) => {
+    try {
+        const getIt = await GetTable.find({ tablestatus: 2 });
+        const page = parseInt(req.query.page)
+        const limit = parseInt(req.query.limit)
+
+        const start = (page - 1) * limit
+        const end = page * limit
+
+        const results = {}
+        results.total = getIt.length
+        results.pageCount = Math.ceil(getIt.length / limit)
+
+        if (end < getIt.length) {
+            results.next = {
+                page: page + 1
+            }
+        }
+        if (start > 0) {
+            results.prev = {
+                page: page - 1
+            }
+        }
+
+        results.result = getIt.slice(start, end)
+        res.send({ results });
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Add item to table
+app.post("/AddItemToTable", async (req, res) => {
+    const findDup = await GetTable.find({ _id: req.body.tableid }, { tableitems: { $elemMatch: { "item.foodname": req.body.foodname } } })
+    try {
+        if (findDup) {
+            GetTable.updateOne({ _id: req.body.tableid, "tableitems.item.foodname": req.body.foodname },
+                {
+                    $inc: {
+                        "tableitems.$.quantity" : 1
+                    }
+                }).then(() => {
+                    res.send({ data: "succeed" })
+                }).catch((e) => {
+                    console.log(e);
+                })
+        } else {
+            GetTable.updateOne({ _id: req.body.tableid },
+                {
+                    $push: {
+                        tableitems: req.body.item
+                    }
+                }).then(() => {
+                    res.send({ data: "succeed" })
+                }).catch((e) => {
+                    console.log(e);
+                })
+        }
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Get Data For Home Admin
+app.get("/GetData4Admin", async (req, res) => {
+    try {
+        const getUserLength = await getUserD.find({ role: 1 })
+        const getOrderLength = await getThisOrder.find({ status: 1 })
+        const getTableLength = await GetTable.find({ tablestatus: 2 })
+        const getMenuLength = await getThisMenu.find({})
+        res.send({ userLength: getUserLength.length, orderLength: getOrderLength.length, menuLength: getMenuLength.length, tableLength: getTableLength.length })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+app.get("/GetData4Employee", async (req, res) => {
+    try {
+        const activeOrder = await getThisOrder.find({ status: 1 })
+        const activeTable = await GetTable.find({ tablestatus: 2 })
+        res.send({ orderLength: activeOrder.length, tableLength: activeTable.length })
     } catch (e) {
         console.log(e);
     }

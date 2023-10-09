@@ -126,8 +126,10 @@ function LoginSite() {
                     });
                     if (result.data.role == 1) {
                         window.location.href = '/';
-                    } else {
+                    } else if (result.data.role == 3) {
                         window.location.href = '/AdminPanel';
+                    } else {
+                        window.location.href = '/EmployeePanel';
                     }
                 })
             })

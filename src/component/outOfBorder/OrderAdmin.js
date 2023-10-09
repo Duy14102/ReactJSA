@@ -1,11 +1,19 @@
 import axios from "axios";
+import jwtDecode from "jwt-decode";
 import PropTypes from "prop-types";
 import { Fragment, useEffect } from "react";
 import { useState } from "react";
 import Modal from 'react-modal';
 import Swal from "sweetalert2";
+import Cookies from "universal-cookie";
 
 function OrderAdmin({ Data }) {
+    const cookies = new Cookies()
+    const token = cookies.get("TOKEN")
+    const decode = jwtDecode(token)
+    const deliverEmployee = { id: decode.userId, email: decode.userEmail }
+    const takeEmployee = []
+    takeEmployee.push(deliverEmployee)
     const [Accept, setAccept] = useState(false)
     const [DenyReason, setDenyReason] = useState("")
     const [ModalData, setModalData] = useState([])
@@ -24,7 +32,8 @@ function OrderAdmin({ Data }) {
             url: 'http://localhost:3000/UpdateStatusOrder',
             params: {
                 id: e,
-                status: 2
+                status: 2,
+                employee: takeEmployee
             }
         }
         axios(configuration)
@@ -55,6 +64,7 @@ function OrderAdmin({ Data }) {
             params: {
                 id: id,
                 reason: DenyReason,
+                employee: takeEmployee,
                 status: 3
             }
         }
@@ -87,11 +97,15 @@ function OrderAdmin({ Data }) {
     var paymentCheck = ""
     var total2 = 0
     var fulltotal = 0
-    const datemodal = new Date(ModalData.createdAt)
+    const date = new Date(ModalData.createdAt).toLocaleDateString()
+    const time = new Date(ModalData.createdAt).toLocaleTimeString()
+    const datemodal = date + " - " + time
     return (
         <>
             {Data.map(i => {
-                const datetime = new Date(i.createdAt)
+                const date = new Date(i.createdAt).toLocaleDateString()
+                const time = new Date(i.createdAt).toLocaleTimeString()
+                const datetime = date + " - " + time
                 if (i.paymentmethod === 1) {
                     paymentCheck = "ATM"
                 } else if (i.paymentmethod === 2) {
@@ -119,7 +133,7 @@ function OrderAdmin({ Data }) {
                                         )
                                     })}
                                     <td>{i.phonenumber}</td>
-                                    <td>{datetime.toLocaleString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })}</td>
+                                    <td>{datetime}</td>
                                     <td>{statusCheck}</td>
                                     <td onClick={setModalOpenDetail2}><button onClick={() => setModalData(i)} className='btn btn-success'>Detail</button></td>
                                 </tr>
@@ -151,19 +165,19 @@ function OrderAdmin({ Data }) {
                 <h2 className='text-center'>Order Detail</h2>
                 <div className="coverNOut">
                     <p className="m-0"><b>Id</b> : {ModalData._id}</p>
-                    <p className="m-0"><b>Date</b> : {datemodal.toLocaleString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })}</p>
+                    <p className="m-0"><b>Date</b> : {datemodal}</p>
                 </div>
                 <hr />
                 {ModalData.user?.map((t) => {
                     var textSp = "( visisting guests )"
                     return (
-                        <>
+                        <Fragment key={t}>
                             {t.id === "none" ? (
                                 <p><b>Fullname</b> : {t.fullname} {textSp}</p>
                             ) : (
                                 <p><b>Fullname</b> : {t.fullname}</p>
                             )}
-                        </>
+                        </Fragment>
                     )
                 })}
                 <p><b>Phone number</b> : {ModalData.phonenumber}</p>

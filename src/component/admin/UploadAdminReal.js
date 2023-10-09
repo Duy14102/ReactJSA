@@ -5,6 +5,7 @@ function UploadAdminReal() {
     const [email, setEmail] = useState("");
     const [fullname, setFullname] = useState("");
     const [password, setPassword] = useState("");
+    const [phonenumber, setPhonenumber] = useState("");
     const [confirm, setConfirm] = useState("");
     const [error, displayError] = useState(false);
 
@@ -18,6 +19,7 @@ function UploadAdminReal() {
                 email,
                 password,
                 fullname,
+                phonenumber
             },
         };
         if (password !== confirm) {
@@ -55,10 +57,6 @@ function UploadAdminReal() {
                         <input className='form-control' type="email" name="email" value={email} onChange={(e) => setEmail(e.target.value)} />
                     </div>
                     <div>
-                        <label>Fullname</label>
-                        <input className='form-control' type="text" name="fullname" value={fullname} onChange={(e) => setFullname(e.target.value)} />
-                    </div>
-                    <div>
                         <label>Password</label>
                         <input className='form-control' type="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)} />
                     </div>
@@ -72,6 +70,16 @@ function UploadAdminReal() {
                     ) : (
                         <input type='hidden' />
                     )}
+
+                    <div>
+                        <label>Fullname</label>
+                        <input className='form-control' type="text" name="fullname" value={fullname} onChange={(e) => setFullname(e.target.value)} />
+                    </div>
+
+                    <div>
+                        <label>Phone Number</label>
+                        <input className='form-control' type="number" name="phonenumber" value={phonenumber} onChange={(e) => setPhonenumber(e.target.value)} />
+                    </div>
                     <div className='text-center mt-3'>
                         <button className="btn btn-primary" type='submit' onClick={(e) => handleSubmit(e)}>
                             Add

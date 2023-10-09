@@ -119,15 +119,8 @@ function Header() {
                             </div>
                         </div>
                         <NavLink reloadDocument to="/TrackOrder" className="nav-item nav-link">Track Order</NavLink>
+                        <NavLink reloadDocument to="/BookingSite" className="nav-item nav-link">Booking</NavLink>
                         <NavLink reloadDocument to="/ContactSite" className="nav-item nav-link">Contact</NavLink>
-                        <div id="headups" className="nav-item dropdown">
-                            <a href="# " className="nav-link dropdown-toggle" data-bs-toggle="dropdown">More</a>
-                            <div className="dropdown-menu m-0 text-center">
-                                <NavLink reloadDocument to="/BookingSite" className="dropdown-item">Booking</NavLink>
-                                <NavLink reloadDocument to="/TeamSite" className="dropdown-item">Our Team</NavLink>
-                                <NavLink reloadDocument to="/TestiSite" className="dropdown-item">Testimonial</NavLink>
-                            </div>
-                        </div>
                         <NavLink reloadDocument to="/Cart" className="nav-item nav-link">
                             <i className="fa-solid fa-cart-shopping"></i>
                             <span className='badge' id='lblCartCount'> {countVal} </span>

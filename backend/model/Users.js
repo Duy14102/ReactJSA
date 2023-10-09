@@ -27,6 +27,11 @@ const UserSchema = new mongoose.Schema({
         type: Array
     },
 
+    task: {
+        type: Array,
+        default: null,
+    },
+
     userimage: {
         default: null,
         type: String

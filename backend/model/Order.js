@@ -6,6 +6,11 @@ const OrderSchema = new mongoose.Schema({
         type: Array
     },
 
+    employee: {
+        type: Array,
+        default: null
+    },
+
     phonenumber: {
         type: String,
         required: [true, "Please provide a phone numbers!"],

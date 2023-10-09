@@ -9,7 +9,7 @@ function MainUser() {
             <div className='text-right pb-3'>
                 {/* <NavLink to="/UploadMenuReal" className="btn btn-primary" >Add</NavLink> */}
                 <button className='btn btn-primary' onClick={setModalOpenAdmin}>
-                    Add Admin
+                    Add Employee
                 </button>
             </div>
             <Modal

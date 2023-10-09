@@ -5,6 +5,7 @@ import Modal from 'react-modal';
 import axios from "axios";
 import Swal from "sweetalert2";
 import ReactPaginate from 'react-paginate';
+import GiveTask from "./GiveTask";
 
 function GetUser() {
     const [data, setData] = useState([]);
@@ -121,14 +122,16 @@ function GetUser() {
                                 <td>{i.fullname}</td>
                                 {i.role === 1 ? (
                                     <td>User</td>
-                                ) : (
+                                ) : i.role === 3 ? (
                                     <td>Admin</td>
+                                ) : (
+                                    <td>Employee</td>
                                 )}
                                 {decode.userId === i._id ? (
                                     <td onClick={setModalOpenDetail}><button onClick={() => DetailUser(i._id)} className="btn btn-success">Detail</button></td>
-                                ) : (
-                                    <td></td>
-                                )}
+                                ) : i.role === 2 ? (
+                                    <td ><GiveTask id={i._id} /></td>
+                                ) : (<td></td>)}
                             </tr>
                         </tbody>
                     )

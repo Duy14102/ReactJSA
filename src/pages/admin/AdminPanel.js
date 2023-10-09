@@ -238,7 +238,7 @@ function AdminPanel() {
                                     <span className="title">
                                         Active Table
                                     </span>
-                                    <h2 className="text">12</h2>
+                                    <h2 className="text">{CountData?.tableLength}</h2>
                                     <hr />
                                     <p className='m-0 text-white'>9% increase</p>
                                 </div>

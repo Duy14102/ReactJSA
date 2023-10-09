@@ -62,7 +62,9 @@ function Tracking() {
                             </thead>
                             <tbody>
                                 {Order.map((i) => {
-                                    const datetime = new Date(i.createdAt)
+                                    const date = new Date(i.createdAt).toLocaleDateString()
+                                    const time = new Date(i.createdAt).toLocaleTimeString()
+                                    const datetime = date + " - " + time
                                     var statusCheck = ""
                                     var paymentCheck = ""
                                     var total2 = 0
@@ -92,7 +94,7 @@ function Tracking() {
                                                     )
                                                 })}
                                                 <td>{i.phonenumber}</td>
-                                                <td>{datetime.toLocaleString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })}</td>
+                                                <td>{datetime}</td>
                                                 <td>{statusCheck}</td>
                                                 <td><button onClick={setModalOpenDetail} className='btn btn-success'>Detail</button></td>
                                             </tr>
@@ -116,7 +118,7 @@ function Tracking() {
                                                 <h2 className='text-center'>Order Detail</h2>
                                                 <div className="coverNOut">
                                                     <p className="m-0"><b>Id</b> : {i._id}</p>
-                                                    <p className="m-0"><b>Date</b> : {datetime.toLocaleString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })}</p>
+                                                    <p className="m-0"><b>Date</b> : {datetime}</p>
                                                 </div>
                                                 <hr />
                                                 {i.user.map((t) => {

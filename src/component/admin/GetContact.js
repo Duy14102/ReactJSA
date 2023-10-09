@@ -69,7 +69,9 @@ function GetContact() {
             })
     }
 
-    const datemodal = new Date(ModalData.createdAt)
+    const date = new Date(ModalData.createdAt).toLocaleDateString()
+    const time = new Date(ModalData.createdAt).toLocaleTimeString()
+    const datemodal = date + " - " + time
     return (
         <>
             {GetContact.length > 0 ? (
@@ -86,12 +88,14 @@ function GetContact() {
                         </thead>
                         <tbody>
                             {GetContact.map((i) => {
-                                const datetime = new Date(i.createdAt)
+                                const date = new Date(i.createdAt).toLocaleDateString()
+                                const time = new Date(i.createdAt).toLocaleTimeString()
+                                const datetime = date + " - " + time
                                 return (
                                     <tr key={i._id} className='text-center' style={{ background: "#2C343A", color: "lightgray" }}>
                                         <td>{i.name}</td>
                                         <td>{i.email}</td>
-                                        <td>{datetime.toLocaleString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })}</td>
+                                        <td>{datetime}</td>
                                         <td onClick={setModalOpenDetail2}><button onClick={() => setModalData(i)} className='btn btn-success'>Detail</button></td>
                                     </tr>
                                 )
@@ -138,7 +142,7 @@ function GetContact() {
                         }}>
                         <h2 className='text-center'>Contact Details</h2>
                         <div className="coverNOut">
-                            <p className="m-0"><b>Date</b> : {datemodal.toLocaleString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })}</p>
+                            <p className="m-0"><b>Date</b> : {datemodal}</p>
                             <button onClick={() => DeleteContact(ModalData._id)} className="btn btn-danger">Delete</button>
                         </div>
                         <hr />
