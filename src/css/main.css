@@ -13,6 +13,54 @@ li {
   border: none;
 }
 
+.login100-form .textDeny {
+  padding: 2%;
+}
+
+.inputImageDup {
+  width: 150px;
+  height: 100px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.aboveCameraAppear {
+  position: relative;
+}
+
+.cameraAppear {
+  opacity: 0;
+  color: #fff;
+  top: 35px;
+  text-align: center;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+
+.inputImageDup:hover .cameraAppear {
+  opacity: 1;
+}
+
+.inputImageDup img {
+  border-radius: 5px;
+}
+
+.overHereB {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%
+}
+
+.overHereB .insideHereB {
+  width: 45%;
+}
+
+.overHereB .insideHereB .textDeny {
+  padding: 2%;
+}
+
 textarea {
   outline: none;
   border: none;

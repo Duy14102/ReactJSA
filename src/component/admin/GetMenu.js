@@ -144,6 +144,16 @@ function GetMenu() {
             });
     }
 
+    useEffect(() => {
+        const getHome = document.getElementById('inputimage')
+        if (getHome) {
+            getHome.onchange = function () {
+                var src = URL.createObjectURL(this.files[0])
+                document.getElementById('output').src = src
+            }
+        }
+    })
+
     const VND = new Intl.NumberFormat('vi-VN', {
         style: 'currency',
         currency: 'VND',
@@ -209,8 +219,7 @@ function GetMenu() {
                         marginRight: "-50%",
                         transform: "translate(-50%, -50%)",
                         backgroundColor: "white",
-                        width: 650,
-                        overflow: "hidden",
+                        width: 750,
                         zIndex: 999
                     },
                 }}>
@@ -218,35 +227,51 @@ function GetMenu() {
                 {Object.values(detail).map(i => {
                     return (
                         <div className='p-3' key={i._id}>
+                            <h3 className="text-center">Menu Detail</h3>
+                            <hr />
                             <form onSubmit={(e) => handleSubmit(e, i._id)} className="login100-form validate-form">
-                                <div className='d-flex mx-auto'>
-                                    <div>
-                                        <img loading="lazy" alt='' width={300} height={300} src={i.foodimage} />
+                                <div className='d-flex w-100' style={{ gap: 5 + "%" }}>
+                                    <div style={{ width: 20 + "%" }}>
+                                        <label className="inputImageDup" htmlFor="inputimage">
+                                            <div className="aboveCameraAppear">
+                                                <div className="cameraAppear">
+                                                    <i className="fa fa-camera fa-2x"></i>
+                                                </div>
+                                            </div>
+                                            <img id="output" width="100%" height="100%" alt="" src={i.foodimage} />
+                                        </label>
+                                        <input id="inputimage" onChange={convertToBase64} className="fuckThatImage" type="file" style={{ display: "none" }} />
                                     </div>
-                                    <div className='text-left' style={{ paddingLeft: 10 + "px" }}>
-                                        <label>Name</label>
-                                        <input className='form-control' type='text' name='updatename' defaultValue={i.foodname} value={updatename} onChange={(e) => setFoodname(e.target.value)}></input>
-                                        <label>Category</label>
-                                        <input className='form-control' type='text' name='updatecategory' defaultValue={i.foodcategory} value={updatecategory} onChange={(e) => setFoodcategory(e.target.value)} ></input>
-                                        <label>Price</label>
-                                        <input className='form-control' type='number' name='updateprice' defaultValue={i.foodprice} value={updateprice} onChange={(e) => setFoodprice(e.target.value)} ></input>
-                                        <label>Quantity</label>
-                                        <input className='form-control' type='number' name='updatequantity' defaultValue={i.foodquantity} value={updatequantity} onChange={(e) => setFoodquantity(e.target.value)} ></input>
+                                    <div style={{ width: 80 + "%" }}>
+                                        <div className="overHereB">
+                                            <div className="insideHereB">
+                                                <label>Name</label>
+                                                <input className='textDeny' type='text' name='updatename' defaultValue={i.foodname} value={updatename} onChange={(e) => setFoodname(e.target.value)}></input>
+                                            </div>
+                                            <div className="insideHereB">
+                                                <label>Category</label>
+                                                <input className='textDeny' type='text' name='updatecategory' defaultValue={i.foodcategory} value={updatecategory} onChange={(e) => setFoodcategory(e.target.value)} ></input>
+                                            </div>
+                                        </div>
+                                        <div className="overHereB">
+                                            <div className="insideHereB">
+                                                <label>Price</label>
+                                                <input className='textDeny' type='number' name='updateprice' defaultValue={i.foodprice} value={updateprice} onChange={(e) => setFoodprice(e.target.value)} ></input>
+                                            </div>
+                                            <div className="insideHereB">
+                                                <label>Quantity</label>
+                                                <input className='textDeny' type='number' name='updatequantity' defaultValue={i.foodquantity} value={updatequantity} onChange={(e) => setFoodquantity(e.target.value)} ></input>
+                                            </div>
+                                        </div>
                                         <label>Description</label>
-                                        <input className='form-control' type='text' name='updatedescription' defaultValue={i.fooddescription} value={updatedescription} onChange={(e) => setFooddescription(e.target.value)}></input>
-                                        <label>Image</label>
-                                        <input className='form-control' type='file' name='updateimage' onChange={convertToBase64} />
+                                        <textarea className='textDeny' type='text' name='updatedescription' defaultValue={i.fooddescription} value={updatedescription} onChange={(e) => setFooddescription(e.target.value)}></textarea>
                                     </div>
                                 </div>
                                 <hr />
                             </form>
                             <div className='d-flex justify-content-around mt-3'>
-                                <div>
-                                    <button type='submit' onClick={(e) => handleSubmit(e, i._id)} className='btn btn-success'>Update</button>
-                                </div>
-                                <div>
-                                    <button onClick={() => DeleteMenu(i._id)} className='btn btn-danger'>Delete</button>
-                                </div>
+                                <button onClick={() => DeleteMenu(i._id)} className='btn btn-danger'>Delete</button>
+                                <button type='submit' onClick={(e) => handleSubmit(e, i._id)} className='btn btn-primary'>Update</button>
                             </div>
                         </div >
                     )

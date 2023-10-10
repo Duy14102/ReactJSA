@@ -1,6 +1,11 @@
 const mongoose = require("mongoose");
 
 const BookingSchema = new mongoose.Schema({
+    employee: {
+        type: Array,
+        default: null
+    },
+
     name: {
         type: String
     },
@@ -18,6 +23,7 @@ const BookingSchema = new mongoose.Schema({
     },
 
     denyreason: {
+        default: null,
         type: String
     },
 
@@ -29,6 +35,11 @@ const BookingSchema = new mongoose.Schema({
         default: null,
         type: String
     },
+
+    fulltotal: {
+        type: String,
+        default: null
+    }
 
 }, { timestamps: { createdAt: true, updatedAt: false } })
 

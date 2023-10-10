@@ -1,21 +1,16 @@
-import axios from "axios"
-import { useState, useEffect, useRef } from "react"
+import { useState, useRef, useEffect } from "react";
 import ReactPaginate from "react-paginate";
 import Modal from 'react-modal';
+import axios from "axios";
 import Swal from "sweetalert2";
 import Cookies from "universal-cookie";
 import jwtDecode from "jwt-decode";
 
-function GetTable() {
+function BookingManage() {
     const [booking, setBooking] = useState([])
     const [ModalData, setModalData] = useState([])
-    const [GetTable, setGetTable] = useState([])
-    const [TableId, setTableId] = useState()
+    const [TableData, setTableData] = useState([])
     const [modalOpenDetail, setModalOpenDetail] = useState(false);
-    const [Denyreason, setDenyreason] = useState("")
-    const [correct, setCorrect] = useState(false)
-    const [deny, setDeny] = useState(false)
-    const [CheckTableId, setCheckTableId] = useState(false)
 
     const cookies = new Cookies()
     const token = cookies.get("TOKEN")
@@ -27,11 +22,12 @@ function GetTable() {
     const [pageCount, setPageCount] = useState(6);
     const currentPage = useRef();
     const limit = 8
+    var total = 0
+    var fulltotal = 0
 
     useEffect(() => {
         currentPage.current = 1;
         getPagination()
-        getTableActive()
     }, [])
 
     function handlePageClick(e) {
@@ -44,7 +40,7 @@ function GetTable() {
             method: "get",
             url: "http://localhost:3000/GetBookingByStatus",
             params: {
-                status: 1,
+                status: 2,
                 page: currentPage.current,
                 limit: limit
             }
@@ -59,84 +55,59 @@ function GetTable() {
             });
     }
 
-    function getTableActive() {
+    const getThatTable = (e) => {
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/GetAllTableActive",
-        }
-        axios(configuration)
-            .then((res) => {
-                setGetTable(res.data.data)
-            }).catch((err) => {
-                console.log(err);
-            })
-    }
-
-    const addTableBooking = (e, id) => {
-        e.preventDefault()
-        if (TableId) {
-            const configuration = {
-                method: "post",
-                url: "http://localhost:3000/AddTableCustomer",
-                data: {
-                    tableid: TableId,
-                    cusid: id
-                }
+            url: "http://localhost:3000/GetTable4BookingHistory",
+            params: {
+                cusid: e
             }
-            axios(configuration)
-                .then(() => {
-                    Swal.fire(
-                        'Booking Table Successfully!',
-                        '',
-                        'success'
-                    ).then(function () {
-                        window.location.reload()
-                    })
-                }).catch(() => {
-                    Swal.fire(
-                        'Booking Table Fail!',
-                        '',
-                        'error'
-                    ).then(function () {
-                        window.location.reload()
-                    })
-                })
-        } else {
-            setCheckTableId(true)
-        }
+        };
+        axios(configuration)
+            .then((result) => {
+                setTableData(result.data)
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     }
 
-    const denybooking = (e, id) => {
-        e.preventDefault()
+    const checkOut = (e, tableid) => {
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/DenyBookingCustomer",
+            url: "http://localhost:3000/Checkout4Booking",
             data: {
-                id: id,
-                status: 4,
-                denyreason: Denyreason,
+                id: e,
+                fulltotal: fulltotal,
+                tableid: tableid,
                 employee: takeEmployee
             }
-        }
+        };
         axios(configuration)
             .then(() => {
                 Swal.fire(
-                    'Denied Successfully!',
+                    'Checkout Successfully!',
                     '',
                     'success'
                 ).then(function () {
                     window.location.reload()
                 })
-            }).catch(() => {
+            })
+            .catch(() => {
                 Swal.fire(
-                    'Denied Fail!',
+                    'Checkout Fail!',
                     '',
                     'error'
                 ).then(function () {
                     window.location.reload()
                 })
-            })
+            });
     }
+
+    const VND = new Intl.NumberFormat('vi-VN', {
+        style: 'currency',
+        currency: 'VND',
+    });
 
     const date = new Date(ModalData.createdAt).toLocaleDateString()
     const time = new Date(ModalData.createdAt).toLocaleTimeString()
@@ -161,8 +132,8 @@ function GetTable() {
                     const time = new Date(i.createdAt).toLocaleTimeString()
                     const datetime = date + " - " + time
                     var stau = ""
-                    if (i.status === 1) {
-                        stau = "Pending"
+                    if (i.status === 2) {
+                        stau = "Serving"
                     }
                     return (
                         <tbody key={i._id}>
@@ -171,7 +142,7 @@ function GetTable() {
                                 <td>{i.email}</td>
                                 <td>{datetime}</td>
                                 <td>{stau}</td>
-                                <td onClick={setModalOpenDetail}><button onClick={() => setModalData(i)} className='btn btn-success'>Detail</button></td>
+                                <td onClick={setModalOpenDetail}><button onClick={() => { setModalData(i); getThatTable(i._id) }} className='btn btn-success'>Detail</button></td>
                             </tr>
                         </tbody>
                     )
@@ -224,68 +195,61 @@ function GetTable() {
                 <p><b>Name</b> : {ModalData.name}</p>
                 <p><b>Email</b> : {ModalData.email}</p>
                 <p><b>People</b> : {ModalData.people}</p>
+                {Object.values(TableData).map((u) => {
+                    return (
+                        <p key={u._id}><b>Table</b> : {u.tablename}</p>
+                    )
+                })}
                 <p><b>Date Arrived</b> : {datemodal2}</p>
-                {ModalData.status === 1 ? (
-                    <p><b>Status</b> : Pending</p>
+                {ModalData.status === 2 ? (
+                    <p><b>Status</b> : Serving</p>
                 ) : null}
                 <p><b>Note</b> : </p>
                 <textarea className="contactMessage" style={{ pointerEvents: "none" }} defaultValue={ModalData.message} />
-                <div className="d-flex justify-content-around pt-2">
-                    {correct ? (
-                        <>
-                            <button className="btn btn-success">Approve</button>
-                            <button style={{ pointerEvents: "none", opacity: 0.5 }} className="btn btn-danger">Deny</button>
-                        </>
-                    ) : deny ? (
-                        <>
-                            <button style={{ pointerEvents: "none", opacity: 0.5 }} className="btn btn-success">Approve</button>
-                            <button className="btn btn-danger">Deny</button>
-                        </>
-                    ) : (
-                        <>
-                            <button onClick={() => setCorrect(true)} className="btn btn-success">Approve</button>
-                            <button onClick={() => setDeny(true)} className="btn btn-danger">Deny</button>
-                        </>
-                    )}
+                <p className="pt-2"><b>Items</b> : </p>
+                <table className="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {Object.values(TableData).map((z) => {
+                            return (
+                                z.tableitems?.map((r) => {
+                                    total = r.item.foodprice * r.quantity
+                                    fulltotal += total
+                                    return (
+                                        <tr key={r}>
+                                            <td>{r.item.foodname}</td>
+                                            <td>{r.item.foodcategory}</td>
+                                            <td>{r.quantity}</td>
+                                            <td>{VND.format(r.item.foodprice)}</td>
+                                        </tr>
+                                    )
+                                })
+                            )
+                        })}
+                        <tr>
+                            <th colSpan={3}>Fulltotal</th>
+                            <th>{VND.format(fulltotal)}</th>
+                        </tr>
+                    </tbody>
+                </table>
+                <div className="d-flex justify-content-around align-items-center">
+                    {Object.values(TableData).map((q) => {
+                        return (
+                            <button onClick={() => checkOut(ModalData._id, q._id)} className="btn btn-success">Checkout</button>
+                        )
+                    })}
+                    <button className="btn btn-info">Change Table</button>
                 </div>
-                {correct ? (
-                    <div className="pt-3">
-                        <p>Choosing Table : </p>
-                        <form onSubmit={(e) => addTableBooking(e, ModalData._id)}>
-                            <div className="d-flex" style={{ gap: 2 + "%" }}>
-                                <select onInput={(e) => setTableId(e.target.value)} className="w-25" required>
-                                    <option selected disabled hidden>Choose Table</option>
-                                    {Object.values(GetTable).map((i) => {
-                                        return (
-                                            <option value={i._id} key={i._id}>{i.tablename}</option>
-                                        )
-                                    })}
-                                </select>
-                                {CheckTableId ? (
-                                    <p className="m-0 text-danger">Table need to be choose!</p>
-                                ) : null}
-                            </div>
-                            <div style={{ gap: 1 + "%" }} className="d-flex mt-3">
-                                <button type="submit" className="btn btn-primary ">Comfirm</button>
-                                <button onClick={() => { setCheckTableId(false); setCorrect(false) }} className="btn btn-secondary ">Cancel</button>
-                            </div>
-                        </form>
-                    </div>
-                ) : deny ? (
-                    <div className="pt-3">
-                        <p>Reason why deny : </p>
-                        <form onSubmit={(e) => denybooking(e, ModalData._id)}>
-                            <textarea onChange={(e) => setDenyreason(e.target.value)} className="textDeny" required />
-                            <div style={{ gap: 1 + "%" }} className="d-flex mt-2">
-                                <button type="submit" className="btn btn-primary ">Comfirm</button>
-                                <button onClick={() => setDeny(false)} className="btn btn-secondary ">Cancel</button>
-                            </div>
-                        </form>
-                    </div>
-                ) : null}
                 <button className='closeModal' onClick={() => setModalOpenDetail(false)}>x</button>
             </Modal>
         </>
     )
 }
-export default GetTable
+export default BookingManage

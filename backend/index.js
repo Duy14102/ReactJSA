@@ -707,10 +707,59 @@ app.post("/AddNewBooking", (req, res) => {
     }
 })
 
-//Get All Booking
-app.get("/GetBookingActive", async (req, res) => {
+//Deny Booking
+app.post("/DenyBookingCustomer", (req, res) => {
     try {
-        const getIt = await GetBooking.find({ status: 1 });
+        GetBooking.updateOne({ _id: req.body.id }, {
+            status: req.body.status,
+            denyreason: req.body.denyreason,
+            employee: req.body.employee
+        }).then(() => {
+            res.send({ data: "succeed" })
+        }).catch((err) => {
+            console.log(err);
+        })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Get Booking By Status
+app.get("/GetBookingByStatus", async (req, res) => {
+    try {
+        const getIt = await GetBooking.find({ status: req.query.status });
+        const page = parseInt(req.query.page)
+        const limit = parseInt(req.query.limit)
+
+        const start = (page - 1) * limit
+        const end = page * limit
+
+        const results = {}
+        results.total = getIt.length
+        results.pageCount = Math.ceil(getIt.length / limit)
+
+        if (end < getIt.length) {
+            results.next = {
+                page: page + 1
+            }
+        }
+        if (start > 0) {
+            results.prev = {
+                page: page - 1
+            }
+        }
+
+        results.result = getIt.slice(start, end)
+        res.send({ results });
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Get History Booking
+app.get("/GetBookingHistory", async (req, res) => {
+    try {
+        const getIt = await GetBooking.find({ status: { $in: [3, 4] } });
         const page = parseInt(req.query.page)
         const limit = parseInt(req.query.limit)
 
@@ -744,6 +793,16 @@ const GetTable = mongoose.model("Table");
 app.get("/GetAllTableActive", async (req, res) => {
     try {
         const getSome = await GetTable.find({ tablestatus: 1 })
+        res.send({ data: getSome })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Get Table for booking history
+app.get("/GetTable4BookingHistory", async (req, res) => {
+    try {
+        const getSome = await GetTable.findOne({ customerid: req.query.cusid })
         res.send({ data: getSome })
     } catch (e) {
         console.log(e);
@@ -808,29 +867,56 @@ app.get("/GetTableUse", async (req, res) => {
 app.post("/AddItemToTable", async (req, res) => {
     const findDup = await GetTable.find({ _id: req.body.tableid }, { tableitems: { $elemMatch: { "item.foodname": req.body.foodname } } })
     try {
-        if (findDup) {
-            GetTable.updateOne({ _id: req.body.tableid, "tableitems.item.foodname": req.body.foodname },
-                {
-                    $inc: {
-                        "tableitems.$.quantity" : 1
-                    }
-                }).then(() => {
-                    res.send({ data: "succeed" })
-                }).catch((e) => {
-                    console.log(e);
-                })
-        } else {
-            GetTable.updateOne({ _id: req.body.tableid },
-                {
-                    $push: {
-                        tableitems: req.body.item
-                    }
-                }).then(() => {
-                    res.send({ data: "succeed" })
-                }).catch((e) => {
-                    console.log(e);
-                })
+        for (var i = 0; i < findDup.length; i++) {
+            if (findDup[i].tableitems.length > 0) {
+                GetTable.updateOne({ _id: req.body.tableid, "tableitems.item.foodname": req.body.foodname },
+                    {
+                        $inc: {
+                            "tableitems.$.quantity": req.body.quantity
+                        }
+                    }).then(() => {
+                        res.send({ data: "succeed" })
+                    }).catch((e) => {
+                        console.log(e);
+                    })
+            } else {
+                GetTable.updateOne({ _id: req.body.tableid },
+                    {
+                        $push: {
+                            tableitems: req.body.item
+                        }
+                    }).then(() => {
+                        res.send({ data: "succeed" })
+                    }).catch((e) => {
+                        console.log(e);
+                    })
+            }
         }
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Checkout for booking
+app.post("/Checkout4Booking", (req, res) => {
+    try {
+        GetBooking.updateOne({ _id: req.body.id }, {
+            status: 3,
+            fulltotal: req.body.fulltotal,
+            employee: req.body.employee
+        }).then(() => {
+            GetTable.updateOne({ _id: req.body.tableid }, {
+                customerid: null,
+                tablestatus: 1,
+                tableitems: []
+            }).then(() => {
+                res.send({ data: "succeed" })
+            }).catch((err) => {
+                console.log(err);
+            })
+        }).catch((e) => {
+            console.log(e);
+        })
     } catch (e) {
         console.log(e);
     }
@@ -843,7 +929,9 @@ app.get("/GetData4Admin", async (req, res) => {
         const getOrderLength = await getThisOrder.find({ status: 1 })
         const getTableLength = await GetTable.find({ tablestatus: 2 })
         const getMenuLength = await getThisMenu.find({})
-        res.send({ userLength: getUserLength.length, orderLength: getOrderLength.length, menuLength: getMenuLength.length, tableLength: getTableLength.length })
+        const activeBooking = await GetBooking.find({ status: 1 })
+        const waitingBooking = await GetBooking.find({ status: 2 })
+        res.send({ userLength: getUserLength.length, orderLength: getOrderLength.length, menuLength: getMenuLength.length, tableLength: getTableLength.length, actBookingLength: activeBooking.length, waitBookingLength: waitingBooking.length })
     } catch (e) {
         console.log(e);
     }
@@ -853,7 +941,9 @@ app.get("/GetData4Employee", async (req, res) => {
     try {
         const activeOrder = await getThisOrder.find({ status: 1 })
         const activeTable = await GetTable.find({ tablestatus: 2 })
-        res.send({ orderLength: activeOrder.length, tableLength: activeTable.length })
+        const activeBooking = await GetBooking.find({ status: 1 })
+        const waitingBooking = await GetBooking.find({ status: 2 })
+        res.send({ orderLength: activeOrder.length, tableLength: activeTable.length, actBookingLength: activeBooking.length, waitBookingLength: waitingBooking.length })
     } catch (e) {
         console.log(e);
     }

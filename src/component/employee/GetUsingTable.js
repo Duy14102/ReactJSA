@@ -77,6 +77,7 @@ function GetUsingTable() {
     const takeitNow = (e, k) => {
         const item = { item: k, quantity: QuantityAdd }
         var foodname = ""
+        var quantity = parseInt(QuantityAdd)
         if (k) {
             foodname = k.foodname
         }
@@ -87,6 +88,7 @@ function GetUsingTable() {
             data: {
                 tableid: ModalData._id,
                 item: item,
+                quantity: quantity,
                 foodname: foodname
             }
         };
@@ -106,6 +108,11 @@ function GetUsingTable() {
                 )
             });
     }
+
+    const VND = new Intl.NumberFormat('vi-VN', {
+        style: 'currency',
+        currency: 'VND',
+    });
 
     function resetTable() {
         window.location.reload()
@@ -176,14 +183,17 @@ function GetUsingTable() {
                         transform: "translate(-50%, -50%)",
                         backgroundColor: "white",
                         width: 800,
-                        overflow: "hidden",
                         zIndex: 999
                     },
                 }}>
                 <h2 className='text-center'>Table Detail</h2>
                 <div className="coverNOut">
                     <p className="m-0"><b>Id</b> : {ModalData._id}</p>
-                    <p className="m-0"><b>Date</b> : {ModalData.customerid}</p>
+                    {ModalData.customerid ? (
+                        <p className="m-0"><b>Type</b> : Pre-order table</p>
+                    ) : (
+                        <p className="m-0"><b>Type</b> : Normal Table</p>
+                    )}
                 </div>
                 <hr />
                 <p><b>Table name</b> : {ModalData.tablename}</p>
@@ -204,11 +214,11 @@ function GetUsingTable() {
                     <tbody>
                         {ModalData.tableitems?.map((a) => {
                             return (
-                                <tr>
+                                <tr key={a.item._id}>
                                     <td>{a.item.foodname}</td>
                                     <td>{a.item.foodcategory}</td>
                                     <td>{a.quantity}</td>
-                                    <td>{a.item.foodprice}</td>
+                                    <td>{VND.format(a.item.foodprice)}</td>
                                 </tr>
                             )
                         })}

@@ -73,8 +73,8 @@ function GiveTask({ id }) {
                         <label className='pt-3' htmlFor='message'>Message</label>
                         <textarea value={Message} onChange={(e) => setMessage(e.target.value)} id='message' className="textDeny" name='message' required />
                         <div className='d-flex justify-content-around pt-1'>
-                            <button type='submit' className='btn btn-success'>Confirm</button>
                             <button type='button' onClick={() => setModalOpenDetail(false)} className='btn btn-secondary'>Cancel</button>
+                            <button type='submit' className='btn btn-success'>Confirm</button>
                         </div>
                     </form>
                 </div >

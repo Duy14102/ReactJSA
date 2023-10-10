@@ -11,6 +11,10 @@ import jwtDecode from 'jwt-decode';
 import GetContact from '../../component/admin/GetContact';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import BookingManage from '../../component/employee/BookingManage';
+import BookingHistory from '../../component/employee/BookingHistory';
+import GetBooking from '../../component/employee/GetBooking';
+import GetUsingTable from '../../component/employee/GetUsingTable';
 
 function AdminPanel() {
     const cookies = new Cookies();
@@ -197,12 +201,16 @@ function AdminPanel() {
                         )
                     })}
                     <div className="menu">
-                        <a data-menu="dashboard" href="# " className="active"><i className="fa-solid fa-house"></i></a>
-                        <a data-menu="users" href="# "><i className="fa-solid fa-user"></i></a>
-                        <a data-menu="download" href="# "><i className="fa-solid fa-utensils"></i></a>
-                        <a data-menu="about" href="# "><i className="fa-solid fa-cart-shopping"></i></a>
-                        <a data-menu="history" href="# "><i className="fa-solid fa-clock-rotate-left"></i></a>
-                        <a data-dialog="logout" href="# "><i className="fa-solid fa-right-from-bracket"></i></a>
+                        <a data-menu="dashboard" href="# " className="active unchange2"><i className="fa-solid fa-house"></i><p className='appearNow'>Home</p></a>
+                        <a data-menu="about" href="# " className='unchange2'><i className="fa-solid fa-cart-shopping"></i><p className='appearNow'>Cart</p></a>
+                        <a data-menu="users" href="# " className='unchange2'><i className="fa-solid fa-user"></i><p className='appearNow'>User</p></a>
+                        <a data-menu="download" href="# " className='unchange2'><i className="fa-solid fa-utensils"></i><p className='appearNow'>Menu</p></a>
+                        <a data-menu="table" href="# " className='unchange2'><i className="fa-solid fa-calendar-check"></i><p className='appearNow'>Table Manage</p></a>
+                        <a data-menu="booking" href="# " className='unchange2'><i className="fa-solid fa-calendar-plus"></i><p className='appearNow'>Booking Table</p></a>
+                        <a data-menu="passes" href="# " className='unchange2'><i className="fa-solid fa-briefcase"></i><p className='appearNow'>Booking Manage</p></a>
+                        <a data-menu="passeshistory" href="# " className='unchange2'><i className="fa-solid fa-business-time"></i><p className='appearNow'>Booking History</p></a>
+                        <a data-menu="history" href="# " className='unchange2'><i className="fa-solid fa-clock-rotate-left"></i><p className='appearNow'>Cart History</p></a>
+                        <a data-dialog="logout" href="# " className='unchange2'><i className="fa-solid fa-right-from-bracket"></i><p className='appearNow'>Logout</p></a>
                     </div>
                 </div>
                 <div className="content">
@@ -244,6 +252,22 @@ function AdminPanel() {
                                 </div>
                             </div>
                             <div className="card-verticle">
+                                <div className="card-small" style={{ background: "#ff9999" }}>
+                                    <div className='d-flex justify-content-between align-items-center'>
+                                        <div>
+                                            <span className="title">Active Booking</span>
+                                            <h2 className="text text-center">{CountData?.actBookingLength}</h2>
+                                        </div>
+                                        <div>
+                                            <span className="title">Serving Booking</span>
+                                            <h2 className="text text-center">{CountData?.waitBookingLength}</h2>
+                                        </div>
+                                    </div>
+                                    <hr />
+                                    <p className='m-0 text-white'>1.5% increase</p>
+                                </div>
+                            </div>
+                            <div className="card-verticle">
                                 <div className="card-small" style={{ background: "#D65B4A" }}>
                                     <span className="title">
                                         Total Menu
@@ -276,6 +300,16 @@ function AdminPanel() {
                             </div>
                         </div>
                     </div>
+                    <div className="page noflex" data-page="about">
+                        <div className="header">
+                            <div className="title">
+                                <h2>Cart</h2>
+                            </div>
+                        </div>
+                        <div className='px-5'>
+                            <GetOrder />
+                        </div>
+                    </div>
                     <div className="page noflex" data-page="users">
                         <div className="header">
                             <div className="title">
@@ -296,20 +330,50 @@ function AdminPanel() {
                             <MainMenu />
                         </div>
                     </div>
-                    <div className="page noflex" data-page="about">
+                    <div className="page noflex" data-page="table">
                         <div className="header">
                             <div className="title">
-                                <h2>Order</h2>
+                                <h2>Menu</h2>
                             </div>
                         </div>
                         <div className='px-5'>
-                            <GetOrder />
+                            <GetUsingTable />
+                        </div>
+                    </div>
+                    <div className="page noflex" data-page="booking">
+                        <div className="header">
+                            <div className="title">
+                                <h2>Menu</h2>
+                            </div>
+                        </div>
+                        <div className='px-5'>
+                            <GetBooking />
+                        </div>
+                    </div>
+                    <div className="page noflex" data-page="passes">
+                        <div className="header">
+                            <div className="title">
+                                <h2>Menu</h2>
+                            </div>
+                        </div>
+                        <div className='px-5'>
+                            <BookingManage />
+                        </div>
+                    </div>
+                    <div className="page noflex" data-page="passeshistory">
+                        <div className="header">
+                            <div className="title">
+                                <h2>Menu</h2>
+                            </div>
+                        </div>
+                        <div className='px-5'>
+                            <BookingHistory />
                         </div>
                     </div>
                     <div className="page noflex" data-page="history">
                         <div className="header">
                             <div className="title">
-                                <h2>Order History</h2>
+                                <h2>Cart History</h2>
                             </div>
                         </div>
                         <div className='px-5'>

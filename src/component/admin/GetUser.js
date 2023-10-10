@@ -172,8 +172,7 @@ function GetUser() {
                         marginRight: "-50%",
                         transform: "translate(-50%, -50%)",
                         backgroundColor: "white",
-                        width: 400,
-                        overflow: "hidden",
+                        width: 700,
                         zIndex: 999
                     },
                 }}>
@@ -184,18 +183,33 @@ function GetUser() {
                     }
                     return (
                         <div className='p-3' key={i._id}>
+                            <h3 className="text-center">User Detail</h3>
+                            <hr />
                             <form onSubmit={(e) => handleSubmit2(e, i._id)} className="login100-form validate-form">
-                                <label>Email</label>
-                                <input className='form-control' defaultValue={i.email} value={updateemail} type='email' name='updateemail' onChange={(e) => setEmail(e.target.value)} />
-                                <label>Password</label>
-                                <input className='form-control' value={updatepassword} type='password' name='updatepassword' onChange={(e) => setPassword(e.target.value)} placeholder="●●●●●●●●●●" />
-                                <label>Fullname</label>
-                                <input className='form-control' defaultValue={i.fullname} value={updatefullname} type='text' name='updatefullname' onChange={(e) => setFullname(e.target.value)} />
-                                <label>Phone number</label>
-                                <input className='form-control' defaultValue={i.phonenumber} value={updatephone} type='number' name='updatephone' onChange={(e) => setUpdatephone(e.target.value)} />
+                                <div className="overHereB">
+                                    <div className="insideHereB">
+                                        <label>Email</label>
+                                        <input className='textDeny' defaultValue={i.email} value={updateemail} type='email' name='updateemail' onChange={(e) => setEmail(e.target.value)} />
+                                    </div>
+                                    <div className="insideHereB">
+                                        <label>Password</label>
+                                        <input className='textDeny' value={updatepassword} type='password' name='updatepassword' onChange={(e) => setPassword(e.target.value)} placeholder="●●●●●●●●●●" />
+                                    </div>
+                                </div>
+                                <div className="overHereB pt-3">
+                                    <div className="insideHereB">
+                                        <label>Fullname</label>
+                                        <input className='textDeny' defaultValue={i.fullname} value={updatefullname} type='text' name='updatefullname' onChange={(e) => setFullname(e.target.value)} />
+                                    </div>
+                                    <div className="insideHereB">
+                                        <label>Phone number</label>
+                                        <input className='textDeny' defaultValue={i.phonenumber} value={updatephone} type='number' name='updatephone' onChange={(e) => setUpdatephone(e.target.value)} />
+                                    </div>
+                                </div>
                                 <hr />
-                                <div className="text-center mt-3">
-                                    <button type='submit' className='btn btn-success'>Update</button>
+                                <div className="d-flex justify-content-around align-items-center">
+                                    <button type='button' onClick={() => setModalOpenDetail(false)} className='btn btn-secondary'>Cancel</button>
+                                    <button type='submit' className='btn btn-primary'>Update</button>
                                 </div>
                             </form>
                         </div >

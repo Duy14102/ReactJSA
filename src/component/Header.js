@@ -128,33 +128,44 @@ function Header() {
                     </div>
                     <div id="headups" className="nav-item dropdown">
                         {token ? (
-                            <>
-                                {Object.values(GetUser).map((i) => {
-                                    if (i.userimage) {
-                                        return (
-                                            <Fragment key={i._id}>
-                                                <img data-bs-toggle="dropdown" className="nav-link dropdown-toggle imgUser" src={i.userimage} width={75} height={50} alt="" />
-                                                <div className="dropdown-menu m-0 text-center">
+                            Object.values(GetUser).map((i) => {
+                                const decode = jwtDecode(token)
+                                if (i.userimage) {
+                                    return (
+                                        <Fragment key={i._id}>
+                                            <img data-bs-toggle="dropdown" className="nav-link dropdown-toggle imgUser" src={i.userimage} width={75} height={50} alt="" />
+                                            <div className="dropdown-menu m-0 text-center">
+                                                {decode.userRole === 1 ? (
                                                     <NavLink reloadDocument to={`/UserPanel/${i._id}`} className="dropdown-item">Account</NavLink>
-                                                    <button onClick={() => logoutThis()} className="dropdown-item"><i className="fa-solid fa-right-from-bracket"></i> Logout</button>
-                                                </div>
-                                            </Fragment>
-                                        )
+                                                ) : decode.userRole === 2 ? (
+                                                    <NavLink reloadDocument to={"/EmployeePanel"} className="dropdown-item">Employee Panel</NavLink>
+                                                ) : decode.userRole === 3 ? (
+                                                    <NavLink reloadDocument to={"/AdminPanel"} className="dropdown-item">Admin Panel</NavLink>
+                                                ) : null}
+                                                <button onClick={() => logoutThis()} className="dropdown-item"><i className="fa-solid fa-right-from-bracket"></i> Logout</button>
+                                            </div>
+                                        </Fragment>
+                                    )
 
-                                    }
-                                    else {
-                                        return (
-                                            <Fragment key={i._id}>
-                                                <img data-bs-toggle="dropdown" className="nav-link dropdown-toggle imgUser" src="https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg" width={70} height={55} alt="" />
-                                                <div className="dropdown-menu m-0 text-center">
+                                }
+                                else {
+                                    return (
+                                        <Fragment key={i._id}>
+                                            <img data-bs-toggle="dropdown" className="nav-link dropdown-toggle imgUser" src="https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg" width={70} height={55} alt="" />
+                                            <div className="dropdown-menu m-0 text-center">
+                                                {decode.userRole === 1 ? (
                                                     <NavLink reloadDocument to={`/UserPanel/${i._id}`} className="dropdown-item">Account</NavLink>
-                                                    <button onClick={() => logoutThis()} className="dropdown-item"><i className="fa-solid fa-right-from-bracket"></i> Logout</button>
-                                                </div>
-                                            </Fragment>
-                                        )
-                                    }
-                                })}
-                            </>
+                                                ) : decode.userRole === 2 ? (
+                                                    <NavLink reloadDocument to={"/EmployeePanel"} className="dropdown-item">Employee Panel</NavLink>
+                                                ) : decode.userRole === 3 ? (
+                                                    <NavLink reloadDocument to={"/AdminPanel"} className="dropdown-item">Admin Panel</NavLink>
+                                                ) : null}
+                                                <button onClick={() => logoutThis()} className="dropdown-item"><i className="fa-solid fa-right-from-bracket"></i> Logout</button>
+                                            </div>
+                                        </Fragment>
+                                    )
+                                }
+                            })
                         ) : (
                             <NavLink reloadDocument to="/LoginSite" className="btn btn-primary py-2 px-4">Login</NavLink>
                         )}
