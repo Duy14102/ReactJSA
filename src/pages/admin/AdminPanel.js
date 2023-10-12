@@ -5,16 +5,13 @@ import { useEffect, useState } from 'react';
 import Cookies from 'universal-cookie';
 import MainMenu from '../../component/admin/MainMenu';
 import MainUser from '../../component/admin/MainUser';
-import GetOrder from '../../component/admin/GetOrder';
-import GetOrderHistory from '../../component/admin/GetOrderHistory';
 import jwtDecode from 'jwt-decode';
 import GetContact from '../../component/admin/GetContact';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import BookingManage from '../../component/employee/BookingManage';
-import BookingHistory from '../../component/employee/BookingHistory';
-import GetBooking from '../../component/employee/GetBooking';
-import GetUsingTable from '../../component/employee/GetUsingTable';
+import MainOrder from '../../component/admin/MainOrder';
+import MainBooking from '../../component/employee/MainBooking';
+import MainTable from '../../component/employee/MainTable';
 
 function AdminPanel() {
     const cookies = new Cookies();
@@ -205,11 +202,8 @@ function AdminPanel() {
                         <a data-menu="about" href="# " className='unchange2'><i className="fa-solid fa-cart-shopping"></i><p className='appearNow'>Cart</p></a>
                         <a data-menu="users" href="# " className='unchange2'><i className="fa-solid fa-user"></i><p className='appearNow'>User</p></a>
                         <a data-menu="download" href="# " className='unchange2'><i className="fa-solid fa-utensils"></i><p className='appearNow'>Menu</p></a>
-                        <a data-menu="table" href="# " className='unchange2'><i className="fa-solid fa-calendar-check"></i><p className='appearNow'>Table Manage</p></a>
-                        <a data-menu="booking" href="# " className='unchange2'><i className="fa-solid fa-calendar-plus"></i><p className='appearNow'>Booking Table</p></a>
-                        <a data-menu="passes" href="# " className='unchange2'><i className="fa-solid fa-briefcase"></i><p className='appearNow'>Booking Manage</p></a>
-                        <a data-menu="passeshistory" href="# " className='unchange2'><i className="fa-solid fa-business-time"></i><p className='appearNow'>Booking History</p></a>
-                        <a data-menu="history" href="# " className='unchange2'><i className="fa-solid fa-clock-rotate-left"></i><p className='appearNow'>Cart History</p></a>
+                        <a data-menu="table" href="# " className='unchange2'><i className="fa-solid fa-calendar-check"></i><p className='appearNow'>Table</p></a>
+                        <a data-menu="booking" href="# " className='unchange2'><i className="fa-solid fa-calendar-plus"></i><p className='appearNow'>Booking</p></a>
                         <a data-dialog="logout" href="# " className='unchange2'><i className="fa-solid fa-right-from-bracket"></i><p className='appearNow'>Logout</p></a>
                     </div>
                 </div>
@@ -307,7 +301,7 @@ function AdminPanel() {
                             </div>
                         </div>
                         <div className='px-5'>
-                            <GetOrder />
+                            <MainOrder />
                         </div>
                     </div>
                     <div className="page noflex" data-page="users">
@@ -333,51 +327,21 @@ function AdminPanel() {
                     <div className="page noflex" data-page="table">
                         <div className="header">
                             <div className="title">
-                                <h2>Menu</h2>
+                                <h2>Table</h2>
                             </div>
                         </div>
                         <div className='px-5'>
-                            <GetUsingTable />
+                            <MainTable />
                         </div>
                     </div>
                     <div className="page noflex" data-page="booking">
                         <div className="header">
                             <div className="title">
-                                <h2>Menu</h2>
+                                <h2>Booking</h2>
                             </div>
                         </div>
                         <div className='px-5'>
-                            <GetBooking />
-                        </div>
-                    </div>
-                    <div className="page noflex" data-page="passes">
-                        <div className="header">
-                            <div className="title">
-                                <h2>Menu</h2>
-                            </div>
-                        </div>
-                        <div className='px-5'>
-                            <BookingManage />
-                        </div>
-                    </div>
-                    <div className="page noflex" data-page="passeshistory">
-                        <div className="header">
-                            <div className="title">
-                                <h2>Menu</h2>
-                            </div>
-                        </div>
-                        <div className='px-5'>
-                            <BookingHistory />
-                        </div>
-                    </div>
-                    <div className="page noflex" data-page="history">
-                        <div className="header">
-                            <div className="title">
-                                <h2>Cart History</h2>
-                            </div>
-                        </div>
-                        <div className='px-5'>
-                            <GetOrderHistory />
+                            <MainBooking />
                         </div>
                     </div>
                 </div>

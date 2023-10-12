@@ -26,6 +26,8 @@ app.listen(3000);
 const bcrypt = require("bcrypt");
 const User = require("./model/Users");
 const getUserD = mongoose.model("Users");
+const TableHistory = require("./model/TableHistory");
+const GetTableHistory = mongoose.model("TableHistory");
 
 app.post("/Register", (request, response) => {
     // hash the password
@@ -788,6 +790,16 @@ app.get("/GetBookingHistory", async (req, res) => {
     }
 })
 
+//Get Booking for table
+app.get("/GetTable4BookingHistory", async (req, res) => {
+    try {
+        const getSome = await GetBooking.findOne({ _id: req.query.cusid })
+        res.send({ data: getSome })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
 const Table = require("./model/Table");
 const GetTable = mongoose.model("Table");
 app.get("/GetAllTableActive", async (req, res) => {
@@ -799,11 +811,18 @@ app.get("/GetAllTableActive", async (req, res) => {
     }
 })
 
-//Get Table for booking history
-app.get("/GetTable4BookingHistory", async (req, res) => {
+//Add Table by hand
+app.post("/AddTableByHand", (req, res) => {
     try {
-        const getSome = await GetTable.findOne({ customerid: req.query.cusid })
-        res.send({ data: getSome })
+        const table = new Table({
+            tablename: req.body.tablename,
+            tablestatus: 1
+        })
+        table.save().then(() => {
+            res.send({ data: "succeed" })
+        }).catch((e) => {
+            console.log(e);
+        })
     } catch (e) {
         console.log(e);
     }
@@ -812,9 +831,12 @@ app.get("/GetTable4BookingHistory", async (req, res) => {
 //Add Table when booking
 app.post("/AddTableCustomer", (req, res) => {
     try {
+        const dddd = Date.now()
+        const dddda = new Date(dddd)
         GetTable.updateOne({ _id: req.body.tableid }, {
             customerid: req.body.cusid,
-            tablestatus: 2
+            tablestatus: 2,
+            tabledate: dddda
         }).then(() => {
             GetBooking.updateOne({ _id: req.body.cusid }, {
                 status: 2
@@ -834,7 +856,39 @@ app.post("/AddTableCustomer", (req, res) => {
 //Get Active Table
 app.get("/GetTableUse", async (req, res) => {
     try {
-        const getIt = await GetTable.find({ tablestatus: 2 });
+        const getIt = await GetTable.find({});
+        const page = parseInt(req.query.page)
+        const limit = parseInt(req.query.limit)
+
+        const start = (page - 1) * limit
+        const end = page * limit
+
+        const results = {}
+        results.total = getIt.length
+        results.pageCount = Math.ceil(getIt.length / limit)
+
+        if (end < getIt.length) {
+            results.next = {
+                page: page + 1
+            }
+        }
+        if (start > 0) {
+            results.prev = {
+                page: page - 1
+            }
+        }
+
+        results.result = getIt.slice(start, end)
+        res.send({ results });
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Get History Table
+app.get("/GetHistoryTable", async (req, res) => {
+    try {
+        const getIt = await GetTableHistory.find({});
         const page = parseInt(req.query.page)
         const limit = parseInt(req.query.limit)
 
@@ -867,12 +921,24 @@ app.get("/GetTableUse", async (req, res) => {
 app.post("/AddItemToTable", async (req, res) => {
     const findDup = await GetTable.find({ _id: req.body.tableid }, { tableitems: { $elemMatch: { "item.foodname": req.body.foodname } } })
     try {
+        const dddd = Date.now()
+        const dddda = new Date(dddd)
+        if (req.body.statusCheck === 1) {
+            GetTable.updateOne({ _id: req.body.tableid }, {
+                tabledate: dddda,
+                tablestatus: 2
+            }).then(() => {
+                res.send({ data: "succeed" })
+            }).catch((e) => {
+                console.log(e);
+            })
+        }
         for (var i = 0; i < findDup.length; i++) {
             if (findDup[i].tableitems.length > 0) {
                 GetTable.updateOne({ _id: req.body.tableid, "tableitems.item.foodname": req.body.foodname },
                     {
                         $inc: {
-                            "tableitems.$.quantity": req.body.quantity
+                            "tableitems.$.quantity": parseInt(req.body.quantity)
                         }
                     }).then(() => {
                         res.send({ data: "succeed" })
@@ -905,17 +971,57 @@ app.post("/Checkout4Booking", (req, res) => {
             fulltotal: req.body.fulltotal,
             employee: req.body.employee
         }).then(() => {
-            GetTable.updateOne({ _id: req.body.tableid }, {
+            const tbhistory = new TableHistory({
+                customerid: req.body.Idhistory,
+                tablename: req.body.TbnameHistory,
+                tableitems: req.body.TbItemHistory,
+                tabledate: req.body.TbDateHistory,
+                employee: req.body.employee
+            })
+            tbhistory.save().then(() => {
+                GetTable.updateOne({ _id: req.body.tableid }, {
+                    customerid: null,
+                    tablestatus: 1,
+                    tableitems: [],
+                    tabledate: null
+                }).then(() => {
+                    res.send({ data: "succeed" })
+                }).catch((err) => {
+                    console.log(err);
+                })
+            }).catch((erro) => {
+                console.log(erro);
+            })
+        }).catch((e) => {
+            console.log(e);
+        })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Checkout for normal
+app.post("/Checkout4Normal", (req, res) => {
+    try {
+        const historytb = new TableHistory({
+            tablename: req.body.TbnameHistory,
+            tableitems: req.body.TbItemHistory,
+            tabledate: req.body.TbDateHistory,
+            employee: req.body.employee
+        })
+        historytb.save().then(() => {
+            GetTable.updateOne({ _id: req.body.id }, {
                 customerid: null,
                 tablestatus: 1,
-                tableitems: []
+                tableitems: [],
+                tabledate: null
             }).then(() => {
                 res.send({ data: "succeed" })
             }).catch((err) => {
                 console.log(err);
             })
-        }).catch((e) => {
-            console.log(e);
+        }).catch((err) => {
+            console.log(err);
         })
     } catch (e) {
         console.log(e);

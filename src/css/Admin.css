@@ -42,7 +42,7 @@
 }
 
 .subOver .drawer:hover {
-    width: 210px;
+    width: 160px;
 }
 
 .subOver .drawer:hover .appearNow {
@@ -60,6 +60,68 @@
 
 .subOver .drawer .navicon:hover {
     opacity: 1;
+}
+
+.myDIVdad {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+#myDIV .active,
+#myDIV2 .active2,
+#myDIV3 .active3 {
+    border: 2px solid #4285f4;
+    background: #4285f4;
+    border-radius: 5px;
+    box-shadow: 0px 17px 10px -10px rgba(0, 0, 0, 0.4)
+}
+
+#myDIV .MBbutton {
+    border: 2px solid #4285f4;
+    color: #fff;
+    border-radius: 5px;
+    padding: 3%;
+    box-shadow: 0px 17px 10px -10px rgba(0, 0, 0, 0.4);
+    transition: all ease-in-out 0.2s
+}
+
+#myDIV2 .MBbutton2,
+#myDIV3 .MBbutton3 {
+    border: 2px solid #4285f4;
+    color: #fff;
+    border-radius: 5px;
+    padding: 5%;
+    box-shadow: 0px 17px 10px -10px rgba(0, 0, 0, 0.4);
+    transition: all ease-in-out 0.2s
+}
+
+#myDIV .MBbutton:hover,
+#myDIV2 .MBbutton2:hover,
+#myDIV3 .MBbutton3:hover {
+    background: #4285f4;
+}
+
+#myDIV .MBbutton p,
+#myDIV2 .MBbutton2 p,
+#myDIV3 .MBbutton3 p {
+    margin: 0;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.TableVisi {
+    text-align: center;
+    background: #333b42;
+    width: 50%;
+    box-shadow: 0px 17px 10px -10px rgba(0, 0, 0, 0.4);
+    transition: all 0.2s;
+}
+
+.TableVisi:hover {
+    background: #46515a;
+    cursor: pointer;
 }
 
 .subOver .drawer .menu {

@@ -135,7 +135,7 @@ function BookingHistory() {
                     <p><b>Name</b> : {ModalData.name}</p>
                     {ModalData.employee?.map((w) => {
                         return (
-                            <p><b>Employee</b> : {w.email}</p>
+                            <p key={w}><b>Employee</b> : {w.email}</p>
                         )
                     })}
                 </div>

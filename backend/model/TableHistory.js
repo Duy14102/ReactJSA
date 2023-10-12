@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const TableSchema = new mongoose.Schema({
+const TableHistorySchema = new mongoose.Schema({
     customerid: {
         default: null,
         type: String
@@ -10,19 +10,19 @@ const TableSchema = new mongoose.Schema({
         type: String
     },
 
-    tablestatus: {
-        type: Number
-    },
-
     tableitems: {
         type: Array
     },
 
     tabledate: {
-        default: null,
         type: Date
+    },
+
+    employee: {
+        default: null,
+        type: Array
     }
 
 })
 
-module.exports = mongoose.model.Menu || mongoose.model("Table", TableSchema);
+module.exports = mongoose.model.Menu || mongoose.model("TableHistory", TableHistorySchema);
