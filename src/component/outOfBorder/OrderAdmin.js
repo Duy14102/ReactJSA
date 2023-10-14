@@ -158,7 +158,7 @@ function OrderAdmin({ Data }) {
                         marginRight: "-50%",
                         transform: "translate(-50%, -50%)",
                         backgroundColor: "white",
-                        width: 800,
+                        width: "70vw",
                         zIndex: 999
                     },
                 }}>

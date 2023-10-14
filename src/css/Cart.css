@@ -4,9 +4,7 @@
 
 .flexAble {
     display: flex;
-    justify-content: space-between;
     width: 100%;
-    flex-wrap: wrap;
     gap: 2%;
 }
 
@@ -227,4 +225,30 @@
 .returnP:hover {
     color: #fff;
     background: #dd8d14;
+}
+
+.takeFirstUI {
+    width: 60%;
+}
+
+.takeSecondUI {
+    width: 40%;
+}
+
+@media (max-width: 991.98px) {
+    .flexAble {
+        flex-direction: column-reverse;
+    }
+
+    .Numberone,
+    .takeFirstUI,
+    .takeSecondUI,
+    .Numbertwo {
+        width: 100% !important;
+    }
+
+    .Numberone,
+    .takeFirstUI {
+        margin-top: 50px;
+    }
 }

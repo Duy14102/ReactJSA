@@ -272,19 +272,17 @@ function AdminPanel() {
                                 </div>
                             </div>
                         </div>
-                        <div className='d-flex justify-content-around'>
+                        <div className='butItWrong'>
                             <div className='w-100 p-5'>
                                 <h4 className='text-center text-white'>Revenue</h4>
-                                <div className="card-verticle">
-                                    <div style={{ background: "#2C343A", borderRadius: 3 + "px" }}>
-                                        <div className='d-flex' style={{ gap: 1 + "%" }}>
-                                            <button data-menu="day" className='btn btn-secondary w-100'>Day</button>
-                                            <button className='btn btn-secondary w-100'>Month</button>
-                                            <button className='btn btn-secondary w-100'>Year</button>
-                                        </div>
-                                        <div data-page="day">
-                                            <h5 className='text-white p-3'>Today Income : </h5>
-                                        </div>
+                                <div style={{ background: "#2C343A", borderRadius: 3 + "px" }}>
+                                    <div className='d-flex' style={{ gap: 1 + "%" }}>
+                                        <button data-menu="day" className='btn btn-secondary w-100'>Day</button>
+                                        <button className='btn btn-secondary w-100'>Month</button>
+                                        <button className='btn btn-secondary w-100'>Year</button>
+                                    </div>
+                                    <div data-page="day">
+                                        <h5 className='text-white p-3'>Today Income : </h5>
                                     </div>
                                 </div>
                             </div>
@@ -300,7 +298,7 @@ function AdminPanel() {
                                 <h2>Cart</h2>
                             </div>
                         </div>
-                        <div className='px-5'>
+                        <div className='px-5 callMeOutUI'>
                             <MainOrder />
                         </div>
                     </div>
@@ -310,7 +308,7 @@ function AdminPanel() {
                                 <h2>Users</h2>
                             </div>
                         </div>
-                        <div className='px-5'>
+                        <div className='px-5 callMeOutUI'>
                             <MainUser />
                         </div>
                     </div>
@@ -320,7 +318,7 @@ function AdminPanel() {
                                 <h2>Menu</h2>
                             </div>
                         </div>
-                        <div className='px-5'>
+                        <div className='px-5 callMeOutUI'>
                             <MainMenu />
                         </div>
                     </div>
@@ -330,7 +328,7 @@ function AdminPanel() {
                                 <h2>Table</h2>
                             </div>
                         </div>
-                        <div className='px-5'>
+                        <div className='px-5 callMeOutUI'>
                             <MainTable />
                         </div>
                     </div>
@@ -340,7 +338,7 @@ function AdminPanel() {
                                 <h2>Booking</h2>
                             </div>
                         </div>
-                        <div className='px-5'>
+                        <div className='px-5 callMeOutUI'>
                             <MainBooking />
                         </div>
                     </div>

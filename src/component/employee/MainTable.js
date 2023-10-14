@@ -89,13 +89,14 @@ function MainTable() {
                         marginRight: "-50%",
                         transform: "translate(-50%, -50%)",
                         backgroundColor: "white",
-                        width: 400,
+                        width: "70vw",
                         zIndex: 999
                     },
                 }}>
                 <h2 className='text-center'>Add Table</h2>
                 <form onSubmit={(e) => addtable(e)}>
-                    <input className="textDeny" onChange={(e) => setTablename(e.target.value)} required />
+                    <label htmlFor="putTheFuckName">Table Name</label>
+                    <input id="putTheFuckName" className="textDeny" onChange={(e) => setTablename(e.target.value)} required />
                     <div className="pt-3 d-flex justify-content-around align-items-center">
                         <button onClick={() => setModalOpenDetail(false)} type="button" className="btn btn-secondary">Cancel</button>
                         <button type="submit" className="btn btn-primary">Confirm</button>

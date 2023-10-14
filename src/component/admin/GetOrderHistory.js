@@ -89,7 +89,7 @@ function GetOrderHistory() {
                                 marginRight: "-50%",
                                 transform: "translate(-50%, -50%)",
                                 backgroundColor: "white",
-                                width: 800,
+                                width: "70vw",
                                 overflow: "hidden",
                                 zIndex: 999
                             },

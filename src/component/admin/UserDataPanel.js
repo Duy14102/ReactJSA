@@ -184,7 +184,7 @@ function UserDataPanel({ Data }) {
                                 marginRight: "-50%",
                                 transform: "translate(-50%, -50%)",
                                 backgroundColor: "white",
-                                width: 650,
+                                width: "70vw",
                                 overflow: "hidden",
                             },
                         }}>

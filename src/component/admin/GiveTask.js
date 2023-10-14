@@ -61,12 +61,14 @@ function GiveTask({ id }) {
                         marginRight: "-50%",
                         transform: "translate(-50%, -50%)",
                         backgroundColor: "white",
-                        width: 600,
+                        width: "70vw",
                         overflow: "hidden",
                         zIndex: 999
                     },
                 }}>
                 <div className='px-1 py-3'>
+                    <h3 className="text-center">Give Task</h3>
+                    <hr />
                     <form onSubmit={(e) => GiveTask(e)}>
                         <label htmlFor='title'>Title</label>
                         <input value={Title} onChange={(e) => setTitle(e.target.value)} id='title' name='title' className="textDeny" required />

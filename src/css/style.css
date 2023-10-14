@@ -168,7 +168,20 @@
     width: 10%;
 }
 
+.responFormSearch {
+    display: none !important;
+}
+
+.CateColumn {
+    flex: 0 0 auto;
+    width: 33.33333% !important;
+}
+
 @media (max-width: 991.98px) {
+    .CateColumn {
+        width: 50% !important;
+    }
+
     .sticky-top.navbar-dark {
         position: relative;
     }
@@ -187,6 +200,38 @@
     .navbar-dark .navbar-brand img {
         max-height: 45px;
     }
+
+    .responFormSearch {
+        display: block !important;
+    }
+
+    .responSearch {
+        display: none !important;
+    }
+
+    .SearchSubmit {
+        background: lightgray;
+    }
+
+    .SearchSubmit:focus {
+        background: gray;
+    }
+
+    .Wrinked {
+        margin-top: 20px;
+        text-align: center;
+    }
+
+    .navbar-dark .navbar-nav .nav-link:active,
+    .navbar-dark .navbar-nav .nav-link.active {
+        color: #fff !important;
+        background: #FEA116;
+    }
+}
+
+.mulHead {
+    display: flex;
+    justify-content: center;
 }
 
 @media (min-width: 992px) {

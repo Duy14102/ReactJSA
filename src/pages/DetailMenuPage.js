@@ -132,7 +132,7 @@ function DetailMenuPage() {
                     sameItem[i].quantity += quantity;
                     localStorage.setItem('cart', JSON.stringify(sameItem))
                     window.location.reload()
-                } else if(i === sameItem.length - 1) {
+                } else if (i === sameItem.length - 1) {
                     var stored2 = JSON.parse(localStorage.getItem("cart"));
                     var student2 = { name: name, quantity: quantity };
                     stored2.push(student2);
@@ -165,7 +165,7 @@ function DetailMenuPage() {
                         <div className="container py-5">
                             <p><NavLink reloadDocument className="Allright" to="/">Home</NavLink> / <NavLink reloadDocument className="Allright" to={`/CategorySite/${i.foodcategory}`}>{i.foodcategory}</NavLink> / <NavLink to="/DetailMenuPage" state={{ id: i._id }} className="Allright">{i.foodname}</NavLink></p>
                             <div className="d-flex">
-                                <img loading="lazy" alt='' src={i.foodimage} width={600} height={400} />
+                                <img loading="lazy" alt='' src={i.foodimage} className='thisImageRespon' />
                                 <div className='px-3'>
                                     <div className="product-dtl">
                                         <div className="product-info">
@@ -180,9 +180,9 @@ function DetailMenuPage() {
 
                                         <div className="product-count">
                                             <label>Quantity</label>
-                                            <div>
+                                            <div className='d-flex'>
                                                 <button onClick={handleDecrement} className="btn btn-secondary">-</button>
-                                                <input type="number" value={quantity} className='qty' />
+                                                <input type="number" defaultValue={quantity} className='qty mx-1' />
                                                 <button onClick={handleIncrement} className="btn btn-secondary">+</button>
                                             </div>
                                         </div>

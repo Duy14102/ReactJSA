@@ -18,8 +18,8 @@ li {
 }
 
 .inputImageDup {
-  width: 150px;
-  height: 100px;
+  width: 100%;
+  height: 65%;
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -31,7 +31,7 @@ li {
 .cameraAppear {
   opacity: 0;
   color: #fff;
-  top: 35px;
+  top: 65px;
   text-align: center;
   width: 100%;
   height: 100%;

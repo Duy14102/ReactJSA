@@ -198,33 +198,8 @@ function Checkout() {
                     <NavLink to="/Cart"> Shopping Cart</NavLink> ˃ <NavLink to="/Checkout" >Checkout Details</NavLink> ˃ {ahoe ? (<NavLink to="/">Order Complete</NavLink>) : (<NavLink style={{ pointerEvents: "none" }} to="/">Order Complete</NavLink>)}
                 </div>
 
-                <div className="row pb-5">
-                    <div className="col-md-4 order-md-2 mb-4">
-                        <h4 className="d-flex justify-content-between align-items-center mb-3">
-                            <span className="text-muted">Your cart</span>
-                            <span className="badge badge-secondary badge-pill">3</span>
-                        </h4>
-                        <ul className="list-group mb-3">
-                            {locationMap.map((i) => {
-                                return (
-                                    mero(i)
-                                )
-                            })}
-                            <li className="list-group-item d-flex justify-content-between">
-                                <span>Total</span>
-                                <span className="text-muted">{VND.format(total2)}</span>
-                            </li>
-                            <li className="list-group-item d-flex justify-content-between">
-                                <span>Shipping</span>
-                                <span className="text-muted">{VND.format(shippingfee)}</span>
-                            </li>
-                            <li className="list-group-item d-flex justify-content-between">
-                                <span>Fulltotal</span>
-                                <strong>{VND.format(fulltotal)}</strong>
-                            </li>
-                        </ul>
-                    </div>
-                    <div className="col-md-8 order-md-1">
+                <div className="flexAble">
+                    <div className="takeFirstUI">
                         <h4 className="mb-3">Address</h4>
                         <form onSubmit={(e) => handleSubmit(e)} className="needs-validation">
                             {token ? null : (
@@ -313,9 +288,7 @@ function Checkout() {
                                     <hr className="mb-4" />
                                 </>
                             ) : null}
-
                             <h4 className="mb-3">Payment</h4>
-
                             <div className="d-block my-3">
                                 <div className="custom-control custom-radio">
                                     <input onInput={() => setCard(true)} id="credit" name="paymentMethod" type="radio" className="custom-control-input" required />
@@ -363,8 +336,33 @@ function Checkout() {
                                 </>
                             ) : null}
                             <hr className="mb-4" />
-                            <button className="btn btn-primary" type="submit">Confirm</button>
+                            <button className="btn btn-primary mb-4" type="submit">Confirm</button>
                         </form>
+                    </div>
+                    <div className="takeSecondUI">
+                        <h4 className="d-flex justify-content-between align-items-center mb-3">
+                            <span className="text-muted">Your cart</span>
+                            <span className="badge badge-secondary badge-pill">3</span>
+                        </h4>
+                        <ul className="list-group mb-3">
+                            {locationMap.map((i) => {
+                                return (
+                                    mero(i)
+                                )
+                            })}
+                            <li className="list-group-item d-flex justify-content-between">
+                                <span>Total</span>
+                                <span className="text-muted">{VND.format(total2)}</span>
+                            </li>
+                            <li className="list-group-item d-flex justify-content-between">
+                                <span>Shipping</span>
+                                <span className="text-muted">{VND.format(shippingfee)}</span>
+                            </li>
+                            <li className="list-group-item d-flex justify-content-between">
+                                <span>Fulltotal</span>
+                                <strong>{VND.format(fulltotal)}</strong>
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>

@@ -145,11 +145,15 @@ function GetMenu() {
     }
 
     useEffect(() => {
-        const getHome = document.getElementById('inputimage')
+        const getHome = document.getElementById('inputimage2')
         if (getHome) {
             getHome.onchange = function () {
-                var src = URL.createObjectURL(this.files[0])
-                document.getElementById('output').src = src
+                var files = this.files;
+                for (var i = 0; i < files.length; i++) {
+                    var file = files[i],
+                        src = (URL || window.webkitURL).createObjectURL(file);
+                    document.getElementById('output2').src = src
+                }
             }
         }
     })
@@ -219,7 +223,7 @@ function GetMenu() {
                         marginRight: "-50%",
                         transform: "translate(-50%, -50%)",
                         backgroundColor: "white",
-                        width: 750,
+                        width: "70vw",
                         zIndex: 999
                     },
                 }}>
@@ -230,17 +234,17 @@ function GetMenu() {
                             <h3 className="text-center">Menu Detail</h3>
                             <hr />
                             <form onSubmit={(e) => handleSubmit(e, i._id)} className="login100-form validate-form">
-                                <div className='d-flex w-100' style={{ gap: 5 + "%" }}>
+                                <div className='d-flex w-100' style={{ gap: 3 + "%" }}>
                                     <div style={{ width: 20 + "%" }}>
-                                        <label className="inputImageDup" htmlFor="inputimage">
+                                        <label className="inputImageDup" htmlFor="inputimage2">
                                             <div className="aboveCameraAppear">
                                                 <div className="cameraAppear">
                                                     <i className="fa fa-camera fa-2x"></i>
                                                 </div>
                                             </div>
-                                            <img id="output" width="100%" height="100%" alt="" src={i.foodimage} />
+                                            <img id="output2" width="100%" height="100%" alt="" src={i.foodimage} />
                                         </label>
-                                        <input id="inputimage" onChange={convertToBase64} className="fuckThatImage" type="file" style={{ display: "none" }} />
+                                        <input id="inputimage2" onChange={convertToBase64} className="fuckThatImage" type="file" style={{ display: "none" }} />
                                     </div>
                                     <div style={{ width: 80 + "%" }}>
                                         <div className="overHereB">

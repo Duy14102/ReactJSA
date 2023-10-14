@@ -126,7 +126,7 @@ function CategoryPage() {
                     <div className="row SecondRow">
                         {Object.values(Category).map(i => {
                             return (
-                                <div className="product-box column p-0 col-4" key={i._id}>
+                                <div className="product-box column p-0 CateColumn" key={i._id}>
                                     <LazyLoad>
                                         <NavLink reloadDocument to={`/DetailMenuPage/${i.foodname}/${i.foodcategory}`} className="product-item">
                                             <div className="product-item-image">

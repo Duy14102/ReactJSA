@@ -213,7 +213,7 @@ function EmployeePanel() {
                             <div className="grid pt-4">
                                 <div className="card-verticle ">
                                     <div className="card-small" style={{ background: "#2298F1" }}>
-                                        <div className='d-flex justify-content-between align-items-center'>
+                                        <div className='flexOverPage'>
                                             <div>
                                                 <span className="title">Active Booking</span>
                                                 <h2 className="text text-center">{CountData?.actBookingLength}</h2>
@@ -304,7 +304,7 @@ function EmployeePanel() {
                                     <h2>Table</h2>
                                 </div>
                             </div>
-                            <div className='px-5'>
+                            <div className='px-5 callMeOutUI'>
                                 <MainTable />
                             </div>
                         </div>
@@ -314,7 +314,7 @@ function EmployeePanel() {
                                     <h2>Booking</h2>
                                 </div>
                             </div>
-                            <div className='px-5'>
+                            <div className='px-5 callMeOutUI'>
                                 <MainBooking />
                             </div>
                         </div>
@@ -324,7 +324,7 @@ function EmployeePanel() {
                                     <h2>Cart</h2>
                                 </div>
                             </div>
-                            <div className='px-5'>
+                            <div className='px-5 callMeOutUI'>
                                 <MainOrder />
                             </div>
                         </div>

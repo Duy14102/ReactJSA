@@ -1,8 +1,9 @@
 import Modal from 'react-modal';
 import GetMenu from './GetMenu';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import $ from 'jquery'
 
 function MainMenu() {
     const [modalOpen, setModalOpen] = useState(false);
@@ -13,25 +14,17 @@ function MainMenu() {
     const [fooddescription, setFooddescription] = useState("");
     const [foodimage, setFoodimage] = useState("");
 
-    function convertToBase64(e) {
-        var reader = new FileReader();
-        reader.readAsDataURL(e.target.files[0]);
-        reader.onload = () => {
-            setFoodimage(reader.result);
-        };
-        reader.onerror = error => {
-            console.log(error);
-        }
-    }
-
-    useEffect(() => {
-        const getHome = document.getElementById('inputimage')
-        if (getHome) {
-            getHome.onchange = function () {
-                var src = URL.createObjectURL(this.files[0])
-                document.getElementById('output').src = src
+    $(function () {
+        const $image = $('#inputimage')
+        $image.on("change", function () {
+            const $inputnow = $('#output')
+            var files = this.files;
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i],
+                    src = (URL || window.webkitURL).createObjectURL(file);
+                $inputnow.attr("src", src)
             }
-        }
+        })
     })
 
     const handleSubmit = (e) => {
@@ -59,13 +52,24 @@ function MainMenu() {
                     window.location.reload();
                 })
             })
-            .catch((error) => {
+            .catch(() => {
                 Swal.fire(
                     'Added Fail!',
                     '',
                     'error'
                 )
             });
+    }
+
+    function convertToBase64(e) {
+        var reader = new FileReader();
+        reader.readAsDataURL(e.target.files[0]);
+        reader.onload = () => {
+            setFoodimage(reader.result);
+        };
+        reader.onerror = error => {
+            console.log(error);
+        }
     }
     return (
         <>
@@ -91,7 +95,7 @@ function MainMenu() {
                         marginRight: "-50%",
                         transform: "translate(-50%, -50%)",
                         backgroundColor: "white",
-                        width: 750,
+                        width: "70vw",
                         zIndex: 999
                     },
                 }}>
@@ -99,7 +103,7 @@ function MainMenu() {
                     <h3 className="text-center">Add Menu</h3>
                     <hr />
                     <form onSubmit={(e) => handleSubmit(e)} className="login100-form validate-form">
-                        <div className='d-flex w-100' style={{ gap: 5 + "%" }}>
+                        <div className='d-flex w-100' style={{ gap: 3 + "%" }}>
                             <div style={{ width: 20 + "%" }}>
                                 <label className="inputImageDup" htmlFor="inputimage">
                                     <div className="aboveCameraAppear">
