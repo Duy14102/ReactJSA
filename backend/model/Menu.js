@@ -33,6 +33,11 @@ const MenuShema = new mongoose.Schema({
 
     foodimage: {
         type: String
+    },
+
+    review: {
+        type: Array,
+        default: null
     }
 })
 

@@ -29,6 +29,7 @@ const getUserD = mongoose.model("Users");
 const TableHistory = require("./model/TableHistory");
 const GetTableHistory = mongoose.model("TableHistory");
 
+
 app.post("/Register", (request, response) => {
     // hash the password
     bcrypt
@@ -274,44 +275,17 @@ app.post("/ChangeImageAdmin", (req, res) => {
         getUserD.updateOne({ _id: req.body.id }, {
             userimage: base64
         }).then(() => {
-            res.send({ data: "succeed" })
+            getThisMenu.updateOne({ "review.id": req.body.id }, {
+                $set: {
+                    "review.$.image": base64
+                }
+            }).then(() => {
+                res.send({ data: "succeed" })
+            }).catch((er) => {
+                console.log(er);
+            })
         }).catch((err) => {
             console.log(err);
-        })
-    } catch (e) {
-        console.log(e);
-    }
-})
-
-//Update User
-app.post("/UpdateUser", async (req, res) => {
-    const { base64 } = req.body;
-    try {
-        User.findOne({ _id: req.body.updateid }).then(async (user) => {
-            var hashed = ""
-            if (req.body.updatepassword) {
-                const compare = await bcrypt.compare(req.body.updatepassword, user.password)
-                if (compare) {
-                    hashed = user.password
-                } else {
-                    hashed = await bcrypt.hash(req.body.updatepassword, 10)
-                }
-            } else {
-                hashed = user.password
-            }
-            getUserD.updateOne({ _id: req.body.updateid },
-                {
-                    email: req.body.updateemail,
-                    password: hashed,
-                    fullname: req.body.updatefullname,
-                    phonenumber: req.body.updatephone,
-                    userimage: base64
-                }
-            ).then(() => {
-                res.send({ data: "Updated" })
-            }).catch((err) => {
-                res.send({ data: err })
-            })
         })
     } catch (e) {
         console.log(e);
@@ -448,6 +422,51 @@ app.post("/DenyOrder", (req, res) => {
 
 //Get Menu
 const getThisMenu = mongoose.model("Menu");
+//Update User
+app.post("/UpdateUser", async (req, res) => {
+    const { base64 } = req.body;
+    try {
+        User.findOne({ _id: req.body.updateid }).then(async (user) => {
+            var hashed = ""
+            if (req.body.updatepassword) {
+                const compare = await bcrypt.compare(req.body.updatepassword, user.password)
+                if (compare) {
+                    hashed = user.password
+                } else {
+                    hashed = await bcrypt.hash(req.body.updatepassword, 10)
+                }
+            } else {
+                hashed = user.password
+            }
+            getUserD.updateOne({ _id: req.body.updateid },
+                {
+                    email: req.body.updateemail,
+                    password: hashed,
+                    fullname: req.body.updatefullname,
+                    phonenumber: req.body.updatephone,
+                    userimage: base64
+                }
+            ).then(() => {
+                getThisMenu.updateOne({ "review.id": req.body.updateid }, {
+                    $set: {
+                        "review.$.image": base64
+                    }
+                }).then(() => {
+                    res.send({ data: "succeed" })
+                }).catch((er) => {
+                    console.log(er);
+                })
+            }).catch((err) => {
+                res.send({ data: err })
+            })
+        })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+
+
 app.get("/GetThisMenu", async (req, res) => {
     try {
         const getIt = await getThisMenu.find({ foodcategory: req.query.Name });
@@ -459,6 +478,7 @@ app.get("/GetThisMenu", async (req, res) => {
 
 //Get Cart Item
 app.get("/GetCartItem", async (req, res) => {
+    console.log(req.query.name);
     try {
         const getIt = await getThisMenu.find({ foodname: req.query.name });
         res.send({ data: getIt, quantity: req.query.quantity });
@@ -545,6 +565,56 @@ app.get("/GetSearch", async (req, res) => {
 app.get("/GetCategoryMenu", async (req, res) => {
     try {
         const getIt = await getThisMenu.find({ foodcategory: req.query.category });
+
+        const page = parseInt(req.query.page)
+        const limit = parseInt(req.query.limit)
+
+        const start = (page - 1) * limit
+        const end = page * limit
+
+        const results = {}
+        results.total = getIt.length
+        results.pageCount = Math.ceil(getIt.length / limit)
+
+        if (end < getIt.length) {
+            results.next = {
+                page: page + 1
+            }
+        }
+        if (start > 0) {
+            results.prev = {
+                page: page - 1
+            }
+        }
+
+        results.result = getIt.slice(start, end)
+        res.send({ results });
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Add review in detailmenupage
+app.post("/AddReview", (req, res) => {
+    try {
+        getThisMenu.updateOne({ _id: req.body.id }, {
+            $push: {
+                review: req.body.review
+            }
+        }).then(() => {
+            res.send({ data: "succeed" })
+        }).catch((err) => {
+            console.log(err);
+        })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Get All Review With Pagination
+app.get("/GetAllReviewPagination", async (req, res) => {
+    try {
+        const getIt = await getThisMenu.find({ foodname: req.query.id},{"review.$" : 1});
 
         const page = parseInt(req.query.page)
         const limit = parseInt(req.query.limit)

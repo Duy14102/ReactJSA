@@ -1,22 +1,36 @@
 import '../css/DetailMenuPage.css';
 import Header from '../component/Header';
 import Footer from '../component/Footer';
-import { useState } from 'react';
 import { NavLink, useParams } from 'react-router-dom';
 import NotFound from '../component/outOfBorder/NotFound';
-import { useEffect } from 'react';
+import { useEffect, Fragment, useState, useRef } from 'react';
 import axios from 'axios';
 import jQuery from "jquery";
 import "../lib/owlcarousel/assets/owl.carousel.min.css";
-import { Fragment } from 'react';
-import { useCallback } from 'react';
+import Swal from 'sweetalert2';
+import jwtDecode from "jwt-decode";
+import Cookies from "universal-cookie";
+import ReactPaginate from 'react-paginate';
 window.jQuery = jQuery
 require('owl.carousel')
+
 function DetailMenuPage() {
+    const cookies = new Cookies();
+    const token = cookies.get("TOKEN");
     let appler = useParams()
     const [detail, setDetail] = useState([]);
     const [menu, setMenu] = useState([]);
+    var [reviewName, setReviewName] = useState()
+    const [imgF, setImgF] = useState("")
+    const [reviewMessage, setReviewMessage] = useState()
+    const [getUserW, setGetUserW] = useState([])
+    const [reviewStar, setReviewStar] = useState()
+    const [wowreview, setWowReview] = useState([])
+    const [checkStar, setCheckStar] = useState(false)
     var [quantity, setQuantity] = useState(0)
+
+    const [pageCount, setPageCount] = useState(6);
+    const currentPage = useRef();
     jQuery(function ($) {
         // Variables
         const $tabLink = $('#myTab .nav-link');
@@ -85,37 +99,30 @@ function DetailMenuPage() {
     if (quantity < 1) {
         quantity = 1;
     }
-
     //Get Bonus
-    const FetchMenu = useCallback(() => {
+    useEffect(() => {
+        if (token) {
+            const decode = jwtDecode(token)
+            fetch(`http://localhost:3000/GetDetailUser?userid=${decode.userId}`, {
+                method: "get",
+            }).then((res) => res.json()).then((menu) => {
+                setGetUserW(menu);
+            })
+        }
+
         fetch(`http://localhost:3000/GetThisMenu?Name=${appler.cate}`, {
             method: "get",
         }).then((res) => res.json()).then((menu) => {
             setMenu(menu.data);
         })
-    }, [appler.cate])
 
-    const FetchDetail = useCallback(() => {
-        const configuration = {
+        fetch(`http://localhost:3000/GetDetailMenu?foodid=${appler.id}`, {
             method: "get",
-            url: "http://localhost:3000/GetDetailMenu",
-            params: {
-                foodid: appler.id
-            }
-        };
-        axios(configuration)
-            .then((result) => {
-                setDetail(result.data);
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    }, [appler.id])
-
-    useEffect(() => {
-        FetchMenu()
-        FetchDetail()
-    }, [FetchMenu, FetchDetail])
+        }).then((res) => res.json()).then((data) => {
+            setDetail(data);
+        })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [appler.id, appler.cate, token])
 
     function addToCart(name, quantity) {
         var stored = JSON.parse(localStorage.getItem("cart"));
@@ -143,7 +150,100 @@ function DetailMenuPage() {
         }
     }
 
+    const date = Date.now()
+    const hashdate = new Date(date).toLocaleDateString()
+    const hashtime = new Date(date).toLocaleTimeString()
+    const datetime = hashdate + " - " + hashtime
+
+    const outshin = (i) => {
+        const page = currentPage.current
+        const limit = 5
+
+        const start = (page - 1) * limit
+        const end = page * limit
+
+        const results = {}
+        results.total = i.review?.length
+        results.pageCount = Math.ceil(i.review?.length / limit)
+
+        if (end < i.review?.length) {
+            results.next = {
+                page: page + 1
+            }
+        }
+        if (start > 0) {
+            results.prev = {
+                page: page - 1
+            }
+        }
+
+        results.result = i.review?.slice(start, end)
+        setWowReview(results.result)
+        setPageCount(results.pageCount)
+    }
+
+    useEffect(() => {
+        currentPage.current = 1;
+        Object.values(detail).map(i => {
+            outshin(i)
+            return null
+        })
+
+        Object.values(getUserW).map((h) => {
+            setImgF(h.userimage)
+            return null
+        })
+    },[detail, getUserW])
+
+
+    const addreview = (e, ids) => {
+        var thisId = "none"
+        if (token) {
+            const decode = jwtDecode(token)
+            thisId = decode.userId
+            reviewName = decode.userName
+        }
+        const takeReview = { id: thisId, name: reviewName, star: reviewStar, message: reviewMessage, date: datetime, image: imgF }
+        e.preventDefault()
+        const configuration = {
+            method: "post",
+            url: "http://localhost:3000/AddReview",
+            data: {
+                id: ids,
+                review: takeReview
+            }
+        };
+        if (reviewStar) {
+            axios(configuration)
+                .then(() => {
+                    Swal.fire(
+                        'Review Successfully!',
+                        '',
+                        'success'
+                    ).then(function () {
+                        window.location.reload();
+                    })
+                })
+                .catch(() => {
+                    Swal.fire(
+                        'Review Fail!',
+                        '',
+                        'error'
+                    ).then(function () {
+                        window.location.reload();
+                    })
+                });
+        } else {
+            setCheckStar(true)
+        }
+    }
+
     // localStorage.clear()
+
+    function handlePageClick(e, i) {
+        currentPage.current = e + 1
+        outshin(i)
+    }
 
     if (!appler) {
         return NotFound();
@@ -196,7 +296,7 @@ function DetailMenuPage() {
                                         <a className="nav-link active activeThis" id="description-tab" href="#description">Description</a>
                                     </li>
                                     <li className="nav-item">
-                                        <a className="nav-link" id="review-tab" href="#review">Reviews (0)</a>
+                                        <a className="nav-link" id="review-tab" href="#review">Reviews ({i.review?.length})</a>
                                     </li>
                                 </ul>
                                 <div className="tab-content mt-5" id="myTabContent">
@@ -204,44 +304,137 @@ function DetailMenuPage() {
                                         {i.fooddescription}
                                     </div>
                                     <div className="tab-pane" id="review">
-                                        <div className="review-heading">REVIEWS</div>
-                                        <p className="mb-20">There are no reviews yet.</p>
-                                        <form className="review-form">
-                                            <div className="form-group">
-                                                <label>Your rating</label>
-                                                <div className="reviews-counter">
-                                                    <div className="rate">
-                                                        <input type="radio" id="star5" name="rate" value="5" />
-                                                        <label title="text">5 stars</label>
-                                                        <input type="radio" id="star4" name="rate" value="4" />
-                                                        <label title="text">4 stars</label>
-                                                        <input type="radio" id="star3" name="rate" value="3" />
-                                                        <label title="text">3 stars</label>
-                                                        <input type="radio" id="star2" name="rate" value="2" />
-                                                        <label title="text">2 stars</label>
-                                                        <input type="radio" id="star1" name="rate" value="1" />
-                                                        <label title="text">1 star</label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="form-group">
-                                                <label>Your message</label>
-                                                <textarea className="form-control" rows="10"></textarea>
-                                            </div>
-                                            <div className="row pt-4">
-                                                <div className="col-md-6">
+                                        {i.review?.length <= 0 ? (
+                                            <>
+                                                <div className="review-heading">REVIEWS</div>
+                                                <p className="mb-20">There are no reviews yet.</p>
+                                                <form onSubmit={(e) => addreview(e, i._id)} className="review-form">
                                                     <div className="form-group">
-                                                        <input type="text" name="" className="form-control" placeholder="Name*" />
+                                                        <div className='d-flex' style={{ gap: 3 + "%" }}>
+                                                            <div>
+                                                                <label>Your rating</label>
+                                                                <div className="reviews-counter">
+                                                                    <div className="rate">
+                                                                        <input type='radio' style={{ display: "none" }} required />
+                                                                        <input type="radio" onChange={(e) => setReviewStar(e.target.value)} id="star5" name="rate" value="5" />
+                                                                        <label title="text" htmlFor='star5'>5 stars</label>
+                                                                        <input type="radio" onChange={(e) => setReviewStar(e.target.value)} id="star4" name="rate" value="4" />
+                                                                        <label title="text" htmlFor='star4'>4 stars</label>
+                                                                        <input type="radio" onChange={(e) => setReviewStar(e.target.value)} id="star3" name="rate" value="3" />
+                                                                        <label title="text" htmlFor='star3'>3 stars</label>
+                                                                        <input type="radio" onChange={(e) => setReviewStar(e.target.value)} id="star2" name="rate" value="2" />
+                                                                        <label title="text" htmlFor='star2'>2 stars</label>
+                                                                        <input type="radio" onChange={(e) => setReviewStar(e.target.value)} id="star1" name="rate" value="1" />
+                                                                        <label title="text" htmlFor='star1'>1 star</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            {checkStar ? (
+                                                                <p className='text-danger'>Choose star for this item !</p>
+                                                            ) : null}
+                                                        </div>
+                                                    </div>
+                                                    {token ? null : (
+                                                        <div className="form-group">
+                                                            <label>Your name</label>
+                                                            <input onChange={(e) => setReviewName(e.target.value)} type="text" name="" className="form-control" required />
+                                                        </div>
+                                                    )}
+                                                    <div className="form-group pt-4">
+                                                        <label>Your message</label>
+                                                        <textarea onChange={(e) => setReviewMessage(e.target.value)} className="form-control" rows="10" required />
+                                                    </div>
+                                                    <button type='submit' className="round-black-btn">Submit Review</button>
+                                                </form>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <div className='d-flex justify-content-between w-100'>
+                                                    <div style={{ width: 58 + "%" }}>
+                                                        {wowreview.map((r) => {
+                                                            const rating = stars => '★★★★★☆☆☆☆☆'.slice(5 - stars, 10 - stars);
+                                                            return (
+                                                                <Fragment key={r.date}>
+                                                                    <div className='gutton'>
+                                                                        {r.image ? (
+                                                                            <img alt='' height={50} width={50} src={r.image} />
+                                                                        ) : (
+                                                                            <img alt='' height={50} width={50} src="https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg" />
+                                                                        )}
+                                                                        <div>
+                                                                            <div>{rating(r.star)}</div>
+                                                                            <p className='m-0'><b>{r.name}</b> - {r.date}</p>
+                                                                            <p className='m-0'>{r.message}</p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <hr />
+                                                                </Fragment>
+                                                            )
+                                                        })}
+                                                        <ReactPaginate
+                                                            breakLabel="..."
+                                                            nextLabel="Next >"
+                                                            onPageChange={(e) => handlePageClick(e.selected, i)}
+                                                            pageRangeDisplayed={5}
+                                                            pageCount={pageCount}
+                                                            previousLabel="< Previous"
+                                                            renderOnZeroPageCount={null}
+                                                            marginPagesDisplayed={2}
+                                                            containerClassName="pagination justify-content-center"
+                                                            pageClassName="page-item"
+                                                            pageLinkClassName="page-link"
+                                                            previousClassName="page-item"
+                                                            previousLinkClassName="page-link"
+                                                            nextClassName="page-item"
+                                                            nextLinkClassName="page-link"
+                                                            activeClassName="active"
+                                                            forcePage={currentPage.current - 1}
+                                                        />
+                                                    </div>
+                                                    <div className='holdTall' style={{ width: 40 + "%" }}>
+                                                        <div className="review-heading">REVIEWS</div>
+                                                        <form onSubmit={(e) => addreview(e, i._id)} className="review-form">
+                                                            <div className="form-group">
+                                                                <div className='d-flex' style={{ gap: 3 + "%" }}>
+                                                                    <div>
+                                                                        <label>Your rating</label>
+                                                                        <div className="reviews-counter">
+                                                                            <div className="rate">
+                                                                                <input type='radio' style={{ display: "none" }} required />
+                                                                                <input type="radio" onChange={(e) => setReviewStar(e.target.value)} id="star5" name="rate" value="5" />
+                                                                                <label title="text" htmlFor='star5'>5 stars</label>
+                                                                                <input type="radio" onChange={(e) => setReviewStar(e.target.value)} id="star4" name="rate" value="4" />
+                                                                                <label title="text" htmlFor='star4'>4 stars</label>
+                                                                                <input type="radio" onChange={(e) => setReviewStar(e.target.value)} id="star3" name="rate" value="3" />
+                                                                                <label title="text" htmlFor='star3'>3 stars</label>
+                                                                                <input type="radio" onChange={(e) => setReviewStar(e.target.value)} id="star2" name="rate" value="2" />
+                                                                                <label title="text" htmlFor='star2'>2 stars</label>
+                                                                                <input type="radio" onChange={(e) => setReviewStar(e.target.value)} id="star1" name="rate" value="1" />
+                                                                                <label title="text" htmlFor='star1'>1 star</label>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    {checkStar ? (
+                                                                        <p className='text-danger'>Choose star for this item !</p>
+                                                                    ) : null}
+                                                                </div>
+                                                            </div>
+                                                            {token ? null : (
+                                                                <div className="form-group">
+                                                                    <label>Your name</label>
+                                                                    <input onChange={(e) => setReviewName(e.target.value)} type="text" name="" className="textDeny" required />
+                                                                </div>
+                                                            )}
+                                                            <div className="form-group pt-4">
+                                                                <label>Your message</label>
+                                                                <textarea onChange={(e) => setReviewMessage(e.target.value)} className="textDeny" rows="10" required />
+                                                            </div>
+                                                            <button type='submit' className="round-black-btn">Submit Review</button>
+                                                        </form>
                                                     </div>
                                                 </div>
-                                                <div className="col-md-6">
-                                                    <div className="form-group">
-                                                        <input type="text" name="" className="form-control" placeholder="Email Id*" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <button className="round-black-btn">Submit Review</button>
-                                        </form>
+                                            </>
+                                        )}
                                     </div>
                                 </div>
                             </div>
