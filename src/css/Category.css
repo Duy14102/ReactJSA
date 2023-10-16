@@ -4,7 +4,15 @@
     display: block;
     position: relative;
     transition: all .3s cubic-bezier(.785, .135, .15, .86);
-    padding: 1.5rem;
+    padding: 1rem;
+}
+
+.liutiudiu {
+    opacity: 0;
+}
+
+.liutiudiu button {
+    width: 100%;
 }
 
 .product-item {
@@ -25,10 +33,14 @@
     color: black;
 }
 
+.product-item:hover .liutiudiu {
+    transition: all 0.4s;
+    opacity: 1;
+}
+
 .product-item .product-item-image {
     display: block;
     position: relative;
-    margin-bottom: 2rem;
     transform: translate3d(0, 0, 0);
     transition: all .5s cubic-bezier(.68, -.55, .265, 1.55);
 }
@@ -78,16 +90,25 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 25%;
+    width: 30%;
     margin: 0;
+    gap: 4%;
 }
 
 .allover3 {
+    white-space: nowrap;
     margin: 0;
     width: 100%;
 }
 
+.CatuRespon {
+    pointer-events: none;
+    width: 20%;
+    opacity: 0;
+}
+
 .FilterDrop {
+    white-space: nowrap;
     border: 1px solid #ddd;
     background: #fff;
     box-shadow: 0 10px 40px -3px rgba(0, 0, 0, 0.1);
@@ -113,6 +134,10 @@
 
 .textNavlink {
     color: #666565;
+}
+
+.product-item .product-item-title {
+    color: black;
 }
 
 .product-item .product-item-title:hover {
@@ -158,6 +183,25 @@
 }
 
 @media (max-width: 991.98px) {
+
+    .SecondRow {
+        width: 100%;
+    }
+
+    .FirstRow {
+        display: none;
+    }
+
+    .CatuRespon {
+        width: 25%;
+        pointer-events: all;
+        opacity: 1;
+    }
+
+    .liutiudiu {
+        opacity: 1;
+    }
+
     .ThirdRow {
         width: 50%;
     }

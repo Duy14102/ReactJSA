@@ -84,9 +84,46 @@ function CategoryPage() {
             window.location.href = `/CategorySite/${appler.id}/atz`
         }
     }
+
+    const CateFilter = (e) => {
+        if (e === "thisMeat") {
+            window.location.href = `/CategorySite/Meat/nto`
+        } if (e === "thisVegetables") {
+            window.location.href = `/CategorySite/Vegetables/nto`
+        } if (e === "thisDrink") {
+            window.location.href = `/CategorySite/Drink/nto`
+        }
+    }
+
     $(function () {
         $("#select").val(appler.fil);
     })
+
+    function addToCart(name, quantity) {
+        var stored = JSON.parse(localStorage.getItem("cart"));
+        if (!stored) {
+            var students = [];
+            var student1 = { name: name, quantity: quantity };
+            students.push(student1);
+            localStorage.setItem("cart", JSON.stringify(students));
+            window.location.reload()
+        } else {
+            var sameItem = JSON.parse(localStorage.getItem("cart")) || [];
+            for (var i = 0; i < sameItem.length; i++) {
+                if (name === sameItem[i].name) {
+                    sameItem[i].quantity += quantity;
+                    localStorage.setItem('cart', JSON.stringify(sameItem))
+                    window.location.reload()
+                } else if (i === sameItem.length - 1) {
+                    var stored2 = JSON.parse(localStorage.getItem("cart"));
+                    var student2 = { name: name, quantity: quantity };
+                    stored2.push(student2);
+                    localStorage.setItem("cart", JSON.stringify(stored2));
+                    window.location.reload()
+                }
+            }
+        }
+    }
 
     const VND = new Intl.NumberFormat('vi-VN', {
         style: 'currency',
@@ -100,18 +137,8 @@ function CategoryPage() {
         <>
             <Header />
             <div className='container'>
-                <div className='ruler pt-3'>
+                <div className='pt-3'>
                     <p className='encot' style={{ margin: 0 }}><NavLink className="textNavlink" to="/">Home</NavLink> / <NavLink reloadDocument className="textNavlink" to={`/CategorySite/${appler.id}/nto`}><b>{appler.id}</b></NavLink></p>
-                    <div className='ThirdRow'>
-                        <p className='allover3'>Display all {Count} results</p>
-                        <select id='select' onChange={(e) => Filter(e.target.value)} className='FilterDrop'>
-                            <option value={"nto"}>New to old</option>
-                            <option value={"otn"}>Old to new</option>
-                            <option value={"hpf"}>High price first</option>
-                            <option value={"lpf"}>Low price first</option>
-                            <option value={"atz"}>A to Z</option>
-                        </select>
-                    </div>
                 </div>
                 <div className='ruler pt-4'>
                     <div className='FirstRow'>
@@ -124,28 +151,56 @@ function CategoryPage() {
                         </div>
                     </div>
                     <div className="row SecondRow">
+                        <div className='d-flex justify-content-between'>
+                            <div className='CatuRespon'>
+                                <select onChange={(e) => CateFilter(e.target.value)} className='FilterDrop'>
+                                    <option disabled hidden selected>Product Category</option>
+                                    <option value={"thisMeat"}>Meat</option>
+                                    <option value={"thisVegetables"}>Vegetables</option>
+                                    <option value={"thisDrink"}>Drink</option>
+                                </select>
+                            </div>
+                            <div className='ThirdRow'>
+                                <p className='allover3'>Display all {Count} results</p>
+                                <select id='select' onChange={(e) => Filter(e.target.value)} className='FilterDrop'>
+                                    <option value={"nto"}>New to old</option>
+                                    <option value={"otn"}>Old to new</option>
+                                    <option value={"hpf"}>High price first</option>
+                                    <option value={"lpf"}>Low price first</option>
+                                    <option value={"atz"}>A to Z</option>
+                                </select>
+                            </div>
+                        </div>
                         {Object.values(Category).map(i => {
+                            var quantity = 1
                             return (
                                 <div className="product-box column p-0 CateColumn" key={i._id}>
                                     <LazyLoad>
-                                        <NavLink reloadDocument to={`/DetailMenuPage/${i.foodname}/${i.foodcategory}`} className="product-item">
-                                            <div className="product-item-image">
-                                                <img loading='lazy' src={i.foodimage} alt="" />
-                                                <div className="product-item-image-hover">
+                                        <div className="product-item">
+                                            <NavLink reloadDocument to={`/DetailMenuPage/${i.foodname}/${i.foodcategory}`}>
+                                                <div className="product-item-image">
+                                                    <img loading='lazy' src={i.foodimage} alt="" />
+                                                    <div className="product-item-image-hover">
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            </NavLink>
                                             <div className="product-item-content">
                                                 <div className="product-item-category">
                                                     {i.foodcategory}
                                                 </div>
-                                                <div className="product-item-title">
-                                                    {i.foodname}
-                                                </div>
+                                                <NavLink reloadDocument to={`/DetailMenuPage/${i.foodname}/${i.foodcategory}`} className="product-item-title">{i.foodname} </NavLink>
                                                 <div className="product-item-price">
                                                     {VND.format(i.foodprice)}
                                                 </div>
                                             </div>
-                                        </NavLink>
+                                            <div className='liutiudiu'>
+                                                {i.foodquantity > 0 ? (
+                                                    <button onClick={() => addToCart(i.foodname, quantity)} className='btn btn-primary'>Add to cart</button>
+                                                ) : (
+                                                    <button style={{ pointerEvents: "none", opacity: 0.5 }} className='btn btn-primary'>Add to cart</button>
+                                                )}
+                                            </div>
+                                        </div>
                                     </LazyLoad>
                                 </div>
                             )

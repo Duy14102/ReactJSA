@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import ItemMenuComponent from './outOfBorder/ItemMenuComponent';
+import { NavLink } from 'react-router-dom';
 
 function Menu() {
     $(function () {
@@ -80,20 +81,29 @@ function Menu() {
                     </ul>
                     <div className="tab-content">
                         < div id="tab-1" className="tab-pane p-0 active activeThis">
-                            <div className="row d-flex" >
+                            <div className="row costumeUI" >
                                 <ItemMenuComponent Name={"Meat"} />
+                            </div>
+                            <div className='text-center pt-4'>
+                                <NavLink to="/CategorySite/Meat/nto" reloadDocument className="btn btn-primary">More</NavLink>
                             </div>
                         </div >
 
                         < div id="tab-2" className="tab-pane p-0">
-                            <div className="row d-flex" >
+                            <div className="row costumeUI" >
                                 <ItemMenuComponent Name={"Vegetables"} />
+                            </div>
+                            <div className='text-center pt-4'>
+                                <NavLink to="/CategorySite/Vegetables/nto" reloadDocument className="btn btn-primary">More</NavLink>
                             </div>
                         </div >
 
                         < div id="tab-3" className="tab-pane p-0">
-                            <div className="row d-flex" >
+                            <div className="row costumeUI" >
                                 <ItemMenuComponent Name={"Drink"} />
+                            </div>
+                            <div className='text-center pt-4'>
+                                <NavLink to="/CategorySite/Drink/nto" reloadDocument className="btn btn-primary">More</NavLink>
                             </div>
                         </div >
                     </div>

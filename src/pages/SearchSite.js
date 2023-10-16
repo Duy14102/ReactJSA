@@ -85,6 +85,32 @@ function SearchSite() {
         }
     }
 
+    function addToCart(name, quantity) {
+        var stored = JSON.parse(localStorage.getItem("cart"));
+        if (!stored) {
+            var students = [];
+            var student1 = { name: name, quantity: quantity };
+            students.push(student1);
+            localStorage.setItem("cart", JSON.stringify(students));
+            window.location.reload()
+        } else {
+            var sameItem = JSON.parse(localStorage.getItem("cart")) || [];
+            for (var i = 0; i < sameItem.length; i++) {
+                if (name === sameItem[i].name) {
+                    sameItem[i].quantity += quantity;
+                    localStorage.setItem('cart', JSON.stringify(sameItem))
+                    window.location.reload()
+                } else if (i === sameItem.length - 1) {
+                    var stored2 = JSON.parse(localStorage.getItem("cart"));
+                    var student2 = { name: name, quantity: quantity };
+                    stored2.push(student2);
+                    localStorage.setItem("cart", JSON.stringify(stored2));
+                    window.location.reload()
+                }
+            }
+        }
+    }
+
     $(function () {
         $("#select2").val(appler.fil);
     })
@@ -126,27 +152,35 @@ function SearchSite() {
                     </div>
                     <div className="row SecondRow">
                         {Object.values(searchdata).map(i => {
+                            var quantity = 1
                             return (
                                 <div className="product-box column p-0 CateColumn" key={i._id}>
                                     <LazyLoad>
-                                        <NavLink reloadDocument to={`/DetailMenuPage/${i.foodname}/${i.foodcategory}`} className="product-item">
-                                            <div className="product-item-image">
-                                                <img loading='lazy' src={i.foodimage} alt="" />
-                                                <div className="product-item-image-hover">
+                                        <div className="product-item">
+                                            <NavLink reloadDocument to={`/DetailMenuPage/${i.foodname}/${i.foodcategory}`}>
+                                                <div className="product-item-image">
+                                                    <img loading='lazy' src={i.foodimage} alt="" />
+                                                    <div className="product-item-image-hover">
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            </NavLink>
                                             <div className="product-item-content">
                                                 <div className="product-item-category">
                                                     {i.foodcategory}
                                                 </div>
-                                                <div className="product-item-title">
-                                                    {i.foodname}
-                                                </div>
+                                                <NavLink reloadDocument to={`/DetailMenuPage/${i.foodname}/${i.foodcategory}`} className="product-item-title">{i.foodname}</NavLink>
                                                 <div className="product-item-price">
                                                     {VND.format(i.foodprice)}
                                                 </div>
                                             </div>
-                                        </NavLink>
+                                            <div className='liutiudiu'>
+                                                {i.foodquantity > 0 ? (
+                                                    <button onClick={() => addToCart(i.foodname, quantity)} className='btn btn-primary'>Add to cart</button>
+                                                ) : (
+                                                    <button style={{ pointerEvents: "none", opacity: 0.5 }} className='btn btn-primary'>Add to cart</button>
+                                                )}
+                                            </div>
+                                        </div>
                                     </LazyLoad>
                                 </div>
                             )

@@ -193,7 +193,7 @@ function DetailMenuPage() {
             setImgF(h.userimage)
             return null
         })
-    },[detail, getUserW])
+    }, [detail, getUserW])
 
 
     const addreview = (e, ids) => {
@@ -280,13 +280,25 @@ function DetailMenuPage() {
 
                                         <div className="product-count">
                                             <label>Quantity</label>
-                                            <div className='d-flex'>
-                                                <button onClick={handleDecrement} className="btn btn-secondary">-</button>
-                                                <input type="number" defaultValue={quantity} className='qty mx-1' />
-                                                <button onClick={handleIncrement} className="btn btn-secondary">+</button>
-                                            </div>
+                                            {i.foodquantity > 0 ? (
+                                                <div className='d-flex'>
+                                                    <button onClick={handleDecrement} className="btn btn-secondary">-</button>
+                                                    <input type="number" value={quantity} className='qty mx-1' />
+                                                    <button onClick={handleIncrement} className="btn btn-secondary">+</button>
+                                                </div>
+                                            ) : (
+                                                <div style={{ pointerEvents: "none", opacity: 0.5 }} className='d-flex'>
+                                                    <button className="btn btn-secondary">-</button>
+                                                    <input type="number" value={0} className='qty mx-1' />
+                                                    <button className="btn btn-secondary">+</button>
+                                                </div>
+                                            )}
                                         </div>
-                                        <button onClick={() => addToCart(i.foodname, quantity)} className="round-black-btn">Add to Cart</button>
+                                        {i.foodquantity > 0 ? (
+                                            <button onClick={() => addToCart(i.foodname, quantity)} className="round-black-btn">Add to Cart</button>
+                                        ) : (
+                                            <button style={{ pointerEvents: "none", opacity: 0.5 }} className="round-black-btn">Out of stock</button>
+                                        )}
                                     </div>
                                 </div>
                             </div>

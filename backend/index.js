@@ -327,28 +327,31 @@ app.post("/UploadMenu", (request, response) => {
 // Add Order
 const Order = require('./model/Order');
 app.post("/UploadOrder", (req, res) => {
-    const order = new Order({
-        user: req.body.user,
-        phonenumber: req.body.phonenumber,
-        address: req.body.address,
-        paymentmethod: req.body.paymentmethod,
-        shippingfee: req.body.shippingfee,
-        status: 1,
-        orderitems: req.body.orderitems
-    })
+    try {
+        var hype = req.body.orderitems
+        const order = new Order({
+            user: req.body.user,
+            phonenumber: req.body.phonenumber,
+            address: req.body.address,
+            paymentmethod: req.body.paymentmethod,
+            shippingfee: req.body.shippingfee,
+            status: 1,
+            orderitems: hype
+        })
 
-    order.save()
-        .then((result) => {
-            res.status(201).send({
-                message: result._id
-            });
-        })
-        .catch((error) => {
-            res.status(500).send({
-                message: "Error creating user",
-                error,
-            });
-        })
+        order.save()
+            .then((result) => {
+                res.send({ message: result._id })
+            })
+            .catch((error) => {
+                res.status(500).send({
+                    message: "Error creating user",
+                    error,
+                });
+            })
+    } catch (e) {
+        console.log(e);
+    }
 })
 
 //Get Order
@@ -388,11 +391,22 @@ app.get("/GetAllOrder", async (req, res) => {
 //Update status order
 app.post("/UpdateStatusOrder", (req, res) => {
     try {
-        getThisOrder.updateOne({ _id: req.query.id }, {
-            status: req.query.status,
-            employee: req.query.employee
+        var hype = req.body.orderitems
+        getThisOrder.updateOne({ _id: req.body.id }, {
+            status: req.body.status,
+            employee: req.body.employee
         }).then(() => {
-            res.send({ data: "Updated" })
+            hype.forEach(item => {
+                getThisMenu.updateOne({ _id: item.data._id }, {
+                    $inc: {
+                        foodquantity: -item.quantity
+                    }
+                }).then(() => {
+                    res.send({ message: "succeed" })
+                }).catch((err) => {
+                    console.log(err);
+                })
+            })
         }).catch((err) => {
             console.log(err);
         })
@@ -478,7 +492,6 @@ app.get("/GetThisMenu", async (req, res) => {
 
 //Get Cart Item
 app.get("/GetCartItem", async (req, res) => {
-    console.log(req.query.name);
     try {
         const getIt = await getThisMenu.find({ foodname: req.query.name });
         res.send({ data: getIt, quantity: req.query.quantity });
@@ -614,7 +627,7 @@ app.post("/AddReview", (req, res) => {
 //Get All Review With Pagination
 app.get("/GetAllReviewPagination", async (req, res) => {
     try {
-        const getIt = await getThisMenu.find({ foodname: req.query.id},{"review.$" : 1});
+        const getIt = await getThisMenu.find({ foodname: req.query.id }, { "review.$": 1 });
 
         const page = parseInt(req.query.page)
         const limit = parseInt(req.query.limit)
@@ -1041,10 +1054,11 @@ app.post("/Checkout4Booking", (req, res) => {
             fulltotal: req.body.fulltotal,
             employee: req.body.employee
         }).then(() => {
+            var hype = req.body.TbItemHistory
             const tbhistory = new TableHistory({
                 customerid: req.body.Idhistory,
                 tablename: req.body.TbnameHistory,
-                tableitems: req.body.TbItemHistory,
+                tableitems: hype,
                 tabledate: req.body.TbDateHistory,
                 employee: req.body.employee
             })
@@ -1055,7 +1069,17 @@ app.post("/Checkout4Booking", (req, res) => {
                     tableitems: [],
                     tabledate: null
                 }).then(() => {
-                    res.send({ data: "succeed" })
+                    hype.forEach(datad => {
+                        getThisMenu.updateOne({ _id: datad.item._id }, {
+                            $inc: {
+                                foodquantity: -datad.quantity
+                            }
+                        }).then(() => {
+                            res.send({ message: "succeed" })
+                        }).catch((err) => {
+                            console.log(err);
+                        })
+                    })
                 }).catch((err) => {
                     console.log(err);
                 })
@@ -1073,9 +1097,10 @@ app.post("/Checkout4Booking", (req, res) => {
 //Checkout for normal
 app.post("/Checkout4Normal", (req, res) => {
     try {
+        var hype = req.body.TbItemHistory
         const historytb = new TableHistory({
             tablename: req.body.TbnameHistory,
-            tableitems: req.body.TbItemHistory,
+            tableitems: hype,
             tabledate: req.body.TbDateHistory,
             employee: req.body.employee
         })
@@ -1086,7 +1111,17 @@ app.post("/Checkout4Normal", (req, res) => {
                 tableitems: [],
                 tabledate: null
             }).then(() => {
-                res.send({ data: "succeed" })
+                hype.forEach(datad => {
+                    getThisMenu.updateOne({ _id: datad.item._id }, {
+                        $inc: {
+                            foodquantity: -datad.quantity
+                        }
+                    }).then(() => {
+                        res.send({ message: "succeed" })
+                    }).catch((err) => {
+                        console.log(err);
+                    })
+                })
             }).catch((err) => {
                 console.log(err);
             })

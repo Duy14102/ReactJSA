@@ -36,7 +36,7 @@ const ItemMenuComponent = ({ Name }) => {
                                         <span className="text-primary">{VND.format(i.foodprice)}</span>
                                     </h5>
                                     <div className='d-flex justify-content-between'>
-                                        <small className="fst-italic text-secondary">{i.fooddescription}</small>
+                                        <small className="fst-italic text-secondary">{i.foodcategory}</small>
                                         <i className="fa fa-cart-shopping text-primary"></i>
                                     </div>
                                 </div>

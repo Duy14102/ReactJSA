@@ -26,14 +26,15 @@ function OrderAdmin({ Data }) {
     }, [modalOpenDetail2])
 
 
-    const appoveOrder = (e) => {
+    const appoveOrder = (e, yolo) => {
         const configuration = {
             method: 'post',
             url: 'http://localhost:3000/UpdateStatusOrder',
-            params: {
+            data: {
                 id: e,
                 status: 2,
-                employee: takeEmployee
+                employee: takeEmployee,
+                orderitems: yolo
             }
         }
         axios(configuration)
@@ -65,7 +66,7 @@ function OrderAdmin({ Data }) {
                 id: id,
                 reason: DenyReason,
                 employee: takeEmployee,
-                status: 3
+                status: 3,
             }
         }
         axios(configuration)
@@ -223,7 +224,7 @@ function OrderAdmin({ Data }) {
                     {Accept ? (
                         <button style={{ pointerEvents: "none", opacity: 0.4 }} className="btn btn-success">Accept</button>
                     ) : (
-                        <button onClick={() => appoveOrder(ModalData._id)} className="btn btn-success">Accept</button>
+                        <button onClick={() => appoveOrder(ModalData._id, ModalData.orderitems)} className="btn btn-success">Accept</button>
                     )}
                     <button onClick={() => setAccept(true)} className="btn btn-danger">Deny</button>
                 </div>
