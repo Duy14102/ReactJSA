@@ -73,8 +73,7 @@ function MainMenu() {
     }
     return (
         <>
-            <div className='text-right pb-3'>
-                {/* <NavLink to="/UploadMenuReal" className="btn btn-primary" >Add</NavLink> */}
+            <div className='jknoob pb-3'>
                 <button className='btn btn-primary' onClick={setModalOpen}>
                     Add Menu
                 </button>
@@ -96,15 +95,16 @@ function MainMenu() {
                         transform: "translate(-50%, -50%)",
                         backgroundColor: "white",
                         width: "70vw",
+                        height: "57vh",
                         zIndex: 999
                     },
                 }}>
-                <div className='p-3'>
+                <div className='juh'>
                     <h3 className="text-center">Add Menu</h3>
                     <hr />
                     <form onSubmit={(e) => handleSubmit(e)} className="login100-form validate-form">
-                        <div className='d-flex w-100' style={{ gap: 3 + "%" }}>
-                            <div style={{ width: 20 + "%" }}>
+                        <div className='reft'>
+                            <div className='reftson1'>
                                 <label className="inputImageDup" htmlFor="inputimage">
                                     <div className="aboveCameraAppear">
                                         <div className="cameraAppear">
@@ -115,29 +115,29 @@ function MainMenu() {
                                 </label>
                                 <input id="inputimage" onChange={convertToBase64} className="fuckThatImage" type="file" style={{ display: "none" }} />
                             </div>
-                            <div style={{ width: 80 + "%" }}>
+                            <div className='reftson2'>
                                 <div className="overHereB">
                                     <div className="insideHereB">
                                         <label>Name</label>
-                                        <input className='textDeny' type='text' name='updatename' value={foodname} onChange={(e) => setFoodname(e.target.value)}></input>
+                                        <input className='textDeny' type='text' name='updatename' value={foodname} onChange={(e) => setFoodname(e.target.value)} required></input>
                                     </div>
                                     <div className="insideHereB">
                                         <label>Category</label>
-                                        <input className='textDeny' type='text' name='updatecategory' value={foodcategory} onChange={(e) => setFoodcategory(e.target.value)} ></input>
+                                        <input className='textDeny' type='text' name='updatecategory' value={foodcategory} onChange={(e) => setFoodcategory(e.target.value)} required></input>
                                     </div>
                                 </div>
                                 <div className="overHereB">
                                     <div className="insideHereB">
                                         <label>Price</label>
-                                        <input className='textDeny' type='number' name='updateprice' value={foodprice} onChange={(e) => setFoodprice(e.target.value)} ></input>
+                                        <input className='textDeny' type='number' name='updateprice' value={foodprice} onChange={(e) => setFoodprice(e.target.value)} required></input>
                                     </div>
                                     <div className="insideHereB">
                                         <label>Quantity</label>
-                                        <input className='textDeny' type='number' name='updatequantity' value={foodquantity} onChange={(e) => setFoodquantity(e.target.value)} ></input>
+                                        <input className='textDeny' type='number' name='updatequantity' value={foodquantity} onChange={(e) => setFoodquantity(e.target.value)} required></input>
                                     </div>
                                 </div>
                                 <label>Description</label>
-                                <textarea className='textDeny' type='text' name='updatedescription' value={fooddescription} onChange={(e) => setFooddescription(e.target.value)}></textarea>
+                                <textarea className='textDeny' type='text' name='updatedescription' value={fooddescription} onChange={(e) => setFooddescription(e.target.value)} required></textarea>
                             </div>
                         </div>
                         <hr />

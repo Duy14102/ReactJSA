@@ -50,12 +50,12 @@ function Tracking() {
                 </div>
                 <div className='pt-4'>
                     {Displaytable ? (
-                        <table className='table'>
+                        <table className='table text-center'>
                             <thead>
-                                <tr>
+                                <tr style={{ whiteSpace: "nowrap" }}>
                                     <th>Fullname</th>
-                                    <th>Phone Number</th>
-                                    <th>Date</th>
+                                    <th className='thhuhu'>Phone Number</th>
+                                    <th className='thhuhu'>Date</th>
                                     <th>Status</th>
                                     <th></th>
                                 </tr>
@@ -87,14 +87,14 @@ function Tracking() {
                                     }
                                     return (
                                         <Fragment key={i._id}>
-                                            <tr style={{ verticalAlign: "middle" }}>
+                                            <tr style={{ verticalAlign: "middle", whiteSpace: "nowrap" }}>
                                                 {i.user.map((z) => {
                                                     return (
                                                         <td key={z}>{z.fullname}</td>
                                                     )
                                                 })}
-                                                <td>{i.phonenumber}</td>
-                                                <td>{datetime}</td>
+                                                <td className='thhuhu'>{i.phonenumber}</td>
+                                                <td className='thhuhu'>{datetime}</td>
                                                 <td>{statusCheck}</td>
                                                 <td><button onClick={setModalOpenDetail} className='btn btn-success'>Detail</button></td>
                                             </tr>
@@ -111,7 +111,7 @@ function Tracking() {
                                                         marginRight: "-50%",
                                                         transform: "translate(-50%, -50%)",
                                                         backgroundColor: "white",
-                                                        width: 650,
+                                                        width: "70vw",
                                                         overflow: "hidden",
                                                     },
                                                 }}>
@@ -121,27 +121,30 @@ function Tracking() {
                                                     <p className="m-0"><b>Date</b> : {datetime}</p>
                                                 </div>
                                                 <hr />
-                                                {i.user.map((t) => {
-                                                    var textSp = "( visisting guests )"
-                                                    return (
-                                                        <Fragment key={t}>
-                                                            {t.id === "none" ? (
-                                                                <p><b>Fullname</b> : {t.fullname} {textSp}</p>
-                                                            ) : (
-                                                                <p><b>Fullname</b> : {t.fullname}</p>
-                                                            )}
-                                                        </Fragment>
-                                                    )
-                                                })}
-                                                <p><b>Phone number</b> : {i.phonenumber}</p>
-                                                <p><b>Address</b> : {i.address}</p>
-                                                <p><b>Payment method</b> : {paymentCheck}</p>
-                                                <p><b>Status</b> : {statusCheck}</p>
-                                                <table className='table table-bordered'>
+                                                <div className='hugeImpace'>
+                                                    {i.user.map((t) => {
+                                                        var textSp = "( visisting guests )"
+                                                        return (
+                                                            <Fragment key={t}>
+                                                                {t.id === "none" ? (
+                                                                    <p><b>Fullname</b> : {t.fullname} {textSp}</p>
+                                                                ) : (
+                                                                    <p><b>Fullname</b> : {t.fullname}</p>
+                                                                )}
+                                                            </Fragment>
+                                                        )
+                                                    })}
+
+                                                    <p><b>Phone number</b> : {i.phonenumber}</p>
+                                                    <p><b>Address</b> : {i.address}</p>
+                                                    <p><b>Payment method</b> : {paymentCheck}</p>
+                                                    <p><b>Status</b> : {statusCheck}</p>
+                                                </div>
+                                                <table className='table table-bordered solotable'>
                                                     <thead>
                                                         <tr>
                                                             <th>Name</th>
-                                                            <th>Category</th>
+                                                            <th className='thhuhu'>Category</th>
                                                             <th>Quantity</th>
                                                             <th>Price</th>
                                                         </tr>
@@ -154,18 +157,28 @@ function Tracking() {
                                                             return (
                                                                 <tr key={a.data._id}>
                                                                     <td>{a.data.foodname}</td>
-                                                                    <td>{a.data.foodcategory}</td>
+                                                                    <td className='thhuhu'>{a.data.foodcategory}</td>
                                                                     <td>{a.quantity}</td>
                                                                     <td>{VND.format(a.data.foodprice)}</td>
                                                                 </tr>
                                                             )
                                                         })}
-                                                        <tr className='actorVid'>
+                                                        <tr className='thhuhu'>
                                                             <td colSpan={3}>Shipping</td>
                                                             <td>{VND.format(i.shippingfee)}</td>
                                                         </tr>
-                                                        <tr className='actorVid'>
+                                                        <tr className='thhuhu'>
                                                             <th colSpan={3}>Fulltotal</th>
+                                                            <th>{VND.format(fulltotal)}</th>
+                                                        </tr>
+                                                    </tbody>
+                                                    <tbody className='jackass'>
+                                                        <tr >
+                                                            <td colSpan={2}>Shipping</td>
+                                                            <td>{VND.format(i.shippingfee)}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th colSpan={2}>Fulltotal</th>
                                                             <th>{VND.format(fulltotal)}</th>
                                                         </tr>
                                                     </tbody>

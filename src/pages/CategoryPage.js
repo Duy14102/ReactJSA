@@ -86,18 +86,14 @@ function CategoryPage() {
     }
 
     const CateFilter = (e) => {
-        if (e === "thisMeat") {
-            window.location.href = `/CategorySite/Meat/nto`
-        } if (e === "thisVegetables") {
-            window.location.href = `/CategorySite/Vegetables/nto`
-        } if (e === "thisDrink") {
-            window.location.href = `/CategorySite/Drink/nto`
+        if (e === "Meat") {
+            window.location.href = `/CategorySite/${e}/nto`
+        } if (e === "Vegetables") {
+            window.location.href = `/CategorySite/${e}/nto`
+        } if (e === "Drink") {
+            window.location.href = `/CategorySite/${e}/nto`
         }
     }
-
-    $(function () {
-        $("#select").val(appler.fil);
-    })
 
     function addToCart(name, quantity) {
         var stored = JSON.parse(localStorage.getItem("cart"));
@@ -125,6 +121,11 @@ function CategoryPage() {
         }
     }
 
+    $(function () {
+        $("#select").val(appler.fil);
+        $("#mix2up").val(appler.id);
+    })
+
     const VND = new Intl.NumberFormat('vi-VN', {
         style: 'currency',
         currency: 'VND',
@@ -151,13 +152,12 @@ function CategoryPage() {
                         </div>
                     </div>
                     <div className="row SecondRow">
-                        <div className='d-flex justify-content-between'>
+                        <div className='d-flex justify-content-between Jkaem'>
                             <div className='CatuRespon'>
-                                <select onChange={(e) => CateFilter(e.target.value)} className='FilterDrop'>
-                                    <option disabled hidden selected>Product Category</option>
-                                    <option value={"thisMeat"}>Meat</option>
-                                    <option value={"thisVegetables"}>Vegetables</option>
-                                    <option value={"thisDrink"}>Drink</option>
+                                <select id='mix2up' onChange={(e) => CateFilter(e.target.value)} className='FilterDrop'>
+                                    <option value={"Meat"}>Meat</option>
+                                    <option value={"Vegetables"}>Vegetables</option>
+                                    <option value={"Drink"}>Drink</option>
                                 </select>
                             </div>
                             <div className='ThirdRow'>

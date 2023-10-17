@@ -247,7 +247,7 @@ function AdminPanel() {
                             </div>
                             <div className="card-verticle">
                                 <div className="card-small" style={{ background: "#ff9999" }}>
-                                    <div className='d-flex justify-content-between align-items-center'>
+                                    <div className='flexOverPage'>
                                         <div>
                                             <span className="title">Active Booking</span>
                                             <h2 className="text text-center">{CountData?.actBookingLength}</h2>
@@ -273,7 +273,7 @@ function AdminPanel() {
                             </div>
                         </div>
                         <div className='butItWrong'>
-                            <div className='w-100 p-5'>
+                            <div className='bestie'>
                                 <h4 className='text-center text-white'>Revenue</h4>
                                 <div style={{ background: "#2C343A", borderRadius: 3 + "px" }}>
                                     <div className='d-flex' style={{ gap: 1 + "%" }}>
@@ -286,7 +286,7 @@ function AdminPanel() {
                                     </div>
                                 </div>
                             </div>
-                            <div className="w-100 p-5">
+                            <div className="bestie">
                                 <h4 className='text-center text-white'>Contact</h4>
                                 <GetContact />
                             </div>
@@ -298,7 +298,7 @@ function AdminPanel() {
                                 <h2>Cart</h2>
                             </div>
                         </div>
-                        <div className='px-5 callMeOutUI'>
+                        <div className='callMeOutUI'>
                             <MainOrder />
                         </div>
                     </div>
@@ -308,7 +308,7 @@ function AdminPanel() {
                                 <h2>Users</h2>
                             </div>
                         </div>
-                        <div className='px-5 callMeOutUI'>
+                        <div className='callMeOutUI'>
                             <MainUser />
                         </div>
                     </div>
@@ -318,7 +318,7 @@ function AdminPanel() {
                                 <h2>Menu</h2>
                             </div>
                         </div>
-                        <div className='px-5 callMeOutUI'>
+                        <div className='callMeOutUI'>
                             <MainMenu />
                         </div>
                     </div>
@@ -328,7 +328,7 @@ function AdminPanel() {
                                 <h2>Table</h2>
                             </div>
                         </div>
-                        <div className='px-5 callMeOutUI'>
+                        <div className='callMeOutUI'>
                             <MainTable />
                         </div>
                     </div>
@@ -338,7 +338,7 @@ function AdminPanel() {
                                 <h2>Booking</h2>
                             </div>
                         </div>
-                        <div className='px-5 callMeOutUI'>
+                        <div className='callMeOutUI'>
                             <MainBooking />
                         </div>
                     </div>

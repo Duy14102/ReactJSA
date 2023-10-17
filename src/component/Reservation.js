@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 
 function Reservation() {
     const [name, setName] = useState()
-    const [email, setEmail] = useState()
+    const [phone, setPhone] = useState()
     const [date, setDate] = useState()
     const [people, setPeople] = useState()
     const [message, setMessage] = useState()
@@ -27,7 +27,7 @@ function Reservation() {
             url: "http://localhost:3000/AddNewBooking",
             data: {
                 name,
-                email,
+                phone,
                 date,
                 people,
                 message
@@ -72,44 +72,34 @@ function Reservation() {
                             <form onSubmit={(e) => AddNewTable(e)}>
                                 <div className="row g-3">
                                     <div className="col-md-6">
-                                        <div className="form-floating">
-                                            <input value={name} onChange={(e) => setName(e.target.value)} type="text" className="form-control" id="name" placeholder="Your Name" required />
-                                            <label htmlFor="name">Your Name</label>
-                                        </div>
+                                        <label htmlFor="name" className="text-white">Your Name</label>
+                                        <input value={name} onChange={(e) => setName(e.target.value)} type="text" className="cutOut" id="name" placeholder="Your Name" required />
                                     </div>
                                     <div className="col-md-6">
-                                        <div className="form-floating">
-                                            <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" className="form-control" id="email" placeholder="Your Email" required />
-                                            <label htmlFor="email">Your Email</label>
-                                        </div>
+                                        <label htmlFor="phone" className="text-white">Your Phone Number</label>
+                                        <input value={phone} onChange={(e) => setPhone(e.target.value)} type="number" className="cutOut" id="phone" placeholder="Your Phone Number" required />
                                     </div>
                                     <div className="col-md-6">
-                                        <div className="form-floating date" id="date3" data-target-input="nearest">
-                                            <input value={date} onChange={(e) => setDate(e.target.value)} type="datetime-local" className="form-control datetimepicker-input" id="datetime" placeholder="Date & Time" required />
-                                            <label htmlFor="datetime">Date & Time</label>
-                                        </div>
+                                        <label htmlFor="datetime" className="text-white">Date & Time</label>
+                                        <input value={date} onChange={(e) => setDate(e.target.value)} type="datetime-local" className="cutOut datetimepicker-input" id="datetime" placeholder="Date & Time" required />
                                         {checkDate ? (
                                             <p className="m-0 pt-1 text-danger">Date can't smaller than today!</p>
                                         ) : null}
                                     </div>
                                     <div className="col-md-6">
-                                        <div className="form-floating">
-                                            <select value={people} onChange={(e) => setPeople(e.target.value)} className="form-select" id="select1" required>
-                                                <option value={1}>People 1</option>
-                                                <option value={2}>People 2</option>
-                                                <option value={3}>People 3</option>
-                                                <option value={4}>People 4</option>
-                                                <option value={5}>People 5</option>
-                                                <option value={6}>People 6</option>
-                                            </select>
-                                            <label htmlFor="select1">No Of People</label>
-                                        </div>
+                                        <label htmlFor="select1" className="text-white">No Of People</label>
+                                        <select value={people} onChange={(e) => setPeople(e.target.value)} className="cutOut" id="select1" required>
+                                            <option value={1}>People 1</option>
+                                            <option value={2}>People 2</option>
+                                            <option value={3}>People 3</option>
+                                            <option value={4}>People 4</option>
+                                            <option value={5}>People 5</option>
+                                            <option value={6}>People 6</option>
+                                        </select>
                                     </div>
                                     <div className="col-12">
-                                        <div className="form-floating">
-                                            <textarea value={message} onChange={(e) => setMessage(e.target.value)} className="form-control" placeholder="Special Request" id="message" style={{ height: 100 + "px" }}></textarea>
-                                            <label htmlFor="message">Note</label>
-                                        </div>
+                                        <label htmlFor="message" className="text-white">Note</label>
+                                        <textarea value={message} onChange={(e) => setMessage(e.target.value)} className="cutOut" placeholder="Special Request" id="message" style={{ height: 100 + "px" }}></textarea>
                                     </div>
                                     <div className="col-12">
                                         <button className="btn btn-primary w-100 py-3" type="submit">Book Now</button>

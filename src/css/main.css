@@ -50,11 +50,12 @@ li {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%
+  width: 100%;
 }
 
 .overHereB .insideHereB {
   width: 45%;
+  padding-top: 1rem;
 }
 
 .overHereB .insideHereB .textDeny {

@@ -133,8 +133,8 @@ function OrderAdmin({ Data }) {
                                             <td key={z}>{z.fullname}</td>
                                         )
                                     })}
-                                    <td>{i.phonenumber}</td>
-                                    <td>{datetime}</td>
+                                    <td className="thhuhu">{i.phonenumber}</td>
+                                    <td className="thhuhu">{datetime}</td>
                                     <td>{statusCheck}</td>
                                     <td onClick={setModalOpenDetail2}><button onClick={() => setModalData(i)} className='btn btn-success'>Detail</button></td>
                                 </tr>
@@ -160,6 +160,7 @@ function OrderAdmin({ Data }) {
                         transform: "translate(-50%, -50%)",
                         backgroundColor: "white",
                         width: "70vw",
+                        height: "70vh",
                         zIndex: 999
                     },
                 }}>
@@ -169,27 +170,29 @@ function OrderAdmin({ Data }) {
                     <p className="m-0"><b>Date</b> : {datemodal}</p>
                 </div>
                 <hr />
-                {ModalData.user?.map((t) => {
-                    var textSp = "( visisting guests )"
-                    return (
-                        <Fragment key={t}>
-                            {t.id === "none" ? (
-                                <p><b>Fullname</b> : {t.fullname} {textSp}</p>
-                            ) : (
-                                <p><b>Fullname</b> : {t.fullname}</p>
-                            )}
-                        </Fragment>
-                    )
-                })}
-                <p><b>Phone number</b> : {ModalData.phonenumber}</p>
-                <p><b>Address</b> : {ModalData.address}</p>
-                <p><b>Payment method</b> : {paymentCheck}</p>
-                <p><b>Status</b> : {statusCheck}</p>
-                <table className='table table-bordered'>
+                <div className="hugeImpace">
+                    {ModalData.user?.map((t) => {
+                        var textSp = "( visisting guests )"
+                        return (
+                            <Fragment key={t}>
+                                {t.id === "none" ? (
+                                    <p><b>Fullname</b> : {t.fullname} {textSp}</p>
+                                ) : (
+                                    <p><b>Fullname</b> : {t.fullname}</p>
+                                )}
+                            </Fragment>
+                        )
+                    })}
+                    <p><b>Phone number</b> : {ModalData.phonenumber}</p>
+                    <p><b>Address</b> : {ModalData.address}</p>
+                    <p><b>Payment method</b> : {paymentCheck}</p>
+                    <p><b>Status</b> : {statusCheck}</p>
+                </div>
+                <table className='table table-bordered solotable'>
                     <thead>
                         <tr>
                             <th>Name</th>
-                            <th>Category</th>
+                            <th className="thhuhu">Category</th>
                             <th>Quantity</th>
                             <th>Price</th>
                         </tr>
@@ -202,18 +205,28 @@ function OrderAdmin({ Data }) {
                             return (
                                 <tr key={a.data._id}>
                                     <td>{a.data.foodname}</td>
-                                    <td>{a.data.foodcategory}</td>
+                                    <td className="thhuhu">{a.data.foodcategory}</td>
                                     <td>{a.quantity}</td>
                                     <td>{VND.format(a.data.foodprice)}</td>
                                 </tr>
                             )
                         })}
-                        <tr className='actorVid'>
+                        <tr className='thhuhu'>
                             <td colSpan={3}>Shipping</td>
                             <td>{VND.format(ModalData.shippingfee)}</td>
                         </tr>
-                        <tr className='actorVid'>
+                        <tr className='thhuhu'>
                             <th colSpan={3}>Fulltotal</th>
+                            <th>{VND.format(fulltotal)}</th>
+                        </tr>
+                    </tbody>
+                    <tbody className='jackass'>
+                        <tr >
+                            <td colSpan={2}>Shipping</td>
+                            <td>{VND.format(ModalData.shippingfee)}</td>
+                        </tr>
+                        <tr>
+                            <th colSpan={2}>Fulltotal</th>
                             <th>{VND.format(fulltotal)}</th>
                         </tr>
                     </tbody>

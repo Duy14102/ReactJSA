@@ -44,7 +44,6 @@ function GetTable() {
             method: "get",
             url: "http://localhost:3000/GetBookingByStatus",
             params: {
-                status: 1,
                 page: currentPage.current,
                 limit: limit
             }
@@ -148,12 +147,12 @@ function GetTable() {
         <>
             <table className='table table-bordered text-center'>
                 <thead>
-                    <tr className="text-white" style={{ background: "#374148" }}>
-                        <th className="text-center">Name</th>
-                        <th className="text-center">Email</th>
-                        <th className="text-center">Date</th>
-                        <th className="text-center">Status</th>
-                        <th className="text-center"></th>
+                    <tr className="text-white text-center" style={{ background: "#374148" }}>
+                        <th >Name</th>
+                        <th className="thhuhu">Email</th>
+                        <th className="thhuhu">Date</th>
+                        <th>Status</th>
+                        <th></th>
                     </tr>
                 </thead>
                 {booking.map(i => {
@@ -163,13 +162,15 @@ function GetTable() {
                     var stau = ""
                     if (i.status === 1) {
                         stau = "Pending"
+                    } else if (i.status === 2) {
+                        stau = "Serving"
                     }
                     return (
                         <tbody key={i._id}>
                             <tr style={{ background: "#2C343A", color: "lightgray", verticalAlign: "middle" }}>
                                 <td>{i.name}</td>
-                                <td>{i.email}</td>
-                                <td>{datetime}</td>
+                                <td className="thhuhu">{i.email}</td>
+                                <td className="thhuhu">{datetime}</td>
                                 <td>{stau}</td>
                                 <td onClick={setModalOpenDetail}><button onClick={() => setModalData(i)} className='btn btn-success'>Detail</button></td>
                             </tr>
@@ -186,7 +187,7 @@ function GetTable() {
                 previousLabel="< previous"
                 renderOnZeroPageCount={null}
                 marginPagesDisplayed={2}
-                containerClassName="pagination justify-content-center"
+                containerClassName="pagination justify-content-center text-nowrap"
                 pageClassName="page-item"
                 pageLinkClassName="page-link"
                 previousClassName="page-item"
@@ -212,6 +213,7 @@ function GetTable() {
                         transform: "translate(-50%, -50%)",
                         backgroundColor: "white",
                         width: "70vw",
+                        height:"60vh",
                         zIndex: 999
                     },
                 }}>
@@ -221,39 +223,43 @@ function GetTable() {
                     <p className="m-0"><b>Date</b> : {datemodal}</p>
                 </div>
                 <hr />
-                <p><b>Name</b> : {ModalData.name}</p>
-                <p><b>Email</b> : {ModalData.email}</p>
-                <p><b>People</b> : {ModalData.people}</p>
-                <p><b>Date Arrived</b> : {datemodal2}</p>
-                {ModalData.status === 1 ? (
-                    <p><b>Status</b> : Pending</p>
-                ) : null}
-                <p><b>Note</b> : </p>
-                <textarea className="contactMessage" style={{ pointerEvents: "none" }} defaultValue={ModalData.message} />
-                <div className="d-flex justify-content-around pt-2">
-                    {correct ? (
-                        <>
-                            <button className="btn btn-success">Approve</button>
-                            <button style={{ pointerEvents: "none", opacity: 0.5 }} className="btn btn-danger">Deny</button>
-                        </>
-                    ) : deny ? (
-                        <>
-                            <button style={{ pointerEvents: "none", opacity: 0.5 }} className="btn btn-success">Approve</button>
-                            <button className="btn btn-danger">Deny</button>
-                        </>
-                    ) : (
-                        <>
-                            <button onClick={() => setCorrect(true)} className="btn btn-success">Approve</button>
-                            <button onClick={() => setDeny(true)} className="btn btn-danger">Deny</button>
-                        </>
-                    )}
+                <div className="hugeImpace">
+                    <p><b>Name</b> : {ModalData.name}</p>
+                    <p><b>Phone Number</b> : {ModalData.phone}</p>
+                    <p><b>People</b> : {ModalData.people}</p>
+                    <p><b>Date Arrived</b> : {datemodal2}</p>
+                    {ModalData.status === 1 ? (
+                        <p><b>Status</b> : Pending</p>
+                    ) : ModalData.status === 2 ? (
+                        <p><b>Status</b> : Serving</p>
+                    ) : null}
+                    <p><b>Note</b> : </p>
+                    <textarea className="contactMessage" style={{ pointerEvents: "none" }} defaultValue={ModalData.message} />
+                    <div className="d-flex justify-content-around pt-2">
+                        {correct ? (
+                            <>
+                                <button className="btn btn-success">Approve</button>
+                                <button style={{ pointerEvents: "none", opacity: 0.5 }} className="btn btn-danger">Deny</button>
+                            </>
+                        ) : deny ? (
+                            <>
+                                <button style={{ pointerEvents: "none", opacity: 0.5 }} className="btn btn-success">Approve</button>
+                                <button className="btn btn-danger">Deny</button>
+                            </>
+                        ) : (
+                            <>
+                                <button onClick={() => setCorrect(true)} className="btn btn-success">Approve</button>
+                                <button onClick={() => setDeny(true)} className="btn btn-danger">Deny</button>
+                            </>
+                        )}
+                    </div>
                 </div>
                 {correct ? (
                     <div className="pt-3">
                         <p>Choosing Table : </p>
                         <form onSubmit={(e) => addTableBooking(e, ModalData._id)}>
-                            <div className="d-flex" style={{ gap: 2 + "%" }}>
-                                <select onInput={(e) => setTableId(e.target.value)} className="w-25" required>
+                            <div className="ytui" style={{ gap: 2 + "%" }}>
+                                <select onInput={(e) => setTableId(e.target.value)} className="neul" required>
                                     <option selected disabled hidden>Choose Table</option>
                                     {Object.values(GetTable).map((i) => {
                                         return (
@@ -262,7 +268,7 @@ function GetTable() {
                                     })}
                                 </select>
                                 {CheckTableId ? (
-                                    <p className="m-0 text-danger">Table need to be choose!</p>
+                                    <p className="m-0 neul text-danger text-nowrap">Table need to be choose!</p>
                                 ) : null}
                             </div>
                             <div style={{ gap: 1 + "%" }} className="d-flex mt-3">

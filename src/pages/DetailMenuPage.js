@@ -183,6 +183,7 @@ function DetailMenuPage() {
     }
 
     useEffect(() => {
+
         currentPage.current = 1;
         Object.values(detail).map(i => {
             outshin(i)
@@ -264,19 +265,18 @@ function DetailMenuPage() {
                     <Fragment key={i._id}>
                         <div className="container py-5">
                             <p><NavLink reloadDocument className="Allright" to="/">Home</NavLink> / <NavLink reloadDocument className="Allright" to={`/CategorySite/${i.foodcategory}`}>{i.foodcategory}</NavLink> / <NavLink to="/DetailMenuPage" state={{ id: i._id }} className="Allright">{i.foodname}</NavLink></p>
-                            <div className="d-flex">
+                            <div className="buhhuh">
                                 <img loading="lazy" alt='' src={i.foodimage} className='thisImageRespon' />
-                                <div className='px-3'>
+                                <div className='sonbuhhuh'>
                                     <div className="product-dtl">
                                         <div className="product-info">
                                             <div className="product-name">{i.foodname}</div>
-                                            <div className="product-category">{i.foodcategory}</div>
                                             <div className="product-price-discount"><span>{VND.format(i.foodprice)}</span></div>
                                         </div>
 
                                         <p>Quantity : {i.foodquantity}</p>
 
-                                        <p>{i.fooddescription}</p>
+                                        <p>{i.review.length} review from customer</p>
 
                                         <div className="product-count">
                                             <label>Quantity</label>

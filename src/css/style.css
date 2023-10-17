@@ -44,6 +44,22 @@
     box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
 }
 
+.cutOut {
+    border: 1px solid #ddd;
+    width: 100%;
+    color: gray;
+    padding: 2%;
+}
+
+.cutOut option {
+    color: black;
+}
+
+.cutOut:focus {
+    outline: none;
+    border: 1px solid #FEA116;
+}
+
 
 /*** Spinner ***/
 #spinner {
@@ -181,7 +197,25 @@
     display: flex;
 }
 
+.justUYI {
+    padding-right: 1.5rem;
+}
+
+.humble {
+    display: flex;
+}
+
+.anotherJackass {
+
+    display: none;
+}
+
 @media (max-width: 991.98px) {
+    .subOver .dialog .dialog-block {
+        width: 60vw !important;
+        height: 30vh !important;
+    }
+
     .costumeUI {
         gap: 5%;
     }
@@ -255,6 +289,321 @@
     .sticky-top.navbar-dark {
         position: fixed;
         background: var(--dark) !important;
+    }
+}
+
+.ladyPurge {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.ytui {
+    display: flex;
+}
+
+.bestie {
+    width: 100%;
+    padding: 3rem;
+}
+
+.deleteTH {
+    display: none !important;
+}
+
+.jknoob {
+    text-align: right;
+}
+
+.cluk {
+    width: 45%;
+}
+
+.reft {
+    width: 100%;
+    display: flex;
+    gap: 3%;
+}
+
+.reftson1 {
+    width: 20%;
+}
+
+.reftson2 {
+    width: 80%;
+}
+
+
+.juh {
+    padding: 1rem;
+}
+
+@media (max-width:575px) {
+    .reft {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .reftson1 {
+        width: 70%;
+    }
+
+    .reftson2 {
+        width: 100%;
+    }
+
+    .juh {
+        padding: 0;
+    }
+
+    .cluk {
+        width: 100%;
+    }
+
+    .overHereB {
+        flex-direction: column;
+    }
+
+    .overHereB .insideHereB {
+        width: 100%;
+    }
+
+    .jknoob {
+        text-align: center;
+    }
+
+    .deleteTH {
+        display: block !important;
+    }
+
+    .butItWrong {
+        padding-top: 5%;
+    }
+
+    .bestie {
+        padding: 20px 20px;
+    }
+
+    .neul {
+        font-size: 3.5vw;
+    }
+
+    .ytui {
+        flex-direction: column;
+    }
+
+    .autoPurge {
+        flex-direction: column;
+        align-items: unset !important;
+    }
+
+    .ladyPurge {
+        flex-direction: column;
+        align-items: unset !important;
+    }
+
+    .ladyPurge .btn-info {
+        margin-top: 10px;
+    }
+
+    .row .sicky {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        width: 50% !important;
+    }
+
+    .callMeOutUI {
+        padding: 40px 20px !important;
+    }
+
+    #myDIV3,
+    #myDIV,
+    #myDIV2 {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .myDIVdad {
+        gap: 15px;
+        flex-direction: column;
+    }
+
+    .subOver .content .page .grid {
+        padding: 0 20px !important;
+    }
+
+    .flexOverPage {
+        flex-direction: column;
+    }
+
+    .card-verticle {
+        width: 100% !important;
+    }
+
+    .card-small {
+        text-align: center;
+    }
+
+    .subOver .drawer {
+        width: 75px !important;
+    }
+
+    .subOver .content .page>.header .title h2 {
+        text-align: center;
+    }
+
+    .subOver .drawer .menu {
+        align-items: center;
+        width: 75px !important;
+    }
+
+    .subOver .drawer .menu a {
+        width: 75px !important;
+        height: 45px !important;
+    }
+
+    .appearNow {
+        display: none;
+    }
+
+    .pic-holder2 {
+        width: 45px !important;
+        height: 45px !important;
+    }
+
+    .uninput {
+        font-size: 3.5vw;
+        height: 5vh;
+    }
+
+    .anotherJackass {
+        width: 100%;
+        display: block;
+    }
+
+    .humble {
+        justify-content: space-between;
+    }
+
+    .BossLvMax {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .headOverview {
+        text-align: center;
+        display: block !important;
+    }
+
+    .headOverview .button4Edit {
+        margin-top: 2%;
+    }
+
+    .headOverview h5 {
+        font-size: 3.5vw;
+    }
+
+    .thisImageRespon {
+        width: 100% !important;
+    }
+
+    .jackass {
+        display: contents !important;
+    }
+
+    .thhuhu {
+        display: none !important;
+    }
+
+    .coverNOut {
+        display: contents !important;
+    }
+
+    .coverNOut p {
+        font-size: 3.5vw;
+        white-space: nowrap;
+    }
+
+    .solotable {
+        font-size: 3.5vw;
+    }
+
+    .hugeImpace p {
+        font-size: 3.5vw;
+        white-space: nowrap;
+    }
+
+    .buttonN1 {
+        justify-content: space-between;
+    }
+
+    .buttonN1 .btnFirst {
+        padding: 1.3% !important;
+    }
+
+    .buttonN1 .btnSecond {
+        padding: 1.3% !important;
+    }
+
+    .justUYI {
+        padding-right: 0;
+    }
+
+    .buhhuh {
+        display: block !important;
+    }
+
+    .product-name {
+        font-size: 30px !important;
+    }
+
+    .sonbuhhuh {
+        padding-top: 5%;
+    }
+
+    .CatuRespon {
+        width: 45% !important;
+    }
+
+    .businessWay .joiboy {
+        display: none;
+    }
+
+    .ReturnH {
+        padding: 2.5% !important;
+    }
+
+    .businessWay .slash {
+        display: none;
+    }
+
+    .businessWay .active {
+        display: block;
+    }
+
+    .Jkaem {
+        padding-bottom: 5%;
+    }
+
+    .product-item .product-item-image img {
+        height: 150px !important;
+    }
+
+    .allover3 {
+        display: none;
+    }
+
+    .outsider {
+        width: 70% !important;
+    }
+
+    .outsider form {
+        padding: 2%;
+    }
+
+    .btn-lg-square {
+        width: 40px;
+        height: 40px;
     }
 }
 

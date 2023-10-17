@@ -105,12 +105,12 @@ function GetUser() {
     const decode = jwtDecode(token);
     return (
         <>
-            <table className='table table-bordered text-center'>
+            <table className='table table-bordered text-center solotable'>
                 <thead>
                     <tr className="text-white" style={{ background: "#374148" }}>
                         <th>Email</th>
-                        <th>FullName</th>
-                        <th>Role</th>
+                        <th className="thhuhu">FullName</th>
+                        <th className="thhuhu">Role</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -119,13 +119,13 @@ function GetUser() {
                         <tbody key={i._id}>
                             <tr style={{ background: "#2C343A", color: "lightgray", verticalAlign: "middle" }}>
                                 <td>{i.email}</td>
-                                <td>{i.fullname}</td>
+                                <td className="thhuhu">{i.fullname}</td>
                                 {i.role === 1 ? (
-                                    <td>User</td>
+                                    <td className="thhuhu">User</td>
                                 ) : i.role === 3 ? (
-                                    <td>Admin</td>
+                                    <td className="thhuhu">Admin</td>
                                 ) : (
-                                    <td>Employee</td>
+                                    <td className="thhuhu">Employee</td>
                                 )}
                                 {decode.userId === i._id ? (
                                     <td onClick={setModalOpenDetail}><button onClick={() => DetailUser(i._id)} className="btn btn-success">Detail</button></td>
@@ -146,7 +146,7 @@ function GetUser() {
                 previousLabel="< previous"
                 renderOnZeroPageCount={null}
                 marginPagesDisplayed={2}
-                containerClassName="pagination justify-content-center"
+                containerClassName="pagination justify-content-center text-nowrap"
                 pageClassName="page-item"
                 pageLinkClassName="page-link"
                 previousClassName="page-item"
@@ -173,6 +173,7 @@ function GetUser() {
                         transform: "translate(-50%, -50%)",
                         backgroundColor: "white",
                         width: "70vw",
+                        height:"45vh",
                         zIndex: 999
                     },
                 }}>
@@ -196,7 +197,7 @@ function GetUser() {
                                         <input className='textDeny' value={updatepassword} type='password' name='updatepassword' onChange={(e) => setPassword(e.target.value)} placeholder="●●●●●●●●●●" />
                                     </div>
                                 </div>
-                                <div className="overHereB pt-3">
+                                <div className="overHereB">
                                     <div className="insideHereB">
                                         <label>Fullname</label>
                                         <input className='textDeny' defaultValue={i.fullname} value={updatefullname} type='text' name='updatefullname' onChange={(e) => setFullname(e.target.value)} />

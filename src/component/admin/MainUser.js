@@ -51,8 +51,7 @@ function MainUser() {
     }
     return (
         <>
-            <div className='text-right pb-3'>
-                {/* <NavLink to="/UploadMenuReal" className="btn btn-primary" >Add</NavLink> */}
+            <div className='jknoob pb-3'>
                 <button className='btn btn-primary' onClick={setModalOpenAdmin}>
                     Add Employee
                 </button>
@@ -74,6 +73,7 @@ function MainUser() {
                         transform: "translate(-50%, -50%)",
                         backgroundColor: "white",
                         width: "70vw",
+                        height: "55vh",
                         zIndex: 999
                     },
                 }}>
@@ -111,7 +111,7 @@ function MainUser() {
                             </div>
                         </div>
 
-                        <div style={{ width: 45 + "%" }} className='mt-3'>
+                        <div className='mt-3 cluk'>
                             <div>
                                 <label>Phone Number</label>
                                 <input style={{ padding: 2 + "%" }} className='textDeny' type="number" name="phonenumber" value={phonenumber} onChange={(e) => setPhonenumber(e.target.value)} />

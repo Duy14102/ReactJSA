@@ -83,7 +83,7 @@ function Checkout() {
 
     if (!location.state) {
         return NotFound()
-    } else if (location.state.fulltotal === 0) {
+    } else if (!location.state.valid.length > 0) {
         window.history.replaceState({}, document.title)
         return NotFound()
     }
@@ -195,10 +195,10 @@ function Checkout() {
 
             <div className="container">
                 <div className="py-5 text-center businessWay">
-                    <NavLink to="/Cart"> Shopping Cart</NavLink> ˃ <NavLink to="/Checkout" >Checkout Details</NavLink> ˃ {ahoe ? (<NavLink to="/">Order Complete</NavLink>) : (<NavLink style={{ pointerEvents: "none" }} to="/">Order Complete</NavLink>)}
+                    <NavLink className="joiboy" to="/Cart"> Shopping Cart</NavLink> <span className='slash'>˃</span> <NavLink className="joiboy" to="/Checkout" >Checkout Details</NavLink> <span className='slash'>˃</span> {ahoe ? (<NavLink className="joiboy" to="/">Order Complete</NavLink>) : (<NavLink className="joiboy" style={{ pointerEvents: "none" }} to="/">Order Complete</NavLink>)}
                 </div>
 
-                <div className="flexAble">
+                <div className="flexAble2">
                     <div className="takeFirstUI">
                         <h4 className="mb-3">Address</h4>
                         <form onSubmit={(e) => handleSubmit(e)} className="needs-validation">

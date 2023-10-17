@@ -77,11 +77,11 @@ function GetContact() {
             {GetContact.length > 0 ? (
                 <>
 
-                    <table className='table table-bordered'>
+                    <table className='table table-bordered solotable'>
                         <thead>
                             <tr className='text-center text-white' style={{ background: "#374148" }}>
                                 <th>Name</th>
-                                <th>Email</th>
+                                <th className="thhuhu">Email</th>
                                 <th>Date</th>
                                 <th></th>
                             </tr>
@@ -94,7 +94,7 @@ function GetContact() {
                                 return (
                                     <tr key={i._id} className='text-center' style={{ background: "#2C343A", color: "lightgray" }}>
                                         <td>{i.name}</td>
-                                        <td>{i.email}</td>
+                                        <td className="thhuhu">{i.email}</td>
                                         <td>{datetime}</td>
                                         <td onClick={setModalOpenDetail2}><button onClick={() => setModalData(i)} className='btn btn-success'>Detail</button></td>
                                     </tr>
@@ -111,7 +111,7 @@ function GetContact() {
                         previousLabel="< previous"
                         renderOnZeroPageCount={null}
                         marginPagesDisplayed={2}
-                        containerClassName="pagination justify-content-center"
+                        containerClassName="pagination justify-content-center text-nowrap"
                         pageClassName="page-item"
                         pageLinkClassName="page-link"
                         previousClassName="page-item"
@@ -137,19 +137,25 @@ function GetContact() {
                                 transform: "translate(-50%, -50%)",
                                 backgroundColor: "white",
                                 width: "70vw",
+                                height: "45vh",
                                 zIndex: 999
                             },
                         }}>
                         <h2 className='text-center'>Contact Details</h2>
                         <div className="coverNOut">
                             <p className="m-0"><b>Date</b> : {datemodal}</p>
-                            <button onClick={() => DeleteContact(ModalData._id)} className="btn btn-danger">Delete</button>
+                            <button onClick={() => DeleteContact(ModalData._id)} className="btn btn-danger thhuhu">Delete</button>
                         </div>
                         <hr />
-                        <p><b>Name</b> : {ModalData.name}</p>
-                        <p><b>Email</b> : {ModalData.email}</p>
-                        <p><b>Title</b> : {ModalData.title}</p>
-                        <textarea className="contactMessage" defaultValue={ModalData.message} />
+                        <div className="hugeImpace">
+                            <p><b>Name</b> : {ModalData.name}</p>
+                            <p><b>Email</b> : {ModalData.email}</p>
+                            <p><b>Title</b> : {ModalData.title}</p>
+                            <textarea className="contactMessage" defaultValue={ModalData.message} />
+                        </div>
+                        <div className="d-flex justify-content-center">
+                            <button onClick={() => DeleteContact(ModalData._id)} className="btn btn-danger deleteTH">Delete</button>
+                        </div>
                         <button className='closeModal' onClick={() => setModalOpenDetail2(false)}>x</button>
                     </Modal>
                 </>

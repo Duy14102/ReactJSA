@@ -378,10 +378,66 @@ app.get("/GetOrderUserPanel", async (req, res) => {
 })
 
 //Get all order
-app.get("/GetAllOrder", async (req, res) => {
+app.get("/GetAllOrderHistory", async (req, res) => {
     const filter = { datetime: -1 }
     try {
-        const getOrder = await getThisOrder.find({}).sort(filter)
+        const getOrder = await getThisOrder.find({ status: { $in: [2, 3, 4] } }).sort(filter)
+        const page = parseInt(req.query.page)
+        const limit = parseInt(req.query.limit)
+
+        const start = (page - 1) * limit
+        const end = page * limit
+
+        const results = {}
+        results.total = getOrder.length
+        results.pageCount = Math.ceil(getOrder.length / limit)
+
+        if (end < getOrder.length) {
+            results.next = {
+                page: page + 1
+            }
+        }
+        if (start > 0) {
+            results.prev = {
+                page: page - 1
+            }
+        }
+
+        results.result = getOrder.slice(start, end)
+        res.send({ results });
+        res.send({ data: getOrder })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+app.get("/GetAllOrderActive", async (req, res) => {
+    const filter = { datetime: -1 }
+    try {
+        const getOrder = await getThisOrder.find({ status: 1 }).sort(filter)
+        const page = parseInt(req.query.page)
+        const limit = parseInt(req.query.limit)
+
+        const start = (page - 1) * limit
+        const end = page * limit
+
+        const results = {}
+        results.total = getOrder.length
+        results.pageCount = Math.ceil(getOrder.length / limit)
+
+        if (end < getOrder.length) {
+            results.next = {
+                page: page + 1
+            }
+        }
+        if (start > 0) {
+            results.prev = {
+                page: page - 1
+            }
+        }
+
+        results.result = getOrder.slice(start, end)
+        res.send({ results });
         res.send({ data: getOrder })
     } catch (e) {
         console.log(e);
@@ -768,7 +824,7 @@ app.post("/AddNewBooking", (req, res) => {
     try {
         const booking = new Booking({
             name: req.body.name,
-            email: req.body.email,
+            phone: req.body.phone,
             date: req.body.date,
             people: req.body.people,
             status: 1,
@@ -812,7 +868,7 @@ app.post("/DenyBookingCustomer", (req, res) => {
 //Get Booking By Status
 app.get("/GetBookingByStatus", async (req, res) => {
     try {
-        const getIt = await GetBooking.find({ status: req.query.status });
+        const getIt = await GetBooking.find({ status: 1 });
         const page = parseInt(req.query.page)
         const limit = parseInt(req.query.limit)
 

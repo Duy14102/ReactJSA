@@ -52,12 +52,12 @@ function GetHistoryTable() {
     });
     return (
         <>
-            <table className="table table-bordered text-center">
+            <table className="table table-bordered text-center solotable">
                 <thead>
                     <tr className="text-white" style={{ background: "#374148" }}>
                         <th>Name</th>
                         <th>Date</th>
-                        <th>Employee</th>
+                        <th className="thhuhu">Employee</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -72,7 +72,7 @@ function GetHistoryTable() {
                                 <td>{datetime}</td>
                                 {i.employee?.map((a) => {
                                     return (
-                                        <td key={a}>{a.email}</td>
+                                        <td className="thhuhu" key={a}>{a.email}</td>
                                     )
                                 })}
                                 <td><button onClick={() => { setModalOpenDetail(true); setModalData(i) }} className="btn btn-success">Detail</button></td>
@@ -90,7 +90,7 @@ function GetHistoryTable() {
                 previousLabel="< previous"
                 renderOnZeroPageCount={null}
                 marginPagesDisplayed={2}
-                containerClassName="pagination justify-content-center"
+                containerClassName="pagination justify-content-center text-nowrap text-nowrap"
                 pageClassName="page-item"
                 pageLinkClassName="page-link"
                 previousClassName="page-item"
@@ -116,6 +116,7 @@ function GetHistoryTable() {
                         transform: "translate(-50%, -50%)",
                         backgroundColor: "white",
                         width: "70vw",
+                        height: "45vh",
                         zIndex: 999
                     },
                 }}>
@@ -137,13 +138,15 @@ function GetHistoryTable() {
                         )
                     })}
                 </div>
-                <p><b>Date</b> : {datetime}</p>
-                <p><b>Items</b> : </p>
-                <table className="table table-bordered">
+                <div className="hugeImpace">
+                    <p><b>Date</b> : {datetime}</p>
+                    <p><b>Items</b> : </p>
+                </div>
+                <table className="table table-bordered solotable">
                     <thead>
                         <tr>
                             <th>Name</th>
-                            <th>Category</th>
+                            <th className="thhuhu">Category</th>
                             <th>Quantity</th>
                             <th>Price</th>
                         </tr>
@@ -155,14 +158,18 @@ function GetHistoryTable() {
                             return (
                                 <tr key={a.item._id}>
                                     <td>{a.item.foodname}</td>
-                                    <td>{a.item.foodcategory}</td>
+                                    <td className="thhuhu">{a.item.foodcategory}</td>
                                     <td>{a.quantity}</td>
                                     <td>{VND.format(a.item.foodprice)}</td>
                                 </tr>
                             )
                         })}
-                        <tr>
+                        <tr className="thhuhu">
                             <th colSpan={3}>Fulltotal</th>
+                            <th>{VND.format(fulltotal)}</th>
+                        </tr>
+                        <tr className="jackass">
+                            <th colSpan={2}>Fulltotal</th>
                             <th>{VND.format(fulltotal)}</th>
                         </tr>
                     </tbody>

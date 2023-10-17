@@ -138,7 +138,7 @@ function Header() {
                     </button>
                 </div>
                 <div className="collapse navbar-collapse" id="navbarCollapse">
-                    <div className="navbar-nav ms-auto py-0 pe-4">
+                    <div className="navbar-nav ms-auto py-0 justUYI">
                         <form onSubmit={(e) => SearchType(e)} className="responFormSearch">
                             <div className="d-flex justify-content-between">
                                 <div className="SearchForm">
@@ -178,12 +178,6 @@ function Header() {
                         {token ? (
                             Object.values(GetUser).map((i) => {
                                 const decode = jwtDecode(token)
-                                // proFake1.addEventListener("mouseenter", function () {
-                                //     realFake1.classList.add(showClass)
-                                // })
-                                // proFake1.addEventListener("mouseleave", function () {
-                                //     realFake1.classList.remove(showClass)
-                                // })
                                 if (i.userimage) {
                                     return (
                                         <div key={i._id} className="Move1">
@@ -234,7 +228,7 @@ function Header() {
                             Object.values(GetUser).map((i) => {
                                 return (
                                     <Fragment key={i._id}>
-                                        <div className="navbar-nav ms-auto py-0 pe-4">
+                                        <div className="navbar-nav ms-auto py-0">
                                             <NavLink reloadDocument to={`/UserPanel/${i._id}`} className="nav-item nav-link Wrinked">Account</NavLink>
                                             <button onClick={() => logoutThis()} className="nav-item nav-link Wrinked"><i className="fa-solid fa-right-from-bracket"></i> Logout</button>
                                         </div>
@@ -243,7 +237,7 @@ function Header() {
                             })
                         ) : (
                             <>
-                                <div className="navbar-nav ms-auto py-0 pe-4">
+                                <div className="navbar-nav ms-auto py-0">
                                     <NavLink reloadDocument to="/LoginSite" className="nav-item nav-link Wrinked responFormSearch">Login</NavLink>
                                 </div>
                             </>

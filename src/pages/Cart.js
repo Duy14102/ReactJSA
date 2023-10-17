@@ -84,17 +84,19 @@ function Cart() {
         pushData.push(dataToPush)
         return (
             <tr key={i._id}>
-                <td className="Xtd"><button onClick={() => removeItem(i.foodname)} className="insideXtd">X</button></td>
+                <td className="Xtd"><button onClick={() => removeItem(i.foodname)} className="insideXtd">×</button></td>
                 <td style={{ width: 10 + "%" }}><img alt="" src={i.foodimage} width={70} height={60} /></td>
-                <td>{i.foodname}</td>
-                <td>{VND.format(i.foodprice)}</td>
+                <td>{i.foodname}<span className="jackass"><br />{VND.format(i.foodprice)}</span></td>
+                <td className="thhuhu">{VND.format(i.foodprice)}</td>
                 <td><input style={{ width: 100 + "%" }} id="edValue" type="number" defaultValue={e} onInput={(e) => changeInput(e.target.value, i.foodname)} /></td>
-                <td>{VND.format(total)}</td>
+                <td className="thhuhu">{VND.format(total)}</td>
             </tr>
         )
+
     }
 
-    function applyCoupon() {
+    function applyCoupon(e) {
+        e.preventDefault()
         if (checkCoupon === "duydeptrai") {
             setShippingFee(0)
         }
@@ -105,7 +107,7 @@ function Cart() {
             <Header />
             <div className="container">
                 <div className="py-5 text-center businessWay">
-                    <NavLink to="/Cart"> Shopping Cart</NavLink> ˃ <NavLink to="/Checkout" state={{ valid: pushData, shippingFee: shippingFee }}>Checkout Details</NavLink> ˃ {ahoe ? (<NavLink to="/">Order Complete</NavLink>) : (<NavLink style={{ pointerEvents: "none" }} to="/">Order Complete</NavLink>)}
+                    <NavLink className="joiboy" to="/Cart"> Shopping Cart</NavLink>  <span className='slash'>˃</span> <NavLink className="joiboy" to="/Checkout" state={{ valid: pushData, shippingFee: shippingFee }}>Checkout Details</NavLink> <span className='slash'>˃</span> {ahoe ? (<NavLink className="joiboy" to="/">Order Complete</NavLink>) : (<NavLink className="joiboy" style={{ pointerEvents: "none" }} to="/">Order Complete</NavLink>)}
                 </div>
                 {checkVal ? (
                     <div style={{ height: 45 + "vh" }} className="pt-4 pb-4 text-center">
@@ -119,9 +121,9 @@ function Cart() {
                                 <thead>
                                     <tr>
                                         <th colSpan={3}>Items</th>
-                                        <th>Price</th>
+                                        <th className="thhuhu">Price</th>
                                         <th style={{ width: 10 + "%" }}>Amount</th>
-                                        <th>Total</th>
+                                        <th className="thhuhu">Total</th>
                                     </tr>
                                 </thead>
                                 <tbody style={{ verticalAlign: "middle" }}>
@@ -164,10 +166,12 @@ function Cart() {
                                 </tr>
                                 <tr>
                                     <td colSpan={2} className="inputC">
-                                        <input onInput={(e) => setCheckCoupon(e.target.value)} type="text" placeholder="Coupon Code...." />
-                                        <div className="text-center pt-3">
-                                            <button onClick={() => applyCoupon()} className="btnCoupon">Apply</button>
-                                        </div>
+                                        <form onSubmit={(e) => applyCoupon(e)}>
+                                            <input onInput={(e) => setCheckCoupon(e.target.value)} type="text" placeholder="Coupon Code...." required />
+                                            <div className="text-center pt-3">
+                                                <button type="submit" className="btnCoupon">Apply</button>
+                                            </div>
+                                        </form>
                                     </td>
                                 </tr>
                             </tbody>

@@ -262,13 +262,13 @@ function EmployeePanel() {
                                     </div>
                                 </div>
                             </div>
-                            <div className='d-flex justify-content-center'>
-                                <div className='w-50 p-5'>
-                                    <h4 className='text-center text-white'>Task For You</h4>
+                            <div className='d-flex justify-content-center pt-5'>
+                                <div style={{ width: 70 + "vw" }}>
+                                    <h4 style={{ whiteSpace: "nowrap" }} className='text-center text-white'>Task For You</h4>
                                     {Object.values(GetUser).map((v) => {
                                         if (v.task.length > 0) {
                                             return (
-                                                <table key={v} className='table table-bordered w-100'>
+                                                <table key={v} className='table table-bordered w-100 solotable'>
                                                     <thead>
                                                         <tr className="text-white text-center" style={{ background: "#374148" }}>
                                                             <th style={{ width: 25 + "%" }}>Title</th>
@@ -291,7 +291,7 @@ function EmployeePanel() {
                                             )
                                         } else {
                                             return (
-                                                <p key={v} className="text-center" style={{ color: "lightgray" }}>Task list empty!</p>
+                                                <p key={v} className="text-center" style={{ color: "lightgray", whiteSpace: "nowrap" }}>Task list empty!</p>
                                             )
                                         }
                                     })}
@@ -304,7 +304,7 @@ function EmployeePanel() {
                                     <h2>Table</h2>
                                 </div>
                             </div>
-                            <div className='px-5 callMeOutUI'>
+                            <div className=' callMeOutUI'>
                                 <MainTable />
                             </div>
                         </div>
@@ -314,7 +314,7 @@ function EmployeePanel() {
                                     <h2>Booking</h2>
                                 </div>
                             </div>
-                            <div className='px-5 callMeOutUI'>
+                            <div className='callMeOutUI'>
                                 <MainBooking />
                             </div>
                         </div>
@@ -324,7 +324,7 @@ function EmployeePanel() {
                                     <h2>Cart</h2>
                                 </div>
                             </div>
-                            <div className='px-5 callMeOutUI'>
+                            <div className='callMeOutUI'>
                                 <MainOrder />
                             </div>
                         </div>

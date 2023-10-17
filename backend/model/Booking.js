@@ -10,8 +10,9 @@ const BookingSchema = new mongoose.Schema({
         type: String
     },
 
-    email: {
-        type: String
+    phone: {
+        type: String,
+        unique: [true, "Phone Exist"],
     },
 
     date: {

@@ -55,12 +55,12 @@ function BookingHistory() {
         <>
             <table className='table table-bordered text-center'>
                 <thead>
-                    <tr className="text-white" style={{ background: "#374148" }}>
-                        <th className="text-center">Name</th>
-                        <th className="text-center">Email</th>
-                        <th className="text-center">Date</th>
-                        <th className="text-center">Status</th>
-                        <th className="text-center"></th>
+                    <tr className="text-white text-center" style={{ background: "#374148" }}>
+                        <th >Name</th>
+                        <th className="thhuhu">Email</th>
+                        <th className="thhuhu">Date</th>
+                        <th >Status</th>
+                        <th ></th>
                     </tr>
                 </thead>
                 {booking.map(i => {
@@ -78,8 +78,8 @@ function BookingHistory() {
                         <tbody key={i._id}>
                             <tr style={{ background: "#2C343A", color: "lightgray", verticalAlign: "middle" }}>
                                 <td>{i.name}</td>
-                                <td>{i.email}</td>
-                                <td>{datetime}</td>
+                                <td className="thhuhu">{i.email}</td>
+                                <td className="thhuhu">{datetime}</td>
                                 <td>{stau}</td>
                                 <td onClick={setModalOpenDetail}><button onClick={() => setModalData(i)} className='btn btn-success'>Detail</button></td>
                             </tr>
@@ -96,7 +96,7 @@ function BookingHistory() {
                 previousLabel="< previous"
                 renderOnZeroPageCount={null}
                 marginPagesDisplayed={2}
-                containerClassName="pagination justify-content-center"
+                containerClassName="pagination justify-content-center text-nowrap"
                 pageClassName="page-item"
                 pageLinkClassName="page-link"
                 previousClassName="page-item"
@@ -122,6 +122,7 @@ function BookingHistory() {
                         transform: "translate(-50%, -50%)",
                         backgroundColor: "white",
                         width: "70vw",
+                        height: "60vh",
                         zIndex: 999
                     },
                 }}>
@@ -139,19 +140,21 @@ function BookingHistory() {
                         )
                     })}
                 </div>
-                <p><b>Email</b> : {ModalData.email}</p>
-                <p><b>People</b> : {ModalData.people}</p>
-                {ModalData.fulltotal ? (
-                    <p><b>Fulltotal</b> : {VND.format(ModalData.fulltotal)}</p>
-                ) : null}
-                <p><b>Date Arrived</b> : {datemodal2}</p>
-                {ModalData.status === 3 ? (
-                    <p><b>Status</b> : Completed</p>
-                ) : ModalData.status === 4 ? (
-                    <p><b>Status</b> : Denied</p>
-                ) : null}
-                <p><b>Note</b> : </p>
-                <textarea className="contactMessage" style={{ pointerEvents: "none" }} defaultValue={ModalData.message} />
+                <div className="hugeImpace">
+                    <p><b>Phone Number</b> : {ModalData.phone}</p>
+                    <p><b>People</b> : {ModalData.people}</p>
+                    {ModalData.fulltotal ? (
+                        <p><b>Fulltotal</b> : {VND.format(ModalData.fulltotal)}</p>
+                    ) : null}
+                    <p><b>Date Arrived</b> : {datemodal2}</p>
+                    {ModalData.status === 3 ? (
+                        <p><b>Status</b> : Completed</p>
+                    ) : ModalData.status === 4 ? (
+                        <p><b>Status</b> : Denied</p>
+                    ) : null}
+                    <p><b>Note</b> : </p>
+                    <textarea className="contactMessage" style={{ pointerEvents: "none" }} defaultValue={ModalData.message} />
+                </div>
                 {ModalData.status === 3 ? (
                     <p>✅ Order has been <b>Completed</b></p>
                 ) : ModalData.status === 4 ? (

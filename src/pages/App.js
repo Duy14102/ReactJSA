@@ -2,11 +2,10 @@ import Services from "../component/Services";
 import About from "../component/About";
 import Menu from "../component/Menu";
 import Reservation from "../component/Reservation";
-import Team from "../component/Team";
 import Testimonial from "../component/Testimonial";
 import Header from "../component/Header";
 import Footer from "../component/Footer";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import "../css/style.css";
 
 function App() {
@@ -28,7 +27,7 @@ function App() {
             <div className="col-lg-6 text-center text-lg-start">
               <h1 className="display-3 text-white animated slideInLeft">Enjoy Our<br />Delicious Meal</h1>
               <p className="text-white animated slideInLeft mb-4 pb-2">Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit. Aliqu diam amet diam et eos. Clita erat ipsum et lorem et sit, sed stet lorem sit clita duo justo magna dolore erat amet</p>
-              <Link to={"/"} className="btn btn-primary py-sm-3 px-sm-5 me-3 animated slideInLeft">Book A Table</Link>
+              <NavLink reloadDocument to="/BookingSite" className="btn btn-primary py-sm-3 px-sm-5 me-3 animated slideInLeft">Book A Table</NavLink>
             </div>
             <div className="col-lg-6 text-center text-lg-end overflow-hidden">
               <img loading="lazy" className="img-fluid" src="img/hero.png" alt="" />
@@ -44,8 +43,6 @@ function App() {
       <Menu />
 
       <Reservation />
-
-      <Team />
 
       <Testimonial />
 

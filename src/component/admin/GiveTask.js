@@ -44,7 +44,7 @@ function GiveTask({ id }) {
     }
     return (
         <>
-            <button onClick={setModalOpenDetail} className="btn btn-info">Give Task</button>
+            <button onClick={setModalOpenDetail} className="btn btn-info text-nowrap">+Task</button>
             <Modal
                 isOpen={modalOpenDetail} onRequestClose={() => setModalOpenDetail(false)} ariaHideApp={false}
                 style={{
@@ -62,7 +62,7 @@ function GiveTask({ id }) {
                         transform: "translate(-50%, -50%)",
                         backgroundColor: "white",
                         width: "70vw",
-                        overflow: "hidden",
+                        height: "43vh",
                         zIndex: 999
                     },
                 }}>

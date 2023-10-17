@@ -139,9 +139,9 @@ function UserPanel() {
                 <div className="coverUser">
                     <form onSubmit={(e) => handleSubmit(e, appler.id)}>
                         <div className="headOverview">
-                            <h5 className="m-0">User id : {appler.id}</h5>
+                            <h5 style={{ whiteSpace: "nowrap" }} className="m-0">User id : {appler.id}</h5>
                             {Edit ? (
-                                <div style={{ gap: 5 + "%" }} className="d-flex">
+                                <div style={{ gap: 5 + "%" }} className="d-flex justify-content-center">
                                     <button type="submit" className="button4Edit" >Comfirm</button>
                                     <button type="button" className="button4Edit" onClick={() => setEdit(false)}>Cancel</button>
                                 </div>

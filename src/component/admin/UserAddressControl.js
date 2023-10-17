@@ -142,15 +142,15 @@ function UserAddressControl({ address, edit, userid }) {
                         {Identity ? (
                             <>
                                 <tr style={{ verticalAlign: "middle", width: 100 + "%" }}>
-                                    <td className='inputC' style={{ width: 85 + "%" }}>
-                                        <input type='text' onChange={(e) => setProAddress(e.target.value)} className='w-100' required />
+                                    <td style={{ width: 85 + "%" }}>
+                                        <textarea type='text' className='uninput textDeny' onChange={(e) => setProAddress(e.target.value)} required />
                                         {CheckNull ? (
                                             <p className='text-danger'>Address needed!</p>
                                         ) : null}
                                     </td>
-                                    <td style={{ width: 15 + "%" }}>
-                                        <button onClick={() => addAddress()} type='submit' className='btn btn-success'>Confirm</button>
-                                    </td>
+                                    <td style={{ background: "gray", padding: 0.1 + "px", opacity: 0.2 }}></td>
+                                    <td style={{ height: 10 + "vh" }} className='text-center anotherJackass'><button onClick={() => addAddress()} type='submit' className='btn btn-success'>✓</button></td>
+                                    <td style={{ width: 15 + "%" }} className='text-center thhuhu'><button onClick={() => addAddress()} type='submit' className='btn btn-success' >Confirm</button></td>
                                 </tr>
                             </>
                         ) : (
@@ -162,9 +162,10 @@ function UserAddressControl({ address, edit, userid }) {
                                                 {i.address?.map((a) => {
                                                     return (
                                                         <tr key={a} style={{ width: 100 + "%" }}>
-                                                            <td style={{ width: 85 + "%" }}>{a}</td>
+                                                            <td style={{ width: 85 + "%", verticalAlign: "middle" }}>{a}</td>
                                                             <td style={{ background: "gray", padding: 0.1 + "px", opacity: 0.2 }}></td>
-                                                            <td className='text-center' style={{ width: 15 + "%" }}><button onClick={() => deleteAddress(a)} style={{ padding: 4 + "%" }} className='btn btn-danger px-1'>X</button></td>
+                                                            <td className='text-center anotherJackass'><button onClick={() => deleteAddress(a)} style={{ padding: 4 + "%" }} className='btn btn-danger px-1'>X</button></td>
+                                                            <td className='text-center thhuhu' style={{ width: 15 + "%" }}><button onClick={() => deleteAddress(a)} style={{ padding: 4 + "%" }} className='btn btn-danger px-1'>Delete</button></td>
                                                         </tr>
                                                     )
                                                 })}

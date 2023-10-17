@@ -166,12 +166,12 @@ function GetMenu() {
         <>
             <table className='table table-bordered text-center'>
                 <thead>
-                    <tr className="text-white" style={{ background: "#374148" }}>
-                        <th className="text-center">Name</th>
-                        <th className="text-center">Price</th>
-                        <th className="text-center">Quantity</th>
-                        <th className="text-center">Category</th>
-                        <th className="text-center"></th>
+                    <tr className="text-white text-center" style={{ background: "#374148" }}>
+                        <th>Name</th>
+                        <th className="thhuhu">Price</th>
+                        <th className="thhuhu">Quantity</th>
+                        <th >Category</th>
+                        <th ></th>
                     </tr>
                 </thead>
                 {menu.map(i => {
@@ -179,8 +179,8 @@ function GetMenu() {
                         <tbody key={i._id}>
                             <tr style={{ background: "#2C343A", color: "lightgray", verticalAlign: "middle" }}>
                                 <td>{i.foodname}</td>
-                                <td>{VND.format(i.foodprice)}</td>
-                                <td>{i.foodquantity}</td>
+                                <td className="thhuhu">{VND.format(i.foodprice)}</td>
+                                <td className="thhuhu">{i.foodquantity}</td>
                                 <td>{i.foodcategory}</td>
                                 <td onClick={setModalOpenDetail}><button onClick={() => DetailMenu(i.foodname)} className='btn btn-success'>Detail</button></td>
                             </tr>
@@ -197,7 +197,7 @@ function GetMenu() {
                 previousLabel="< previous"
                 renderOnZeroPageCount={null}
                 marginPagesDisplayed={2}
-                containerClassName="pagination justify-content-center"
+                containerClassName="pagination justify-content-center text-nowrap"
                 pageClassName="page-item"
                 pageLinkClassName="page-link"
                 previousClassName="page-item"
@@ -224,18 +224,19 @@ function GetMenu() {
                         transform: "translate(-50%, -50%)",
                         backgroundColor: "white",
                         width: "70vw",
+                        height: "55vh",
                         zIndex: 999
                     },
                 }}>
 
                 {Object.values(detail).map(i => {
                     return (
-                        <div className='p-3' key={i._id}>
+                        <div className='juh' key={i._id}>
                             <h3 className="text-center">Menu Detail</h3>
                             <hr />
                             <form onSubmit={(e) => handleSubmit(e, i._id)} className="login100-form validate-form">
-                                <div className='d-flex w-100' style={{ gap: 3 + "%" }}>
-                                    <div style={{ width: 20 + "%" }}>
+                                <div className='reft'>
+                                    <div className="reftson1">
                                         <label className="inputImageDup" htmlFor="inputimage2">
                                             <div className="aboveCameraAppear">
                                                 <div className="cameraAppear">
@@ -246,7 +247,7 @@ function GetMenu() {
                                         </label>
                                         <input id="inputimage2" onChange={convertToBase64} className="fuckThatImage" type="file" style={{ display: "none" }} />
                                     </div>
-                                    <div style={{ width: 80 + "%" }}>
+                                    <div className="reftson2">
                                         <div className="overHereB">
                                             <div className="insideHereB">
                                                 <label>Name</label>
@@ -275,7 +276,7 @@ function GetMenu() {
                             </form>
                             <div className='d-flex justify-content-around mt-3'>
                                 <button onClick={() => DeleteMenu(i._id)} className='btn btn-danger'>Delete</button>
-                                <button type='submit' onClick={(e) => handleSubmit(e, i._id)} className='btn btn-primary'>Update</button>
+                                <button type='submit' className='btn btn-primary'>Update</button>
                             </div>
                         </div >
                     )

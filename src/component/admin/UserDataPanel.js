@@ -91,7 +91,9 @@ function UserDataPanel({ Data }) {
     var fulltotal = 0
     var statusCheck = ""
     var paymentCheck = ""
-    const datemodal = new Date(ModalData.createdAt)
+    const date = new Date(ModalData.createdAt).toLocaleDateString()
+    const time = new Date(ModalData.createdAt).toLocaleTimeString()
+    const datetime = date + " - " + time
     return (
         <>
             <h6 className="text-center">Your Order</h6>
@@ -107,15 +109,17 @@ function UserDataPanel({ Data }) {
                                 <thead>
                                     <tr>
                                         <th>Fullname</th>
-                                        <th>Phone Number</th>
-                                        <th>Date</th>
+                                        <th className='thhuhu'>Phone Number</th>
+                                        <th className='thhuhu'>Date</th>
                                         <th>Status</th>
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody className="holeInWall">
                                     {Object.values(Data).map((i) => {
-                                        const datetime = new Date(i.createdAt)
+                                        const date = new Date(i.createdAt).toLocaleDateString()
+                                        const time = new Date(i.createdAt).toLocaleTimeString()
+                                        const datetime = date + " - " + time
                                         if (i.paymentmethod === 1) {
                                             paymentCheck = "ATM"
                                         } else if (i.paymentmethod === 2) {
@@ -142,8 +146,8 @@ function UserDataPanel({ Data }) {
                                                                     <td key={z}>{z.fullname}</td>
                                                                 )
                                                             })}
-                                                            <td>{i.phonenumber}</td>
-                                                            <td>{datetime.toLocaleString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })}</td>
+                                                            <td className='thhuhu'>{i.phonenumber}</td>
+                                                            <td className='thhuhu'>{datetime}</td>
                                                             <td>{statusCheck}</td>
                                                             <td onClick={setModalOpenDetail}><button onClick={() => setModalData(i)} className='btn btn-success'>Detail</button></td>
                                                         </>
@@ -157,8 +161,8 @@ function UserDataPanel({ Data }) {
                                                                     <td key={z}>{z.fullname}</td>
                                                                 )
                                                             })}
-                                                            <td>{i.phonenumber}</td>
-                                                            <td>{datetime.toLocaleString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })}</td>
+                                                            <td className='thhuhu'>{i.phonenumber}</td>
+                                                            <td className='thhuhu'>{datetime}</td>
                                                             <td>{statusCheck}</td>
                                                             <td onClick={setModalOpenDetail}><button onClick={() => setModalData(i)} className='btn btn-success'>Detail</button></td>
                                                         </>
@@ -191,30 +195,32 @@ function UserDataPanel({ Data }) {
                         <h2 className='text-center'>Order Detail</h2>
                         <div className="coverNOut">
                             <p className="m-0"><b>Id</b> : {ModalData._id}</p>
-                            <p className="m-0"><b>Date</b> : {datemodal.toLocaleString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric' })}</p>
+                            <p className="m-0"><b>Date</b> : {datetime}</p>
                         </div>
                         <hr />
-                        {ModalData.user?.map((t) => {
-                            var textSp = "( visisting guests )"
-                            return (
-                                <Fragment key={t}>
-                                    {t.id === "none" ? (
-                                        <p><b>Fullname</b> : {t.fullname} {textSp}</p>
-                                    ) : (
-                                        <p><b>Fullname</b> : {t.fullname}</p>
-                                    )}
-                                </Fragment>
-                            )
-                        })}
-                        <p><b>Phone number</b> : {ModalData.phonenumber}</p>
-                        <p><b>Address</b> : {ModalData.address}</p>
-                        <p><b>Payment method</b> : {paymentCheck}</p>
-                        <p><b>Status</b> : {statusCheck}</p>
-                        <table className='table table-bordered'>
+                        <div className='hugeImpace'>
+                            {ModalData.user?.map((t) => {
+                                var textSp = "( visisting guests )"
+                                return (
+                                    <Fragment key={t}>
+                                        {t.id === "none" ? (
+                                            <p><b>Fullname</b> : {t.fullname} {textSp}</p>
+                                        ) : (
+                                            <p><b>Fullname</b> : {t.fullname}</p>
+                                        )}
+                                    </Fragment>
+                                )
+                            })}
+                            <p><b>Phone number</b> : {ModalData.phonenumber}</p>
+                            <p><b>Address</b> : {ModalData.address}</p>
+                            <p><b>Payment method</b> : {paymentCheck}</p>
+                            <p><b>Status</b> : {statusCheck}</p>
+                        </div>
+                        <table className='table table-bordered solotable'>
                             <thead>
                                 <tr>
                                     <th>Name</th>
-                                    <th>Category</th>
+                                    <th className='thhuhu'>Category</th>
                                     <th>Quantity</th>
                                     <th>Price</th>
                                 </tr>
@@ -227,18 +233,28 @@ function UserDataPanel({ Data }) {
                                     return (
                                         <tr key={a.data._id}>
                                             <td>{a.data.foodname}</td>
-                                            <td>{a.data.foodcategory}</td>
+                                            <td className="thhuhu">{a.data.foodcategory}</td>
                                             <td>{a.quantity}</td>
                                             <td>{VND.format(a.data.foodprice)}</td>
                                         </tr>
                                     )
                                 })}
-                                <tr className='actorVid'>
+                                <tr className='thhuhu'>
                                     <td colSpan={3}>Shipping</td>
                                     <td>{VND.format(ModalData.shippingfee)}</td>
                                 </tr>
-                                <tr className='actorVid'>
+                                <tr className='thhuhu'>
                                     <th colSpan={3}>Fulltotal</th>
+                                    <th>{VND.format(fulltotal)}</th>
+                                </tr>
+                            </tbody>
+                            <tbody className='jackass'>
+                                <tr >
+                                    <td colSpan={2}>Shipping</td>
+                                    <td>{VND.format(ModalData.shippingfee)}</td>
+                                </tr>
+                                <tr>
+                                    <th colSpan={2}>Fulltotal</th>
                                     <th>{VND.format(fulltotal)}</th>
                                 </tr>
                             </tbody>
@@ -253,7 +269,7 @@ function UserDataPanel({ Data }) {
                                         <p>Reason why deny : </p>
                                         <form onSubmit={(e) => denyOrder(e, ModalData._id)}>
                                             <textarea value={DenyReason} onChange={(e) => setDenyReason(e.target.value)} className="textDeny" required />
-                                            <div style={{ gap: 1 + "%" }} className="d-flex mt-2">
+                                            <div style={{ gap: 1 + "%" }} className="humble mt-2">
                                                 <button type="submit" className="btn btn-primary ">Comfirm</button>
                                                 <button onClick={() => setAccept(false)} className="btn btn-secondary ">Cancel</button>
                                             </div>

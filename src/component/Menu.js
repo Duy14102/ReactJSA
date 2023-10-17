@@ -50,9 +50,9 @@ function Menu() {
                     <h1 className="mb-5">Most Popular Items</h1>
                 </div>
                 <div className="tab-className text-center wow fadeInUp" data-wow-delay="0.1s">
-                    <ul className="nav nav-pills d-inline-flex justify-content-center border-bottom mb-5">
+                    <ul style={{ flexWrap: "nowrap" }} className="nav nav-pills d-inline-flex justify-content-center border-bottom mb-5">
                         <li className="nav-item">
-                            <a className="nav-hex d-flex align-items-center text-start mx-3 pb-3 active" href="#tab-1">
+                            <a className="nav-hex d-flex align-items-center text-start pb-3 active" href="#tab-1">
                                 <i className="fa fa-drumstick-bite fa-2x text-primary"></i>
                                 <div className='ps-3'>
                                     <small className="text-body">Popular</small>

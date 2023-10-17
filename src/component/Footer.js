@@ -9,7 +9,7 @@ function Footer() {
                         <h4 className="section-title ff-secondary text-start text-primary fw-normal mb-4">Company</h4>
                         <NavLink reloadDocument to="/TrackOrder" className="btn btn-link" >Tracking Order</NavLink>
                         <NavLink reloadDocument to="/ContactSite" className="btn btn-link" >Contact Us</NavLink>
-                        <NavLink reloadDocument to="/PAndT" className="btn btn-link" >Privacy Policy</NavLink>
+                        <NavLink reloadDocument to="/BookingSite" className="btn btn-link" >Booking Table</NavLink>
                         <NavLink reloadDocument to="/PAndT" className="btn btn-link" >Terms & Condition</NavLink>
                     </div>
                     <div className="col-lg-3 col-md-6">

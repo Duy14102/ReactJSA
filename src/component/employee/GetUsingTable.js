@@ -162,10 +162,10 @@ function GetUsingTable() {
     }
     return (
         <>
-            <div className="row">
+            <div className="row anser">
                 {table.map((y) => {
                     return (
-                        <div key={y._id} style={{ display: "flex", justifyContent: "center" }} className="column col-4 py-4">
+                        <div key={y._id} className="column sicky py-4">
                             <div onClick={() => { setModalOpenDetail(true); setModalData(y); getThatTable(y.customerid) }} className="TableVisi">
                                 {y.tablestatus === 1 ? (
                                     <img alt="" src="https://cdn-icons-png.flaticon.com/512/638/638523.png" width={100} height={70} />
@@ -192,7 +192,7 @@ function GetUsingTable() {
                 previousLabel="< previous"
                 renderOnZeroPageCount={null}
                 marginPagesDisplayed={2}
-                containerClassName="pagination justify-content-center"
+                containerClassName="pagination justify-content-center text-nowrap"
                 pageClassName="page-item"
                 pageLinkClassName="page-link"
                 previousClassName="page-item"
@@ -218,6 +218,7 @@ function GetUsingTable() {
                         transform: "translate(-50%, -50%)",
                         backgroundColor: "white",
                         width: "70vw",
+                        height: "60vh",
                         zIndex: 999
                     },
                 }}>
@@ -231,20 +232,26 @@ function GetUsingTable() {
                     )}
                 </div>
                 <hr />
-                <p><b>Table name</b> : {ModalData.tablename}</p>
-                {ModalData.tablestatus === 2 ? (
-                    <p><b>Date</b> : {datetime}</p>
-                ) : null}
-                <p><b>Status</b> : {denver}</p>
-                <div className="d-flex justify-content-between align-items-center pb-2">
-                    <p><b>Items</b> : </p>
-                    <button onClick={() => { setModalOpenDetail(false); setModalOpenDetail2(true) }} className="btn btn-primary">Add items</button>
+                <div className="hugeImpace">
+                    <p><b>Table name</b> : {ModalData.tablename}</p>
+                    {ModalData.tablestatus === 2 ? (
+                        <p><b>Date</b> : {datetime}</p>
+                    ) : null}
+                    <p><b>Status</b> : {denver}</p>
+                    <div className="autoPurge pb-2">
+                        {ModalData.tableitems?.length > 0 ? (
+                            <p><b>Items</b> : </p>
+                        ) : (
+                            <p><b>Items</b> : Table have no items !</p>
+                        )}
+                        <button onClick={() => { setModalOpenDetail(false); setModalOpenDetail2(true) }} className="btn btn-primary">Add items</button>
+                    </div>
                 </div>
                 <table className="table table-bordered">
                     <thead>
                         <tr>
                             <th>Name</th>
-                            <th>Category</th>
+                            <th className="thhuhu">Category</th>
                             <th>Quantity</th>
                             <th>Price</th>
                         </tr>
@@ -256,32 +263,36 @@ function GetUsingTable() {
                             return (
                                 <tr key={a.item._id}>
                                     <td>{a.item.foodname}</td>
-                                    <td>{a.item.foodcategory}</td>
+                                    <td className="thhuhu">{a.item.foodcategory}</td>
                                     <td>{a.quantity}</td>
                                     <td>{VND.format(a.item.foodprice)}</td>
                                 </tr>
                             )
                         })}
-                        <tr>
+                        <tr className="thhuhu">
                             <th colSpan={3}>Fulltotal</th>
+                            <th>{VND.format(fulltotal)}</th>
+                        </tr>
+                        <tr className="jackass">
+                            <th colSpan={2}>Fulltotal</th>
                             <th>{VND.format(fulltotal)}</th>
                         </tr>
                     </tbody>
                 </table>
-                {ModalData.tablestatus === 2 ? (
+                {ModalData.tablestatus === 2 && ModalData.tableitems.length > 0 ? (
                     ModalData.customerid ? (
-                        <div className="d-flex justify-content-around align-items-center">
+                        <div className="ladyPurge ohooo">
                             {Object.values(TableData).map((q) => {
                                 return (
                                     <button key={q} onClick={() => checkOut(q._id)} className="btn btn-success">Checkout</button>
                                 )
                             })}
-                            <button className="btn btn-info">Change Table</button>
+                            <button className="btn btn-info text-nowrap">Change Table</button>
                         </div>
                     ) : (
-                        <div className="d-flex justify-content-around align-items-center">
+                        <div className="ladyPurge ohooo">
                             <button onClick={() => checkOut4Normal()} className="btn btn-success">Checkout</button>
-                            <button className="btn btn-info">Change Table</button>
+                            <button className="btn btn-info text-nowrap">Change Table</button>
                         </div>
                     )
                 ) : null}
@@ -302,8 +313,9 @@ function GetUsingTable() {
                         marginRight: "-50%",
                         transform: "translate(-50%, -50%)",
                         backgroundColor: "white",
-                        width: 800,
-                        overflow: "hidden",
+                        width: "72vw",
+                        overflowX: "hidden",
+                        height: "76vh",
                         zIndex: 999
                     },
                 }}>

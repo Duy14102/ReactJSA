@@ -84,22 +84,23 @@ function TableItems({ ModalData }) {
             <table className="table table-bordered">
                 <thead>
                     <tr className="text-center">
-                        <th>Name</th>
-                        <th>Category</th>
+                        <th>Items</th>
+                        <th className="thhuhu">Category</th>
                         <th>Quantity</th>
-                        <th>Price</th>
+                        <th className="thhuhu">Price</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     {menu.map((k) => {
                         return (
-                            <tr key={k._id} className="text-center">
-                                <td>{k.foodname}</td>
-                                <td>{k.foodcategory}</td>
-                                <td><input onChange={(e) => setQuantityAdd(e.target.value)} style={{ width: 60 + "px" }} type="number" defaultValue={1} min={1} max={k.foodquantity} /></td>
-                                <td>{k.foodprice}</td>
-                                <td><button onClick={(e) => takeitNow(e, k)} className="btn btn-success">Add</button></td>
+                            <tr key={k._id}>
+                                <td><span className="jackass"><img loading="lazy" width={50} height={40} alt="" src={k.foodimage} /><br /></span><img className="thhuhu ms-5 me-2" alt="" src={k.foodimage} width={70} height={60} />{k.foodname}</td>
+                                <td className="thhuhu cahu">{k.foodcategory}</td>
+                                <td className="cahu"><input onChange={(e) => setQuantityAdd(e.target.value)} style={{ width: 60 + "px" }} type="number" defaultValue={1} min={1} max={k.foodquantity} /></td>
+                                <td className="thhuhu cahu">{k.foodprice}</td>
+                                <td className="cahu thhuhu"><button onClick={(e) => takeitNow(e, k)} className="btn btn-success">Add</button></td>
+                                <td className="cahu anotherJackass"><button onClick={(e) => takeitNow(e, k)} className="btn btn-success">+</button></td>
                             </tr>
                         )
                     })}
@@ -114,7 +115,7 @@ function TableItems({ ModalData }) {
                 previousLabel="< previous"
                 renderOnZeroPageCount={null}
                 marginPagesDisplayed={2}
-                containerClassName="pagination justify-content-center"
+                containerClassName="pagination justify-content-center text-nowrap"
                 pageClassName="page-item"
                 pageLinkClassName="page-link"
                 previousClassName="page-item"
