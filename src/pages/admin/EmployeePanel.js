@@ -269,7 +269,7 @@ function EmployeePanel() {
                                     {Object.values(GetUser).map((v) => {
                                         if (v.task.length > 0) {
                                             return (
-                                                <Fragment key={v}>
+                                                <Fragment key={v._id}>
                                                     <table className='table table-bordered w-100 solotable'>
                                                         <thead>
                                                             <tr className="text-white text-center" style={{ background: "#374148" }}>
@@ -289,7 +289,7 @@ function EmployeePanel() {
                                                                     draw = "Completed"
                                                                 }
                                                                 return (
-                                                                    <tr className='text-center' key={j} style={{ background: "#2C343A", color: "lightgray", verticalAlign: "middle" }}>
+                                                                    <tr className='text-center' key={j.id} style={{ background: "#2C343A", color: "lightgray", verticalAlign: "middle" }}>
                                                                         <td className='thhuhu'>{j.task.title}</td>
                                                                         <td>{j.task.date}</td>
                                                                         <td className='thhuhu'>{draw}</td>

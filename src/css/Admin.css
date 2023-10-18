@@ -41,13 +41,15 @@
     transition: ease-in-out 0.3s;
 }
 
-.subOver .drawer:hover {
-    width: 160px;
-}
+@media (min-width:992px) {
+    .subOver .drawer:hover {
+        width: 160px;
+    }
 
-.subOver .drawer:hover .appearNow {
-    width: 100%;
-    opacity: 1;
+    .subOver .drawer:hover .appearNow {
+        width: 100%;
+        opacity: 1;
+    }
 }
 
 .subOver .drawer .navicon {

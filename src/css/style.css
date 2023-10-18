@@ -197,10 +197,6 @@
     display: flex;
 }
 
-.justUYI {
-    padding-right: 1.5rem;
-}
-
 .humble {
     display: flex;
 }
@@ -211,6 +207,10 @@
 }
 
 @media (max-width: 991.98px) {
+    .appearNow {
+        display: none;
+    }
+
     .subOver .dialog .dialog-block {
         width: 60vw !important;
         height: 30vh !important;
@@ -466,10 +466,6 @@
         height: 45px !important;
     }
 
-    .appearNow {
-        display: none;
-    }
-
     .pic-holder2 {
         width: 45px !important;
         height: 45px !important;
@@ -547,10 +543,6 @@
 
     .buttonN1 .btnSecond {
         padding: 1.3% !important;
-    }
-
-    .justUYI {
-        padding-right: 0;
     }
 
     .buhhuh {

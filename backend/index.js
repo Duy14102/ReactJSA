@@ -244,7 +244,7 @@ app.get("/GetAllUser", async (req, res) => {
 //Give Employee Task
 app.post("/GiveTaskEmployee", (req, res) => {
     try {
-        var id = new mongoose.Types.ObjectId();
+        var id = new mongoose.Types.ObjectId().toString();
         const task = { task: req.body.task, id: id }
         getUserD.updateOne({ _id: req.body.id }, {
             $push: {
@@ -277,20 +277,16 @@ app.post("/FinishTaskEmployee", async (req, res) => {
         const date = new Date(datenow).toLocaleDateString()
         const time = new Date(datenow).toLocaleTimeString()
         const datetime = date + " - " + time
-        // const geta = getUserD.findOneAndUpdate({ _id: req.body.userid, "task.id": req.body.taskid }, {
-        //     $set: {
-        //         'task.$.task.datefinish': datetime,
-        //         'task.$.task.status': 2
-        //     }
-        // }).then(() => {
-        //     res.send({ data: geta })
-        // }).catch((err) => {
-        //     console.log(err);
-        // })
-        const getta = await getUserD.findOne({ _id: req.body.userid })
-        if (getta) {
-            res.send({ data: getta })
-        }
+        getUserD.updateOne({ _id: req.body.userid, "task.id": req.body.taskid }, {
+            $set: {
+                'task.$.task.datefinish': datetime,
+                'task.$.task.status': 2
+            }
+        }).then(() => {
+            res.send({ data: "succeed" })
+        }).catch((err) => {
+            console.log(err);
+        })
     } catch (e) {
         console.log(e);
     }
@@ -976,6 +972,7 @@ app.get("/GetTable4BookingHistory", async (req, res) => {
 })
 
 const Table = require("./model/Table");
+const { ObjectId } = require('mongodb');
 const GetTable = mongoose.model("Table");
 app.get("/GetAllTableActive", async (req, res) => {
     try {
