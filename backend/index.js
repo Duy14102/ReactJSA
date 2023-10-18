@@ -244,15 +244,53 @@ app.get("/GetAllUser", async (req, res) => {
 //Give Employee Task
 app.post("/GiveTaskEmployee", (req, res) => {
     try {
+        var id = new mongoose.Types.ObjectId();
+        const task = { task: req.body.task, id: id }
         getUserD.updateOne({ _id: req.body.id }, {
             $push: {
-                task: req.body.task
+                task: task
             }
         }).then(() => {
             res.send({ data: "succeed" })
         }).catch((err) => {
             console.log(err);
         })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Take Employee Task
+app.get("/TakeEmployeeTask", async (req, res) => {
+    try {
+        const getIt = await getUserD.findOne({ _id: req.query.id })
+        res.send({ data: getIt })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Finish Task Employee
+app.post("/FinishTaskEmployee", async (req, res) => {
+    try {
+        const datenow = Date.now()
+        const date = new Date(datenow).toLocaleDateString()
+        const time = new Date(datenow).toLocaleTimeString()
+        const datetime = date + " - " + time
+        // const geta = getUserD.findOneAndUpdate({ _id: req.body.userid, "task.id": req.body.taskid }, {
+        //     $set: {
+        //         'task.$.task.datefinish': datetime,
+        //         'task.$.task.status': 2
+        //     }
+        // }).then(() => {
+        //     res.send({ data: geta })
+        // }).catch((err) => {
+        //     console.log(err);
+        // })
+        const getta = await getUserD.findOne({ _id: req.body.userid })
+        if (getta) {
+            res.send({ data: getta })
+        }
     } catch (e) {
         console.log(e);
     }
@@ -405,7 +443,6 @@ app.get("/GetAllOrderHistory", async (req, res) => {
 
         results.result = getOrder.slice(start, end)
         res.send({ results });
-        res.send({ data: getOrder })
     } catch (e) {
         console.log(e);
     }
@@ -438,7 +475,6 @@ app.get("/GetAllOrderActive", async (req, res) => {
 
         results.result = getOrder.slice(start, end)
         res.send({ results });
-        res.send({ data: getOrder })
     } catch (e) {
         console.log(e);
     }
@@ -961,6 +997,33 @@ app.post("/AddTableByHand", (req, res) => {
             res.send({ data: "succeed" })
         }).catch((e) => {
             console.log(e);
+        })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Change Table
+app.post("/ChangeTableNow", (req, res) => {
+    try {
+        GetTable.updateOne({ _id: req.body.newid }, {
+            customerid: req.body.cusid,
+            tableitems: req.body.items,
+            tabledate: req.body.date,
+            tablestatus: 2
+        }).then(() => {
+            GetTable.updateOne({ _id: req.body.oldid }, {
+                customerid: null,
+                tableitems: [],
+                tabledate: null,
+                tablestatus: 1
+            }).then(() => {
+                res.send({ data: "succeed" })
+            }).catch((er) => {
+                console.log(er);
+            })
+        }).catch((err) => {
+            console.log(err);
         })
     } catch (e) {
         console.log(e);

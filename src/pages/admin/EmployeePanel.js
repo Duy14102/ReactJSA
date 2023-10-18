@@ -1,7 +1,7 @@
 import '../../css/Admin.css';
 import '../../css/style.css';
 import $ from 'jquery';
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import Cookies from 'universal-cookie';
 import jwtDecode from 'jwt-decode';
 import axios from 'axios';
@@ -9,6 +9,7 @@ import Swal from 'sweetalert2';
 import MainBooking from '../../component/employee/MainBooking';
 import MainOrder from '../../component/admin/MainOrder';
 import MainTable from '../../component/employee/MainTable';
+import TaskHandle from '../../component/employee/TaskHandle';
 
 function EmployeePanel() {
     const cookies = new Cookies()
@@ -268,26 +269,37 @@ function EmployeePanel() {
                                     {Object.values(GetUser).map((v) => {
                                         if (v.task.length > 0) {
                                             return (
-                                                <table key={v} className='table table-bordered w-100 solotable'>
-                                                    <thead>
-                                                        <tr className="text-white text-center" style={{ background: "#374148" }}>
-                                                            <th style={{ width: 25 + "%" }}>Title</th>
-                                                            <th style={{ width: 25 + "%" }}>Date</th>
-                                                            <th style={{ width: 50 + "%" }}>Message</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {v.task?.map((j) => {
-                                                            return (
-                                                                <tr className='text-center' key={j} style={{ background: "#2C343A", color: "lightgray", verticalAlign: "middle" }}>
-                                                                    <td>{j.title}</td>
-                                                                    <td>{j.date}</td>
-                                                                    <td>{j.message}</td>
-                                                                </tr>
-                                                            )
-                                                        })}
-                                                    </tbody>
-                                                </table>
+                                                <Fragment key={v}>
+                                                    <table className='table table-bordered w-100 solotable'>
+                                                        <thead>
+                                                            <tr className="text-white text-center" style={{ background: "#374148" }}>
+                                                                <th className='thhuhu'>Title</th>
+                                                                <th>Date</th>
+                                                                <th className='thhuhu'>Status</th>
+                                                                <th></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {v.task?.map((j) => {
+                                                                var draw = ""
+                                                                if (j.task.status === 1) {
+                                                                    draw = "Pending"
+                                                                }
+                                                                else if (j.task.status === 2) {
+                                                                    draw = "Completed"
+                                                                }
+                                                                return (
+                                                                    <tr className='text-center' key={j} style={{ background: "#2C343A", color: "lightgray", verticalAlign: "middle" }}>
+                                                                        <td className='thhuhu'>{j.task.title}</td>
+                                                                        <td>{j.task.date}</td>
+                                                                        <td className='thhuhu'>{draw}</td>
+                                                                        <td><TaskHandle id={j} name={v} /></td>
+                                                                    </tr>
+                                                                )
+                                                            })}
+                                                        </tbody>
+                                                    </table>
+                                                </Fragment>
                                             )
                                         } else {
                                             return (

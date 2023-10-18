@@ -338,6 +338,10 @@
     padding: 1rem;
 }
 
+.thyoi {
+    text-align: end;
+}
+
 @media (max-width:575px) {
     .reft {
         flex-direction: column;

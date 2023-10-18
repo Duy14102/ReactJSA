@@ -1,5 +1,5 @@
 import axios from "axios"
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, Fragment } from "react"
 import ReactPaginate from "react-paginate";
 import Modal from 'react-modal';
 import Swal from "sweetalert2";
@@ -9,10 +9,14 @@ import TableItems from "./TableItems";
 
 function GetUsingTable() {
     const [table, setTable] = useState([])
+    const [changetable, setChangeTable] = useState(false)
     const [modalOpenDetail, setModalOpenDetail] = useState(false);
     const [modalOpenDetail2, setModalOpenDetail2] = useState(false);
     const [ModalData, setModalData] = useState([])
+    const [GetTable, setGetTable] = useState([])
     const [TableData, setTableData] = useState([])
+    const [changeThis, setChangeThis] = useState()
+    const [CheckTableId, setCheckTableId] = useState(false)
     const [pageCount, setPageCount] = useState(6);
     const currentPage = useRef();
     const limit = 9
@@ -28,6 +32,7 @@ function GetUsingTable() {
     useEffect(() => {
         currentPage.current = 1;
         getPagination()
+        getTableActive();
     }, [])
 
     function handlePageClick(e) {
@@ -52,6 +57,19 @@ function GetUsingTable() {
             .catch((error) => {
                 console.log(error);
             });
+    }
+
+    function getTableActive() {
+        const configuration = {
+            method: "get",
+            url: "http://localhost:3000/GetAllTableActive",
+        }
+        axios(configuration)
+            .then((res) => {
+                setGetTable(res.data.data)
+            }).catch((err) => {
+                console.log(err);
+            })
     }
 
     const getThatTable = (e) => {
@@ -139,6 +157,44 @@ function GetUsingTable() {
                     window.location.reload()
                 })
             });
+    }
+
+    const changeNewtable = (e) => {
+        e.preventDefault()
+        if (changeThis) {
+            const configuration = {
+                method: "post",
+                url: "http://localhost:3000/ChangeTableNow",
+                data: {
+                    oldid: ModalData._id,
+                    newid: changeThis,
+                    cusid: ModalData.customerid,
+                    items: ModalData.tableitems,
+                    date: ModalData.tabledate
+                }
+            }
+            axios(configuration)
+                .then(() => {
+                    Swal.fire(
+                        'Change Table Successfully!',
+                        '',
+                        'success'
+                    ).then(function () {
+                        window.location.reload()
+                    })
+                })
+                .catch(() => {
+                    Swal.fire(
+                        'Change Table Fail!',
+                        '',
+                        'error'
+                    ).then(function () {
+                        window.location.reload()
+                    })
+                });
+        } else {
+            setCheckTableId(true)
+        }
     }
 
     const VND = new Intl.NumberFormat('vi-VN', {
@@ -284,17 +340,51 @@ function GetUsingTable() {
                         <div className="ladyPurge ohooo">
                             {Object.values(TableData).map((q) => {
                                 return (
-                                    <button key={q} onClick={() => checkOut(q._id)} className="btn btn-success">Checkout</button>
+                                    <Fragment key={q}>
+                                        {changetable ? (
+                                            <button style={{ pointerEvents: "none", opacity: 0.5 }} className="btn btn-success">Checkout</button>
+                                        ) : (
+                                            <button onClick={() => checkOut(q._id)} className="btn btn-success">Checkout</button>
+                                        )}
+                                    </Fragment>
                                 )
                             })}
-                            <button className="btn btn-info text-nowrap">Change Table</button>
+                            <button onClick={() => setChangeTable(true)} className="btn btn-info text-nowrap">Change Table</button>
                         </div>
                     ) : (
                         <div className="ladyPurge ohooo">
-                            <button onClick={() => checkOut4Normal()} className="btn btn-success">Checkout</button>
-                            <button className="btn btn-info text-nowrap">Change Table</button>
+                            {changetable ? (
+                                <button style={{ pointerEvents: "none", opacity: 0.5 }} className="btn btn-success">Checkout</button>
+                            ) : (
+                                <button onClick={() => checkOut4Normal()} className="btn btn-success">Checkout</button>
+                            )}
+                            <button onClick={() => setChangeTable(true)} className="btn btn-info text-nowrap">Change Table</button>
                         </div>
                     )
+                ) : null}
+                {changetable ? (
+                    <div className="pt-3">
+                        <p>Choosing Table : </p>
+                        <form onSubmit={(e) => changeNewtable(e)}>
+                            <div className="ytui" style={{ gap: 2 + "%" }}>
+                                <select onInput={(e) => setChangeThis(e.target.value)} className="neul" required>
+                                    <option selected disabled hidden>Choose Table</option>
+                                    {Object.values(GetTable).map((i) => {
+                                        return (
+                                            <option value={i._id} key={i._id}>{i.tablename}</option>
+                                        )
+                                    })}
+                                </select>
+                                {CheckTableId ? (
+                                    <p className="m-0 neul text-danger text-nowrap">Table need to be choose!</p>
+                                ) : null}
+                            </div>
+                            <div style={{ gap: 1 + "%" }} className="d-flex mt-3">
+                                <button type="submit" className="btn btn-primary ">Comfirm</button>
+                                <button onClick={() => { setCheckTableId(false); setChangeTable(false) }} className="btn btn-secondary ">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
                 ) : null}
                 <button className='closeModal' onClick={() => setModalOpenDetail(false)}>x</button>
             </Modal>
