@@ -342,6 +342,69 @@
     text-align: end;
 }
 
+.laughtale {
+    white-space: nowrap;
+    display: flex;
+    gap: 5%;
+    align-items: center;
+}
+
+.graph {
+    display: flex;
+    margin-top: 2% !important;
+    justify-content: center;
+    width: 100%;
+    height: 60px;
+    gap: 4%;
+    padding: 0;
+    margin: 0;
+}
+
+.graph p {
+    color: #fff;
+}
+
+.graph .bar {
+    display: block;
+    position: relative;
+    height: 10vh;
+    width: 20px;
+    background: #86909A;
+    padding: 0;
+}
+
+.graph .bar p {
+    z-index: 100;
+    position: absolute;
+    margin: 0;
+    padding-top: 5px;
+    writing-mode: vertical-rl;
+    opacity: 0;
+}
+
+.graph .bar:hover p {
+    transition: all 0.2s;
+    opacity: 1;
+}
+
+.graph .bar .bar-content {
+    max-width: 100%;
+    display: block;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 0px;
+    width: 100%;
+    background: #36D744;
+    padding: 0;
+}
+
+.downGraph {
+    padding-top: 4rem;
+    display: flex;
+    justify-content: space-evenly;
+}
+
 @media (max-width:575px) {
     .reft {
         flex-direction: column;
@@ -421,6 +484,8 @@
     }
 
     #myDIV3,
+    #myDIV5,
+    #myDIV4,
     #myDIV,
     #myDIV2 {
         width: 100%;
@@ -590,7 +655,7 @@
     }
 
     .outsider {
-        width: 70% !important;
+        width: 60vw !important;
     }
 
     .outsider form {

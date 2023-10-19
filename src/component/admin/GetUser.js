@@ -7,7 +7,7 @@ import Swal from "sweetalert2";
 import ReactPaginate from 'react-paginate';
 import GiveTask from "./GiveTask";
 
-function GetUser() {
+function GetUser({ type, pipe }) {
     const [data, setData] = useState([]);
     const [detail, setDetail] = useState([]);
     const [modalOpenDetail, setModalOpenDetail] = useState(false);
@@ -23,6 +23,7 @@ function GetUser() {
     useEffect(() => {
         currentPage.current = 1;
         getPagination()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     function handlePageClick(e) {
@@ -35,6 +36,8 @@ function GetUser() {
             method: "get",
             url: "http://localhost:3000/GetAllUser",
             params: {
+                type: type,
+                pipe: pipe,
                 page: currentPage.current,
                 limit: limit
             }
@@ -173,7 +176,7 @@ function GetUser() {
                         transform: "translate(-50%, -50%)",
                         backgroundColor: "white",
                         width: "70vw",
-                        height:"45vh",
+                        height: "45vh",
                         zIndex: 999
                     },
                 }}>

@@ -1,18 +1,49 @@
 import Modal from 'react-modal';
 import GetMenu from './GetMenu';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import $ from 'jquery'
+import ReactPaginate from 'react-paginate';
+import DetailSearchMenu from './DetailSearchMenu';
 
 function MainMenu() {
     const [modalOpen, setModalOpen] = useState(false);
+    const [modalOpen2, setModalOpen2] = useState(false);
+    const [modalOpen3, setModalOpen3] = useState(false);
+    const [openTable, setOpenTable] = useState(false)
+    const [dataafter, setDataAfter] = useState([])
+    const [ModalData, setModalData] = useState([])
+    const [nameInput, setNameInput] = useState("")
     const [foodname, setFoodname] = useState("");
     const [foodprice, setFoodprice] = useState("");
     const [foodquantity, setFoodquantity] = useState("");
     const [foodcategory, setFoodcategory] = useState("");
     const [fooddescription, setFooddescription] = useState("");
     const [foodimage, setFoodimage] = useState("");
+
+    const [pageCount, setPageCount] = useState(6);
+    const currentPage = useRef();
+    const limit = 8
+
+    useEffect(() => {
+        currentPage.current = 1;
+        document.getElementById("defaultOpen5").click();
+    }, [])
+
+    function openCity5(evt, cityName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent5");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("MBbutton5");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active5", "");
+        }
+        document.getElementById(cityName).style.display = "block";
+        evt.currentTarget.className += " active5";
+    }
 
     $(function () {
         const $image = $('#inputimage')
@@ -61,6 +92,33 @@ function MainMenu() {
             });
     }
 
+    function handlePageClick(e) {
+        currentPage.current = e.selected + 1
+        findItem();
+    }
+
+    const findItem = (e) => {
+        e.preventDefault()
+        const configuration = {
+            method: "get",
+            url: "http://localhost:3000/GetSearch",
+            params: {
+                foodSearch: nameInput,
+                page: currentPage.current,
+                limit: limit
+            },
+        };
+        axios(configuration)
+            .then((result) => {
+                setOpenTable(true)
+                setDataAfter(result.data.results.result);
+                setPageCount(result.data.results.pageCount)
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+    }
+
     function convertToBase64(e) {
         var reader = new FileReader();
         reader.readAsDataURL(e.target.files[0]);
@@ -73,11 +131,142 @@ function MainMenu() {
     }
     return (
         <>
-            <div className='jknoob pb-3'>
-                <button className='btn btn-primary' onClick={setModalOpen}>
-                    Add Menu
-                </button>
+            <div className="myDIVdad">
+                <div style={{ gap: 5 + "%" }} id="myDIV5" className="d-flex align-items-center">
+                    <button id="defaultOpen5" className="MBbutton5 active5" onClick={(e) => openCity5(e, 'Meat')}><p >Meat</p></button>
+                    <button className="MBbutton5" onClick={(e) => openCity5(e, 'Drink')}><p>Drink</p></button>
+                    <button className="MBbutton5" onClick={(e) => openCity5(e, 'Vegetables')}><p>Vegetables</p></button>
+                </div>
+                <div className='laughtale'>
+                    <button onClick={() => setModalOpen2(true)} className="btn btn-primary">🔎 Items</button>
+                    <button onClick={() => setModalOpen(true)} className="btn btn-primary">➕ Items</button>
+                </div>
             </div>
+            <div id="Meat" className="tabcontent5">
+                <div className="pt-4">
+                    <GetMenu cate={"Meat"} />
+                </div>
+            </div>
+
+            <div id="Drink" className="tabcontent5">
+                <div className="pt-4">
+                    <GetMenu cate={"Drink"} />
+                </div>
+            </div>
+
+            <div id="Vegetables" className="tabcontent5">
+                <div className="pt-4">
+                    <GetMenu cate={"Vegetables"} />
+                </div>
+            </div>
+            <Modal
+                isOpen={modalOpen2} onRequestClose={() => setModalOpen2(false)} ariaHideApp={false}
+                style={{
+                    overlay: {
+                        position: 'fixed',
+                        zIndex: 998,
+                        backgroundColor: 'rgb(33 33 33 / 75%)'
+                    },
+                    content: {
+                        top: "50%",
+                        left: "50%",
+                        right: "auto",
+                        bottom: "auto",
+                        marginRight: "-50%",
+                        transform: "translate(-50%, -50%)",
+                        backgroundColor: "white",
+                        width: "70vw",
+                        height: "57vh",
+                        zIndex: 999
+                    },
+                }}>
+                <div className='pt-3'>
+                    <h2 className='text-center'>Input item name</h2>
+                    <div className='overOutsider'>
+                        <div className='outsider'>
+                            <form onSubmit={(e) => findItem(e)}>
+                                <input type='submit' style={{ display: "none" }} />
+                                <div className='d-flex justify-content-between w-100'>
+                                    <input onInput={(e) => setNameInput(e.target.value)} type='text' placeholder='User name...' required />
+                                    <button style={{ width: 10 + "%" }} type="submit"><i className="fa-solid fa-magnifying-glass"></i></button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {openTable ? (
+                    <>
+                        <table className='table solotable text-center mt-3'>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Category</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {Object.values(dataafter).map((i) => {
+                                    return (
+                                        <tr>
+                                            <td>{i.foodname}</td>
+                                            <td>{i.foodprice}</td>
+                                            <td>{i.foodquantity}</td>
+                                            <td>{i.foodcategory}</td>
+                                            <td><button onClick={() => { setModalOpen2(false); setModalOpen3(true); setModalData(i) }} className='btn btn-success'>Detail</button></td>
+                                        </tr>
+                                    )
+                                })}
+                            </tbody>
+                        </table>
+                        <ReactPaginate
+                            breakLabel="..."
+                            nextLabel="next >"
+                            onPageChange={handlePageClick}
+                            pageRangeDisplayed={5}
+                            pageCount={pageCount}
+                            previousLabel="< previous"
+                            renderOnZeroPageCount={null}
+                            marginPagesDisplayed={2}
+                            containerClassName="pagination justify-content-center text-nowrap"
+                            pageClassName="page-item"
+                            pageLinkClassName="page-link"
+                            previousClassName="page-item"
+                            previousLinkClassName="page-link"
+                            nextClassName="page-item"
+                            nextLinkClassName="page-link"
+                            activeClassName="active"
+                            forcePage={currentPage.current - 1}
+                        />
+                    </>
+                ) : null}
+                <button className='closeModal' onClick={() => setModalOpen2(false)}>x</button>
+            </Modal>
+            <Modal
+                isOpen={modalOpen3} onRequestClose={() => setModalOpen3(false)} ariaHideApp={false}
+                style={{
+                    overlay: {
+                        position: 'fixed',
+                        zIndex: 998,
+                        backgroundColor: 'rgb(33 33 33 / 75%)'
+                    },
+                    content: {
+                        top: "50%",
+                        left: "50%",
+                        right: "auto",
+                        bottom: "auto",
+                        marginRight: "-50%",
+                        transform: "translate(-50%, -50%)",
+                        backgroundColor: "white",
+                        width: "70vw",
+                        height: "57vh",
+                        zIndex: 999
+                    },
+                }}>
+                <DetailSearchMenu i={ModalData} />
+                <button className='closeModal' onClick={() => { setModalOpen3(false); setModalOpen2(true) }}>x</button>
+            </Modal>
             <Modal
                 isOpen={modalOpen} onRequestClose={() => setModalOpen(false)} ariaHideApp={false}
                 style={{
@@ -149,7 +338,6 @@ function MainMenu() {
                 </div >
                 <button className='closeModal' onClick={() => setModalOpen(false)}>x</button>
             </Modal>
-            <GetMenu />
         </>
     );
 }

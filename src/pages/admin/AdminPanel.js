@@ -12,6 +12,7 @@ import Swal from 'sweetalert2';
 import MainOrder from '../../component/admin/MainOrder';
 import MainBooking from '../../component/employee/MainBooking';
 import MainTable from '../../component/employee/MainTable';
+import RevenueDay from '../../component/outOfBorder/RevenueDay';
 
 function AdminPanel() {
     const cookies = new Cookies();
@@ -198,17 +199,17 @@ function AdminPanel() {
                         )
                     })}
                     <div className="menu">
-                        <a data-menu="dashboard" href="# " className="active unchange2"><i className="fa-solid fa-house"></i><p className='appearNow'>Home</p></a>
-                        <a data-menu="about" href="# " className='unchange2'><i className="fa-solid fa-cart-shopping"></i><p className='appearNow'>Cart</p></a>
-                        <a data-menu="users" href="# " className='unchange2'><i className="fa-solid fa-user"></i><p className='appearNow'>User</p></a>
-                        <a data-menu="download" href="# " className='unchange2'><i className="fa-solid fa-utensils"></i><p className='appearNow'>Menu</p></a>
-                        <a data-menu="table" href="# " className='unchange2'><i className="fa-solid fa-calendar-check"></i><p className='appearNow'>Table</p></a>
-                        <a data-menu="booking" href="# " className='unchange2'><i className="fa-solid fa-calendar-plus"></i><p className='appearNow'>Booking</p></a>
+                        <a data-menu="dashboard" href="#Dashboard" className="active unchange2"><i className="fa-solid fa-house"></i><p className='appearNow'>Home</p></a>
+                        <a data-menu="about" href="#Cart" className='unchange2'><i className="fa-solid fa-cart-shopping"></i><p className='appearNow'>Cart</p></a>
+                        <a data-menu="users" href="#User" className='unchange2'><i className="fa-solid fa-user"></i><p className='appearNow'>User</p></a>
+                        <a data-menu="download" href="#Menu" className='unchange2'><i className="fa-solid fa-utensils"></i><p className='appearNow'>Menu</p></a>
+                        <a data-menu="table" href="#Table" className='unchange2'><i className="fa-solid fa-calendar-check"></i><p className='appearNow'>Table</p></a>
+                        <a data-menu="booking" href="#Booking" className='unchange2'><i className="fa-solid fa-calendar-plus"></i><p className='appearNow'>Booking</p></a>
                         <a data-dialog="logout" href="# " className='unchange2'><i className="fa-solid fa-right-from-bracket"></i><p className='appearNow'>Logout</p></a>
                     </div>
                 </div>
                 <div className="content">
-                    <div className="page active" data-page="dashboard">
+                    <div className="page active" data-page="dashboard" id='Dashboard'>
                         <div className="header">
                             <div className="title">
                                 <h2>Dashboard</h2>
@@ -274,17 +275,15 @@ function AdminPanel() {
                         </div>
                         <div className='butItWrong'>
                             <div className='bestie'>
-                                <h4 className='text-center text-white'>Revenue</h4>
+                                <h4 className='text-center text-white'>Income</h4>
                                 <div style={{ background: "#2C343A", borderRadius: 3 + "px" }}>
                                     <div className='d-flex' style={{ gap: 1 + "%" }}>
-                                        <button data-menu="day" className='btn btn-secondary w-100'>Day</button>
+                                        <button className='btn btn-secondary w-100'>Day</button>
                                         <button className='btn btn-secondary w-100'>Month</button>
                                         <button className='btn btn-secondary w-100'>Year</button>
                                     </div>
-                                    <div data-page="day">
-                                        <h5 className='text-white p-3'>Today Income : </h5>
-                                    </div>
                                 </div>
+                                <RevenueDay />
                             </div>
                             <div className="bestie">
                                 <h4 className='text-center text-white'>Contact</h4>
@@ -292,7 +291,7 @@ function AdminPanel() {
                             </div>
                         </div>
                     </div>
-                    <div className="page noflex" data-page="about">
+                    <div className="page noflex" data-page="about" id='Cart'>
                         <div className="header">
                             <div className="title">
                                 <h2>Cart</h2>
@@ -302,7 +301,7 @@ function AdminPanel() {
                             <MainOrder />
                         </div>
                     </div>
-                    <div className="page noflex" data-page="users">
+                    <div className="page noflex" data-page="users" id='User'>
                         <div className="header">
                             <div className="title">
                                 <h2>Users</h2>
@@ -312,7 +311,7 @@ function AdminPanel() {
                             <MainUser />
                         </div>
                     </div>
-                    <div className="page noflex" data-page="download">
+                    <div className="page noflex" data-page="download" id='Menu'>
                         <div className="header">
                             <div className="title">
                                 <h2>Menu</h2>
@@ -322,7 +321,7 @@ function AdminPanel() {
                             <MainMenu />
                         </div>
                     </div>
-                    <div className="page noflex" data-page="table">
+                    <div className="page noflex" data-page="table" id='Table'>
                         <div className="header">
                             <div className="title">
                                 <h2>Table</h2>
@@ -332,7 +331,7 @@ function AdminPanel() {
                             <MainTable />
                         </div>
                     </div>
-                    <div className="page noflex" data-page="booking">
+                    <div className="page noflex" data-page="booking" id='Booking'>
                         <div className="header">
                             <div className="title">
                                 <h2>Booking</h2>
@@ -356,7 +355,7 @@ function AdminPanel() {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 }
 export default AdminPanel;

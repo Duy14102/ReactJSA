@@ -73,7 +73,9 @@
 
 #myDIV .active,
 #myDIV2 .active2,
-#myDIV3 .active3 {
+#myDIV3 .active3,
+#myDIV4 .active4,
+#myDIV5 .active5 {
     border: 2px solid #4285f4;
     background: #4285f4;
     border-radius: 5px;
@@ -90,7 +92,9 @@
 }
 
 #myDIV2 .MBbutton2,
-#myDIV3 .MBbutton3 {
+#myDIV3 .MBbutton3,
+#myDIV4 .MBbutton4,
+#myDIV5 .MBbutton5 {
     border: 2px solid #4285f4;
     color: #fff;
     border-radius: 5px;
@@ -101,13 +105,17 @@
 
 #myDIV .MBbutton:hover,
 #myDIV2 .MBbutton2:hover,
-#myDIV3 .MBbutton3:hover {
+#myDIV3 .MBbutton3:hover,
+#myDIV4 .MBbutton4:hover,
+#myDIV5 .MBbutton5:hover {
     background: #4285f4;
 }
 
 #myDIV .MBbutton p,
 #myDIV2 .MBbutton2 p,
-#myDIV3 .MBbutton3 p {
+#myDIV3 .MBbutton3 p,
+#myDIV4 .MBbutton4 p,
+#myDIV5 .MBbutton5 p {
     margin: 0;
     text-align: center;
     white-space: nowrap;
@@ -352,37 +360,6 @@
     text-transform: uppercase;
     font-weight: 300;
     font-size: 2.3em;
-}
-
-.subOver .content .page .grid .card-verticle .card-small .graph {
-    display: block;
-    position: relative;
-    width: 100%;
-    height: 60px;
-    padding: 0;
-    margin: 0;
-}
-
-.subOver .content .page .grid .card-verticle .card-small .graph .bar {
-    display: block;
-    position: relative;
-    height: 60px;
-    width: 15px;
-    background: #86909A;
-    margin: 0 10px 0 0;
-    padding: 0;
-    float: left;
-}
-
-.subOver .content .page .grid .card-verticle .card-small .graph .bar .bar-content {
-    display: block;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 0px;
-    width: 15px;
-    background: #36D744;
-    padding: 0;
 }
 
 .subOver .content .page .grid .users-table {

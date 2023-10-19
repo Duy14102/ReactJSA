@@ -4,9 +4,9 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import ReactPaginate from 'react-paginate';
 
-function GetMenu() {
+function GetMenu({ cate }) {
     const [menu, setMenu] = useState([]);
-    const [detail, setDetail] = useState([]);
+    const [ModalData, setModalData] = useState([])
     const [modalOpenDetail, setModalOpenDetail] = useState(false);
     // UpdateMenu
     const [updatename, setFoodname] = useState();
@@ -23,6 +23,7 @@ function GetMenu() {
     useEffect(() => {
         currentPage.current = 1;
         getPagination()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     /*      Pagination     */
@@ -36,6 +37,7 @@ function GetMenu() {
             method: "get",
             url: "http://localhost:3000/GetAdminMenu",
             params: {
+                cate: cate,
                 page: currentPage.current,
                 limit: limit
             }
@@ -44,24 +46,6 @@ function GetMenu() {
             .then((result) => {
                 setMenu(result.data.results.result);
                 setPageCount(result.data.results.pageCount)
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    }
-
-    // Detail Menu
-    const DetailMenu = (id) => {
-        const configuration = {
-            method: "get",
-            url: "http://localhost:3000/GetDetailMenu",
-            params: {
-                foodid: id
-            }
-        };
-        axios(configuration)
-            .then((result) => {
-                setDetail(result.data);
             })
             .catch((error) => {
                 console.log(error);
@@ -126,13 +110,13 @@ function GetMenu() {
             },
         };
         axios(configuration)
-            .then(() => {
+            .then((res) => {
                 Swal.fire(
                     'Update Successfully!',
                     '',
                     'success'
-                ).then(function () {
-                    window.location.reload();
+                ).then(() => {
+                    window.location.reload()
                 })
             })
             .catch(() => {
@@ -182,7 +166,7 @@ function GetMenu() {
                                 <td className="thhuhu">{VND.format(i.foodprice)}</td>
                                 <td className="thhuhu">{i.foodquantity}</td>
                                 <td>{i.foodcategory}</td>
-                                <td onClick={setModalOpenDetail}><button onClick={() => DetailMenu(i.foodname)} className='btn btn-success'>Detail</button></td>
+                                <td onClick={setModalOpenDetail}><button onClick={() => setModalData(i)} className='btn btn-success'>Detail</button></td>
                             </tr>
                         </tbody>
                     )
@@ -228,59 +212,54 @@ function GetMenu() {
                         zIndex: 999
                     },
                 }}>
-
-                {Object.values(detail).map(i => {
-                    return (
-                        <div className='juh' key={i._id}>
-                            <h3 className="text-center">Menu Detail</h3>
-                            <hr />
-                            <form onSubmit={(e) => handleSubmit(e, i._id)} className="login100-form validate-form">
-                                <div className='reft'>
-                                    <div className="reftson1">
-                                        <label className="inputImageDup" htmlFor="inputimage2">
-                                            <div className="aboveCameraAppear">
-                                                <div className="cameraAppear">
-                                                    <i className="fa fa-camera fa-2x"></i>
-                                                </div>
-                                            </div>
-                                            <img id="output2" width="100%" height="100%" alt="" src={i.foodimage} />
-                                        </label>
-                                        <input id="inputimage2" onChange={convertToBase64} className="fuckThatImage" type="file" style={{ display: "none" }} />
+                <div className='juh' key={ModalData._id}>
+                    <h3 className="text-center">Menu Detail</h3>
+                    <hr />
+                    <form onSubmit={(e) => handleSubmit(e, ModalData._id)} className="login100-form validate-form">
+                        <div className='reft'>
+                            <div className="reftson1">
+                                <label className="inputImageDup" htmlFor="inputimage2">
+                                    <div className="aboveCameraAppear">
+                                        <div className="cameraAppear">
+                                            <i className="fa fa-camera fa-2x"></i>
+                                        </div>
                                     </div>
-                                    <div className="reftson2">
-                                        <div className="overHereB">
-                                            <div className="insideHereB">
-                                                <label>Name</label>
-                                                <input className='textDeny' type='text' name='updatename' defaultValue={i.foodname} value={updatename} onChange={(e) => setFoodname(e.target.value)}></input>
-                                            </div>
-                                            <div className="insideHereB">
-                                                <label>Category</label>
-                                                <input className='textDeny' type='text' name='updatecategory' defaultValue={i.foodcategory} value={updatecategory} onChange={(e) => setFoodcategory(e.target.value)} ></input>
-                                            </div>
-                                        </div>
-                                        <div className="overHereB">
-                                            <div className="insideHereB">
-                                                <label>Price</label>
-                                                <input className='textDeny' type='number' name='updateprice' defaultValue={i.foodprice} value={updateprice} onChange={(e) => setFoodprice(e.target.value)} ></input>
-                                            </div>
-                                            <div className="insideHereB">
-                                                <label>Quantity</label>
-                                                <input className='textDeny' type='number' name='updatequantity' defaultValue={i.foodquantity} value={updatequantity} onChange={(e) => setFoodquantity(e.target.value)} ></input>
-                                            </div>
-                                        </div>
-                                        <label>Description</label>
-                                        <textarea className='textDeny' type='text' name='updatedescription' defaultValue={i.fooddescription} value={updatedescription} onChange={(e) => setFooddescription(e.target.value)}></textarea>
+                                    <img id="output2" width="100%" height="100%" alt="" src={ModalData.foodimage} />
+                                </label>
+                                <input id="inputimage2" onChange={convertToBase64} className="fuckThatImage" type="file" style={{ display: "none" }} />
+                            </div>
+                            <div className="reftson2">
+                                <div className="overHereB">
+                                    <div className="insideHereB">
+                                        <label>Name</label>
+                                        <input className='textDeny' type='text' name='updatename' defaultValue={ModalData.foodname} value={updatename} onChange={(e) => setFoodname(e.target.value)}></input>
+                                    </div>
+                                    <div className="insideHereB">
+                                        <label>Category</label>
+                                        <input className='textDeny' type='text' name='updatecategory' defaultValue={ModalData.foodcategory} value={updatecategory} onChange={(e) => setFoodcategory(e.target.value)} ></input>
                                     </div>
                                 </div>
-                                <hr />
-                            </form>
-                            <div className='d-flex justify-content-around mt-3'>
-                                <button onClick={() => DeleteMenu(i._id)} className='btn btn-danger'>Delete</button>
-                                <button type='submit' className='btn btn-primary'>Update</button>
+                                <div className="overHereB">
+                                    <div className="insideHereB">
+                                        <label>Price</label>
+                                        <input className='textDeny' type='number' name='updateprice' defaultValue={ModalData.foodprice} value={updateprice} onChange={(e) => setFoodprice(e.target.value)} ></input>
+                                    </div>
+                                    <div className="insideHereB">
+                                        <label>Quantity</label>
+                                        <input className='textDeny' type='number' name='updatequantity' defaultValue={ModalData.foodquantity} value={updatequantity} onChange={(e) => setFoodquantity(e.target.value)} ></input>
+                                    </div>
+                                </div>
+                                <label>Description</label>
+                                <textarea className='textDeny' type='text' name='updatedescription' defaultValue={ModalData.fooddescription} value={updatedescription} onChange={(e) => setFooddescription(e.target.value)}></textarea>
                             </div>
-                        </div >
-                    )
-                })}
+                        </div>
+                        <hr />
+                        <div className='d-flex justify-content-around mt-3'>
+                            <button onClick={() => DeleteMenu(ModalData._id)} type="button" className='btn btn-danger'>Delete</button>
+                            <button type='submit' className='btn btn-primary'>Update</button>
+                        </div>
+                    </form>
+                </div >
                 <button className='closeModal' onClick={() => setModalOpenDetail(false)}>x</button>
             </Modal>
         </>

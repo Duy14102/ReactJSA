@@ -174,6 +174,39 @@ app.post("/Login", (request, response) => {
         });
 });
 
+//Find user inside adminP
+app.get("/Find4User", async (req, res) => {
+    try {
+        const regex = new RegExp(req.query.name, 'i')
+        const getIt = await getUserD.find({ fullname: regex })
+        const page = parseInt(req.query.page)
+        const limit = parseInt(req.query.limit)
+
+        const start = (page - 1) * limit
+        const end = page * limit
+
+        const results = {}
+        results.total = getIt.length
+        results.pageCount = Math.ceil(getIt.length / limit)
+
+        if (end < getIt.length) {
+            results.next = {
+                page: page + 1
+            }
+        }
+        if (start > 0) {
+            results.prev = {
+                page: page - 1
+            }
+        }
+
+        results.result = getIt.slice(start, end)
+        res.send({ results });
+    } catch (e) {
+        console.log(e);
+    }
+})
+
 //Add address user cart
 app.post("/AddAddressUser", async (req, res) => {
     try {
@@ -212,7 +245,7 @@ app.post("/RemoveAddressUser", (req, res) => {
 app.get("/GetAllUser", async (req, res) => {
     const sort = { role: -1 }
     try {
-        const getuser = await getUserD.find().sort(sort);
+        const getuser = await getUserD.find({ role: { $in: [req.query.type, req.query.pipe] } }).sort(sort);
         const page = parseInt(req.query.page)
         const limit = parseInt(req.query.limit)
 
@@ -369,6 +402,7 @@ app.post("/UploadOrder", (req, res) => {
             address: req.body.address,
             paymentmethod: req.body.paymentmethod,
             shippingfee: req.body.shippingfee,
+            fulltotal: req.body.fulltotal,
             status: 1,
             orderitems: hype
         })
@@ -591,7 +625,7 @@ app.get("/GetCartItem", async (req, res) => {
 //Get Menu 4 Admin
 app.get("/GetAdminMenu", async (req, res) => {
     try {
-        const getIt = await getThisMenu.find({});
+        const getIt = await getThisMenu.find({ foodcategory: req.query.cate });
         const page = parseInt(req.query.page)
         const limit = parseInt(req.query.limit)
 
@@ -1272,6 +1306,118 @@ app.get("/GetData4Employee", async (req, res) => {
         const waitingBooking = await GetBooking.find({ status: 2 })
         res.send({ orderLength: activeOrder.length, tableLength: activeTable.length, actBookingLength: activeBooking.length, waitBookingLength: waitingBooking.length })
     } catch (e) {
+        console.log(e);
+    }
+})
+
+app.get("/GetIncomeDay", async (req, res) => {
+    try {
+        const getta = await getThisOrder.find({})
+        var percent8 = 0, percent9 = 0, percent10 = 0, percent11 = 0, percent12 = 0, percent13 = 0, percent14 = 0, percent15 = 0, percent16 = 0, percent17 = 0, percent18 = 0, percent19 = 0, percent20 = 0, percent21 = 0, percent22 = 0
+        var eight = 0, nine = 0, ten = 0, elen = 0, twel = 0, third = 0, fourth = 0, fifth = 0, sixth = 0, seventh = 0, eighth = 0, nineth = 0, tenth = 0, elenth = 0, twelth = 0
+        for (var i = 0; i < getta.length; i++) {
+            for (var j = 0; j < getta[i].orderitems.length; j++) {
+                const date = new Date()
+                const dateGetta = new Date(getta[i].createdAt)
+                var total2 = 0, total = 0
+                var gettaDad = getta[i].orderitems
+                if (date.getDate() === dateGetta.getDate()) {
+                    if (dateGetta.getHours() === 8) {
+                        total = gettaDad[j].quantity * gettaDad[j].data.foodprice
+                        total2 += total
+                        eight = total2 + getta[i].shippingfee
+                        percent8 = (eight / 1000000) * 100
+                    }
+                    if (dateGetta.getHours() === 9) {
+                        total = gettaDad[j].quantity * gettaDad[j].data.foodprice
+                        total2 += total
+                        nine = total2 + getta[i].shippingfee
+                        percent9 = (nine / 1000000) * 100
+                    }
+                    if (dateGetta.getHours() === 10) {
+                        total = gettaDad[j].quantity * gettaDad[j].data.foodprice
+                        total2 += total
+                        ten = total2 + getta[i].shippingfee
+                        percent10 = (ten / 1000000) * 100
+                    }
+                    if (dateGetta.getHours() === 11) {
+                        total = gettaDad[j].quantity * gettaDad[j].data.foodprice
+                        total2 += total
+                        elen = total2 + getta[i].shippingfee
+                        percent11 = (elen / 1000000) * 100
+                    }
+                    if (dateGetta.getHours() === 12) {
+                        total = gettaDad[j].quantity * gettaDad[j].data.foodprice
+                        total2 += total
+                        twel = total2 + getta[i].shippingfee
+                        percent12 = (twel / 1000000) * 100
+                    }
+                    if (dateGetta.getHours() === 13) {
+                        total = gettaDad[j].quantity * gettaDad[j].data.foodprice
+                        total2 += total
+                        third = total2 + getta[i].shippingfee
+                        percent13 = (third / 1000000) * 100
+                    }
+                    if (dateGetta.getHours() === 14) {
+                        total = gettaDad[j].quantity * gettaDad[j].data.foodprice
+                        total2 += total
+                        fourth = total2 + getta[i].shippingfee
+                        percent14 = (fourth / 1000000) * 100
+                    }
+                    if (dateGetta.getHours() === 15) {
+                        total = gettaDad[j].quantity * gettaDad[j].data.foodprice
+                        total2 += total
+                        fifth = total2 + getta[i].shippingfee
+                        percent15 = (fifth / 1000000) * 100
+                    }
+                    if (dateGetta.getHours() === 16) {
+                        total = gettaDad[j].quantity * gettaDad[j].data.foodprice
+                        total2 += total
+                        sixth = total2 + getta[i].shippingfee
+                        percent16 = (sixth / 1000000) * 100
+                    }
+                    if (dateGetta.getHours() === 17) {
+                        total = gettaDad[j].quantity * gettaDad[j].data.foodprice
+                        total2 += total
+                        seventh = total2 + getta[i].shippingfee
+                        percent17 = (seventh / 1000000) * 100
+                    }
+                    if (dateGetta.getHours() === 18) {
+                        total = gettaDad[j].quantity * gettaDad[j].data.foodprice
+                        total2 += total
+                        eighth = total2 + getta[i].shippingfee
+                    }
+                    if (dateGetta.getHours() === 19) {
+                        total = gettaDad[j].quantity * gettaDad[j].data.foodprice
+                        total2 += total
+                        nineth = total2 + getta[i].shippingfee
+                        percent19 = (nineth / 1000000) * 100
+                    }
+                    if (dateGetta.getHours() === 20) {
+                        total = gettaDad[j].quantity * gettaDad[j].data.foodprice
+                        total2 += total
+                        tenth = total2 + getta[i].shippingfee
+                        percent20 = (tenth / 1000000) * 100
+                    }
+                    if (dateGetta.getHours() === 21) {
+                        total = gettaDad[j].quantity * gettaDad[j].data.foodprice
+                        total2 += total
+                        elenth = total2 + getta[i].shippingfee
+                        percent21 = (elenth / 1000000) * 100
+                    }
+                    if (dateGetta.getHours() === 22) {
+                        total = gettaDad[j].quantity * gettaDad[j].data.foodprice
+                        total2 += total
+                        twelth = total2 + getta[i].shippingfee
+                        percent22 = (twelth / 1000000) * 100
+                    }
+                }
+            }
+        }
+        percent18 = (eighth / 1000000) * 100
+        res.send({ percent8: percent8, percent9: percent9, percent10: percent10, percent11: percent11, percent12: percent12, percent13: percent13, percent14: percent14, percent15: percent15, percent16: percent16, percent17: percent17, percent18: percent18, percent19: percent19, percent20: percent20, percent21: percent21, percent22: percent22, })
+    }
+    catch (e) {
         console.log(e);
     }
 })
