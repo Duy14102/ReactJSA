@@ -7,33 +7,37 @@ function RevenueMonth() {
         fetch("http://localhost:3000/GetIncomeMonth", {
             method: "get",
         }).then((res) => res.json()).then((data) => {
-            setCountData(data)
+            setCountData(data.data)
         })
     }, [])
 
-    $(function () {
-        function updateGraph(data) {
-            $('.graph2 .bar[data-day]').each(function () {
-                var day = $(this).data('day');
-                $(this).find('.bar-content').css('height', data[day] + '%');
-            });
-        }
+    useEffect(() => {
+        var tempData = null
+        CountData?.map((i) => {
+            tempData = {
+                eight: i.percent1,
+                nine: i.percent2,
+                ten: i.percent3,
+                elen: i.percent4,
+                twel: i.percent5,
+                third: i.percent6,
+                fourth: i.percent7,
+                fifth: i.percent8,
+                sixth: i.percent9,
+                seventh: i.percent10
+            }
+            updateGraph(tempData)
+            return null
+        })
+    }, [CountData])
 
-        var tempData = {
-            eight: CountData?.percent1,
-            nine: CountData?.percent2,
-            ten: CountData?.percent13,
-            elen: CountData?.percent4,
-            twel: CountData?.percent5,
-            third: CountData?.percent6,
-            fourth: CountData?.percent7,
-            fifth: CountData?.percent8,
-            sixth: CountData?.percent9,
-            seventh: CountData?.percent10,
-        }
-
-        updateGraph(tempData)
-    })
+    function updateGraph(data) {
+        $('.graph2 .bar[data-day]').each(function () {
+            var day = $(this).data('day');
+            $(this).find('.bar-content').css('height', data[day] + '%');
+            $(this).find('.highIm').append(`${data[day]}%`);
+        });
+    }
 
     const VND = new Intl.NumberFormat('vi-VN', {
         style: 'currency',
@@ -48,70 +52,70 @@ function RevenueMonth() {
             <div className="graph2 text-center">
                 <div>
                     <div className="bar" data-day="eight">
-                        <p>{CountData?.percent1} %</p>
+                        <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>1-3</p>
                 </div>
                 <div>
                     <div className="bar" data-day="nine">
-                        <p>{CountData?.percent2} %</p>
+                        <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>4-6</p>
                 </div>
                 <div>
                     <div className="bar" data-day="ten">
-                        <p>{CountData?.percent3} %</p>
+                        <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>7-9</p>
                 </div>
                 <div>
                     <div className="bar" data-day="elen">
-                        <p>{CountData?.percent4} %</p>
+                        <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>10-12</p>
                 </div>
                 <div>
                     <div className="bar" data-day="twel">
-                        <p>{CountData?.percent5} %</p>
+                        <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>13-15</p>
                 </div>
                 <div>
                     <div className="bar" data-day="third">
-                        <p>{CountData?.percent6} %</p>
+                        <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>16-18</p>
                 </div>
                 <div>
                     <div className="bar" data-day="fourth">
-                        <p>{CountData?.percent7} %</p>
+                        <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>19-21</p>
                 </div>
                 <div>
                     <div className="bar" data-day="fifth">
-                        <p>{CountData?.percent8} %</p>
+                        <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>22-24</p>
                 </div>
                 <div>
                     <div className="bar" data-day="sixth">
-                        <p>{CountData?.percent9} %</p>
+                        <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>25-27</p>
                 </div>
                 <div>
                     <div className="bar" data-day="seventh">
-                        <p>{CountData?.percent10} %</p>
+                        <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>28-30</p>

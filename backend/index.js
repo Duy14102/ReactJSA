@@ -1455,7 +1455,7 @@ app.get("/GetIncomeDay", async (req, res) => {
                 const dateAtteg = new Date(atteg[k].tabledate)
                 var total = 0, fulltotal = 0
                 var attegDad = atteg[k].tableitems
-                if (date.getDate() === noobDate) {
+                if (date.getDate() === dateAtteg.getDate()) {
                     if (dateAtteg.getHours() === 8) {
                         total = attegDad[h].quantity * attegDad[h].item.foodprice
                         fulltotal += total
@@ -1549,7 +1549,10 @@ app.get("/GetIncomeDay", async (req, res) => {
         percent20 = ((tenth + tenth2) * 100) / 1000000
         percent21 = ((elenth + elenth2) * 100) / 1000000
         percent22 = ((twelth + twelth2) * 100) / 1000000
-        res.send({ percent8: percent8, percent9: percent9, percent10: percent10, percent11: percent11, percent12: percent12, percent13: percent13, percent14: percent14, percent15: percent15, percent16: percent16, percent17: percent17, percent18: percent18, percent19: percent19, percent20: percent20, percent21: percent21, percent22: percent22, })
+        const dataSendPush = []
+        const dataSend = { percent8: percent8, percent9: percent9, percent10: percent10, percent11: percent11, percent12: percent12, percent13: percent13, percent14: percent14, percent15: percent15, percent16: percent16, percent17: percent17, percent18: percent18, percent19: percent19, percent20: percent20, percent21: percent21, percent22: percent22 }
+        dataSendPush.push(dataSend)
+        res.send({ data: dataSendPush })
     }
     catch (e) {
         console.log(e);
@@ -1743,7 +1746,10 @@ app.get("/GetIncomeMonth", async (req, res) => {
         percent8 = ((eight + eight2) * 100) / 1000000
         percent9 = ((nine + nine2) * 100) / 1000000
         percent10 = ((ten + ten2) * 100) / 1000000
-        res.send({ percent1: percent1, percent2: percent2, percent3: percent3, percent4: percent4, percent5: percent5, percent6: percent6, percent7: percent7, percent8: percent8, percent9: percent9, percent10: percent10 })
+        const dataSendPush = []
+        const dataSend = { percent1: percent1, percent2: percent2, percent3: percent3, percent4: percent4, percent5: percent5, percent6: percent6, percent7: percent7, percent8: percent8, percent9: percent9, percent10: percent10 }
+        dataSendPush.push(dataSend)
+        res.send({ data: dataSendPush })
     } catch (e) {
         console.log(e);
     }

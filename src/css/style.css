@@ -377,8 +377,8 @@
     text-align: center;
 }
 
-.graph .bar p,
-.graph2 .bar p {
+.graph .bar .highIm,
+.graph2 .bar .highIm {
     z-index: 100;
     position: absolute;
     margin: 0;
@@ -387,15 +387,15 @@
     opacity: 0;
 }
 
-.graph .bar:hover p,
-.graph2 .bar:hover p {
+.graph .bar:hover .highIm,
+.graph2 .bar:hover .highIm {
     transition: all 0.2s;
     opacity: 1;
 }
 
 .graph .bar .bar-content,
 .graph2 .bar .bar-content {
-    max-width: 100%;
+    max-height: 100%;
     display: block;
     position: absolute;
     bottom: 0;

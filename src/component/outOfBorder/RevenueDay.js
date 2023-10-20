@@ -7,38 +7,42 @@ function RevenueDay() {
         fetch("http://localhost:3000/GetIncomeDay", {
             method: "get",
         }).then((res) => res.json()).then((data) => {
-            setCountData(data)
+            setCountData(data.data)
         })
     }, [])
 
-    $(function () {
-        function updateGraph(data) {
-            $('.graph .bar[data-day]').each(function () {
-                var day = $(this).data('day');
-                $(this).find('.bar-content').css('height', data[day] + '%');
-            });
-        }
+    useEffect(() => {
+        var tempData = null
+        CountData?.map((i) => {
+            tempData = {
+                eight: i.percent8,
+                nine: i.percent9,
+                ten: i.percent10,
+                elen: i.percent11,
+                twel: i.percent12,
+                third: i.percent13,
+                fourth: i.percent14,
+                fifth: i.percent15,
+                sixth: i.percent16,
+                seventh: i.percent17,
+                eighth: i.percent18,
+                nineth: i.percent19,
+                tenth: i.percent20,
+                elenth: i.percent21,
+                twelth: i.percent22
+            }
+            updateGraph(tempData)
+            return null
+        })
+    }, [CountData])
 
-        var tempData = {
-            eight: CountData?.percent8,
-            nine: CountData?.percent9,
-            ten: CountData?.percent10,
-            elen: CountData?.percent11,
-            twel: CountData?.percent12,
-            third: CountData?.percent13,
-            fourth: CountData?.percent14,
-            fifth: CountData?.percent15,
-            sixth: CountData?.percent16,
-            seventh: CountData?.percent17,
-            eighth: CountData?.percent18,
-            nineth: CountData?.percent19,
-            tenth: CountData?.percent20,
-            elenth: CountData?.percent21,
-            twelth: CountData?.percent22
-        }
-
-        updateGraph(tempData)
-    })
+    function updateGraph(data) {
+        $('.graph .bar[data-day]').each(function () {
+            var day = $(this).data('day');
+            $(this).find('.bar-content').css('height', data[day] + '%');
+            $(this).find('.highIm').append(`${data[day]}%`);
+        });
+    }
 
     const VND = new Intl.NumberFormat('vi-VN', {
         style: 'currency',
@@ -53,105 +57,105 @@ function RevenueDay() {
             <div className="graph text-center">
                 <div>
                     <div className="bar" data-day="eight">
-                        <p>{CountData?.percent8} %</p>
+                        <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>8</p>
                 </div>
                 <div>
                     <div className="bar" data-day="nine">
-                        <p>{CountData?.percent9} %</p>
+                        <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>9</p>
                 </div>
                 <div>
                     <div className="bar" data-day="ten">
-                        <p>{CountData?.percent10} %</p>
+                        <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>10</p>
                 </div>
                 <div>
                     <div className="bar" data-day="elen">
-                        <p>{CountData?.percent11} %</p>
+                        <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>11</p>
                 </div>
                 <div>
                     <div className="bar" data-day="twel">
-                        <p>{CountData?.percent12} %</p>
+                        <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>12</p>
                 </div>
                 <div>
                     <div className="bar" data-day="third">
-                        <p>{CountData?.percent13} %</p>
+                        <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>13</p>
                 </div>
                 <div>
                     <div className="bar" data-day="fourth">
-                        <p>{CountData?.percent14} %</p>
+                        <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>14</p>
                 </div>
                 <div>
                     <div className="bar" data-day="fifth">
-                        <p>{CountData?.percent15} %</p>
+                        <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>15</p>
                 </div>
                 <div>
                     <div className="bar" data-day="sixth">
-                        <p>{CountData?.percent16} %</p>
+                        <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>16</p>
                 </div>
                 <div>
                     <div className="bar" data-day="seventh">
-                        <p>{CountData?.percent17} %</p>
+                        <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>17</p>
                 </div>
                 <div>
                     <div className="bar" data-day="eighth">
-                        <p>{CountData?.percent18} %</p>
+                        <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>18</p>
                 </div>
                 <div>
                     <div className="bar" data-day="nineth">
-                        <p>{CountData?.percent19} %</p>
+                        <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>19</p>
                 </div>
                 <div>
                     <div className="bar" data-day="tenth">
-                        <p>{CountData?.percent20} %</p>
+                        <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>20</p>
                 </div>
                 <div>
                     <div className="bar" data-day="elenth">
-                        <p>{CountData?.percent21} %</p>
+                        <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>21</p>
                 </div>
                 <div>
                     <div className="bar" data-day="twelth">
-                        <p>{CountData?.percent22} %</p>
+                        <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>22</p>
