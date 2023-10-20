@@ -349,7 +349,8 @@
     align-items: center;
 }
 
-.graph {
+.graph,
+.graph2 {
     display: flex;
     margin-top: 2% !important;
     justify-content: center;
@@ -360,20 +361,24 @@
     margin: 0;
 }
 
-.graph p {
+.graph p,
+.graph2 p {
     color: #fff;
 }
 
-.graph .bar {
+.graph .bar,
+.graph2 .bar {
     display: block;
     position: relative;
     height: 10vh;
     width: 20px;
     background: #86909A;
     padding: 0;
+    text-align: center;
 }
 
-.graph .bar p {
+.graph .bar p,
+.graph2 .bar p {
     z-index: 100;
     position: absolute;
     margin: 0;
@@ -382,12 +387,14 @@
     opacity: 0;
 }
 
-.graph .bar:hover p {
+.graph .bar:hover p,
+.graph2 .bar:hover p {
     transition: all 0.2s;
     opacity: 1;
 }
 
-.graph .bar .bar-content {
+.graph .bar .bar-content,
+.graph2 .bar .bar-content {
     max-width: 100%;
     display: block;
     position: absolute;

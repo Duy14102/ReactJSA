@@ -653,6 +653,38 @@ app.get("/GetAdminMenu", async (req, res) => {
         console.log(e);
     }
 })
+
+//Get all item to add 4 table
+app.get("/GetItemCanTable", async (req, res) => {
+    try {
+        const getIt = await getThisMenu.find({});
+        const page = parseInt(req.query.page)
+        const limit = parseInt(req.query.limit)
+
+        const start = (page - 1) * limit
+        const end = page * limit
+
+        const results = {}
+        results.total = getIt.length
+        results.pageCount = Math.ceil(getIt.length / limit)
+
+        if (end < getIt.length) {
+            results.next = {
+                page: page + 1
+            }
+        }
+        if (start > 0) {
+            results.prev = {
+                page: page - 1
+            }
+        }
+
+        results.result = getIt.slice(start, end)
+        res.send({ results });
+    } catch (e) {
+        console.log(e);
+    }
+})
 //Get Detail Menu
 app.get("/GetDetailMenu", async (req, res) => {
     try {
@@ -1310,114 +1342,409 @@ app.get("/GetData4Employee", async (req, res) => {
     }
 })
 
+//Get Income by Day
 app.get("/GetIncomeDay", async (req, res) => {
     try {
-        const getta = await getThisOrder.find({})
+        const getta = await getThisOrder.find({ status: 2 })
+        const atteg = await GetTableHistory.find({})
+        const date = new Date()
         var percent8 = 0, percent9 = 0, percent10 = 0, percent11 = 0, percent12 = 0, percent13 = 0, percent14 = 0, percent15 = 0, percent16 = 0, percent17 = 0, percent18 = 0, percent19 = 0, percent20 = 0, percent21 = 0, percent22 = 0
         var eight = 0, nine = 0, ten = 0, elen = 0, twel = 0, third = 0, fourth = 0, fifth = 0, sixth = 0, seventh = 0, eighth = 0, nineth = 0, tenth = 0, elenth = 0, twelth = 0
+        var eight2 = 0, nine2 = 0, ten2 = 0, elen2 = 0, twel2 = 0, third2 = 0, fourth2 = 0, fifth2 = 0, sixth2 = 0, seventh2 = 0, eighth2 = 0, nineth2 = 0, tenth2 = 0, elenth2 = 0, twelth2 = 0
         for (var i = 0; i < getta.length; i++) {
             for (var j = 0; j < getta[i].orderitems.length; j++) {
-                const date = new Date()
                 const dateGetta = new Date(getta[i].createdAt)
-                var total2 = 0, total = 0
+                var total2 = 0, total = 0, fulltotal = 0
                 var gettaDad = getta[i].orderitems
                 if (date.getDate() === dateGetta.getDate()) {
                     if (dateGetta.getHours() === 8) {
                         total = gettaDad[j].quantity * gettaDad[j].data.foodprice
                         total2 += total
-                        eight = total2 + getta[i].shippingfee
-                        percent8 = (eight / 1000000) * 100
+                        fulltotal = total2 + getta[i].shippingfee
+                        eight += fulltotal
                     }
                     if (dateGetta.getHours() === 9) {
                         total = gettaDad[j].quantity * gettaDad[j].data.foodprice
                         total2 += total
-                        nine = total2 + getta[i].shippingfee
-                        percent9 = (nine / 1000000) * 100
+                        fulltotal = total2 + getta[i].shippingfee
+                        nine += fulltotal
                     }
                     if (dateGetta.getHours() === 10) {
                         total = gettaDad[j].quantity * gettaDad[j].data.foodprice
                         total2 += total
-                        ten = total2 + getta[i].shippingfee
-                        percent10 = (ten / 1000000) * 100
+                        fulltotal = total2 + getta[i].shippingfee
+                        ten += fulltotal
                     }
                     if (dateGetta.getHours() === 11) {
                         total = gettaDad[j].quantity * gettaDad[j].data.foodprice
                         total2 += total
-                        elen = total2 + getta[i].shippingfee
-                        percent11 = (elen / 1000000) * 100
+                        fulltotal = total2 + getta[i].shippingfee
+                        elen += fulltotal
                     }
                     if (dateGetta.getHours() === 12) {
                         total = gettaDad[j].quantity * gettaDad[j].data.foodprice
                         total2 += total
-                        twel = total2 + getta[i].shippingfee
-                        percent12 = (twel / 1000000) * 100
+                        fulltotal = total2 + getta[i].shippingfee
+                        twel += fulltotal
                     }
                     if (dateGetta.getHours() === 13) {
                         total = gettaDad[j].quantity * gettaDad[j].data.foodprice
                         total2 += total
-                        third = total2 + getta[i].shippingfee
-                        percent13 = (third / 1000000) * 100
+                        fulltotal = total2 + getta[i].shippingfee
+                        third += fulltotal
                     }
                     if (dateGetta.getHours() === 14) {
                         total = gettaDad[j].quantity * gettaDad[j].data.foodprice
                         total2 += total
-                        fourth = total2 + getta[i].shippingfee
-                        percent14 = (fourth / 1000000) * 100
+                        fulltotal = total2 + getta[i].shippingfee
+                        fourth += fulltotal
                     }
                     if (dateGetta.getHours() === 15) {
                         total = gettaDad[j].quantity * gettaDad[j].data.foodprice
                         total2 += total
-                        fifth = total2 + getta[i].shippingfee
-                        percent15 = (fifth / 1000000) * 100
+                        fulltotal = total2 + getta[i].shippingfee
+                        fifth += fulltotal
                     }
                     if (dateGetta.getHours() === 16) {
                         total = gettaDad[j].quantity * gettaDad[j].data.foodprice
                         total2 += total
-                        sixth = total2 + getta[i].shippingfee
-                        percent16 = (sixth / 1000000) * 100
+                        fulltotal = total2 + getta[i].shippingfee
+                        sixth += fulltotal
                     }
                     if (dateGetta.getHours() === 17) {
                         total = gettaDad[j].quantity * gettaDad[j].data.foodprice
                         total2 += total
-                        seventh = total2 + getta[i].shippingfee
-                        percent17 = (seventh / 1000000) * 100
+                        fulltotal = total2 + getta[i].shippingfee
+                        seventh += fulltotal
                     }
                     if (dateGetta.getHours() === 18) {
                         total = gettaDad[j].quantity * gettaDad[j].data.foodprice
                         total2 += total
-                        eighth = total2 + getta[i].shippingfee
+                        fulltotal = total2 + getta[i].shippingfee
+                        eighth += fulltotal
                     }
                     if (dateGetta.getHours() === 19) {
                         total = gettaDad[j].quantity * gettaDad[j].data.foodprice
                         total2 += total
-                        nineth = total2 + getta[i].shippingfee
-                        percent19 = (nineth / 1000000) * 100
+                        fulltotal = total2 + getta[i].shippingfee
+                        nineth += fulltotal
                     }
                     if (dateGetta.getHours() === 20) {
                         total = gettaDad[j].quantity * gettaDad[j].data.foodprice
                         total2 += total
-                        tenth = total2 + getta[i].shippingfee
-                        percent20 = (tenth / 1000000) * 100
+                        fulltotal = total2 + getta[i].shippingfee
+                        tenth += fulltotal
                     }
                     if (dateGetta.getHours() === 21) {
                         total = gettaDad[j].quantity * gettaDad[j].data.foodprice
                         total2 += total
-                        elenth = total2 + getta[i].shippingfee
-                        percent21 = (elenth / 1000000) * 100
+                        fulltotal = total2 + getta[i].shippingfee
+                        elenth
                     }
                     if (dateGetta.getHours() === 22) {
                         total = gettaDad[j].quantity * gettaDad[j].data.foodprice
                         total2 += total
-                        twelth = total2 + getta[i].shippingfee
-                        percent22 = (twelth / 1000000) * 100
+                        fulltotal = total2 + getta[i].shippingfee
+                        twelth
                     }
                 }
             }
         }
-        percent18 = (eighth / 1000000) * 100
+        for (var k = 0; k < atteg.length; k++) {
+            for (var h = 0; h < atteg[k].tableitems.length; h++) {
+                const dateAtteg = new Date(atteg[k].tabledate)
+                var total = 0, fulltotal = 0
+                var attegDad = atteg[k].tableitems
+                if (date.getDate() === noobDate) {
+                    if (dateAtteg.getHours() === 8) {
+                        total = attegDad[h].quantity * attegDad[h].item.foodprice
+                        fulltotal += total
+                        eight2 += fulltotal
+                    }
+                    if (dateAtteg.getHours() === 9) {
+                        total = attegDad[h].quantity * attegDad[h].item.foodprice
+                        fulltotal += total
+                        nine2 += fulltotal
+                    }
+                    if (dateAtteg.getHours() === 10) {
+                        total = attegDad[h].quantity * attegDad[h].item.foodprice
+                        fulltotal += total
+                        ten2 += fulltotal
+                    }
+                    if (dateAtteg.getHours() === 11) {
+                        total = attegDad[h].quantity * attegDad[h].item.foodprice
+                        fulltotal += total
+                        elen2 += fulltotal
+                    }
+                    if (dateAtteg.getHours() === 12) {
+                        total = attegDad[h].quantity * attegDad[h].item.foodprice
+                        fulltotal += total
+                        twel2 += fulltotal
+                    }
+                    if (dateAtteg.getHours() === 13) {
+                        total = attegDad[h].quantity * attegDad[h].item.foodprice
+                        fulltotal += total
+                        third2 += fulltotal
+                    }
+                    if (dateAtteg.getHours() === 14) {
+                        total = attegDad[h].quantity * attegDad[h].item.foodprice
+                        fulltotal += total
+                        fourth2 += fulltotal
+                    }
+                    if (dateAtteg.getHours() === 15) {
+                        total = attegDad[h].quantity * attegDad[h].item.foodprice
+                        fulltotal += total
+                        fifth2 += fulltotal
+                    }
+                    if (dateAtteg.getHours() === 16) {
+                        total = attegDad[h].quantity * attegDad[h].item.foodprice
+                        fulltotal += total
+                        sixth2 += fulltotal
+                    }
+                    if (dateAtteg.getHours() === 17) {
+                        total = attegDad[h].quantity * attegDad[h].item.foodprice
+                        fulltotal += total
+                        seventh2 += fulltotal
+                    }
+                    if (dateAtteg.getHours() === 18) {
+                        total = attegDad[h].quantity * attegDad[h].item.foodprice
+                        fulltotal += total
+                        eighth2 += fulltotal
+                    }
+                    if (dateAtteg.getHours() === 19) {
+                        total = attegDad[h].quantity * attegDad[h].item.foodprice
+                        fulltotal += total
+                        nineth2 += fulltotal
+                    }
+                    if (dateAtteg.getHours() === 20) {
+                        total = attegDad[h].quantity * attegDad[h].item.foodprice
+                        fulltotal += total
+                        tenth2 += fulltotal
+                    }
+                    if (dateAtteg.getHours() === 21) {
+                        total = attegDad[h].quantity * attegDad[h].item.foodprice
+                        fulltotal += total
+                        elenth2 += fulltotal
+                    }
+                    if (dateAtteg.getHours() === 22) {
+                        total = attegDad[h].quantity * attegDad[h].item.foodprice
+                        fulltotal += total
+                        twelth2 += fulltotal
+                    }
+                }
+            }
+        }
+        percent8 = ((eight + eight2) * 100) / 1000000
+        percent9 = ((nine + nine2) * 100) / 1000000
+        percent10 = ((ten + ten2) * 100) / 1000000
+        percent11 = ((elen + elen2) * 100) / 1000000
+        percent12 = ((twel + twel2) * 100) / 1000000
+        percent13 = ((third + third2) * 100) / 1000000
+        percent14 = ((fourth + fourth2) * 100) / 1000000
+        percent15 = ((fifth + fifth2) * 100) / 1000000
+        percent16 = ((sixth + sixth2) * 100) / 1000000
+        percent17 = ((seventh + seventh2) * 100) / 1000000
+        percent18 = ((eighth + eighth2) * 100) / 1000000
+        percent19 = ((nineth + nineth2) * 100) / 1000000
+        percent20 = ((tenth + tenth2) * 100) / 1000000
+        percent21 = ((elenth + elenth2) * 100) / 1000000
+        percent22 = ((twelth + twelth2) * 100) / 1000000
         res.send({ percent8: percent8, percent9: percent9, percent10: percent10, percent11: percent11, percent12: percent12, percent13: percent13, percent14: percent14, percent15: percent15, percent16: percent16, percent17: percent17, percent18: percent18, percent19: percent19, percent20: percent20, percent21: percent21, percent22: percent22, })
     }
     catch (e) {
+        console.log(e);
+    }
+})
+
+//Get Income by Month
+app.get("/GetIncomeMonth", async (req, res) => {
+    try {
+        const getIt = await getThisOrder.find({ status: 2 })
+        const atteg = await GetTableHistory.find({})
+        const date = new Date()
+        var percent1 = 0, percent2 = 0, percent3 = 0, percent4 = 0, percent5 = 0, percent6 = 0, percent7 = 0, percent8 = 0, percent9 = 0, percent10 = 0
+        var one = 0, two = 0, three = 0, four = 0, five = 0, six = 0, seven = 0, eight = 0, nine = 0, ten = 0
+        var one2 = 0, two2 = 0, three2 = 0, four2 = 0, five2 = 0, six2 = 0, seven2 = 0, eight2 = 0, nine2 = 0, ten2 = 0
+        for (var i = 0; i < getIt.length; i++) {
+            for (var j = 0; j < getIt[i].orderitems.length; j++) {
+                const getitDad = getIt[i].orderitems
+                const dateGetit = new Date(getIt[i].createdAt)
+                const proDate = dateGetit.getDate()
+                var total = 0, fulltotal = 0
+                if (date.getMonth() === dateGetit.getMonth()) {
+                    if (proDate === 1 || proDate === 2 || proDate === 3) {
+                        total = getitDad[j].quantity * getitDad[j].data.foodprice
+                        var total2 = 0
+                        total2 += total
+                        fulltotal = total2 + getIt[i].shippingfee
+                        one += fulltotal
+                    }
+
+                    if (proDate === 4 || proDate === 5 || proDate === 6) {
+                        total = getitDad[j].quantity * getitDad[j].data.foodprice
+                        var total2 = 0
+                        total2 += total
+                        fulltotal = total2 + getIt[i].shippingfee
+                        two += fulltotal
+                    }
+
+                    if (proDate === 7 || proDate === 8 || proDate === 9) {
+                        total = getitDad[j].quantity * getitDad[j].data.foodprice
+                        var total2 = 0
+                        total2 += total
+                        fulltotal = total2 + getIt[i].shippingfee
+                        three += fulltotal
+                    }
+
+                    if (proDate === 10 || proDate === 11 || proDate === 12) {
+                        total = getitDad[j].quantity * getitDad[j].data.foodprice
+                        var total2 = 0
+                        total2 += total
+                        fulltotal = total2 + getIt[i].shippingfee
+                        four += fulltotal
+                    }
+
+                    if (proDate === 13 || proDate === 14 || proDate === 15) {
+                        total = getitDad[j].quantity * getitDad[j].data.foodprice
+                        var total2 = 0
+                        total2 += total
+                        fulltotal = total2 + getIt[i].shippingfee
+                        five += fulltotal
+                    }
+
+                    if (proDate === 16 || proDate === 17 || proDate === 18) {
+                        total = getitDad[j].quantity * getitDad[j].data.foodprice
+                        var total2 = 0
+                        total2 += total
+                        fulltotal = total2 + getIt[i].shippingfee
+                        six += fulltotal
+                    }
+
+                    if (proDate === 19 || proDate === 20 || proDate === 21) {
+                        total = getitDad[j].quantity * getitDad[j].data.foodprice
+                        var total2 = 0
+                        total2 += total
+                        fulltotal = total2 + getIt[i].shippingfee
+                        seven += fulltotal
+                    }
+
+                    if (proDate === 22 || proDate === 23 || proDate === 24) {
+                        total = getitDad[j].quantity * getitDad[j].data.foodprice
+                        var total2 = 0
+                        total2 += total
+                        fulltotal = total2 + getIt[i].shippingfee
+                        eight += fulltotal
+                    }
+
+                    if (proDate === 25 || proDate === 26 || proDate === 27) {
+                        total = getitDad[j].quantity * getitDad[j].data.foodprice
+                        var total2 = 0
+                        total2 += total
+                        fulltotal = total2 + getIt[i].shippingfee
+                        nine += fulltotal
+                    }
+
+                    if (proDate === 28 || proDate === 29 || proDate === 30) {
+                        total = getitDad[j].quantity * getitDad[j].data.foodprice
+                        var total2 = 0
+                        total2 += total
+                        fulltotal = total2 + getIt[i].shippingfee
+                        ten += fulltotal
+                    }
+                }
+            }
+        }
+        for (var k = 0; k < atteg.length; i++) {
+            for (var h = 0; h < atteg[k].tableitems.length; h++) {
+                const attegDad = atteg[k].tableitems
+                const dateAtteg = new Date(atteg[k].tabledate)
+                const noobDate = dateAtteg.getDate()
+                var total = 0
+                if (date.getMonth() === dateAtteg.getMonth()) {
+                    if (noobDate === 1 || noobDate === 2 || noobDate === 3) {
+                        total = attegDad[h].quantity * attegDad[h].item.foodprice
+                        var total2 = 0
+                        total2 += total
+                        one2 += total2
+                    }
+
+                    if (noobDate === 4 || noobDate === 5 || noobDate === 6) {
+                        total = attegDad[h].quantity * attegDad[h].item.foodprice
+                        var total2 = 0
+                        total2 += total
+                        two2 += total2
+                    }
+
+                    if (noobDate === 7 || noobDate === 8 || noobDate === 9) {
+                        total = attegDad[h].quantity * attegDad[h].item.foodprice
+                        var total2 = 0
+                        total2 += total
+                        three2 += total2
+                    }
+
+                    if (noobDate === 10 || noobDate === 11 || noobDate === 12) {
+                        total = attegDad[h].quantity * attegDad[h].item.foodprice
+                        var total2 = 0
+                        total2 += total
+                        four2 += total2
+                    }
+
+                    if (noobDate === 13 || noobDate === 14 || noobDate === 15) {
+                        total = attegDad[h].quantity * attegDad[h].item.foodprice
+                        var total2 = 0
+                        total2 += total
+                        five2 += total2
+                    }
+
+                    if (noobDate === 16 || noobDate === 17 || noobDate === 18) {
+                        total = attegDad[h].quantity * attegDad[h].item.foodprice
+                        var total2 = 0
+                        total2 += total
+                        six2 += total2
+                    }
+
+                    if (noobDate === 19 || noobDate === 20 || noobDate === 21) {
+                        total = attegDad[h].quantity * attegDad[h].item.foodprice
+                        var total2 = 0
+                        total2 += total
+                        seven2 += total2
+                    }
+
+                    if (noobDate === 22 || noobDate === 23 || noobDate === 24) {
+                        total = attegDad[h].quantity * attegDad[h].item.foodprice
+                        var total2 = 0
+                        total2 += total
+                        eight2 += total2
+                    }
+
+                    if (noobDate === 25 || noobDate === 26 || noobDate === 27) {
+                        total = attegDad[h].quantity * attegDad[h].item.foodprice
+                        var total2 = 0
+                        total2 += total
+                        nine2 += total2
+                    }
+
+                    if (noobDate === 28 || noobDate === 29 || noobDate === 30) {
+                        total = attegDad[h].quantity * attegDad[h].item.foodprice
+                        var total2 = 0
+                        total2 += total
+                        ten2 += total2
+                    }
+                }
+            }
+        }
+        percent1 = ((one + one2) * 100) / 1000000
+        percent2 = ((two + two2) * 100) / 1000000
+        percent3 = ((three + three2) * 100) / 1000000
+        percent4 = ((four + four2) * 100) / 1000000
+        percent5 = ((five + five2) * 100) / 1000000
+        percent6 = ((six + six2) * 100) / 1000000
+        percent7 = ((seven + seven2) * 100) / 1000000
+        percent8 = ((eight + eight2) * 100) / 1000000
+        percent9 = ((nine + nine2) * 100) / 1000000
+        percent10 = ((ten + ten2) * 100) / 1000000
+        res.send({ percent1: percent1, percent2: percent2, percent3: percent3, percent4: percent4, percent5: percent5, percent6: percent6, percent7: percent7, percent8: percent8, percent9: percent9, percent10: percent10 })
+    } catch (e) {
         console.log(e);
     }
 })

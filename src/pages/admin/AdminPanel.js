@@ -13,6 +13,7 @@ import MainOrder from '../../component/admin/MainOrder';
 import MainBooking from '../../component/employee/MainBooking';
 import MainTable from '../../component/employee/MainTable';
 import RevenueDay from '../../component/outOfBorder/RevenueDay';
+import RevenueMonth from '../../component/outOfBorder/RevenueMonth';
 
 function AdminPanel() {
     const cookies = new Cookies();
@@ -23,6 +24,8 @@ function AdminPanel() {
     const [UserImage, setImage] = useState()
 
     useEffect(() => {
+        document.getElementById("defaultMe").click();
+
         fetch("http://localhost:3000/GetData4Admin", {
             method: "get",
         }).then((res) => res.json()).then((data) => {
@@ -131,6 +134,20 @@ function AdminPanel() {
             }
         }
     });
+
+    function openMe(evt, cityName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("contentMe");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("buttonMe");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" activeMe", "");
+        }
+        document.getElementById(cityName).style.display = "block";
+        evt.currentTarget.className += " activeMe";
+    }
 
     const changeImage = (e, id) => {
         e.preventDefault()
@@ -278,12 +295,20 @@ function AdminPanel() {
                                 <h4 className='text-center text-white'>Income</h4>
                                 <div style={{ background: "#2C343A", borderRadius: 3 + "px" }}>
                                     <div className='d-flex' style={{ gap: 1 + "%" }}>
-                                        <button className='btn btn-secondary w-100'>Day</button>
-                                        <button className='btn btn-secondary w-100'>Month</button>
-                                        <button className='btn btn-secondary w-100'>Year</button>
+                                        <button id='defaultMe' className='btn btn-secondary w-100 buttonMe activeMe' onClick={(e) => openMe(e, 'IncomeDay')}>Day</button>
+                                        <button className='btn btn-secondary w-100 buttonMe' onClick={(e) => openMe(e, 'IncomeMonth')}>Month</button>
+                                        <button className='btn btn-secondary w-100 buttonMe' onClick={(e) => openMe(e, 'IncomeYear')}>Year</button>
                                     </div>
                                 </div>
-                                <RevenueDay />
+                                <div id="IncomeDay" className="contentMe">
+                                    <RevenueDay />
+                                </div>
+                                <div id="IncomeMonth" className="contentMe">
+                                    <RevenueMonth />
+                                </div>
+                                <div id="IncomeYear" className="contentMe">
+                                    <h1>Year</h1>
+                                </div>
                             </div>
                             <div className="bestie">
                                 <h4 className='text-center text-white'>Contact</h4>

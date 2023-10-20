@@ -24,7 +24,7 @@ function TableItems({ ModalData }) {
     function getAdminMenu() {
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/GetAdminMenu",
+            url: "http://localhost:3000/GetItemCanTable",
             params: {
                 page: currentPage.current,
                 limit: limit
