@@ -1184,44 +1184,54 @@ app.get("/GetHistoryTable", async (req, res) => {
 
 //Add item to table
 app.post("/AddItemToTable", async (req, res) => {
-    const findDup = await GetTable.find({ _id: req.body.tableid }, { tableitems: { $elemMatch: { "item.foodname": req.body.foodname } } })
+    const findDup = await GetTable.findOne({ _id: req.body.tableid, tableitems: { $elemMatch: { "item.foodname": req.body.foodname } } })
     try {
         const dddd = Date.now()
         const dddda = new Date(dddd)
-        if (req.body.statusCheck === 1) {
-            GetTable.updateOne({ _id: req.body.tableid }, {
-                tabledate: dddda,
-                tablestatus: 2
-            }).then(() => {
-                res.send({ data: "succeed" })
-            }).catch((e) => {
-                console.log(e);
-            })
-        }
-        for (var i = 0; i < findDup.length; i++) {
-            if (findDup[i].tableitems.length > 0) {
-                GetTable.updateOne({ _id: req.body.tableid, "tableitems.item.foodname": req.body.foodname },
-                    {
-                        $inc: {
-                            "tableitems.$.quantity": parseInt(req.body.quantity)
-                        }
-                    }).then(() => {
+        if (findDup) {
+            GetTable.updateOne({ _id: req.body.tableid, "tableitems.item.foodname": req.body.foodname },
+                {
+                    $inc: {
+                        "tableitems.$.quantity": parseInt(req.body.quantity)
+                    }
+                }).then(() => {
+                    if (req.body.statusCheck === 1) {
+                        findDup.updateOne({ _id: req.body.tableid }, {
+                            tabledate: dddda,
+                            tablestatus: 2
+                        }).then(() => {
+                            res.send({ data: "succeed" })
+                        }).catch((e) => {
+                            console.log(e);
+                        })
+                    } else {
                         res.send({ data: "succeed" })
-                    }).catch((e) => {
-                        console.log(e);
-                    })
-            } else {
-                GetTable.updateOne({ _id: req.body.tableid },
-                    {
-                        $push: {
-                            tableitems: req.body.item
-                        }
-                    }).then(() => {
+                    }
+                }).catch((er) => {
+                    console.log(er);
+                })
+        } else {
+            GetTable.updateOne({ _id: req.body.tableid },
+                {
+                    $push: {
+                        tableitems: req.body.item
+                    }
+                }).then(() => {
+                    if (req.body.statusCheck === 1) {
+                        GetTable.updateOne({ _id: req.body.tableid }, {
+                            tabledate: dddda,
+                            tablestatus: 2
+                        }).then(() => {
+                            res.send({ data: "succeed" })
+                        }).catch((e) => {
+                            console.log(e);
+                        })
+                    } else {
                         res.send({ data: "succeed" })
-                    }).catch((e) => {
-                        console.log(e);
-                    })
-            }
+                    }
+                }).catch((er) => {
+                    console.log(er);
+                })
         }
     } catch (e) {
         console.log(e);
@@ -1277,7 +1287,7 @@ app.post("/Checkout4Booking", (req, res) => {
 })
 
 //Checkout for normal
-app.post("/Checkout4Normal", (req, res) => {
+app.post("/Checkout4Normal", async (req, res) => {
     try {
         var hype = req.body.TbItemHistory
         const historytb = new TableHistory({
@@ -1299,13 +1309,11 @@ app.post("/Checkout4Normal", (req, res) => {
                             foodquantity: -datad.quantity
                         }
                     }).then(() => {
-                        res.send({ message: "succeed" })
-                    }).catch((err) => {
-                        console.log(err);
+                        res.send({ data: "succeed" })
                     })
                 })
-            }).catch((err) => {
-                console.log(err);
+            }).catch((er) => {
+                console.log(er);
             })
         }).catch((err) => {
             console.log(err);
@@ -1657,7 +1665,7 @@ app.get("/GetIncomeMonth", async (req, res) => {
                 }
             }
         }
-        for (var k = 0; k < atteg.length; i++) {
+        for (var k = 0; k < atteg.length; k++) {
             for (var h = 0; h < atteg[k].tableitems.length; h++) {
                 const attegDad = atteg[k].tableitems
                 const dateAtteg = new Date(atteg[k].tabledate)
