@@ -3,35 +3,19 @@ import '../../css/style.css';
 import $ from 'jquery';
 import { useEffect, useState } from 'react';
 import Cookies from 'universal-cookie';
-import MainMenu from '../../component/admin/MainMenu';
 import MainUser from '../../component/admin/MainUser';
 import jwtDecode from 'jwt-decode';
-import GetContact from '../../component/admin/GetContact';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import MainOrder from '../../component/admin/MainOrder';
-import MainBooking from '../../component/employee/MainBooking';
-import MainTable from '../../component/employee/MainTable';
-import RevenueDay from '../../component/outOfBorder/RevenueDay';
-import RevenueMonth from '../../component/outOfBorder/RevenueMonth';
 
 function AdminPanel() {
     const cookies = new Cookies();
     const token = cookies.get("TOKEN");
     const name = jwtDecode(token)
-    const [CountData, setCountData] = useState()
     const [GetUser, setGetUser] = useState([])
     const [UserImage, setImage] = useState()
 
     useEffect(() => {
-        document.getElementById("defaultMe").click();
-
-        fetch("http://localhost:3000/GetData4Admin", {
-            method: "get",
-        }).then((res) => res.json()).then((data) => {
-            setCountData(data)
-        })
-
         fetch(`http://localhost:3000/GetDetailUser?userid=${name.userId}`, {
             method: "get",
         }).then((res) => res.json()).then((data) => {
@@ -135,20 +119,6 @@ function AdminPanel() {
         }
     });
 
-    function openMe(evt, cityName) {
-        var i, tabcontent, tablinks;
-        tabcontent = document.getElementsByClassName("contentMe");
-        for (i = 0; i < tabcontent.length; i++) {
-            tabcontent[i].style.display = "none";
-        }
-        tablinks = document.getElementsByClassName("buttonMe");
-        for (i = 0; i < tablinks.length; i++) {
-            tablinks[i].className = tablinks[i].className.replace(" activeMe", "");
-        }
-        document.getElementById(cityName).style.display = "block";
-        evt.currentTarget.className += " activeMe";
-    }
-
     const changeImage = (e, id) => {
         e.preventDefault()
         const configuration = {
@@ -217,11 +187,6 @@ function AdminPanel() {
                     })}
                     <div className="menu">
                         <a data-menu="dashboard" href="#Dashboard" className="active unchange2"><i className="fa-solid fa-house"></i><p className='appearNow'>Home</p></a>
-                        <a data-menu="about" href="#Cart" className='unchange2'><i className="fa-solid fa-cart-shopping"></i><p className='appearNow'>Cart</p></a>
-                        <a data-menu="users" href="#User" className='unchange2'><i className="fa-solid fa-user"></i><p className='appearNow'>User</p></a>
-                        <a data-menu="download" href="#Menu" className='unchange2'><i className="fa-solid fa-utensils"></i><p className='appearNow'>Menu</p></a>
-                        <a data-menu="table" href="#Table" className='unchange2'><i className="fa-solid fa-calendar-check"></i><p className='appearNow'>Table</p></a>
-                        <a data-menu="booking" href="#Booking" className='unchange2'><i className="fa-solid fa-calendar-plus"></i><p className='appearNow'>Booking</p></a>
                         <a data-dialog="logout" href="# " className='unchange2'><i className="fa-solid fa-right-from-bracket"></i><p className='appearNow'>Logout</p></a>
                     </div>
                 </div>
@@ -232,138 +197,8 @@ function AdminPanel() {
                                 <h2>Dashboard</h2>
                             </div>
                         </div>
-                        <div className="grid pt-4">
-                            <div className="card-verticle ">
-                                <div className="card-small" style={{ background: "#2298F1" }}>
-                                    <span className="title">
-                                        Total Users
-                                    </span>
-                                    <h2 className="text">{CountData?.userLength}</h2>
-                                    <hr />
-                                    <p className='m-0 text-white'>1% increase</p>
-                                </div>
-                            </div>
-                            <div className="card-verticle">
-                                <div className="card-small" style={{ background: "#66B92E" }}>
-                                    <span className="title">
-                                        Active Order
-                                    </span>
-                                    <h2 className="text">{CountData?.orderLength}</h2>
-                                    <hr />
-                                    <p className='m-0 text-white'>5% increase</p>
-                                </div>
-                            </div>
-                            <div className="card-verticle">
-                                <div className="card-small" style={{ background: "#FEA116" }}>
-                                    <span className="title">
-                                        Active Table
-                                    </span>
-                                    <h2 className="text">{CountData?.tableLength}</h2>
-                                    <hr />
-                                    <p className='m-0 text-white'>9% increase</p>
-                                </div>
-                            </div>
-                            <div className="card-verticle">
-                                <div className="card-small" style={{ background: "#ff9999" }}>
-                                    <div className='flexOverPage'>
-                                        <div>
-                                            <span className="title">Active Booking</span>
-                                            <h2 className="text text-center">{CountData?.actBookingLength}</h2>
-                                        </div>
-                                        <div>
-                                            <span className="title">Serving Booking</span>
-                                            <h2 className="text text-center">{CountData?.waitBookingLength}</h2>
-                                        </div>
-                                    </div>
-                                    <hr />
-                                    <p className='m-0 text-white'>1.5% increase</p>
-                                </div>
-                            </div>
-                            <div className="card-verticle">
-                                <div className="card-small" style={{ background: "#D65B4A" }}>
-                                    <span className="title">
-                                        Total Menu
-                                    </span>
-                                    <h2 className="text">{CountData?.menuLength}</h2>
-                                    <hr />
-                                    <p className='m-0 text-white'>0% increase</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='butItWrong'>
-                            <div className='bestie'>
-                                <h4 className='text-center text-white'>Income</h4>
-                                <div style={{ background: "#2C343A", borderRadius: 3 + "px" }}>
-                                    <div className='d-flex' style={{ gap: 1 + "%" }}>
-                                        <button id='defaultMe' className='btn btn-secondary w-100 buttonMe activeMe' onClick={(e) => openMe(e, 'IncomeDay')}>Day</button>
-                                        <button className='btn btn-secondary w-100 buttonMe' onClick={(e) => openMe(e, 'IncomeMonth')}>Month</button>
-                                        <button className='btn btn-secondary w-100 buttonMe' onClick={(e) => openMe(e, 'IncomeYear')}>Year</button>
-                                    </div>
-                                </div>
-                                <div id="IncomeDay" className="contentMe">
-                                    <RevenueDay />
-                                </div>
-                                <div id="IncomeMonth" className="contentMe">
-                                    <RevenueMonth />
-                                </div>
-                                <div id="IncomeYear" className="contentMe">
-                                    <h1>Year</h1>
-                                </div>
-                            </div>
-                            <div className="bestie">
-                                <h4 className='text-center text-white'>Contact</h4>
-                                <GetContact />
-                            </div>
-                        </div>
-                    </div>
-                    <div className="page noflex" data-page="about" id='Cart'>
-                        <div className="header">
-                            <div className="title">
-                                <h2>Cart</h2>
-                            </div>
-                        </div>
-                        <div className='callMeOutUI'>
-                            <MainOrder />
-                        </div>
-                    </div>
-                    <div className="page noflex" data-page="users" id='User'>
-                        <div className="header">
-                            <div className="title">
-                                <h2>Users</h2>
-                            </div>
-                        </div>
                         <div className='callMeOutUI'>
                             <MainUser />
-                        </div>
-                    </div>
-                    <div className="page noflex" data-page="download" id='Menu'>
-                        <div className="header">
-                            <div className="title">
-                                <h2>Menu</h2>
-                            </div>
-                        </div>
-                        <div className='callMeOutUI'>
-                            <MainMenu />
-                        </div>
-                    </div>
-                    <div className="page noflex" data-page="table" id='Table'>
-                        <div className="header">
-                            <div className="title">
-                                <h2>Table</h2>
-                            </div>
-                        </div>
-                        <div className='callMeOutUI'>
-                            <MainTable />
-                        </div>
-                    </div>
-                    <div className="page noflex" data-page="booking" id='Booking'>
-                        <div className="header">
-                            <div className="title">
-                                <h2>Booking</h2>
-                            </div>
-                        </div>
-                        <div className='callMeOutUI'>
-                            <MainBooking />
                         </div>
                     </div>
                 </div>

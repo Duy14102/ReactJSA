@@ -350,7 +350,8 @@
 }
 
 .graph,
-.graph2 {
+.graph2,
+.graph3 {
     display: flex;
     margin-top: 2% !important;
     justify-content: center;
@@ -362,23 +363,26 @@
 }
 
 .graph p,
-.graph2 p {
+.graph2 p,
+.graph3 p {
     color: #fff;
 }
 
 .graph .bar,
-.graph2 .bar {
+.graph2 .bar,
+.graph3 .bar {
     display: block;
     position: relative;
     height: 10vh;
     width: 20px;
     background: #86909A;
     padding: 0;
-    text-align: center;
+    margin: 0 auto;
 }
 
 .graph .bar .highIm,
-.graph2 .bar .highIm {
+.graph2 .bar .highIm,
+.graph3 .bar .highIm {
     z-index: 100;
     position: absolute;
     margin: 0;
@@ -388,13 +392,15 @@
 }
 
 .graph .bar:hover .highIm,
-.graph2 .bar:hover .highIm {
+.graph2 .bar:hover .highIm,
+.graph3 .bar:hover .highIm {
     transition: all 0.2s;
     opacity: 1;
 }
 
 .graph .bar .bar-content,
-.graph2 .bar .bar-content {
+.graph2 .bar .bar-content,
+.graph3 .bar .bar-content {
     max-height: 100%;
     display: block;
     position: absolute;
@@ -413,6 +419,10 @@
 }
 
 @media (max-width:575px) {
+    .btn {
+        font-size: 3.5vw !important;
+    }
+
     .reft {
         flex-direction: column;
         align-items: center;

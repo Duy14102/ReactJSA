@@ -25,6 +25,7 @@ import TrackOrder from "./pages/TrackOrder";
 import ContactSite from "./pages/ContactSite";
 import UserPanel from "./pages/admin/UserPanel";
 import EmployeePanel from "./pages/admin/EmployeePanel";
+import ManagerPanel from "./pages/admin/ManagerPanel";
 
 const cookies = new Cookies();
 const token = cookies.get("TOKEN");
@@ -37,6 +38,8 @@ const PrivateRoute = ({ children }) => {
             case 2:
                 return children
             case 3:
+                return children
+            case 4:
                 return children
             default:
                 return NotFound()
@@ -75,6 +78,7 @@ function Wrapped() {
                     <Route path="UserPanel/:id" element={<PrivateRoute><UserPanel /></PrivateRoute>} />
                     <Route path="EmployeePanel" element={<PrivateRoute><EmployeePanel /></PrivateRoute>} />
                     <Route path="AdminPanel" element={<PrivateRoute><AdminPanel /></PrivateRoute>} />
+                    <Route path="ManagerPanel" element={<PrivateRoute><ManagerPanel /></PrivateRoute>} />
                 </Routes>
                 <Backtotop />
             </div>

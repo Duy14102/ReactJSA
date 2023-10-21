@@ -22,14 +22,25 @@ app.get("/", (req, resp) => {
 
 app.listen(3000);
 
-// Register
+// Model
 const bcrypt = require("bcrypt");
+const jwt = require('jsonwebtoken');
 const User = require("./model/Users");
 const getUserD = mongoose.model("Users");
 const TableHistory = require("./model/TableHistory");
 const GetTableHistory = mongoose.model("TableHistory");
+const Menu = require('./model/Menu');
+const getThisMenu = mongoose.model("Menu");
+const Order = require('./model/Order');
+const getThisOrder = mongoose.model("Orders");
+const Contact = require("./model/Contact");
+const getContactNow = mongoose.model("Contact");
+const Booking = require("./model/Booking");
+const GetBooking = mongoose.model("Booking");
+const Table = require("./model/Table");
+const GetTable = mongoose.model("Table");
 
-
+//Register
 app.post("/Register", (request, response) => {
     // hash the password
     bcrypt
@@ -83,7 +94,7 @@ app.post("/AddAdmin", (request, response) => {
                 password: hashedPassword,
                 fullname: request.body.fullname,
                 phonenumber: request.body.phonenumber,
-                role: 2,
+                role: request.body.role,
             });
 
             // save the new user
@@ -114,8 +125,6 @@ app.post("/AddAdmin", (request, response) => {
 });
 
 // Login
-const jwt = require('jsonwebtoken');
-
 app.post("/Login", (request, response) => {
     // check if email exists
     User.findOne({ email: request.body.email })
@@ -174,7 +183,7 @@ app.post("/Login", (request, response) => {
         });
 });
 
-//Find user inside adminP
+//Find user inside adminPanel
 app.get("/Find4User", async (req, res) => {
     try {
         const regex = new RegExp(req.query.name, 'i')
@@ -241,11 +250,76 @@ app.post("/RemoveAddressUser", (req, res) => {
     }
 })
 
-//Get User Data
+//Get Other User Data
 app.get("/GetAllUser", async (req, res) => {
     const sort = { role: -1 }
     try {
-        const getuser = await getUserD.find({ role: { $in: [req.query.type, req.query.pipe] } }).sort(sort);
+        const getuser = await getUserD.find({ role: { $in: [req.query.type, req.query.pipe, req.query.hype] } }).sort(sort);
+        const page = parseInt(req.query.page)
+        const limit = parseInt(req.query.limit)
+
+        const start = (page - 1) * limit
+        const end = page * limit
+
+        const results = {}
+        results.total = getuser.length
+        results.pageCount = Math.ceil(getuser.length / limit)
+
+        if (end < getuser.length) {
+            results.next = {
+                page: page + 1
+            }
+        }
+        if (start > 0) {
+            results.prev = {
+                page: page - 1
+            }
+        }
+
+        results.result = getuser.slice(start, end)
+        res.send({ results });
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Get User Data
+app.get("/GetAllUser2", async (req, res) => {
+    const sort = { role: -1 }
+    try {
+        const getuser = await getUserD.find({ role: req.query.type }).sort(sort);
+        const page = parseInt(req.query.page)
+        const limit = parseInt(req.query.limit)
+
+        const start = (page - 1) * limit
+        const end = page * limit
+
+        const results = {}
+        results.total = getuser.length
+        results.pageCount = Math.ceil(getuser.length / limit)
+
+        if (end < getuser.length) {
+            results.next = {
+                page: page + 1
+            }
+        }
+        if (start > 0) {
+            results.prev = {
+                page: page - 1
+            }
+        }
+
+        results.result = getuser.slice(start, end)
+        res.send({ results });
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Get Employee 4 Manager
+app.get("/GetEmploy4Mana", async (req, res) => {
+    try {
+        const getuser = await getUserD.find({ role: 2 })
         const page = parseInt(req.query.page)
         const limit = parseInt(req.query.limit)
 
@@ -360,7 +434,6 @@ app.post("/ChangeImageAdmin", (req, res) => {
 })
 
 // Add Menu
-const Menu = require('./model/Menu');
 app.post("/UploadMenu", (request, response) => {
     const { base64 } = request.body;
     // create a new user instance and collect the data
@@ -392,7 +465,6 @@ app.post("/UploadMenu", (request, response) => {
 });
 
 // Add Order
-const Order = require('./model/Order');
 app.post("/UploadOrder", (req, res) => {
     try {
         var hype = req.body.orderitems
@@ -423,7 +495,6 @@ app.post("/UploadOrder", (req, res) => {
 })
 
 //Get Order
-const getThisOrder = mongoose.model("Orders");
 app.get("/GetThisOrder", async (req, res) => {
     try {
         const getIt = await getThisOrder.find({ _id: req.query.id })
@@ -556,8 +627,6 @@ app.post("/DenyOrder", (req, res) => {
     }
 })
 
-//Get Menu
-const getThisMenu = mongoose.model("Menu");
 //Update User
 app.post("/UpdateUser", async (req, res) => {
     const { base64 } = req.body;
@@ -601,8 +670,7 @@ app.post("/UpdateUser", async (req, res) => {
     }
 })
 
-
-
+//Get Item Menu by Name
 app.get("/GetThisMenu", async (req, res) => {
     try {
         const getIt = await getThisMenu.find({ foodcategory: req.query.Name });
@@ -685,6 +753,7 @@ app.get("/GetItemCanTable", async (req, res) => {
         console.log(e);
     }
 })
+
 //Get Detail Menu
 app.get("/GetDetailMenu", async (req, res) => {
     try {
@@ -848,8 +917,6 @@ app.post("/UpdateMenu", async (req, res) => {
 })
 
 //Add Contact
-const Contact = require("./model/Contact");
-const getContactNow = mongoose.model("Contact");
 app.post("/AddContact", (req, res) => {
     try {
         const contact = new Contact({
@@ -916,8 +983,6 @@ app.get("/GetContact", async (req, res) => {
     }
 })
 
-const Booking = require("./model/Booking");
-const GetBooking = mongoose.model("Booking");
 app.post("/AddNewBooking", (req, res) => {
     try {
         const booking = new Booking({
@@ -1037,9 +1102,7 @@ app.get("/GetTable4BookingHistory", async (req, res) => {
     }
 })
 
-const Table = require("./model/Table");
-const { ObjectId } = require('mongodb');
-const GetTable = mongoose.model("Table");
+// Get table ACtive
 app.get("/GetAllTableActive", async (req, res) => {
     try {
         const getSome = await GetTable.find({ tablestatus: 1 })
@@ -1326,7 +1389,7 @@ app.post("/Checkout4Normal", async (req, res) => {
 //Get Data For Home Admin
 app.get("/GetData4Admin", async (req, res) => {
     try {
-        const getUserLength = await getUserD.find({ role: 1 })
+        const getUserLength = await getUserD.find({ role: 2 })
         const getOrderLength = await getThisOrder.find({ status: 1 })
         const getTableLength = await GetTable.find({ tablestatus: 2 })
         const getMenuLength = await getThisMenu.find({})
@@ -1338,6 +1401,7 @@ app.get("/GetData4Admin", async (req, res) => {
     }
 })
 
+//Get Data For Home Employee
 app.get("/GetData4Employee", async (req, res) => {
     try {
         const activeOrder = await getThisOrder.find({ status: 1 })
@@ -1542,21 +1606,21 @@ app.get("/GetIncomeDay", async (req, res) => {
                 }
             }
         }
-        percent8 = ((eight + eight2) * 100) / 1000000
-        percent9 = ((nine + nine2) * 100) / 1000000
-        percent10 = ((ten + ten2) * 100) / 1000000
-        percent11 = ((elen + elen2) * 100) / 1000000
-        percent12 = ((twel + twel2) * 100) / 1000000
-        percent13 = ((third + third2) * 100) / 1000000
-        percent14 = ((fourth + fourth2) * 100) / 1000000
-        percent15 = ((fifth + fifth2) * 100) / 1000000
-        percent16 = ((sixth + sixth2) * 100) / 1000000
-        percent17 = ((seventh + seventh2) * 100) / 1000000
-        percent18 = ((eighth + eighth2) * 100) / 1000000
-        percent19 = ((nineth + nineth2) * 100) / 1000000
-        percent20 = ((tenth + tenth2) * 100) / 1000000
-        percent21 = ((elenth + elenth2) * 100) / 1000000
-        percent22 = ((twelth + twelth2) * 100) / 1000000
+        percent8 = ((eight + eight2) * 100) / 2000000
+        percent9 = ((nine + nine2) * 100) / 2000000
+        percent10 = ((ten + ten2) * 100) / 2000000
+        percent11 = ((elen + elen2) * 100) / 2000000
+        percent12 = ((twel + twel2) * 100) / 2000000
+        percent13 = ((third + third2) * 100) / 2000000
+        percent14 = ((fourth + fourth2) * 100) / 2000000
+        percent15 = ((fifth + fifth2) * 100) / 2000000
+        percent16 = ((sixth + sixth2) * 100) / 2000000
+        percent17 = ((seventh + seventh2) * 100) / 2000000
+        percent18 = ((eighth + eighth2) * 100) / 2000000
+        percent19 = ((nineth + nineth2) * 100) / 2000000
+        percent20 = ((tenth + tenth2) * 100) / 2000000
+        percent21 = ((elenth + elenth2) * 100) / 2000000
+        percent22 = ((twelth + twelth2) * 100) / 2000000
         const dataSendPush = []
         const dataSend = { percent8: percent8, percent9: percent9, percent10: percent10, percent11: percent11, percent12: percent12, percent13: percent13, percent14: percent14, percent15: percent15, percent16: percent16, percent17: percent17, percent18: percent18, percent19: percent19, percent20: percent20, percent21: percent21, percent22: percent22 }
         dataSendPush.push(dataSend)
@@ -1744,18 +1808,222 @@ app.get("/GetIncomeMonth", async (req, res) => {
                 }
             }
         }
-        percent1 = ((one + one2) * 100) / 1000000
-        percent2 = ((two + two2) * 100) / 1000000
-        percent3 = ((three + three2) * 100) / 1000000
-        percent4 = ((four + four2) * 100) / 1000000
-        percent5 = ((five + five2) * 100) / 1000000
-        percent6 = ((six + six2) * 100) / 1000000
-        percent7 = ((seven + seven2) * 100) / 1000000
-        percent8 = ((eight + eight2) * 100) / 1000000
-        percent9 = ((nine + nine2) * 100) / 1000000
-        percent10 = ((ten + ten2) * 100) / 1000000
+        percent1 = ((one + one2) * 100) / 50000000
+        percent2 = ((two + two2) * 100) / 50000000
+        percent3 = ((three + three2) * 100) / 50000000
+        percent4 = ((four + four2) * 100) / 50000000
+        percent5 = ((five + five2) * 100) / 50000000
+        percent6 = ((six + six2) * 100) / 50000000
+        percent7 = ((seven + seven2) * 100) / 50000000
+        percent8 = ((eight + eight2) * 100) / 50000000
+        percent9 = ((nine + nine2) * 100) / 50000000
+        percent10 = ((ten + ten2) * 100) / 50000000
         const dataSendPush = []
         const dataSend = { percent1: percent1, percent2: percent2, percent3: percent3, percent4: percent4, percent5: percent5, percent6: percent6, percent7: percent7, percent8: percent8, percent9: percent9, percent10: percent10 }
+        dataSendPush.push(dataSend)
+        res.send({ data: dataSendPush })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Get Income by Year
+app.get("/GetIncomeYear", async (req, res) => {
+    try {
+        const getIt = await getThisOrder.find({ status: 2 })
+        const atteg = await GetTableHistory.find({})
+        const date = new Date()
+        var percent1 = 0, percent2 = 0, percent3 = 0, percent4 = 0, percent5 = 0, percent6 = 0, percent7 = 0, percent8 = 0, percent9 = 0, percent10 = 0, percent11 = 0, percent12 = 0
+        var one = 0, two = 0, three = 0, four = 0, five = 0, six = 0, seven = 0, eight = 0, nine = 0, ten = 0, elen = 0, twel = 0
+        var one2 = 0, two2 = 0, three2 = 0, four2 = 0, five2 = 0, six2 = 0, seven2 = 0, eight2 = 0, nine2 = 0, ten2 = 0, elen2 = 0, twel2 = 0
+        for (var i = 0; i < getIt.length; i++) {
+            for (var j = 0; j < getIt[i].orderitems.length; j++) {
+                const dateGetit = new Date(getIt[i].createdAt)
+                const dataGetit = getIt[i].orderitems
+                var total = 0, fulltotal = 0
+                if (date.getFullYear() === dateGetit.getFullYear()) {
+                    if (dateGetit.getMonth() === 1) {
+                        total = dataGetit[j].quantity * dataGetit[j].data.foodprice
+                        var total2 = 0
+                        total2 += total
+                        fulltotal = total2 + getIt[i].shippingfee
+                        one += fulltotal
+                    }
+                    if (dateGetit.getMonth() === 2) {
+                        total = dataGetit[j].quantity * dataGetit[j].data.foodprice
+                        var total2 = 0
+                        total2 += total
+                        fulltotal = total2 + getIt[i].shippingfee
+                        two += fulltotal
+                    }
+                    if (dateGetit.getMonth() === 3) {
+                        total = dataGetit[j].quantity * dataGetit[j].data.foodprice
+                        var total2 = 0
+                        total2 += total
+                        fulltotal = total2 + getIt[i].shippingfee
+                        three += fulltotal
+                    }
+                    if (dateGetit.getMonth() === 4) {
+                        total = dataGetit[j].quantity * dataGetit[j].data.foodprice
+                        var total2 = 0
+                        total2 += total
+                        fulltotal = total2 + getIt[i].shippingfee
+                        four += fulltotal
+                    }
+                    if (dateGetit.getMonth() === 5) {
+                        total = dataGetit[j].quantity * dataGetit[j].data.foodprice
+                        var total2 = 0
+                        total2 += total
+                        fulltotal = total2 + getIt[i].shippingfee
+                        five += fulltotal
+                    }
+                    if (dateGetit.getMonth() === 6) {
+                        total = dataGetit[j].quantity * dataGetit[j].data.foodprice
+                        var total2 = 0
+                        total2 += total
+                        fulltotal = total2 + getIt[i].shippingfee
+                        six += fulltotal
+                    }
+                    if (dateGetit.getMonth() === 7) {
+                        total = dataGetit[j].quantity * dataGetit[j].data.foodprice
+                        var total2 = 0
+                        total2 += total
+                        fulltotal = total2 + getIt[i].shippingfee
+                        seven += fulltotal
+                    }
+                    if (dateGetit.getMonth() === 8) {
+                        total = dataGetit[j].quantity * dataGetit[j].data.foodprice
+                        var total2 = 0
+                        total2 += total
+                        fulltotal = total2 + getIt[i].shippingfee
+                        eight += fulltotal
+                    }
+                    if (dateGetit.getMonth() === 9) {
+                        total = dataGetit[j].quantity * dataGetit[j].data.foodprice
+                        var total2 = 0
+                        total2 += total
+                        fulltotal = total2 + getIt[i].shippingfee
+                        nine += fulltotal
+                    }
+                    if (dateGetit.getMonth() === 10) {
+                        total = dataGetit[j].quantity * dataGetit[j].data.foodprice
+                        var total2 = 0
+                        total2 += total
+                        fulltotal = total2 + getIt[i].shippingfee
+                        ten += fulltotal
+                    }
+                    if (dateGetit.getMonth() === 11) {
+                        total = dataGetit[j].quantity * dataGetit[j].data.foodprice
+                        var total2 = 0
+                        total2 += total
+                        fulltotal = total2 + getIt[i].shippingfee
+                        elen += fulltotal
+                    }
+                    if (dateGetit.getMonth() === 12) {
+                        total = dataGetit[j].quantity * dataGetit[j].data.foodprice
+                        var total2 = 0
+                        total2 += total
+                        fulltotal = total2 + getIt[i].shippingfee
+                        twel += fulltotal
+                    }
+                }
+            }
+        }
+        for (var h = 0; h < atteg.length; h++) {
+            for (var k = 0; k < atteg[h].tableitems.length; k++) {
+                const dateAtteg = new Date(getIt[i].tabledate)
+                const dataAtteg = atteg[h].tableitems
+                var total = 0
+                if (date.getFullYear() === dateAtteg.getFullYear()) {
+                    if (dateAtteg.getMonth() === 1) {
+                        total = dataAtteg[k].quantity * dataAtteg[k].item.foodprice
+                        var total2 = 0
+                        total2 += total
+                        one2 += total2
+                    }
+                    if (dateAtteg.getMonth() === 2) {
+                        total = dataAtteg[k].quantity * dataAtteg[k].item.foodprice
+                        var total2 = 0
+                        total2 += total
+                        two2 += total2
+                    }
+                    if (dateAtteg.getMonth() === 3) {
+                        total = dataAtteg[k].quantity * dataAtteg[k].item.foodprice
+                        var total2 = 0
+                        total2 += total
+                        three2 += total2
+                    }
+                    if (dateAtteg.getMonth() === 4) {
+                        total = dataAtteg[k].quantity * dataAtteg[k].item.foodprice
+                        var total2 = 0
+                        total2 += total
+                        four2 += total2
+                    }
+                    if (dateAtteg.getMonth() === 5) {
+                        total = dataAtteg[k].quantity * dataAtteg[k].item.foodprice
+                        var total2 = 0
+                        total2 += total
+                        five2 += total2
+                    }
+                    if (dateAtteg.getMonth() === 6) {
+                        total = dataAtteg[k].quantity * dataAtteg[k].item.foodprice
+                        var total2 = 0
+                        total2 += total
+                        six2 += total2
+                    }
+                    if (dateAtteg.getMonth() === 7) {
+                        total = dataAtteg[k].quantity * dataAtteg[k].item.foodprice
+                        var total2 = 0
+                        total2 += total
+                        seven2 += total2
+                    }
+                    if (dateAtteg.getMonth() === 8) {
+                        total = dataAtteg[k].quantity * dataAtteg[k].item.foodprice
+                        var total2 = 0
+                        total2 += total
+                        eight2 += total2
+                    }
+                    if (dateAtteg.getMonth() === 9) {
+                        total = dataAtteg[k].quantity * dataAtteg[k].item.foodprice
+                        var total2 = 0
+                        total2 += total
+                        nine2 += total2
+                    }
+                    if (dateAtteg.getMonth() === 10) {
+                        total = dataAtteg[k].quantity * dataAtteg[k].item.foodprice
+                        var total2 = 0
+                        total2 += total
+                        ten2 += total2
+                    }
+                    if (dateAtteg.getMonth() === 11) {
+                        total = dataAtteg[k].quantity * dataAtteg[k].item.foodprice
+                        var total2 = 0
+                        total2 += total
+                        elen2 += total2
+                    }
+                    if (dateAtteg.getMonth() === 12) {
+                        total = dataAtteg[k].quantity * dataAtteg[k].item.foodprice
+                        var total2 = 0
+                        total2 += total
+                        twel2 += total2
+                    }
+                }
+            }
+        }
+        percent1 = ((one + one2) * 100) / 100000000
+        percent2 = ((two + two2) * 100) / 100000000
+        percent3 = ((three + three2) * 100) / 100000000
+        percent4 = ((four + four2) * 100) / 100000000
+        percent5 = ((five + five2) * 100) / 100000000
+        percent6 = ((six + six2) * 100) / 100000000
+        percent7 = ((seven + seven2) * 100) / 100000000
+        percent8 = ((eight + eight2) * 100) / 100000000
+        percent9 = ((nine + nine2) * 100) / 100000000
+        percent10 = ((ten + ten2) * 100) / 100000000
+        percent11 = ((elen + elen2) * 100) / 100000000
+        percent12 = ((twel + twel2) * 100) / 100000000
+        const dataSendPush = []
+        const dataSend = { percent1: percent1, percent2: percent2, percent3: percent3, percent4: percent4, percent5: percent5, percent6: percent6, percent7: percent7, percent8: percent8, percent9: percent9, percent10: percent10, percent11: percent11, percent12: percent12 }
         dataSendPush.push(dataSend)
         res.send({ data: dataSendPush })
     } catch (e) {

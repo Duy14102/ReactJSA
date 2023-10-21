@@ -129,7 +129,7 @@ function RevenueMonth() {
                     <b className='text-white'>1-3</b> : <p className='m-0 text-muted'>Days of month</p>
                 </div>
                 <div className='d-flex text-nowrap' style={{ gap: 5 + "%" }}>
-                    <b className='text-white'>Max</b> : <p className='m-0 text-muted'>{VND.format(1000000)}</p>
+                    <b className='text-white'>Max</b> : <p className='m-0 text-muted'>{VND.format(50000000)}</p>
                 </div>
             </div>
         </>

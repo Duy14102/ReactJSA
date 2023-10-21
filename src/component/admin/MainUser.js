@@ -1,9 +1,10 @@
 import Modal from 'react-modal';
-import GetUser from './GetUser';
+import GetOtherUser from './GetOtherUser';
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import ReactPaginate from 'react-paginate';
+import GetUser from './GetUser';
 
 function MainUser() {
     const [modalOpenAdmin, setModalOpenAdmin] = useState(false);
@@ -15,8 +16,10 @@ function MainUser() {
     const [fullname, setFullname] = useState("");
     const [password, setPassword] = useState("");
     const [phonenumber, setPhonenumber] = useState("");
+    const [role, setRole] = useState()
     const [confirm, setConfirm] = useState("");
     const [error, displayError] = useState(false);
+    const [error2, displayError2] = useState(false);
 
     const [pageCount, setPageCount] = useState(6);
     const currentPage = useRef();
@@ -52,31 +55,36 @@ function MainUser() {
                 email,
                 password,
                 fullname,
-                phonenumber
+                phonenumber,
+                role
             },
         };
         if (password !== confirm) {
             displayError(true);
         } else {
-            axios(configuration)
-                .then((result) => {
-                    Swal.fire(
-                        'Added Successfully!',
-                        'Welcome ' + result.data.fullname,
-                        'success'
-                    ).then(function () {
-                        window.location.reload();
+            if (role) {
+                axios(configuration)
+                    .then(() => {
+                        Swal.fire(
+                            'Added Successfully!',
+                            '',
+                            'success'
+                        ).then(function () {
+                            window.location.reload();
+                        })
                     })
-                })
-                .catch((err) => {
-                    Swal.fire(
-                        'Added Fail!',
-                        '',
-                        'error'
-                    ).then(() => {
-                        console.log(err);
-                    })
-                });
+                    .catch((err) => {
+                        Swal.fire(
+                            'Added Fail!',
+                            '',
+                            'error'
+                        ).then(() => {
+                            console.log(err);
+                        })
+                    });
+            } else {
+                displayError2(true);
+            }
         }
     }
 
@@ -111,7 +119,7 @@ function MainUser() {
         <>
             <div className="myDIVdad">
                 <div style={{ gap: 5 + "%" }} id="myDIV4" className="d-flex align-items-center">
-                    <button id="defaultOpen4" className="MBbutton4 active4" onClick={(e) => openCity4(e, 'User')}><p >User account</p></button>
+                    <button id="defaultOpen4" className="MBbutton4 active4" onClick={(e) => openCity4(e, 'Userse')}><p >User account</p></button>
                     <button className="MBbutton4" onClick={(e) => openCity4(e, 'Other')}><p>Other account</p></button>
                 </div>
                 <div className='laughtale'>
@@ -119,7 +127,7 @@ function MainUser() {
                     <button onClick={() => setModalOpenAdmin(true)} className="btn btn-primary">➕ Employee</button>
                 </div>
             </div>
-            <div id="User" className="tabcontent4">
+            <div id="Userse" className="tabcontent4">
                 <div className="pt-4">
                     <GetUser type={1} />
                 </div>
@@ -127,7 +135,7 @@ function MainUser() {
 
             <div id="Other" className="tabcontent4">
                 <div className="pt-4">
-                    <GetUser type={2} pipe={3} />
+                    <GetOtherUser type={2} pipe={3} hype={4} />
                 </div>
             </div>
             <Modal
@@ -178,11 +186,23 @@ function MainUser() {
                             </thead>
                             <tbody>
                                 {Object.values(dataafter).map((i) => {
+                                    var tookRole = ""
+                                    if (i.role === 1) {
+                                        tookRole = "User"
+                                    } else if (i.role === 2) {
+                                        tookRole = "Employee"
+                                    }
+                                    else if (i.role === 3) {
+                                        tookRole = "Manager"
+                                    }
+                                    else if (i.role === 4) {
+                                        tookRole = "Admin"
+                                    }
                                     return (
                                         <tr key={i._id}>
                                             <td>{i.email}</td>
                                             <td className='thhuhu'>{i.fullname}</td>
-                                            <td className='thhuhu'>{i.role}</td>
+                                            <td className='thhuhu'>{tookRole}</td>
                                             <td><button className='btn btn-success'>Detail</button></td>
                                         </tr>
                                     )
@@ -267,14 +287,26 @@ function MainUser() {
                             </div>
                         </div>
 
-                        <div className='mt-3 cluk'>
-                            <div>
+                        <div className='overHereB py-3'>
+                            <div className='insideHereB'>
                                 <label>Phone Number</label>
-                                <input style={{ padding: 2 + "%" }} className='textDeny' type="number" name="phonenumber" value={phonenumber} onChange={(e) => setPhonenumber(e.target.value)} />
+                                <input className='textDeny' type="number" name="phonenumber" value={phonenumber} onChange={(e) => setPhonenumber(e.target.value)} />
+                            </div>
+
+                            <div className='insideHereB'>
+                                <label>Role</label>
+                                <select className='textDeny' onChange={(e) => setRole(e.target.value)}>
+                                    <option disabled hidden selected>Choose Role</option>
+                                    <option value={3}>Manager</option>
+                                    <option value={2}>Employee</option>
+                                </select>
                             </div>
                         </div>
+                        {error2 ? (
+                            <p className='text-danger text-center'>Choose Role !</p>
+                        ) : null}
                         <hr />
-                        <div className='d-flex justify-content-around align-items-center'>
+                        <div className='d-flex justify-content-around align-items-center pt-2'>
                             <button className="btn btn-secondary" onClick={() => setModalOpenAdmin(false)} type='button'>Cancel</button>
                             <button className="btn btn-primary" type='submit'>Confirm</button>
                         </div>

@@ -188,6 +188,8 @@ function Header() {
                                                 ) : decode.userRole === 2 ? (
                                                     <NavLink reloadDocument to={"/EmployeePanel"} className="dropdown-item">Employee Panel</NavLink>
                                                 ) : decode.userRole === 3 ? (
+                                                    <NavLink reloadDocument to={"/ManagerPanel"} className="dropdown-item">Manager Panel</NavLink>
+                                                ) : decode.userRole === 4 ? (
                                                     <NavLink reloadDocument to={"/AdminPanel"} className="dropdown-item">Admin Panel</NavLink>
                                                 ) : null}
                                                 <button onClick={() => logoutThis()} className="dropdown-item"><i className="fa-solid fa-right-from-bracket"></i> Logout</button>
@@ -206,6 +208,8 @@ function Header() {
                                                 ) : decode.userRole === 2 ? (
                                                     <NavLink reloadDocument to={"/EmployeePanel"} className="dropdown-item">Employee Panel</NavLink>
                                                 ) : decode.userRole === 3 ? (
+                                                    <NavLink reloadDocument to={"/ManagerPanel"} className="dropdown-item">Manager Panel</NavLink>
+                                                ) : decode.userRole === 4 ? (
                                                     <NavLink reloadDocument to={"/AdminPanel"} className="dropdown-item">Admin Panel</NavLink>
                                                 ) : null}
                                                 <button onClick={() => logoutThis()} className="dropdown-item"><i className="fa-solid fa-right-from-bracket"></i> Logout</button>
