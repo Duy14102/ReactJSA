@@ -1,6 +1,7 @@
 // Connect to MongoDB
 const mongoose = require('mongoose');
 mongoose.connect('mongodb://127.0.0.1:27017/MongoReact', {
+    // mongodb+srv://vtca123:vtca123@vtcareact.h9qlu1s.mongodb.net/?retryWrites=true&w=majority    --> Change this with connect string to access MongoDB Atlas
     useNewUrlParser: true,
     useUnifiedTopology: true
 },).then(() => console.log('Connected To MongoDB')).catch((err) => { console.error(err); });
@@ -516,6 +517,49 @@ app.get("/GetOrderUserPanel", async (req, res) => {
     }
 })
 
+//Find Order
+app.get("/SearchAllOrder", async (req, res) => {
+    try {
+        const proS = await getThisOrder.find({})
+        var proBig = null
+        for (var i = 0; i < proS.length; i++) {
+            const datetime = new Date(proS[i].createdAt)
+            const datetime2 = new Date(req.query.date)
+            if (datetime.toLocaleDateString() === datetime2.toLocaleDateString()) {
+                proBig = proS
+            }
+        }
+        if (proBig) {
+            const getOrder = proBig
+            const page = parseInt(req.query.page)
+            const limit = parseInt(req.query.limit)
+
+            const start = (page - 1) * limit
+            const end = page * limit
+
+            const results = {}
+            results.total = getOrder.length
+            results.pageCount = Math.ceil(getOrder.length / limit)
+
+            if (end < getOrder.length) {
+                results.next = {
+                    page: page + 1
+                }
+            }
+            if (start > 0) {
+                results.prev = {
+                    page: page - 1
+                }
+            }
+
+            results.result = getOrder.slice(start, end)
+            res.send({ results });
+        }
+    } catch (e) {
+        console.log(e);
+    }
+})
+
 //Get all order
 app.get("/GetAllOrderHistory", async (req, res) => {
     const filter = { datetime: -1 }
@@ -986,8 +1030,7 @@ app.get("/GetContact", async (req, res) => {
 app.post("/AddNewBooking", (req, res) => {
     try {
         const booking = new Booking({
-            name: req.body.name,
-            phone: req.body.phone,
+            customer: req.body.customer,
             date: req.body.date,
             people: req.body.people,
             status: 1,
@@ -1000,10 +1043,9 @@ app.post("/AddNewBooking", (req, res) => {
             });
         })
             // catch error if the new user wasn't added successfully to the database
-            .catch((error) => {
+            .catch(() => {
                 res.status(500).send({
-                    message: "Error creating table",
-                    error,
+                    message: "Phone have already Exists!"
                 });
             });
     } catch (e) {
@@ -1023,6 +1065,32 @@ app.post("/DenyBookingCustomer", (req, res) => {
         }).catch((err) => {
             console.log(err);
         })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Cancel Booking
+app.post("/CancelBooking", (req, res) => {
+    try {
+        GetBooking.updateOne({ _id: req.body.id }, {
+            status: 5,
+            denyreason: req.body.reason
+        }).then(() => {
+            res.send({ data: "succeed" })
+        }).catch((err) => {
+            console.log(err);
+        })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Get Booking for token user
+app.get("/GetTokenBooking", async (req, res) => {
+    try {
+        const getIt = await GetBooking.findOne({ "customer.id": req.query.id, status: { $in: [1, 2] } })
+        res.send({ data: getIt })
     } catch (e) {
         console.log(e);
     }
@@ -1063,7 +1131,7 @@ app.get("/GetBookingByStatus", async (req, res) => {
 //Get History Booking
 app.get("/GetBookingHistory", async (req, res) => {
     try {
-        const getIt = await GetBooking.find({ status: { $in: [3, 4] } });
+        const getIt = await GetBooking.find({ status: { $in: [3, 4, 5] } });
         const page = parseInt(req.query.page)
         const limit = parseInt(req.query.limit)
 
@@ -1167,6 +1235,7 @@ app.post("/AddTableCustomer", (req, res) => {
             tabledate: dddda
         }).then(() => {
             GetBooking.updateOne({ _id: req.body.cusid }, {
+                table: req.body.tablename,
                 status: 2
             }).then(() => {
                 res.send({ data: "succeed" })
@@ -1931,7 +2000,7 @@ app.get("/GetIncomeYear", async (req, res) => {
         }
         for (var h = 0; h < atteg.length; h++) {
             for (var k = 0; k < atteg[h].tableitems.length; k++) {
-                const dateAtteg = new Date(getIt[i].tabledate)
+                const dateAtteg = new Date(atteg[i].tabledate)
                 const dataAtteg = atteg[h].tableitems
                 var total = 0
                 if (date.getFullYear() === dateAtteg.getFullYear()) {

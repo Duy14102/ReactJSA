@@ -1,8 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import GetBooking from "./GetBooking";
 import BookingHistory from "./BookingHistory";
+import Modal from 'react-modal';
 
 function MainBooking() {
+    const [modalOpenAdmin, setModalOpenAdmin] = useState(false);
     useEffect(() => {
         document.getElementById("defaultOpen").click();
     }, [])
@@ -27,7 +29,7 @@ function MainBooking() {
                     <button id="defaultOpen" className="MBbutton active" onClick={(e) => openCity(e, 'London')}><p >Booking Table</p></button>
                     <button className="MBbutton" onClick={(e) => openCity(e, 'Tokyo')}><p>Booking History</p></button>
                 </div>
-                <button className="btn btn-primary">Find Booking</button>
+                <button onClick={() => setModalOpenAdmin(true)} className="btn btn-primary">🔎 Booking</button>
             </div>
             <div id="London" className="tabcontent">
                 <div className="pt-4">

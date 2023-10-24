@@ -82,12 +82,27 @@
     box-shadow: 0px 17px 10px -10px rgba(0, 0, 0, 0.4)
 }
 
+#myDIV6 .active6 {
+    color: #fff !important;
+    border: 2px solid #4285f4;
+    background: #4285f4;
+    border-radius: 5px;
+}
+
 #myDIV .MBbutton {
     border: 2px solid #4285f4;
     color: #fff;
     border-radius: 5px;
     padding: 3%;
     box-shadow: 0px 17px 10px -10px rgba(0, 0, 0, 0.4);
+    transition: all ease-in-out 0.2s
+}
+
+#myDIV6 .MBbutton6 {
+    border: 2px solid #4285f4;
+    color: #4285f4;
+    border-radius: 5px;
+    padding: 0.7%;
     transition: all ease-in-out 0.2s
 }
 
@@ -109,6 +124,11 @@
 #myDIV4 .MBbutton4:hover,
 #myDIV5 .MBbutton5:hover {
     background: #4285f4;
+}
+
+#myDIV6 .MBbutton6:hover {
+    background: #4285f4;
+    color: #fff;
 }
 
 #myDIV .MBbutton p,

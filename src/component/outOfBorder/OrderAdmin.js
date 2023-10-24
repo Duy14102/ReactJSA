@@ -12,8 +12,6 @@ function OrderAdmin({ Data }) {
     const token = cookies.get("TOKEN")
     const decode = jwtDecode(token)
     const deliverEmployee = { id: decode.userId, email: decode.userEmail }
-    const takeEmployee = []
-    takeEmployee.push(deliverEmployee)
     const [Accept, setAccept] = useState(false)
     const [DenyReason, setDenyReason] = useState("")
     const [ModalData, setModalData] = useState([])
@@ -33,7 +31,7 @@ function OrderAdmin({ Data }) {
             data: {
                 id: e,
                 status: 2,
-                employee: takeEmployee,
+                employee: deliverEmployee,
                 orderitems: yolo
             }
         }
@@ -65,7 +63,7 @@ function OrderAdmin({ Data }) {
             params: {
                 id: id,
                 reason: DenyReason,
-                employee: takeEmployee,
+                employee: deliverEmployee,
                 status: 3,
             }
         }

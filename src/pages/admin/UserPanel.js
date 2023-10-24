@@ -9,6 +9,7 @@ import { Fragment } from 'react';
 import axios from "axios";
 import Swal from "sweetalert2";
 import UserAddressControl from "../../component/admin/UserAddressControl";
+import UserBookingPanel from "../../component/admin/UserBookingPanel";
 
 function UserPanel() {
     let appler = useParams()
@@ -28,14 +29,14 @@ function UserPanel() {
         }).then((res) => res.json()).then((data) => {
             setGetUser(data);
         })
-    }, [appler.id])
 
-    useEffect(() => {
         fetch(`http://localhost:3000/GetOrderUserPanel?id=${appler.id}`, {
             method: "get",
         }).then((res) => res.json()).then((data) => {
             setGetOrder(data.data)
         })
+
+        document.getElementById("OrderHum").click();
     }, [appler.id])
 
     if (!appler) {
@@ -131,6 +132,20 @@ function UserPanel() {
             });
     }
 
+    function openCity3(evt, cityName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("UPanelButton");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("MBbutton6");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active6", "");
+        }
+        document.getElementById(cityName).style.display = "block";
+        evt.currentTarget.className += " active6";
+    }
+
     return (
         <>
             <Header />
@@ -139,7 +154,7 @@ function UserPanel() {
                 <div className="coverUser">
                     <form onSubmit={(e) => handleSubmit(e, appler.id)}>
                         <div className="headOverview">
-                            <h5 style={{ whiteSpace: "nowrap" }} className="m-0">User id : {appler.id}</h5>
+                            <h5 style={{ whiteSpace: "nowrap" }} className="m-0">User Overview</h5>
                             {Edit ? (
                                 <div style={{ gap: 5 + "%" }} className="d-flex justify-content-center">
                                     <button type="submit" className="button4Edit" >Comfirm</button>
@@ -259,8 +274,17 @@ function UserPanel() {
                             })}
                         </div>
                     </form>
-                    <hr />
-                    <UserDataPanel Data={GetOrder} />
+                    <div id="myDIV6" className="d-flex justify-content-end pe-2" style={{ gap: 1 + "%" }}>
+                        <button id="OrderHum" className="MBbutton6 active6" onClick={(e) => openCity3(e, "Hum")}>Order</button>
+                        <button className="MBbutton6" onClick={(e) => openCity3(e, "Kum")}>Booking</button>
+                    </div>
+                    <hr className="mt-0" />
+                    <div className="UPanelButton" id="Hum">
+                        <UserDataPanel Data={GetOrder} />
+                    </div>
+                    <div className="UPanelButton" id="Kum">
+                        <UserBookingPanel id={appler.id} user={GetUser}/>
+                    </div>
                 </div>
             </div >
 

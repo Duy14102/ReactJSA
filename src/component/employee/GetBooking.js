@@ -1,4 +1,5 @@
 import axios from "axios"
+import $ from 'jquery'
 import { useState, useEffect, useRef } from "react"
 import ReactPaginate from "react-paginate";
 import Modal from 'react-modal';
@@ -73,12 +74,15 @@ function GetTable() {
 
     const addTableBooking = (e, id) => {
         e.preventDefault()
+        let selText = $("#box1Y option:selected").text();
+        console.log(selText);
         if (TableId) {
             const configuration = {
                 method: "post",
                 url: "http://localhost:3000/AddTableCustomer",
                 data: {
                     tableid: TableId,
+                    tablename: selText,
                     cusid: id
                 }
             }
@@ -149,7 +153,7 @@ function GetTable() {
                 <thead>
                     <tr className="text-white text-center" style={{ background: "#374148" }}>
                         <th >Name</th>
-                        <th className="thhuhu">Email</th>
+                        <th className="thhuhu">Phone number</th>
                         <th className="thhuhu">Date</th>
                         <th>Status</th>
                         <th></th>
@@ -168,8 +172,8 @@ function GetTable() {
                     return (
                         <tbody key={i._id}>
                             <tr style={{ background: "#2C343A", color: "lightgray", verticalAlign: "middle" }}>
-                                <td>{i.name}</td>
-                                <td className="thhuhu">{i.email}</td>
+                                <td>{i.customer.fullname}</td>
+                                <td className="thhuhu">{i.customer.phonenumber}</td>
                                 <td className="thhuhu">{datetime}</td>
                                 <td>{stau}</td>
                                 <td onClick={setModalOpenDetail}><button onClick={() => setModalData(i)} className='btn btn-success'>Detail</button></td>
@@ -213,7 +217,7 @@ function GetTable() {
                         transform: "translate(-50%, -50%)",
                         backgroundColor: "white",
                         width: "70vw",
-                        height:"60vh",
+                        height: "60vh",
                         zIndex: 999
                     },
                 }}>
@@ -224,8 +228,8 @@ function GetTable() {
                 </div>
                 <hr />
                 <div className="hugeImpace">
-                    <p><b>Name</b> : {ModalData.name}</p>
-                    <p><b>Phone Number</b> : {ModalData.phone}</p>
+                    <p><b>Name</b> : {ModalData.customer?.fullname}</p>
+                    <p><b>Phone Number</b> : {ModalData.customer?.phonenumber}</p>
                     <p><b>People</b> : {ModalData.people}</p>
                     <p><b>Date Arrived</b> : {datemodal2}</p>
                     {ModalData.status === 1 ? (
@@ -259,7 +263,7 @@ function GetTable() {
                         <p>Choosing Table : </p>
                         <form onSubmit={(e) => addTableBooking(e, ModalData._id)}>
                             <div className="ytui" style={{ gap: 2 + "%" }}>
-                                <select onInput={(e) => setTableId(e.target.value)} className="neul" required>
+                                <select id="box1Y" onInput={(e) => setTableId(e.target.value)} className="neul" required>
                                     <option selected disabled hidden>Choose Table</option>
                                     {Object.values(GetTable).map((i) => {
                                         return (

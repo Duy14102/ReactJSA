@@ -6,13 +6,17 @@ const BookingSchema = new mongoose.Schema({
         default: null
     },
 
-    name: {
-        type: String
-    },
-
-    phone: {
-        type: String,
-        unique: [true, "Phone Exist"],
+    customer: {
+        id: {
+            default: null,
+            type: String
+        },
+        fullname: {
+            type: String
+        },
+        phonenumber: {
+            type: String
+        }
     },
 
     date: {
@@ -33,6 +37,11 @@ const BookingSchema = new mongoose.Schema({
     },
 
     message: {
+        default: null,
+        type: String
+    },
+
+    table: {
         default: null,
         type: String
     },

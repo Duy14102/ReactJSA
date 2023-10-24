@@ -8,6 +8,7 @@ import Header from '../../component/Header';
 import Footer from '../../component/Footer';
 import Cookies from 'universal-cookie';
 import NotFound from '../../component/outOfBorder/NotFound';
+import { NavLink } from 'react-router-dom';
 
 function LoginSite() {
     document.title = "EatCom - Signup";
@@ -200,6 +201,9 @@ function LoginSite() {
                                 </div>
                             </div>
                         </form>
+                        <div className='pt-4 d-flex justify-content-center'>
+                            <p className='m-0 txt1'>Already have an account?</p><NavLink className="txt2" reloadDocument to="/LoginSite">Signin</NavLink>
+                        </div>
                     </div>
                 </div>
             </div>
