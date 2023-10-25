@@ -98,7 +98,7 @@ function MainMenu() {
     }
 
     const findItem = (e) => {
-        e.preventDefault()
+        e?.preventDefault()
         const configuration = {
             method: "get",
             url: "http://localhost:3000/GetSearch",
@@ -209,7 +209,7 @@ function MainMenu() {
                             <tbody>
                                 {Object.values(dataafter).map((i) => {
                                     return (
-                                        <tr>
+                                        <tr key={i._id}>
                                             <td>{i.foodname}</td>
                                             <td>{i.foodprice}</td>
                                             <td>{i.foodquantity}</td>

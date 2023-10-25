@@ -53,7 +53,7 @@ function MainOrder() {
     }
 
     const findOrder = (e) => {
-        e.preventDefault()
+        e?.preventDefault()
         const configuration = {
             method: "get",
             url: "http://localhost:3000/SearchAllOrder",
@@ -180,7 +180,7 @@ function MainOrder() {
                     },
                 }}>
                 <div className='p-3'>
-                    <h2 className='text-center'>Input user name</h2>
+                    <h2 className='text-center'>Input order date</h2>
                     <div className='overOutsider'>
                         <div className='outsider'>
                             <form onSubmit={(e) => findOrder(e)}>

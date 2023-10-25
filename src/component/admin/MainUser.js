@@ -94,7 +94,7 @@ function MainUser() {
     }
 
     const findUser = (e) => {
-        e.preventDefault()
+        e?.preventDefault()
         const configuration = {
             method: "get",
             url: "http://localhost:3000/Find4User",

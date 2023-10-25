@@ -1096,10 +1096,53 @@ app.get("/GetTokenBooking", async (req, res) => {
     }
 })
 
+//Search Booking 4 Admin
+app.get("/SearchAllBooking", async (req, res) => {
+    try {
+        const proS = await GetBooking.find({})
+        var proBig = null
+        for (var i = 0; i < proS.length; i++) {
+            const date = new Date(req.query.date)
+            const date2 = new Date(proS[i].createdAt)
+            if (date.toLocaleDateString() === date2.toLocaleDateString()) {
+                proBig = proS
+            }
+        }
+        if (proBig) {
+            const getIt = proBig
+            const page = parseInt(req.query.page)
+            const limit = parseInt(req.query.limit)
+
+            const start = (page - 1) * limit
+            const end = page * limit
+
+            const results = {}
+            results.total = getIt.length
+            results.pageCount = Math.ceil(getIt.length / limit)
+
+            if (end < getIt.length) {
+                results.next = {
+                    page: page + 1
+                }
+            }
+            if (start > 0) {
+                results.prev = {
+                    page: page - 1
+                }
+            }
+
+            results.result = getIt.slice(start, end)
+            res.send({ results });
+        }
+    } catch (e) {
+        console.log(e);
+    }
+})
+
 //Get Booking By Status
 app.get("/GetBookingByStatus", async (req, res) => {
     try {
-        const getIt = await GetBooking.find({ status: 1 });
+        const getIt = await GetBooking.find({ status: { $in: [1, 2] } });
         const page = parseInt(req.query.page)
         const limit = parseInt(req.query.limit)
 

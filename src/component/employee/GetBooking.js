@@ -239,24 +239,26 @@ function GetTable() {
                     ) : null}
                     <p><b>Note</b> : </p>
                     <textarea className="contactMessage" style={{ pointerEvents: "none" }} defaultValue={ModalData.message} />
-                    <div className="d-flex justify-content-around pt-2">
-                        {correct ? (
-                            <>
-                                <button className="btn btn-success">Approve</button>
-                                <button style={{ pointerEvents: "none", opacity: 0.5 }} className="btn btn-danger">Deny</button>
-                            </>
-                        ) : deny ? (
-                            <>
-                                <button style={{ pointerEvents: "none", opacity: 0.5 }} className="btn btn-success">Approve</button>
-                                <button className="btn btn-danger">Deny</button>
-                            </>
-                        ) : (
-                            <>
-                                <button onClick={() => setCorrect(true)} className="btn btn-success">Approve</button>
-                                <button onClick={() => setDeny(true)} className="btn btn-danger">Deny</button>
-                            </>
-                        )}
-                    </div>
+                    {ModalData.status === 1 ? (
+                        <div className="d-flex justify-content-around pt-2">
+                            {correct ? (
+                                <>
+                                    <button className="btn btn-success">Approve</button>
+                                    <button style={{ pointerEvents: "none", opacity: 0.5 }} className="btn btn-danger">Deny</button>
+                                </>
+                            ) : deny ? (
+                                <>
+                                    <button style={{ pointerEvents: "none", opacity: 0.5 }} className="btn btn-success">Approve</button>
+                                    <button className="btn btn-danger">Deny</button>
+                                </>
+                            ) : (
+                                <>
+                                    <button onClick={() => setCorrect(true)} className="btn btn-success">Approve</button>
+                                    <button onClick={() => setDeny(true)} className="btn btn-danger">Deny</button>
+                                </>
+                            )}
+                        </div>
+                    ) : null}
                 </div>
                 {correct ? (
                     <div className="pt-3">
