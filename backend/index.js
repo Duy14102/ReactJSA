@@ -1223,6 +1223,47 @@ app.get("/GetAllTableActive", async (req, res) => {
     }
 })
 
+//QR Code Access Table
+app.post("/QrCodeTableActive", (req, res) => {
+    try {
+        GetTable.updateOne({ _id: req.body.id }, {
+            tablestatus: 2
+        }).then(() => {
+            res.send({ data: "succeed" })
+        }).catch((err) => {
+            console.log(err);
+        })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Get Table Item for QRcode
+app.get("/QrCodeItemTB", async (req, res) => {
+    try {
+        const getIt = await GetTable.findOne({ _id: req.query.id })
+        res.send({ data: getIt })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Checkout 4 Qr
+app.post("/Checkout4QrYeah", (req, res) => {
+    try {
+        GetTable.updateOne({ _id: req.query.id }, {
+            tablestatus: 3
+        }).then(() => {
+            res.send({ data: "succeed" })
+        }).catch((err) => {
+            console.log(err);
+        })
+    }
+    catch (e) {
+        console.log(e);
+    }
+})
+
 //Add Table by hand
 app.post("/AddTableByHand", (req, res) => {
     try {
@@ -1479,14 +1520,13 @@ app.post("/Checkout4Normal", async (req, res) => {
                 tabledate: null
             }).then(() => {
                 hype.forEach(datad => {
-                    getThisMenu.updateOne({ _id: datad.item._id }, {
+                    getThisMenu.updateMany({ _id: datad.item._id }, {
                         $inc: {
                             foodquantity: -datad.quantity
                         }
-                    }).then(() => {
-                        res.send({ data: "succeed" })
-                    })
+                    }).exec()
                 })
+                res.send({ data: "succeed" })
             }).catch((er) => {
                 console.log(er);
             })

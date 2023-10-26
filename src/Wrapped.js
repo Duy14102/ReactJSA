@@ -26,6 +26,7 @@ import ContactSite from "./pages/ContactSite";
 import UserPanel from "./pages/admin/UserPanel";
 import EmployeePanel from "./pages/admin/EmployeePanel";
 import ManagerPanel from "./pages/admin/ManagerPanel";
+import QrCodeTable from "./pages/QrCodeTable";
 
 const cookies = new Cookies();
 const token = cookies.get("TOKEN");
@@ -74,6 +75,7 @@ function Wrapped() {
                     <Route path="Checkout" element={<Checkout />} />
                     <Route path="OrderComplete" element={<OrderComplete />} />
                     <Route path="DetailMenuPage/:id/:cate" element={<DetailMenuPage />} />
+                    <Route path="QrCodeTable/:id/:qr/:cate/:fil" element={<QrCodeTable />} />
                     <Route path="*" element={<NotFound />} />
                     <Route path="UserPanel/:id" element={<PrivateRoute><UserPanel /></PrivateRoute>} />
                     <Route path="EmployeePanel" element={<PrivateRoute><EmployeePanel /></PrivateRoute>} />

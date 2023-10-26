@@ -216,6 +216,9 @@ function GetUsingTable() {
     if (ModalData.tablestatus === 1) {
         denver = "Pending"
     }
+    if (ModalData.tablestatus === 3) {
+        denver = "Checkout Pending"
+    }
     return (
         <>
             <div className="row anser">
@@ -233,6 +236,8 @@ function GetUsingTable() {
                                     <p className="text-success">● Pending</p>
                                 ) : y.tablestatus === 2 ? (
                                     <p className="text-danger">● Serving</p>
+                                ) : y.tablestatus === 3 ? (
+                                    <p className="text-warning">● Checkout Pending</p>
                                 ) : null}
                             </div>
                         </div>
@@ -282,9 +287,9 @@ function GetUsingTable() {
                 <div className="coverNOut">
                     <p className="m-0"><b>Id</b> : {ModalData._id}</p>
                     {ModalData.customerid ? (
-                        <p className="m-0"><b>Type</b> : Pre-order table</p>
+                        <p className="m-0"><b>Type</b> : Online table</p>
                     ) : (
-                        <p className="m-0"><b>Type</b> : Normal Table</p>
+                        <p className="m-0"><b>Type</b> : Offline Table</p>
                     )}
                 </div>
                 <hr />
@@ -335,7 +340,7 @@ function GetUsingTable() {
                         </tr>
                     </tbody>
                 </table>
-                {ModalData.tablestatus === 2 && ModalData.tableitems.length > 0 ? (
+                {ModalData.tablestatus !== 1 && ModalData.tableitems?.length > 0 ? (
                     ModalData.customerid ? (
                         <div className="ladyPurge ohooo">
                             {Object.values(TableData).map((q) => {
@@ -349,7 +354,9 @@ function GetUsingTable() {
                                     </Fragment>
                                 )
                             })}
-                            <button onClick={() => setChangeTable(true)} className="btn btn-info text-nowrap">Change Table</button>
+                            {ModalData.tablestatus === 2 ? (
+                                <button onClick={() => setChangeTable(true)} className="btn btn-info text-nowrap">Change Table</button>
+                            ) : null}
                         </div>
                     ) : (
                         <div className="ladyPurge ohooo">
@@ -358,7 +365,9 @@ function GetUsingTable() {
                             ) : (
                                 <button onClick={() => checkOut4Normal()} className="btn btn-success">Checkout</button>
                             )}
-                            <button onClick={() => setChangeTable(true)} className="btn btn-info text-nowrap">Change Table</button>
+                            {ModalData.tablestatus === 2 ? (
+                                <button onClick={() => setChangeTable(true)} className="btn btn-info text-nowrap">Change Table</button>
+                            ) : null}
                         </div>
                     )
                 ) : null}

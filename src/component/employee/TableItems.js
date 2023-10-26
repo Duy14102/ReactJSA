@@ -40,11 +40,10 @@ function TableItems({ ModalData }) {
             });
     }
 
-    if (!QuantityAdd) {
-        QuantityAdd = 1
-    }
-
     const takeitNow = (e, k) => {
+        if (!QuantityAdd) {
+            QuantityAdd = 1
+        }
         const item = { item: k, quantity: QuantityAdd }
         var foodname = ""
         if (k) {
