@@ -6,11 +6,13 @@ import Swal from "sweetalert2";
 import Cookies from "universal-cookie";
 import jwtDecode from "jwt-decode";
 import TableItems from "./TableItems";
+import QRcode from 'qrcode.react'
 
 function GetUsingTable() {
     const [table, setTable] = useState([])
     const [changetable, setChangeTable] = useState(false)
     const [modalOpenDetail, setModalOpenDetail] = useState(false);
+    const [modalQr, setModalQr] = useState(false);
     const [modalOpenDetail2, setModalOpenDetail2] = useState(false);
     const [ModalData, setModalData] = useState([])
     const [GetTable, setGetTable] = useState([])
@@ -219,6 +221,19 @@ function GetUsingTable() {
     if (ModalData.tablestatus === 3) {
         denver = "Checkout Pending"
     }
+    var codeQr = `http://localhost:3001/QrCodeTable/${ModalData._id}/1/Meat/nto`
+
+    const downloadQR = () => {
+        const canvas = document.getElementById('qrcode');
+        console.log(canvas);
+        const pngUrl = canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream');
+        let downloadLink = document.createElement('a');
+        downloadLink.href = pngUrl;
+        downloadLink.download = `${ModalData.tablename}.png`;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+    };
     return (
         <>
             <div className="row anser">
@@ -305,7 +320,10 @@ function GetUsingTable() {
                         ) : (
                             <p><b>Items</b> : Table have no items !</p>
                         )}
-                        <button onClick={() => { setModalOpenDetail(false); setModalOpenDetail2(true) }} className="btn btn-primary">Add items</button>
+                        <div className="d-flex text-nowrap" style={{ gap: 3 + "%" }}>
+                            <button onClick={() => { setModalOpenDetail(false); setModalOpenDetail2(true) }} className="btn btn-primary">Add items</button>
+                            <button onClick={() => { setModalOpenDetail(false); setModalQr(true) }} className="entityQ"><i className="fa-solid fa-qrcode"></i></button>
+                        </div>
                     </div>
                 </div>
                 <table className="table table-bordered">
@@ -396,6 +414,41 @@ function GetUsingTable() {
                     </div>
                 ) : null}
                 <button className='closeModal' onClick={() => setModalOpenDetail(false)}>x</button>
+            </Modal>
+            <Modal isOpen={modalQr} onRequestClose={() => setModalQr(false)} ariaHideApp={false}
+                style={{
+                    overlay: {
+                        position: 'fixed',
+                        zIndex: 998,
+                        backgroundColor: 'rgb(33 33 33 / 75%)'
+                    },
+                    content: {
+                        top: "50%",
+                        left: "50%",
+                        right: "auto",
+                        bottom: "auto",
+                        marginRight: "-50%",
+                        transform: "translate(-50%, -50%)",
+                        backgroundColor: "white",
+                        width: "70vw",
+                        height: "60vh",
+                        zIndex: 999
+                    },
+                }}>
+                <div className="p-3">
+                    <h3 className="text-center">{ModalData.tablename} QrCode</h3>
+                    <div className="qrB">
+                        <QRcode
+                            id='qrcode'
+                            value={codeQr}
+                            size={290}
+                            level={'H'}
+                            includeMargin={true}
+                        />
+                        <button onClick={() => downloadQR()} className="noPlusElf">Download</button>
+                    </div>
+                </div>
+                <button className='closeModal' onClick={() => { setModalQr(false); setModalOpenDetail(true) }}>x</button>
             </Modal>
             <Modal isOpen={modalOpenDetail2} onRequestClose={() => setModalOpenDetail2(false)} ariaHideApp={false}
                 style={{

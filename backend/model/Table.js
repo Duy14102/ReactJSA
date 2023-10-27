@@ -21,6 +21,11 @@ const TableSchema = new mongoose.Schema({
     tabledate: {
         default: null,
         type: Date
+    },
+
+    qrcode: {
+        default: null,
+        type: String
     }
 
 })
