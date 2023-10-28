@@ -59,7 +59,7 @@ function Wrapped() {
 
     return (
         <>
-            <div className="container-fluid bg-white p-0">
+            <div className="container-fluid bg-white theEndNear p-0">
                 <Spinner />
                 <Routes>
                     <Route path="/" element={<App />} />

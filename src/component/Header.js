@@ -6,7 +6,7 @@ import { Fragment, useEffect, useState } from "react";
 import axios from "axios";
 import jwtDecode from "jwt-decode";
 
-function Header() {
+function Header({ type }) {
     const val = JSON.parse(localStorage.getItem('cart'))
     const [GetUser, setGetUser] = useState([])
     var countVal = 0
@@ -99,6 +99,10 @@ function Header() {
             $dropdownToggle.attr("aria-expanded", "false");
             $dropdownMenu.removeClass(showClass3);
         })
+
+        if (type) {
+            $('.GroundW').addClass('SpecialHeader')
+        }
     })
     const SearchType = (e) => {
         e.preventDefault();
@@ -124,7 +128,7 @@ function Header() {
     }
     return (
         <>
-            <nav className="navbar navbar-expand-lg navbar-dark bg-dark px-4 px-lg-5 py-3 py-lg-0">
+            <nav className="navbar navbar-expand-lg GroundW navbar-dark px-4 px-lg-5 py-3 py-lg-0">
                 <a href="/" className="navbar-brand p-0">
                     <h1 className="text-primary m-0"><i className="fa fa-utensils me-3"></i>EatCom</h1>
                 </a>

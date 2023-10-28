@@ -28,7 +28,7 @@ function Testimonial() {
     });
     return (
         <>
-            <div className="container-fluid py-5 wow fadeInUp" data-wow-delay="0.1s">
+            <div className="container-fluid py-5 bg-white wow fadeInUp" data-wow-delay="0.1s">
                 <div className="container">
                     <div className="text-center">
                         <h5 className="section-title ff-secondary text-center text-primary fw-normal">Testimonial</h5>

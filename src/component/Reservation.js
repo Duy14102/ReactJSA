@@ -130,12 +130,12 @@ function Reservation() {
                         <div className="video">
                         </div>
                     </div>
-                    <div className="col-md-6 bg-dark">
+                    <div className="col-md-6 bg-white">
                         <div className="p-5 wow fadeInUp" data-wow-delay="0.2s">
                             <h5 className="section-title ff-secondary text-start text-primary fw-normal">Booking</h5>
                             {bookingBook?.data ? (
                                 <>
-                                    <h2 className="text-white mb-4 text-nowrap">Your Booking Information</h2>
+                                    <h2 className="mb-4 text-nowrap">Your Booking Information</h2>
                                     <hr />
                                     {Object.values(bookingBook).map((i) => {
                                         const date = new Date(i?.createdAt).toLocaleDateString()
@@ -152,22 +152,22 @@ function Reservation() {
                                         }
                                         return (
                                             <Fragment key={i?.customer.id}>
-                                                <div className="coverNOut text-white">
+                                                <div className="coverNOut ">
                                                     <p><b>Name</b> : {i?.customer.fullname}</p>
                                                     <p><b>Date</b> : {datetime}</p>
                                                 </div>
-                                                <div className="coverNOut text-white">
+                                                <div className="coverNOut">
                                                     <p><b>People</b> : {i?.people}</p>
                                                     <p><b>Date Arrived</b> : {datetime2}</p>
                                                 </div>
-                                                <div className="coverNOut text-white">
+                                                <div className="coverNOut">
                                                     <p><b>Status</b> : {title}</p>
                                                     {i.table ? (
                                                         <p><b>Table</b> : {i.table}</p>
                                                     ) : null}
                                                 </div>
                                                 <div className="hugeImpace">
-                                                    <p className="text-white"><b>Message</b> : </p>
+                                                    <p><b>Message</b> : </p>
                                                     <textarea style={{ height: 20 + "vh" }} className="textDeny" defaultValue={i?.message} />
                                                 </div>
                                                 {i.status === 1 ? (
@@ -175,7 +175,7 @@ function Reservation() {
                                                         <button onClick={() => setOpenOOO(true)} className="btn btn-danger">Cancel</button>
                                                         {openOOO ? (
                                                             <form onSubmit={(e) => CancelBooking(e, i?._id)} className="hugeImpace pt-3">
-                                                                <p className="text-white m-0"><b>Reason</b> : </p>
+                                                                <p className="m-0"><b>Reason</b> : </p>
                                                                 <textarea onChange={(e) => setCancelReason(e.target.value)} className="textDeny" placeholder="Reason....." required />
                                                                 <div className="d-flex" style={{ gap: 1 + "%" }}>
                                                                     <button type="submit" className="btn btn-primary">Confirm</button>
@@ -191,30 +191,30 @@ function Reservation() {
                                 </>
                             ) : (
                                 <>
-                                    <h2 className="text-white mb-4">Book A Table Online</h2>
+                                    <h2 className="mb-4">Book A Table Online</h2>
                                     <form onSubmit={(e) => AddNewTable(e)}>
                                         <div className="row g-3">
                                             {token ? null : (
                                                 <>
                                                     <div className="col-md-6">
-                                                        <label htmlFor="name" className="text-white">Your Name</label>
+                                                        <label htmlFor="name">Your Name</label>
                                                         <input value={name} onChange={(e) => setName(e.target.value)} type="text" className="cutOut" id="name" placeholder="Your Name" required />
                                                     </div>
                                                     <div className="col-md-6">
-                                                        <label htmlFor="phone" className="text-white">Your Phone Number</label>
+                                                        <label htmlFor="phone" >Your Phone Number</label>
                                                         <input value={phone} onChange={(e) => setPhone(e.target.value)} type="number" className="cutOut" id="phone" placeholder="Your Phone Number" required />
                                                     </div>
                                                 </>
                                             )}
                                             <div className="col-md-6">
-                                                <label htmlFor="datetime" className="text-white">Date & Time</label>
+                                                <label htmlFor="datetime" >Date & Time</label>
                                                 <input value={date} onChange={(e) => setDate(e.target.value)} type="datetime-local" className="cutOut datetimepicker-input" id="datetime" placeholder="Date & Time" required />
                                                 {checkDate ? (
                                                     <p className="m-0 pt-1 text-danger">Date can't smaller than today!</p>
                                                 ) : null}
                                             </div>
                                             <div className="col-md-6">
-                                                <label htmlFor="select1" className="text-white">No Of People</label>
+                                                <label htmlFor="select1">No Of People</label>
                                                 <select value={people} onChange={(e) => setPeople(e.target.value)} className="cutOut" id="select1" required>
                                                     <option value={1}>People 1</option>
                                                     <option value={2}>People 2</option>
@@ -225,7 +225,7 @@ function Reservation() {
                                                 </select>
                                             </div>
                                             <div className="col-12">
-                                                <label htmlFor="message" className="text-white">Note</label>
+                                                <label htmlFor="message">Note</label>
                                                 <textarea value={message} onChange={(e) => setMessage(e.target.value)} className="cutOut" placeholder="Special Request" id="message" style={{ height: 100 + "px" }}></textarea>
                                             </div>
                                             <div className="col-12">

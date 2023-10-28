@@ -35,13 +35,20 @@
     z-index: 99;
 }
 
+.SpecialHeader {
+    background-color: #0F172B !important;
+    position: relative !important;
+}
+
 .hexThis {
     transition: all 0.3s;
-    box-shadow: 0 2.5px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    background-color: #fafafa;
+    box-shadow: 0 2.5px 5px rgba(0, 0, 0, 0.2);
 }
 
 .hexThis:hover {
-    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
 }
 
 .cutOut {
@@ -128,6 +135,10 @@
 
 
 /*** Navbar ***/
+.navbar {
+    position: fixed;
+}
+
 .navbar-dark .navbar-nav .nav-link {
     position: relative;
     margin-left: 25px;
@@ -141,7 +152,7 @@
 }
 
 .sticky-top.navbar-dark .navbar-nav .nav-link {
-    padding: 20px 0;
+    padding: 20px 5px;
 }
 
 .navbar-dark .navbar-nav .nav-link:hover,
@@ -283,7 +294,7 @@
         top: 0;
         left: 0;
         z-index: 999;
-        background: transparent !important;
+        background: transparent;
     }
 
     .sticky-top.navbar-dark {
@@ -687,11 +698,14 @@
 
 
 /*** Hero Header ***/
-.hero-header {
+
+.theEndNear {
+    /* background: linear-gradient(rgba(33, 34, 37, 0.5), rgba(35, 37, 41, 0.65)), url(../../public/img/menuX.jpg); */
     background: linear-gradient(rgba(15, 23, 43, .9), rgba(15, 23, 43, .9)), url(../../public/img/bg-hero.jpg);
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover;
+    background-attachment: fixed;
 }
 
 .hero-header img {

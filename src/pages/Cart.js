@@ -104,82 +104,83 @@ function Cart() {
 
     return (
         <>
-            <Header />
-            <div className="container">
-                <div className="py-5 text-center businessWay">
-                    <NavLink className="joiboy" to="/Cart"> Shopping Cart</NavLink>  <span className='slash'>˃</span> <NavLink className="joiboy" to="/Checkout" state={{ valid: pushData, shippingFee: shippingFee }}>Checkout Details</NavLink> <span className='slash'>˃</span> {ahoe ? (<NavLink className="joiboy" to="/">Order Complete</NavLink>) : (<NavLink className="joiboy" style={{ pointerEvents: "none" }} to="/">Order Complete</NavLink>)}
-                </div>
-                {checkVal ? (
-                    <div style={{ height: 45 + "vh" }} className="pt-4 pb-4 text-center">
-                        <p>There's no items in cart</p>
-                        <NavLink to="/" className="ReturnH"><b>Return to homepage</b></NavLink>
+            <Header type={"Yes"} />
+            <div className="bg-white">
+                <div className="container">
+                    <div className="py-5 text-center businessWay">
+                        <NavLink className="joiboy" to="/Cart"> Shopping Cart</NavLink>  <span className='slash'>˃</span> <NavLink className="joiboy" to="/Checkout" state={{ valid: pushData, shippingFee: shippingFee }}>Checkout Details</NavLink> <span className='slash'>˃</span> {ahoe ? (<NavLink className="joiboy" to="/">Order Complete</NavLink>) : (<NavLink className="joiboy" style={{ pointerEvents: "none" }} to="/">Order Complete</NavLink>)}
                     </div>
-                ) : (
-                    <div className="flexAble pt-4 pb-4">
-                        <div className="Numberone">
-                            <table className="table CartTa" width="100%">
+                    {checkVal ? (
+                        <div style={{ height: 45 + "vh" }} className="pt-4 pb-4 text-center">
+                            <p>There's no items in cart</p>
+                            <NavLink to="/" className="ReturnH"><b>Return to homepage</b></NavLink>
+                        </div>
+                    ) : (
+                        <div className="flexAble pt-4 pb-4">
+                            <div className="Numberone">
+                                <table className="table CartTa" width="100%">
+                                    <thead>
+                                        <tr>
+                                            <th colSpan={3}>Items</th>
+                                            <th className="thhuhu">Price</th>
+                                            <th style={{ width: 10 + "%" }}>Amount</th>
+                                            <th className="thhuhu">Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody style={{ verticalAlign: "middle" }}>
+                                        {Cart.map((i) => {
+                                            return (
+                                                mero(...i.data, i.quantity)
+                                            )
+                                        })}
+                                    </tbody>
+                                </table>
+                                <div className="buttonN1">
+                                    <NavLink reloadDocument to="/" className="btnFirst">← Continue Shoppping</NavLink>
+                                    <button onClick={() => setCheckLoad(true)} className="btnSecond">Update Cart</button>
+                                </div>
+                            </div>
+                            <table className="table CartTa Numbertwo">
                                 <thead>
                                     <tr>
-                                        <th colSpan={3}>Items</th>
-                                        <th className="thhuhu">Price</th>
-                                        <th style={{ width: 10 + "%" }}>Amount</th>
-                                        <th className="thhuhu">Total</th>
+                                        <th colSpan={2}>Cart Total</th>
                                     </tr>
                                 </thead>
-                                <tbody style={{ verticalAlign: "middle" }}>
-                                    {Cart.map((i) => {
-                                        return (
-                                            mero(...i.data, i.quantity)
-                                        )
-                                    })}
+                                <tbody>
+                                    <tr>
+                                        <td>Total</td>
+                                        <td className="text-right">{VND.format(total2)}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Shipping</td>
+                                        <td className="text-right">{VND.format(shippingFee)}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Full Total</td>
+                                        <td className="text-right">{VND.format(fulltotal)}</td>
+                                    </tr>
+                                    <tr>
+                                        <td colSpan={2}>
+                                            <NavLink to="/Checkout" state={{ valid: pushData, shippingFee: shippingFee }} className="btnCheckout"><b>Checkout</b></NavLink>
+                                            <p className="pt-3" style={{ margin: 0 }}> <i className="fa-solid fa-tag"></i> Coupon</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colSpan={2} className="inputC">
+                                            <form onSubmit={(e) => applyCoupon(e)}>
+                                                <input onInput={(e) => setCheckCoupon(e.target.value)} type="text" placeholder="Coupon Code...." required />
+                                                <div className="text-center pt-3">
+                                                    <button type="submit" className="btnCoupon">Apply</button>
+                                                </div>
+                                            </form>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
-                            <div className="buttonN1">
-                                <NavLink reloadDocument to="/" className="btnFirst">← Continue Shoppping</NavLink>
-                                <button onClick={() => setCheckLoad(true)} className="btnSecond">Update Cart</button>
-                            </div>
                         </div>
-                        <table className="table CartTa Numbertwo">
-                            <thead>
-                                <tr>
-                                    <th colSpan={2}>Cart Total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Total</td>
-                                    <td className="text-right">{VND.format(total2)}</td>
-                                </tr>
-                                <tr>
-                                    <td>Shipping</td>
-                                    <td className="text-right">{VND.format(shippingFee)}</td>
-                                </tr>
-                                <tr>
-                                    <td>Full Total</td>
-                                    <td className="text-right">{VND.format(fulltotal)}</td>
-                                </tr>
-                                <tr>
-                                    <td colSpan={2}>
-                                        <NavLink to="/Checkout" state={{ valid: pushData, shippingFee: shippingFee }} className="btnCheckout"><b>Checkout</b></NavLink>
-                                        <p className="pt-3" style={{ margin: 0 }}> <i className="fa-solid fa-tag"></i> Coupon</p>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colSpan={2} className="inputC">
-                                        <form onSubmit={(e) => applyCoupon(e)}>
-                                            <input onInput={(e) => setCheckCoupon(e.target.value)} type="text" placeholder="Coupon Code...." required />
-                                            <div className="text-center pt-3">
-                                                <button type="submit" className="btnCoupon">Apply</button>
-                                            </div>
-                                        </form>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                )}
+                    )}
+                </div>
             </div>
-
             <Footer />
         </>
     )

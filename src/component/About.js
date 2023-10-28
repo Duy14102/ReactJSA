@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 function About() {
     return (
-        <div className="container-fluid py-5">
+        <div className="container-fluid bg-white py-5">
             <div className="container">
                 <div className="row g-5 align-items-center">
                     <div className="col-lg-6">

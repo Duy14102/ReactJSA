@@ -263,129 +263,131 @@ function QrCodeTable() {
                         </div>
                         <button className='closeModal' onClick={() => setModalOpenDetail(false)}>x</button>
                     </Modal>
-                    <Header />
-                    <div className='container'>
-                        <div className='pt-3'>
-                            <p className='encot' style={{ margin: 0 }}><NavLink className="textNavlink" to="/">Home</NavLink> / {Object.values(Table).map((i) => { return (<Fragment key={i._id}>{i.tablename}</Fragment>) })}</p>
-                        </div>
-                        <div className='ruler pt-4'>
-                            <div className='FirstRow'>
-                                <div className='nOthing'>
-                                    <h5>Product Category</h5>
-                                    <hr style={{ width: 15 + "%", height: 3 + "px" }} />
-                                    <NavLink reloadDocument to={`/QrCodeTable/${appler.id}/2/Meat/${appler.fil}`} activeclassname='active' className="text-black"><p>Meat</p></NavLink>
-                                    <NavLink reloadDocument to={`/QrCodeTable/${appler.id}/2/Drink/${appler.fil}`} className="text-black" ><p>Drink</p></NavLink>
-                                    <NavLink reloadDocument to={`/QrCodeTable/${appler.id}/2/Vegetables/${appler.fil}`} className="text-black"><p>Vegetables</p></NavLink>
-                                    <hr />
+                    <Header type={"Yes"} />
+                    <div className="bg-white">
+                        <div className='container'>
+                            <div className='pt-3'>
+                                <p className='encot' style={{ margin: 0 }}><NavLink className="textNavlink" to="/">Home</NavLink> / {Object.values(Table).map((i) => { return (<Fragment key={i._id}>{i.tablename}</Fragment>) })}</p>
+                            </div>
+                            <div className='ruler pt-4'>
+                                <div className='FirstRow'>
+                                    <div className='nOthing'>
+                                        <h5>Product Category</h5>
+                                        <hr style={{ width: 15 + "%", height: 3 + "px" }} />
+                                        <NavLink reloadDocument to={`/QrCodeTable/${appler.id}/2/Meat/${appler.fil}`} activeclassname='active' className="text-black"><p>Meat</p></NavLink>
+                                        <NavLink reloadDocument to={`/QrCodeTable/${appler.id}/2/Drink/${appler.fil}`} className="text-black" ><p>Drink</p></NavLink>
+                                        <NavLink reloadDocument to={`/QrCodeTable/${appler.id}/2/Vegetables/${appler.fil}`} className="text-black"><p>Vegetables</p></NavLink>
+                                        <hr />
+                                    </div>
+                                    <div className="nOthing">
+                                        <h6 className="text-center">Your Cart</h6>
+                                        <table className="table table-bordered solotable">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Quantity</th>
+                                                    <th>Price</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {Object.values(Table).map((a) => {
+                                                    return (
+                                                        <Fragment key={a._id}>
+                                                            {a.tableitems?.map((z) => {
+                                                                var total = z.quantity * z.item.foodprice
+                                                                fulltotal += total
+                                                                return (
+                                                                    <tr key={z.item._id}>
+                                                                        <td>{z.item.foodname}</td>
+                                                                        <td>{z.quantity}</td>
+                                                                        <td>{VND.format(z.item.foodprice)}</td>
+                                                                    </tr>
+                                                                )
+                                                            })}
+                                                        </Fragment>
+                                                    )
+                                                })}
+                                                <tr>
+                                                    <th colSpan={2}>Fulltotal</th>
+                                                    <th>{VND.format(fulltotal)}</th>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <div className="text-center">
+                                            {Object.values(Table).map((t) => {
+                                                return (
+                                                    <button key={t._id} onClick={() => CheckOutQr(t._id)} className="btn btn-primary">Checkout</button>
+                                                )
+                                            })}
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="nOthing">
-                                    <h6 className="text-center">Your Cart</h6>
-                                    <table className="table table-bordered solotable">
+                                <div className="row SecondRow">
+                                    <div className='d-flex justify-content-between Jkaem'>
+                                        <div className='CatuRespon'>
+                                            <select id='mix2up' onChange={(e) => CateFilter(e.target.value)} className='FilterDrop'>
+                                                <option value={"Meat"}>Meat</option>
+                                                <option value={"Vegetables"}>Vegetables</option>
+                                                <option value={"Drink"}>Drink</option>
+                                            </select>
+                                        </div>
+                                        <div className='ThirdRow'>
+                                            <p className='allover3'>Display all {Count} results</p>
+                                            <select id='select' onChange={(e) => Filter(e.target.value)} className='FilterDrop'>
+                                                <option value={"nto"}>New to old</option>
+                                                <option value={"otn"}>Old to new</option>
+                                                <option value={"hpf"}>High price first</option>
+                                                <option value={"lpf"}>Low price first</option>
+                                                <option value={"atz"}>A to Z</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <table className="table solotable text-center" style={{ verticalAlign: "middle" }}>
                                         <thead>
                                             <tr>
-                                                <th>Name</th>
-                                                <th>Quantity</th>
+                                                <th colSpan={2}>Name</th>
                                                 <th>Price</th>
+                                                <th>Quantity</th>
+                                                <th></th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {Object.values(Table).map((a) => {
+                                            {Object.values(Category).map(i => {
                                                 return (
-                                                    <Fragment key={a._id}>
-                                                        {a.tableitems?.map((z) => {
-                                                            var total = z.quantity * z.item.foodprice
-                                                            fulltotal += total
-                                                            return (
-                                                                <tr key={z.item._id}>
-                                                                    <td>{z.item.foodname}</td>
-                                                                    <td>{z.quantity}</td>
-                                                                    <td>{VND.format(z.item.foodprice)}</td>
-                                                                </tr>
-                                                            )
-                                                        })}
-                                                    </Fragment>
+                                                    <tr key={i._id}>
+                                                        <td><img alt="" src={i.foodimage} loading="lazy" height={60} width={70} /></td>
+                                                        <td>{i.foodname}</td>
+                                                        <td>{VND.format(i.foodprice)}</td>
+                                                        <td><input onChange={(e) => setQuantityAdd(e.target.value)} min={1} max={i.foodquantity} defaultValue={1} className="textDeny" /></td>
+                                                        <td><button onClick={(e) => takeitNow(e, i)} className="btn btn-success">Add to cart</button></td>
+                                                    </tr>
                                                 )
                                             })}
-                                            <tr>
-                                                <th colSpan={2}>Fulltotal</th>
-                                                <th>{VND.format(fulltotal)}</th>
-                                            </tr>
                                         </tbody>
                                     </table>
-                                    <div className="text-center">
-                                        {Object.values(Table).map((t) => {
-                                            return (
-                                                <button key={t._id} onClick={() => CheckOutQr(t._id)} className="btn btn-primary">Checkout</button>
-                                            )
-                                        })}
-                                    </div>
+                                    <ReactPaginate
+                                        breakLabel="..."
+                                        nextLabel="Next >"
+                                        onPageChange={handlePageClick}
+                                        pageRangeDisplayed={5}
+                                        pageCount={pageCount}
+                                        previousLabel="< Previous"
+                                        renderOnZeroPageCount={null}
+                                        marginPagesDisplayed={2}
+                                        containerClassName="pagination justify-content-center"
+                                        pageClassName="page-item"
+                                        pageLinkClassName="page-link"
+                                        previousClassName="page-item"
+                                        previousLinkClassName="page-link"
+                                        nextClassName="page-item"
+                                        nextLinkClassName="page-link"
+                                        activeClassName="active"
+                                        forcePage={currentPage.current - 1}
+                                    />
                                 </div>
                             </div>
-                            <div className="row SecondRow">
-                                <div className='d-flex justify-content-between Jkaem'>
-                                    <div className='CatuRespon'>
-                                        <select id='mix2up' onChange={(e) => CateFilter(e.target.value)} className='FilterDrop'>
-                                            <option value={"Meat"}>Meat</option>
-                                            <option value={"Vegetables"}>Vegetables</option>
-                                            <option value={"Drink"}>Drink</option>
-                                        </select>
-                                    </div>
-                                    <div className='ThirdRow'>
-                                        <p className='allover3'>Display all {Count} results</p>
-                                        <select id='select' onChange={(e) => Filter(e.target.value)} className='FilterDrop'>
-                                            <option value={"nto"}>New to old</option>
-                                            <option value={"otn"}>Old to new</option>
-                                            <option value={"hpf"}>High price first</option>
-                                            <option value={"lpf"}>Low price first</option>
-                                            <option value={"atz"}>A to Z</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <table className="table solotable text-center" style={{ verticalAlign: "middle" }}>
-                                    <thead>
-                                        <tr>
-                                            <th colSpan={2}>Name</th>
-                                            <th>Price</th>
-                                            <th>Quantity</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {Object.values(Category).map(i => {
-                                            return (
-                                                <tr key={i._id}>
-                                                    <td><img alt="" src={i.foodimage} loading="lazy" height={60} width={70} /></td>
-                                                    <td>{i.foodname}</td>
-                                                    <td>{VND.format(i.foodprice)}</td>
-                                                    <td><input onChange={(e) => setQuantityAdd(e.target.value)} min={1} max={i.foodquantity} defaultValue={1} className="textDeny" /></td>
-                                                    <td><button onClick={(e) => takeitNow(e, i)} className="btn btn-success">Add to cart</button></td>
-                                                </tr>
-                                            )
-                                        })}
-                                    </tbody>
-                                </table>
-                                <ReactPaginate
-                                    breakLabel="..."
-                                    nextLabel="Next >"
-                                    onPageChange={handlePageClick}
-                                    pageRangeDisplayed={5}
-                                    pageCount={pageCount}
-                                    previousLabel="< Previous"
-                                    renderOnZeroPageCount={null}
-                                    marginPagesDisplayed={2}
-                                    containerClassName="pagination justify-content-center"
-                                    pageClassName="page-item"
-                                    pageLinkClassName="page-link"
-                                    previousClassName="page-item"
-                                    previousLinkClassName="page-link"
-                                    nextClassName="page-item"
-                                    nextLinkClassName="page-link"
-                                    activeClassName="active"
-                                    forcePage={currentPage.current - 1}
-                                />
-                            </div>
-                        </div>
-                    </div >
+                        </div >
+                    </div>
                     <Footer />
                 </>
             ) : (

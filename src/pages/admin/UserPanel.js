@@ -148,146 +148,146 @@ function UserPanel() {
 
     return (
         <>
-            <Header />
-
-            <div className="container py-4">
-                <div className="coverUser">
-                    <form onSubmit={(e) => handleSubmit(e, appler.id)}>
-                        <div className="headOverview">
-                            <h5 style={{ whiteSpace: "nowrap" }} className="m-0">User Overview</h5>
-                            {Edit ? (
-                                <div style={{ gap: 5 + "%" }} className="d-flex justify-content-center">
-                                    <button type="submit" className="button4Edit" >Comfirm</button>
-                                    <button type="button" className="button4Edit" onClick={() => setEdit(false)}>Cancel</button>
-                                </div>
-                            ) : (
-                                <button type="button" className="button4Edit" onClick={() => setEdit(true)}>Edit</button>
-                            )}
-                        </div>
-                        <div className="BossLvMax pt-3">
-                            {Object.values(GetUser).map((i) => {
-                                return (
-                                    <Fragment key={i._id}>
-                                        {Edit ? (
-                                            <div className="profile-pic-wrapper okImFirst">
-                                                <div className="pic-holder">
-                                                    {i.userimage ? (
-                                                        <>
-                                                            <img id="profilePic" className="pic" src={i.userimage} alt="" />
-                                                            <input onChange={convertToBase64} className="uploadProfileInput" type="file" name="updateimage" id="newProfilePhoto" style={{ opacity: 0 }} />
-                                                        </>
-                                                    ) : (
-                                                        <>
-                                                            <img id="profilePic" className="pic" src="https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg" alt="" />
-                                                            <input onChange={convertToBase64} className="uploadProfileInput" type="file" name="updateimage" id="newProfilePhoto" style={{ opacity: 0 }} />
-                                                        </>
-                                                    )}
-                                                    <label htmlFor="newProfilePhoto" className="upload-file-block">
-                                                        <div className="text-center">
-                                                            <div className="mb-2">
-                                                                <i className="fa fa-camera fa-2x"></i>
-                                                            </div>
-                                                            <div className="text-uppercase">
-                                                                Update <br /> Profile Photo
-                                                            </div>
-                                                        </div>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            <div style={{ pointerEvents: "none" }} className="profile-pic-wrapper okImFirst">
-                                                <div className="pic-holder">
-                                                    {i.userimage ? (
-                                                        <img id="profilePic" className="pic" src={i.userimage} alt="" />
-                                                    ) : (
-                                                        <img id="profilePic" className="pic" src="https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg" alt="" />
-                                                    )}
-                                                    <input className="uploadProfileInput" type="file" name="profile_pic" id="newProfilePhoto" style={{ opacity: 0 }} />
-                                                    <label htmlFor="newProfilePhoto" className="upload-file-block">
-                                                        <div className="text-center">
-                                                            <div className="mb-2">
-                                                                <i className="fa fa-camera fa-2x"></i>
-                                                            </div>
-                                                            <div className="text-uppercase">
-                                                                Update <br /> Profile Photo
-                                                            </div>
-                                                        </div>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        )}
-                                        <div className="okImSecond pt-3">
+            <Header type={"Yes"} />
+            <div className="bg-white">
+                <div className="container py-4">
+                    <div className="coverUser">
+                        <form onSubmit={(e) => handleSubmit(e, appler.id)}>
+                            <div className="headOverview">
+                                <h5 style={{ whiteSpace: "nowrap" }} className="m-0">User Overview</h5>
+                                {Edit ? (
+                                    <div style={{ gap: 5 + "%" }} className="d-flex justify-content-center">
+                                        <button type="submit" className="button4Edit" >Comfirm</button>
+                                        <button type="button" className="button4Edit" onClick={() => setEdit(false)}>Cancel</button>
+                                    </div>
+                                ) : (
+                                    <button type="button" className="button4Edit" onClick={() => setEdit(true)}>Edit</button>
+                                )}
+                            </div>
+                            <div className="BossLvMax pt-3">
+                                {Object.values(GetUser).map((i) => {
+                                    return (
+                                        <Fragment key={i._id}>
                                             {Edit ? (
-                                                <div>
-                                                    <div className="makeItDoe">
-                                                        <div className="emailInsideSecond">
-                                                            <label htmlFor="email">Email</label>
-                                                            <input name="updateemail" defaultValue={i.email} value={updateemail} onChange={(e) => setEmail(e.target.value)} type="email" className="inputInsideSecond" id="email" />
-                                                        </div>
-                                                        <div className="emailInsideSecond">
-                                                            <label htmlFor="password">Password</label>
-                                                            <input name="updatepassword" value={updatepassword} onChange={(e) => setPassword(e.target.value)} type="password" className="inputInsideSecond" id="password" placeholder="●●●●●●●●●●" />
-                                                        </div>
-                                                    </div>
-                                                    <div className="makeItDoe pt-3">
-                                                        <div className="emailInsideSecond">
-                                                            <label htmlFor="fullname">Name</label>
-                                                            <input name="uppdatefullname" defaultValue={i.fullname} value={updatefullname} onChange={(e) => setFullName(e.target.value)} type="text" className="inputInsideSecond" id="fullname" />
-                                                        </div>
-                                                        <div className="emailInsideSecond">
-                                                            <label htmlFor="phonenumber">Phone Number</label>
-                                                            <input name="updatephone" defaultValue={i.phonenumber} value={updatephone} onChange={(e) => setPhonenumber(e.target.value)} type="number" className="inputInsideSecond" id="phonenumber" />
-                                                        </div>
+                                                <div className="profile-pic-wrapper okImFirst">
+                                                    <div className="pic-holder">
+                                                        {i.userimage ? (
+                                                            <>
+                                                                <img id="profilePic" className="pic" src={i.userimage} alt="" />
+                                                                <input onChange={convertToBase64} className="uploadProfileInput" type="file" name="updateimage" id="newProfilePhoto" style={{ opacity: 0 }} />
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <img id="profilePic" className="pic" src="https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg" alt="" />
+                                                                <input onChange={convertToBase64} className="uploadProfileInput" type="file" name="updateimage" id="newProfilePhoto" style={{ opacity: 0 }} />
+                                                            </>
+                                                        )}
+                                                        <label htmlFor="newProfilePhoto" className="upload-file-block">
+                                                            <div className="text-center">
+                                                                <div className="mb-2">
+                                                                    <i className="fa fa-camera fa-2x"></i>
+                                                                </div>
+                                                                <div className="text-uppercase">
+                                                                    Update <br /> Profile Photo
+                                                                </div>
+                                                            </div>
+                                                        </label>
                                                     </div>
                                                 </div>
                                             ) : (
-                                                <div style={{ pointerEvents: "none" }}>
-                                                    <div className="makeItDoe">
-                                                        <div className="emailInsideSecond">
-                                                            <label htmlFor="email">Email</label>
-                                                            <input name="updatemail" defaultValue={i.email} type="email" className="inputInsideSecond" id="email" />
-                                                        </div>
-                                                        <div className="emailInsideSecond">
-                                                            <label htmlFor="password">Password</label>
-                                                            <input name="updatepassword" type="password" className="inputInsideSecond" id="password" placeholder="●●●●●●●●●●" />
-                                                        </div>
-                                                    </div>
-                                                    <div className="makeItDoe pt-3">
-                                                        <div className="emailInsideSecond">
-                                                            <label htmlFor="fullname">Name</label>
-                                                            <input name="uppdatefullname" defaultValue={i.fullname} type="text" className="inputInsideSecond" id="fullname" />
-                                                        </div>
-                                                        <div className="emailInsideSecond">
-                                                            <label htmlFor="phonenumber">Phone Number</label>
-                                                            <input name="updatephone" defaultValue={i.phonenumber} type="number" className="inputInsideSecond" id="phonenumber" />
-                                                        </div>
+                                                <div style={{ pointerEvents: "none" }} className="profile-pic-wrapper okImFirst">
+                                                    <div className="pic-holder">
+                                                        {i.userimage ? (
+                                                            <img id="profilePic" className="pic" src={i.userimage} alt="" />
+                                                        ) : (
+                                                            <img id="profilePic" className="pic" src="https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg" alt="" />
+                                                        )}
+                                                        <input className="uploadProfileInput" type="file" name="profile_pic" id="newProfilePhoto" style={{ opacity: 0 }} />
+                                                        <label htmlFor="newProfilePhoto" className="upload-file-block">
+                                                            <div className="text-center">
+                                                                <div className="mb-2">
+                                                                    <i className="fa fa-camera fa-2x"></i>
+                                                                </div>
+                                                                <div className="text-uppercase">
+                                                                    Update <br /> Profile Photo
+                                                                </div>
+                                                            </div>
+                                                        </label>
                                                     </div>
                                                 </div>
                                             )}
-                                            <div className="emailInsideSecond py-3">
-                                                <label htmlFor="address">Address</label>
-                                                <UserAddressControl address={i.address} edit={Edit} userid={appler.id} />
+                                            <div className="okImSecond pt-3">
+                                                {Edit ? (
+                                                    <div>
+                                                        <div className="makeItDoe">
+                                                            <div className="emailInsideSecond">
+                                                                <label htmlFor="email">Email</label>
+                                                                <input name="updateemail" defaultValue={i.email} value={updateemail} onChange={(e) => setEmail(e.target.value)} type="email" className="inputInsideSecond" id="email" />
+                                                            </div>
+                                                            <div className="emailInsideSecond">
+                                                                <label htmlFor="password">Password</label>
+                                                                <input name="updatepassword" value={updatepassword} onChange={(e) => setPassword(e.target.value)} type="password" className="inputInsideSecond" id="password" placeholder="●●●●●●●●●●" />
+                                                            </div>
+                                                        </div>
+                                                        <div className="makeItDoe pt-3">
+                                                            <div className="emailInsideSecond">
+                                                                <label htmlFor="fullname">Name</label>
+                                                                <input name="uppdatefullname" defaultValue={i.fullname} value={updatefullname} onChange={(e) => setFullName(e.target.value)} type="text" className="inputInsideSecond" id="fullname" />
+                                                            </div>
+                                                            <div className="emailInsideSecond">
+                                                                <label htmlFor="phonenumber">Phone Number</label>
+                                                                <input name="updatephone" defaultValue={i.phonenumber} value={updatephone} onChange={(e) => setPhonenumber(e.target.value)} type="number" className="inputInsideSecond" id="phonenumber" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    <div style={{ pointerEvents: "none" }}>
+                                                        <div className="makeItDoe">
+                                                            <div className="emailInsideSecond">
+                                                                <label htmlFor="email">Email</label>
+                                                                <input name="updatemail" defaultValue={i.email} type="email" className="inputInsideSecond" id="email" />
+                                                            </div>
+                                                            <div className="emailInsideSecond">
+                                                                <label htmlFor="password">Password</label>
+                                                                <input name="updatepassword" type="password" className="inputInsideSecond" id="password" placeholder="●●●●●●●●●●" />
+                                                            </div>
+                                                        </div>
+                                                        <div className="makeItDoe pt-3">
+                                                            <div className="emailInsideSecond">
+                                                                <label htmlFor="fullname">Name</label>
+                                                                <input name="uppdatefullname" defaultValue={i.fullname} type="text" className="inputInsideSecond" id="fullname" />
+                                                            </div>
+                                                            <div className="emailInsideSecond">
+                                                                <label htmlFor="phonenumber">Phone Number</label>
+                                                                <input name="updatephone" defaultValue={i.phonenumber} type="number" className="inputInsideSecond" id="phonenumber" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                                <div className="emailInsideSecond py-3">
+                                                    <label htmlFor="address">Address</label>
+                                                    <UserAddressControl address={i.address} edit={Edit} userid={appler.id} />
+                                                </div>
                                             </div>
-                                        </div>
-                                    </Fragment>
-                                )
-                            })}
+                                        </Fragment>
+                                    )
+                                })}
+                            </div>
+                        </form>
+                        <div id="myDIV6" className="d-flex justify-content-end pe-2" style={{ gap: 1 + "%" }}>
+                            <button id="OrderHum" className="MBbutton6 active6" onClick={(e) => openCity3(e, "Hum")}>Order</button>
+                            <button className="MBbutton6" onClick={(e) => openCity3(e, "Kum")}>Booking</button>
                         </div>
-                    </form>
-                    <div id="myDIV6" className="d-flex justify-content-end pe-2" style={{ gap: 1 + "%" }}>
-                        <button id="OrderHum" className="MBbutton6 active6" onClick={(e) => openCity3(e, "Hum")}>Order</button>
-                        <button className="MBbutton6" onClick={(e) => openCity3(e, "Kum")}>Booking</button>
+                        <hr className="mt-0" />
+                        <div className="UPanelButton" id="Hum">
+                            <UserDataPanel Data={GetOrder} />
+                        </div>
+                        <div className="UPanelButton" id="Kum">
+                            <UserBookingPanel id={appler.id} user={GetUser} />
+                        </div>
                     </div>
-                    <hr className="mt-0" />
-                    <div className="UPanelButton" id="Hum">
-                        <UserDataPanel Data={GetOrder} />
-                    </div>
-                    <div className="UPanelButton" id="Kum">
-                        <UserBookingPanel id={appler.id} user={GetUser}/>
-                    </div>
-                </div>
-            </div >
-
+                </div >
+            </div>
             <Footer />
         </>
     )

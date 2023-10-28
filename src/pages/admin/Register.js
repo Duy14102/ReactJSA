@@ -146,7 +146,7 @@ function LoginSite() {
     }
     return (
         <>
-            <Header />
+            <Header type={"Yes"}/>
 
             <div className="limiter">
                 <div className="container-login100">
