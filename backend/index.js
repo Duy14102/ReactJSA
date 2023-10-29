@@ -717,8 +717,14 @@ app.post("/UpdateUser", async (req, res) => {
 //Get Item Menu by Name
 app.get("/GetThisMenu", async (req, res) => {
     try {
-        const getIt = await getThisMenu.find({ foodcategory: req.query.Name });
-        res.send({ data: getIt });
+        const start = parseInt(req.query.start)
+        const end = parseInt(req.query.end)
+        const getIt = await getThisMenu.find({ foodcategory: req.query.Name }).limit(8);
+        var datapush = null
+        datapush = getIt.slice(start, end)
+        if (datapush) {
+            res.send({ data: datapush })
+        }
     } catch (e) {
         console.log(e);
     }

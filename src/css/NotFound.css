@@ -18,7 +18,7 @@
 }
 
 .four_zero_four_bg {
-    background-image: url(../../public/img/NotFound.gif);
+    background-image: url(../assets/image/NotFound.gif);
     height: 400px;
     background-position: center;
     width: 700px;

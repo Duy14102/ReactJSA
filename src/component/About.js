@@ -7,28 +7,28 @@ function About() {
                     <div className="col-lg-6">
                         <div className="row g-3">
                             <div className="col-6 text-start">
-                                <img loading="lazy" className="img-fluid rounded w-100 wow zoomIn" data-wow-delay="0.1s" src="img/about-1.jpg" alt="about1" />
+                                <img loading="lazy" className="img-fluid rounded w-100 wow zoomIn" data-wow-delay="0.1s" src={require('../assets/image/about-1.jpg')} alt="about1" />
                             </div>
-                            <div className="col-6 text-start">
-                                <img loading="lazy" className="img-fluid rounded w-75 wow zoomIn" data-wow-delay="0.3s" src="img/about-2.jpg" alt="about2" style={{ marginTop: 3 + "rem" }} />
-                            </div>
-                            <div className="col-6 text-end">
-                                <img loading="lazy" className="img-fluid rounded w-75 wow zoomIn" data-wow-delay="0.5s" src="img/about-3.jpg" alt="about3" />
+                            <div className="col-6 text-start" style={{ position: "relative" }}>
+                                <img loading="lazy" className="img-fluid rounded w-75 wow zoomIn" data-wow-delay="0.3s" src={require('../assets/image/about-2.jpg')} alt="about2" style={{ position: "absolute", bottom: 0 }} />
                             </div>
                             <div className="col-6 text-end">
-                                <img loading="lazy" className="img-fluid rounded w-100 wow zoomIn" data-wow-delay="0.7s" src="img/about-4.jpg" alt="about4" />
+                                <img loading="lazy" className="img-fluid rounded w-75 wow zoomIn" data-wow-delay="0.5s" src={require('../assets/image/about-3.jpg')} alt="about3" />
+                            </div>
+                            <div className="col-6 text-end">
+                                <img loading="lazy" className="img-fluid rounded w-100 wow zoomIn" data-wow-delay="0.7s" src={require('../assets/image/about-4.jpg')} alt="about4" />
                             </div>
                         </div>
                     </div>
                     <div className="col-lg-6">
                         <h5 className="section-title ff-secondary text-start text-primary fw-normal">About Us</h5>
                         <h1 className="mb-4">Welcome to <i className="fa fa-utensils text-primary me-2"></i>EatCom</h1>
-                        <p className="mb-4">Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit. Aliqu diam amet diam et eos erat ipsum et lorem et sit, sed stet lorem sit.</p>
-                        <p className="mb-4">Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit. Aliqu diam amet diam et eos. Clita erat ipsum et lorem et sit, sed stet lorem sit clita duo justo magna dolore erat amet</p>
+                        <p className="mb-4">We started from a small cart with a variety of rice dishes. Time passed and gradually more people got to know us and the name EatCom was born.</p>
+                        <p className="mb-4">We always feel lucky to have received support from everyone, EatCom always brings diners perfect rice dishes from delicious to clean and beautiful.Thank you for trusting and using our services</p>
                         <div className="row g-4 mb-4">
                             <div className="col-sm-6">
                                 <div className="d-flex align-items-center border-start border-5 border-primary px-3">
-                                    <h1 className="flex-shrink-0 display-5 text-primary mb-0" data-toggle="counter-up">15</h1>
+                                    <h1 className="flex-shrink-0 display-5 text-primary mb-0" data-toggle="counter-up">5</h1>
                                     <div className="ps-4">
                                         <p className="mb-0">Years of</p>
                                         <h6 className="text-uppercase mb-0">Experience</h6>
@@ -37,10 +37,10 @@ function About() {
                             </div>
                             <div className="col-sm-6">
                                 <div className="d-flex align-items-center border-start border-5 border-primary px-3">
-                                    <h1 className="flex-shrink-0 display-5 text-primary mb-0" data-toggle="counter-up">50</h1>
+                                    <h1 className="flex-shrink-0 display-5 text-primary mb-0" data-toggle="counter-up">10</h1>
                                     <div className="ps-4">
-                                        <p className="mb-0">Popular</p>
-                                        <h6 className="text-uppercase mb-0">Master Chefs</h6>
+                                        <p className="mb-0">Certificate</p>
+                                        <h6 className="text-uppercase mb-0">Chefs</h6>
                                     </div>
                                 </div>
                             </div>

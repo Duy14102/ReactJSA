@@ -360,7 +360,7 @@
 
 /*  carousel   */
 .owl-prev {
-    background: url('https://res.cloudinary.com/milairagny/image/upload/v1487938188/left-arrow_rlxamy.png') left center no-repeat;
+    background: url(../assets/image/left-arrow_rlxamy.png) left center no-repeat;
     height: 54px;
     position: absolute;
     top: 50%;
@@ -373,7 +373,7 @@
 }
 
 .owl-next {
-    background: url('https://res.cloudinary.com/milairagny/image/upload/v1487938220/right-arrow_zwe9sf.png') right center no-repeat;
+    background: url(../assets/image/right-arrow_zwe9sf.png) right center no-repeat;
     height: 54px;
     position: absolute;
     top: 50%;
