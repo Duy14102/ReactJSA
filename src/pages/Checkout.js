@@ -113,7 +113,7 @@ function Checkout() {
                             <p>x</p>
                         </div>
                         <div>
-                            <h6 className="my-0">{i.data.foodname}</h6>
+                            <h6 className="my-0 text-nowrap">{i.data.foodname}</h6>
                             <small className="text-muted">{i.data.foodcategory}</small>
                         </div>
                     </div>

@@ -1033,6 +1033,16 @@ app.get("/GetContact", async (req, res) => {
     }
 })
 
+//Get Testi Contact
+app.get('/GetTestiCont', async (req, res) => {
+    try {
+        const getTa = await getContactNow.find({}).limit(5)
+        res.send({ data: getTa })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
 app.post("/AddNewBooking", (req, res) => {
     try {
         const booking = new Booking({

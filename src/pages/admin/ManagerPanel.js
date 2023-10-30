@@ -23,21 +23,40 @@ function ManagerPanel() {
     const [CountData, setCountData] = useState()
     const [GetUser, setGetUser] = useState([])
     const [UserImage, setImage] = useState()
+    const [Load1, setLoad1] = useState(false)
+    const [Load2, setLoad2] = useState(false)
+    const [Load3, setLoad3] = useState(false)
+    const [Load4, setLoad4] = useState(false)
 
     useEffect(() => {
         document.getElementById("defaultMe").click();
 
-        fetch("http://localhost:3000/GetData4Admin", {
+        const configuration = {
             method: "get",
-        }).then((res) => res.json()).then((data) => {
-            setCountData(data)
-        })
+            url: "http://localhost:3000/GetData4Admin",
+        }
+        axios(configuration)
+            .then((res) => {
+                setCountData(res.data)
+            })
+            .catch((err) => {
+                console.log(err);
+            })
 
-        fetch(`http://localhost:3000/GetDetailUser?userid=${name.userId}`, {
+        const configuration2 = {
             method: "get",
-        }).then((res) => res.json()).then((data) => {
-            setGetUser(data)
-        })
+            url: 'http://localhost:3000/GetDetailUser',
+            params: {
+                userid: name.userId
+            }
+        }
+        axios(configuration2)
+            .then((res) => {
+                setGetUser(res.data)
+            })
+            .catch((err) => {
+                console.log(err);
+            })
     }, [name.userId])
 
     $(function () {
@@ -47,6 +66,19 @@ function ManagerPanel() {
             $(this).addClass('active');
             $('.active[data-page]').removeClass('active');
             $('[data-page="' + menu + '"]').addClass('active');
+
+            if ($('.content .page:nth-child(2)').hasClass('active') === true) {
+                setLoad1(true)
+            }
+            if ($('.content .page:nth-child(3)').hasClass('active') === true) {
+                setLoad2(true)
+            }
+            if ($('.content .page:nth-child(4)').hasClass('active') === true) {
+                setLoad3(true)
+            }
+            if ($('.content .page:nth-child(5)').hasClass('active') === true) {
+                setLoad4(true)
+            }
         });
 
         $('body').on('click', '[data-dialog]', function () {
@@ -326,7 +358,9 @@ function ManagerPanel() {
                             </div>
                         </div>
                         <div className='callMeOutUI'>
-                            <MainOrder />
+                            {Load1 ? (
+                                <MainOrder />
+                            ) : null}
                         </div>
                     </div>
                     <div className="page noflex" data-page="table" id='Table'>
@@ -336,7 +370,9 @@ function ManagerPanel() {
                             </div>
                         </div>
                         <div className='callMeOutUI'>
-                            <MainTable />
+                            {Load2 ? (
+                                <MainTable />
+                            ) : null}
                         </div>
                     </div>
                     <div className="page noflex" data-page="booking" id='Booking'>
@@ -346,7 +382,9 @@ function ManagerPanel() {
                             </div>
                         </div>
                         <div className='callMeOutUI'>
-                            <MainBooking />
+                            {Load3 ? (
+                                <MainBooking />
+                            ) : null}
                         </div>
                     </div>
                     <div className="page noflex" data-page="download" id='Menu'>
@@ -356,7 +394,9 @@ function ManagerPanel() {
                             </div>
                         </div>
                         <div className='callMeOutUI'>
-                            <MainMenu />
+                            {Load4 ? (
+                                <MainMenu />
+                            ) : null}
                         </div>
                     </div>
                 </div>

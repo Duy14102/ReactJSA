@@ -2,19 +2,21 @@ import $ from 'jquery';
 import ItemMenuComponent from './outOfBorder/ItemMenuComponent';
 import { NavLink } from 'react-router-dom';
 import Hammer from 'hammerjs'
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 function Menu() {
+    const [Load1, setLoad1] = useState(false)
+    const [Load2, setLoad2] = useState(false)
+    const [Load3, setLoad3] = useState(false)
     useEffect(() => {
         const elem = document.getElementById("book")
         const hammer = new Hammer(elem)
-        $('#book')
-            .on('click', '.activet', nextPage)
-            .on('click', '.flipped', prevPage);
+        $('#book').on('click', '.flipped', prevPage).on('click', '.activet', nextPage);
 
         hammer.on("swipeleft", nextPage);
         hammer.on("swiperight", prevPage);
     }, [])
+
 
     function prevPage() {
         $('.flipped')
@@ -40,6 +42,7 @@ function Menu() {
             .removeClass('activet')
             .addClass('flipped')
             .next('.paged')
+            .removeClass('d-none')
             .addClass('activet')
             .siblings()
 
@@ -52,6 +55,16 @@ function Menu() {
                 'margin-left': '65%'
             });
         }
+        if ($('section.paged:nth-child(2)').hasClass('activet') === true) {
+            setLoad1(true)
+        }
+        if ($('section.paged:nth-child(3)').hasClass('activet') === true) {
+            setLoad2(true)
+        }
+        if ($('section.paged:nth-child(4)').hasClass('activet') === true) {
+            setLoad3(true)
+        }
+
     }
     return (
         <div className="container-fluid py-5">
@@ -96,55 +109,69 @@ function Menu() {
                                 </div>
                                 <div className="back spaceKaka p-5">
                                     <h4 className='text-center'>Foreword</h4>
-                                    <p className='pt-3'><b>1. </b> Hello and thank you for using our service</p>
-                                    <p className='pt-2'><b>2. </b> This is a menu containing a number of dishes that you can refer to before enjoying</p>
-                                    <p className='pt-2'><b>3. </b> We hope you have a great experience with our services. Have a nice day and enjoy the food</p>
+                                    <div className='text-start'>
+                                        <p className='pt-3'><b>1. </b> Hello and thank you for using our service</p>
+                                        <p className='pt-2'><b>2. </b> This is a menu containing a number of dishes that you can refer to before enjoying</p>
+                                        <p className='pt-2'><b>3. </b> We hope you have a great experience with our services. Have a nice day and enjoy the food</p>
+                                    </div>
                                 </div>
                             </section>
 
-                            <section className="paged">
+                            <section className="paged d-none">
                                 <div className="front spaceKaka p-5">
                                     <h4 className='text-center'>Meat</h4>
-                                    <ItemMenuComponent Name='Meat' start={0} end={4} />
+                                    {Load1 ? (
+                                        <ItemMenuComponent Name='Meat' start={0} end={4} />
+                                    ) : null}
                                 </div>
                                 <div className="back spaceKaka p-5">
                                     <h4 className='text-center'>Meat</h4>
-                                    <ItemMenuComponent Name='Meat' start={4} end={8} />
+                                    {Load1 ? (
+                                        <ItemMenuComponent Name='Meat' start={4} end={8} />
+                                    ) : null}
                                     <div className='text-center'>
-                                        <NavLink reloadDocument to="/CategorySite/Meat/nto" className="btn btn-primary">All</NavLink>
+                                        <NavLink reloadDocument to="/CategorySite/Meat/nto" className="btn hahaPri btn-primary">All</NavLink>
                                     </div>
                                 </div>
                             </section>
 
-                            <section className="paged">
+                            <section className="paged d-none">
                                 <div className="front spaceKaka p-5">
                                     <h4 className='text-center'>Vegetables</h4>
-                                    <ItemMenuComponent Name='Vegetables' start={0} end={4} />
+                                    {Load2 ? (
+                                        <ItemMenuComponent Name='Vegetables' start={0} end={4} />
+                                    ) : null}
                                 </div>
                                 <div className="back spaceKaka p-5">
                                     <h4 className='text-center'>Vegetables</h4>
-                                    <ItemMenuComponent Name='Vegetables' start={4} end={8} />
+                                    {Load2 ? (
+                                        <ItemMenuComponent Name='Vegetables' start={4} end={8} />
+                                    ) : null}
                                     <div className='text-center'>
-                                        <NavLink reloadDocument to="/CategorySite/Vegetables/nto" className="btn btn-primary">All</NavLink>
+                                        <NavLink reloadDocument to="/CategorySite/Vegetables/nto" className="btn hahaPri btn-primary">All</NavLink>
                                     </div>
                                 </div>
                             </section>
 
-                            <section className="paged">
+                            <section className="paged d-none">
                                 <div className="front spaceKaka p-5">
                                     <h4 className='text-center'>Drink</h4>
-                                    <ItemMenuComponent Name='Drink' start={0} end={4} />
+                                    {Load3 ? (
+                                        <ItemMenuComponent Name='Drink' start={0} end={4} />
+                                    ) : null}
                                 </div>
                                 <div className="back spaceKaka p-5">
                                     <h4 className='text-center'>Drink</h4>
-                                    <ItemMenuComponent Name='Drink' start={4} end={8} />
+                                    {Load3 ? (
+                                        <ItemMenuComponent Name='Drink' start={4} end={8} />
+                                    ) : null}
                                     <div className='text-center'>
-                                        <NavLink reloadDocument to="/CategorySite/Drink/nto" className="btn btn-primary">All</NavLink>
+                                        <NavLink reloadDocument to="/CategorySite/Drink/nto" className="btn hahaPri btn-primary">All</NavLink>
                                     </div>
                                 </div>
                             </section>
 
-                            <section className="paged">
+                            <section className="paged d-none">
                                 <div className="front spaceKaka">
 
                                 </div>
