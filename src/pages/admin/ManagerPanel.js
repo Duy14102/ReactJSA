@@ -15,6 +15,7 @@ import RevenueMonth from '../../component/outOfBorder/RevenueMonth';
 import RevenueYear from '../../component/outOfBorder/RevenueYear';
 import MainMenu from '../../component/admin/MainMenu';
 import MainGiveTask from '../../component/admin/MainGiveTask';
+import MainAnnounce from '../../component/employee/MainAnnounce';
 
 function ManagerPanel() {
     const cookies = new Cookies();
@@ -57,6 +58,26 @@ function ManagerPanel() {
             .catch((err) => {
                 console.log(err);
             })
+        var elem = $('.menu a[data-menu]')
+        var tabs = localStorage.getItem('tabs')
+        $('[data-page="' + tabs + '"]').addClass('active');
+        for (var i = 0; i < elem.length; i++) {
+            if (elem[i].dataset.menu === tabs) {
+                elem[i].classList.add('active');
+            }
+        }
+        if ($('.content .page:nth-child(2)').hasClass('active') === true) {
+            setLoad1(true)
+        }
+        if ($('.content .page:nth-child(3)').hasClass('active') === true) {
+            setLoad2(true)
+        }
+        if ($('.content .page:nth-child(4)').hasClass('active') === true) {
+            setLoad3(true)
+        }
+        if ($('.content .page:nth-child(5)').hasClass('active') === true) {
+            setLoad4(true)
+        }
     }, [name.userId])
 
     $(function () {
@@ -212,9 +233,30 @@ function ManagerPanel() {
             })
     }
 
+    function setPage(e) {
+        if (e === "dashboard") {
+            localStorage.setItem('tabs', e)
+        }
+        if (e === "about") {
+            localStorage.setItem('tabs', e)
+        }
+        if (e === "table") {
+            localStorage.setItem('tabs', e)
+        }
+        if (e === "booking") {
+            localStorage.setItem('tabs', e)
+        }
+        if (e === "download") {
+            localStorage.setItem('tabs', e)
+        }
+        if (e === "announce") {
+            localStorage.setItem('tabs', e)
+        }
+    }
+
     const logoutThis = () => {
         cookies.remove("TOKEN");
-        localStorage.clear();
+        localStorage.removeItem('tabs');
         window.location.href = '/';
     }
     return (
@@ -249,16 +291,17 @@ function ManagerPanel() {
                         )
                     })}
                     <div className="menu">
-                        <a data-menu="dashboard" href="# " className="active unchange2"><i className="fa-solid fa-house"></i><p className='appearNow'>Home</p></a>
-                        <a data-menu="about" href="# " className='unchange2'><i className="fa-solid fa-cart-shopping"></i><p className='appearNow'>Cart</p></a>
-                        <a data-menu="table" href="# " className='unchange2'><i className="fa-solid fa-calendar-check"></i><p className='appearNow'>Table</p></a>
-                        <a data-menu="booking" href="# " className='unchange2'><i className="fa-solid fa-calendar-plus"></i><p className='appearNow'>Booking</p></a>
-                        <a data-menu="download" href="# " className='unchange2'><i className="fa-solid fa-utensils"></i><p className='appearNow'>Menu</p></a>
+                        <a data-menu="dashboard" onClick={() => setPage("dashboard")} href="#Home" className="unchange2"><i className="fa-solid fa-house"></i><p className='appearNow'>Home</p></a>
+                        <a data-menu="about" onClick={() => setPage("about")} href="#Cart" className='unchange2'><i className="fa-solid fa-cart-shopping"></i><p className='appearNow'>Cart</p></a>
+                        <a data-menu="table" onClick={() => setPage("table")} href="#Table" className='unchange2'><i className="fa-solid fa-calendar-check"></i><p className='appearNow'>Table</p></a>
+                        <a data-menu="booking" onClick={() => setPage("booking")} href="#Booking" className='unchange2'><i className="fa-solid fa-calendar-plus"></i><p className='appearNow'>Booking</p></a>
+                        <a data-menu="download" onClick={() => setPage("download")} href="#Menu" className='unchange2'><i className="fa-solid fa-utensils"></i><p className='appearNow'>Menu</p></a>
+                        <a data-menu="announce" onClick={() => setPage("announce")} href="#announce" className='unchange2'><i className="fa-solid fa-bullhorn"></i><p className='appearNow'>Announce</p></a>
                         <a data-dialog="logout" href="# " className='unchange2'><i className="fa-solid fa-right-from-bracket"></i><p className='appearNow'>Logout</p></a>
                     </div>
                 </div>
                 <div className="content">
-                    <div className="page active" data-page="dashboard" id='Dashboard'>
+                    <div className="page" data-page="dashboard" id='Dashboard'>
                         <div className="header">
                             <div className="title">
                                 <h2>Dashboard</h2>
@@ -397,6 +440,16 @@ function ManagerPanel() {
                             {Load4 ? (
                                 <MainMenu />
                             ) : null}
+                        </div>
+                    </div>
+                    <div className="page noflex" data-page="announce" id='announce'>
+                        <div className="header">
+                            <div className="title">
+                                <h2>Announcement</h2>
+                            </div>
+                        </div>
+                        <div className='callMeOutUI'>
+                            <MainAnnounce />
                         </div>
                     </div>
                 </div>

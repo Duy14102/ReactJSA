@@ -533,6 +533,40 @@
     display: none !important;
 }
 
+.alertNow {
+    padding: 1.2%;
+    color: black;
+    text-wrap: nowrap;
+    gap: 5%;
+    display: flex;
+    align-items: center;
+    position: absolute;
+    background-color: #d6f5d6;
+}
+
+.alertDelete {
+    padding: 1.2%;
+    color: black;
+    text-wrap: nowrap;
+    gap: 5%;
+    display: flex;
+    align-items: center;
+    position: absolute;
+    background-color: #ffb3b3;
+}
+
+.addAnn {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.colorButtonAc:hover,
+.colorButtonAc:active {
+    transition: all 0.2s;
+    filter: brightness(0.7);
+}
+
 @media (max-width:575px) {
     .perKnow {
         display: inline-flex !important;

@@ -11,6 +11,7 @@ import Swal from 'sweetalert2';
 import jwtDecode from "jwt-decode";
 import Cookies from "universal-cookie";
 import ReactPaginate from 'react-paginate';
+import Alert from '../component/outOfBorder/Alert';
 window.jQuery = jQuery
 require('owl.carousel')
 
@@ -27,6 +28,7 @@ function DetailMenuPage() {
     const [reviewStar, setReviewStar] = useState()
     const [wowreview, setWowReview] = useState([])
     const [checkStar, setCheckStar] = useState(false)
+    const [callAlert, setCallAlert] = useState(false)
     var [quantity, setQuantity] = useState(0)
 
     const [pageCount, setPageCount] = useState(6);
@@ -131,24 +133,32 @@ function DetailMenuPage() {
             var student1 = { name: name, quantity: quantity };
             students.push(student1);
             localStorage.setItem("cart", JSON.stringify(students));
-            window.location.reload()
+            setCallAlert(true)
         } else {
             var sameItem = JSON.parse(localStorage.getItem("cart")) || [];
             for (var i = 0; i < sameItem.length; i++) {
                 if (name === sameItem[i].name) {
                     sameItem[i].quantity += quantity;
                     localStorage.setItem('cart', JSON.stringify(sameItem))
-                    window.location.reload()
+                    setCallAlert(true)
                 } else if (i === sameItem.length - 1) {
                     var stored2 = JSON.parse(localStorage.getItem("cart"));
                     var student2 = { name: name, quantity: quantity };
                     stored2.push(student2);
                     localStorage.setItem("cart", JSON.stringify(stored2));
-                    window.location.reload()
+                    setCallAlert(true)
                 }
             }
         }
     }
+
+    useEffect(() => {
+        if (callAlert) {
+            setTimeout(() => {
+                setCallAlert(false)
+            }, 3000)
+        }
+    }, [callAlert])
 
     const date = Date.now()
     const hashdate = new Date(date).toLocaleDateString()
@@ -257,6 +267,9 @@ function DetailMenuPage() {
     return (
         <>
             <Header type={"Yes"} />
+            {callAlert ? (
+                <Alert type={"Green"} />
+            ) : null}
             <div className='bg-white'>
                 {Object.values(detail).map(i => {
                     if (quantity > i.foodquantity) {

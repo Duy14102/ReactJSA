@@ -7,7 +7,6 @@ import NotFound from '../component/outOfBorder/NotFound';
 import axios from 'axios';
 import $ from 'jquery'
 import ReactPaginate from 'react-paginate';
-import LazyLoad from 'react-lazyload';
 
 function CategoryPage() {
     let appler = useParams()
@@ -72,15 +71,19 @@ function CategoryPage() {
     }
 
     const Filter = (e) => {
+        if (e === "nto") {
+            window.location.href = `/CategorySite/${appler.id}/nto`
+        }
+        if (e === "otn") {
+            window.location.href = `/CategorySite/${appler.id}/otn`
+        }
+        if (e === "hpf") {
+            window.location.href = `/CategorySite/${appler.id}/hpf`
+        }
         if (e === "lpf") {
             window.location.href = `/CategorySite/${appler.id}/lpf`
-        } if (e === "hpf") {
-            window.location.href = `/CategorySite/${appler.id}/hpf`
-        } if (e === "nto") {
-            window.location.href = `/CategorySite/${appler.id}/nto`
-        } if (e === "otn") {
-            window.location.href = `/CategorySite/${appler.id}/otn`
-        } if (e === "atz") {
+        }
+        if (e === "atz") {
             window.location.href = `/CategorySite/${appler.id}/atz`
         }
     }
@@ -176,33 +179,31 @@ function CategoryPage() {
                                 var quantity = 1
                                 return (
                                     <div className="product-box column p-0 CateColumn" key={i._id}>
-                                        <LazyLoad>
-                                            <div className="product-item">
-                                                <NavLink reloadDocument to={`/DetailMenuPage/${i.foodname}/${i.foodcategory}`}>
-                                                    <div className="product-item-image">
-                                                        <img loading='lazy' src={i.foodimage} alt="" />
-                                                        <div className="product-item-image-hover">
-                                                        </div>
-                                                    </div>
-                                                </NavLink>
-                                                <div className="product-item-content">
-                                                    <div className="product-item-category">
-                                                        {i.foodcategory}
-                                                    </div>
-                                                    <NavLink reloadDocument to={`/DetailMenuPage/${i.foodname}/${i.foodcategory}`} className="product-item-title">{i.foodname} </NavLink>
-                                                    <div className="product-item-price">
-                                                        {VND.format(i.foodprice)}
+                                        <div className="product-item">
+                                            <NavLink reloadDocument to={`/DetailMenuPage/${i.foodname}/${i.foodcategory}`}>
+                                                <div className="product-item-image">
+                                                    <img loading='lazy' src={i.foodimage} alt="" />
+                                                    <div className="product-item-image-hover">
                                                     </div>
                                                 </div>
-                                                <div className='liutiudiu'>
-                                                    {i.foodquantity > 0 ? (
-                                                        <button onClick={() => addToCart(i.foodname, quantity)} className='btn btn-primary'>Add to cart</button>
-                                                    ) : (
-                                                        <button style={{ pointerEvents: "none", opacity: 0.5 }} className='btn btn-primary'>Add to cart</button>
-                                                    )}
+                                            </NavLink>
+                                            <div className="product-item-content">
+                                                <div className="product-item-category">
+                                                    {i.foodcategory}
+                                                </div>
+                                                <NavLink reloadDocument to={`/DetailMenuPage/${i.foodname}/${i.foodcategory}`} className="product-item-title">{i.foodname} </NavLink>
+                                                <div className="product-item-price">
+                                                    {VND.format(i.foodprice)}
                                                 </div>
                                             </div>
-                                        </LazyLoad>
+                                            <div className='liutiudiu'>
+                                                {i.foodquantity > 0 ? (
+                                                    <button onClick={() => addToCart(i.foodname, quantity)} className='btn btn-primary'>Add to cart</button>
+                                                ) : (
+                                                    <button style={{ pointerEvents: "none", opacity: 0.5 }} className='btn btn-primary'>Add to cart</button>
+                                                )}
+                                            </div>
+                                        </div>
                                     </div>
                                 )
                             })}

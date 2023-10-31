@@ -129,8 +129,10 @@ function LoginSite() {
                     } else if (result.data.role == 4) {
                         window.location.href = '/AdminPanel';
                     } else if (result.data.role === 2) {
+                        localStorage.setItem('tabs', 'dashboard')
                         window.location.href = '/EmployeePanel';
                     } else {
+                        localStorage.setItem('tabs', 'dashboard')
                         window.location.href = '/ManagerPanel';
                     }
                 })

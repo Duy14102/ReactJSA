@@ -27,6 +27,7 @@ import UserPanel from "./pages/admin/UserPanel";
 import EmployeePanel from "./pages/admin/EmployeePanel";
 import ManagerPanel from "./pages/admin/ManagerPanel";
 import QrCodeTable from "./pages/QrCodeTable";
+import Announcement from "./pages/Announcement";
 
 const cookies = new Cookies();
 const token = cookies.get("TOKEN");
@@ -67,6 +68,7 @@ function Wrapped() {
                     <Route path="CategorySite/:id/:fil" element={<CategoryPage />} />
                     <Route path="SearchSite/:id/:fil" element={<SearchSite />} />
                     <Route path="BookingSite" element={<BookingSite />} />
+                    <Route path="Announcement" element={<Announcement />} />
                     <Route path="TrackOrder" element={<TrackOrder />} />
                     <Route path="PAndT" element={<PrivacyAndTerm />} />
                     <Route path="LoginSite" element={<LoginSite />} />

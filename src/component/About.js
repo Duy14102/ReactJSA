@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 function About() {
     return (
         <div className="container-fluid bg-white py-5">

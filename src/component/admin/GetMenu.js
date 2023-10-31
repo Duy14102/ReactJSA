@@ -62,7 +62,7 @@ function GetMenu({ cate }) {
             }
         };
         axios(configuration)
-            .then((result) => {
+            .then(() => {
                 Swal.fire(
                     'Delete Successfully!',
                     '',
@@ -115,8 +115,8 @@ function GetMenu({ cate }) {
                     'Update Successfully!',
                     '',
                     'success'
-                ).then(() => {
-                    window.location.reload()
+                ).then(function () {
+                    window.location.reload();
                 })
             })
             .catch(() => {
@@ -146,6 +146,7 @@ function GetMenu({ cate }) {
         style: 'currency',
         currency: 'VND',
     });
+
     return (
         <>
             <table className='table table-bordered text-center'>
@@ -232,25 +233,25 @@ function GetMenu({ cate }) {
                                 <div className="overHereB">
                                     <div className="insideHereB">
                                         <label>Name</label>
-                                        <input className='textDeny' type='text' name='updatename' defaultValue={ModalData.foodname} value={updatename} onChange={(e) => setFoodname(e.target.value)}></input>
+                                        <input className='textDeny' type='text' name='updatename' defaultValue={ModalData.foodname} onChange={(e) => setFoodname(e.target.value)}></input>
                                     </div>
                                     <div className="insideHereB">
                                         <label>Category</label>
-                                        <input className='textDeny' type='text' name='updatecategory' defaultValue={ModalData.foodcategory} value={updatecategory} onChange={(e) => setFoodcategory(e.target.value)} ></input>
+                                        <input className='textDeny' type='text' name='updatecategory' defaultValue={ModalData.foodcategory} onChange={(e) => setFoodcategory(e.target.value)} ></input>
                                     </div>
                                 </div>
                                 <div className="overHereB">
                                     <div className="insideHereB">
                                         <label>Price</label>
-                                        <input className='textDeny' type='number' name='updateprice' defaultValue={ModalData.foodprice} value={updateprice} onChange={(e) => setFoodprice(e.target.value)} ></input>
+                                        <input className='textDeny' type='number' name='updateprice' defaultValue={ModalData.foodprice} onChange={(e) => setFoodprice(e.target.value)} ></input>
                                     </div>
                                     <div className="insideHereB">
                                         <label>Quantity</label>
-                                        <input className='textDeny' type='number' name='updatequantity' defaultValue={ModalData.foodquantity} value={updatequantity} onChange={(e) => setFoodquantity(e.target.value)} ></input>
+                                        <input className='textDeny' type='number' name='updatequantity' defaultValue={ModalData.foodquantity} onChange={(e) => setFoodquantity(e.target.value)} ></input>
                                     </div>
                                 </div>
                                 <label>Description</label>
-                                <textarea className='textDeny' type='text' name='updatedescription' defaultValue={ModalData.fooddescription} value={updatedescription} onChange={(e) => setFooddescription(e.target.value)}></textarea>
+                                <textarea className='textDeny' type='text' name='updatedescription' defaultValue={ModalData.fooddescription} onChange={(e) => setFooddescription(e.target.value)}></textarea>
                             </div>
                         </div>
                         <hr />

@@ -49,6 +49,23 @@ function EmployeePanel() {
             .catch((err) => {
                 console.log(err);
             })
+        var elem = $('.menu a[data-menu]')
+        var tabs = localStorage.getItem('tabs')
+        $('[data-page="' + tabs + '"]').addClass('active');
+        for (var i = 0; i < elem.length; i++) {
+            if (elem[i].dataset.menu === tabs) {
+                elem[i].classList.add('active');
+            }
+        }
+        if ($('.content .page:nth-child(2)').hasClass('active') === true) {
+            setLoad1(true)
+        }
+        if ($('.content .page:nth-child(3)').hasClass('active') === true) {
+            setLoad2(true)
+        }
+        if ($('.content .page:nth-child(4)').hasClass('active') === true) {
+            setLoad3(true)
+        }
     }, [name.userId])
 
     $(function () {
@@ -187,9 +204,24 @@ function EmployeePanel() {
             })
     }
 
+    function setPage(e) {
+        if (e === "dashboard") {
+            localStorage.setItem('tabs', e)
+        }
+        if (e === "download") {
+            localStorage.setItem('tabs', e)
+        }
+        if (e === "users") {
+            localStorage.setItem('tabs', e)
+        }
+        if (e === "about") {
+            localStorage.setItem('tabs', e)
+        }
+    }
+
     const logoutThis = () => {
         cookies.remove("TOKEN");
-        localStorage.clear();
+        localStorage.removeItem('tabs');
         window.location.href = '/';
     }
     return (
@@ -225,15 +257,15 @@ function EmployeePanel() {
                             )
                         })}
                         <div className="menu">
-                            <a data-menu="dashboard" href="# " className="active unchange2"><i className="fa-solid fa-house"></i><p className='appearNow'>Home</p></a>
-                            <a data-menu="download" href="# " className='unchange2'><i className="fa-solid fa-calendar-check"></i><p className='appearNow'>Table</p></a>
-                            <a data-menu="users" href="# " className='unchange2'><i className="fa-solid fa-briefcase"></i><p className='appearNow'>Booking</p></a>
-                            <a data-menu="about" href="# " className='unchange2'><i className="fa-solid fa-cart-shopping"></i><p className='appearNow'>Cart</p></a>
+                            <a data-menu="dashboard" href="#dashboard" onClick={() => setPage("dashboard")} className="unchange2"><i className="fa-solid fa-house"></i><p className='appearNow'>Home</p></a>
+                            <a data-menu="download" href="#download" onClick={() => setPage("download")} className='unchange2'><i className="fa-solid fa-calendar-check"></i><p className='appearNow'>Table</p></a>
+                            <a data-menu="users" href="#users" onClick={() => setPage("users")} className='unchange2'><i className="fa-solid fa-briefcase"></i><p className='appearNow'>Booking</p></a>
+                            <a data-menu="about" href="#about" onClick={() => setPage("about")} className='unchange2'><i className="fa-solid fa-cart-shopping"></i><p className='appearNow'>Cart</p></a>
                             <a data-dialog="logout" href="# " className='unchange2'><i className="fa-solid fa-right-from-bracket"></i><p className='appearNow'>Logout</p></a>
                         </div>
                     </div>
                     <div className="content">
-                        <div className="page active" data-page="dashboard">
+                        <div className="page" data-page="dashboard">
                             <div className="header">
                                 <div className="title">
                                     <h2>Dashboard</h2>

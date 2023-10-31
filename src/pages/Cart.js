@@ -63,6 +63,7 @@ function Cart() {
                 if (name === stored2[k].name) {
                     stored2[k].quantity = e
                     localStorage.setItem("cart", JSON.stringify(stored2));
+                    window.location.reload()
                 }
             }
         }
@@ -84,7 +85,7 @@ function Cart() {
         pushData.push(dataToPush)
         return (
             <tr key={i._id}>
-                <td className="Xtd"><button onClick={() => removeItem(i.foodname)} className="insideXtd">×</button></td>
+                <td className="Xtd"><button title="Delete item" onClick={() => removeItem(i.foodname)} className="insideXtd">×</button></td>
                 <td style={{ width: 10 + "%" }}><img alt="" src={i.foodimage} width={70} height={60} /></td>
                 <td>{i.foodname}<span className="jackass"><br />{VND.format(i.foodprice)}</span></td>
                 <td className="thhuhu">{VND.format(i.foodprice)}</td>

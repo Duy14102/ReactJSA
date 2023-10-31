@@ -40,6 +40,162 @@ const Booking = require("./model/Booking");
 const GetBooking = mongoose.model("Booking");
 const Table = require("./model/Table");
 const GetTable = mongoose.model("Table");
+const News = require("./model/News");
+const GetNews = mongoose.model("News");
+
+//Get All News
+app.get("/GetAllNews", async (req, res) => {
+    try {
+        const getIt = await GetNews.find({}).sort({ status: -1 })
+        const page = parseInt(req.query.page)
+        const limit = parseInt(req.query.limit)
+
+        const start = (page - 1) * limit
+        const end = page * limit
+
+        const results = {}
+        results.total = getIt.length
+        results.pageCount = Math.ceil(getIt.length / limit)
+
+        if (end < getIt.length) {
+            results.next = {
+                page: page + 1
+            }
+        }
+        if (start > 0) {
+            results.prev = {
+                page: page - 1
+            }
+        }
+
+        results.result = getIt.slice(start, end)
+        res.send({ results });
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Get News Active
+app.get("/GetNewsActive", async (req, res) => {
+    try {
+        const getIt = await GetNews.find({ status: 2 })
+        res.send({ data: getIt })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Search All Announce
+app.get("/SearchAllAnnounce", async (req, res) => {
+    try {
+        const proS = await GetNews.find({})
+        var proBig = null
+        for (var i = 0; i < proS.length; i++) {
+            const datetime = new Date(proS[i].createdAt)
+            const datetime2 = new Date(req.query.date)
+            if (datetime.toLocaleDateString() === datetime2.toLocaleDateString()) {
+                proBig = proS
+            }
+        }
+        if (proBig) {
+            const getOrder = proBig
+            const page = parseInt(req.query.page)
+            const limit = parseInt(req.query.limit)
+
+            const start = (page - 1) * limit
+            const end = page * limit
+
+            const results = {}
+            results.total = getOrder.length
+            results.pageCount = Math.ceil(getOrder.length / limit)
+
+            if (end < getOrder.length) {
+                results.next = {
+                    page: page + 1
+                }
+            }
+            if (start > 0) {
+                results.prev = {
+                    page: page - 1
+                }
+            }
+
+            results.result = getOrder.slice(start, end)
+            res.send({ results });
+        }
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Add News
+app.post("/AddNews", (req, res) => {
+    try {
+        const thisNews = new News({
+            title: req.body.title,
+            message: req.body.message,
+            status: 1
+        })
+        thisNews.save().then(() => {
+            res.send({ data: "succeed" })
+        }).catch((err) => {
+            console.log(err);
+        })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Update News
+app.post("/UpdateNews", (req, res) => {
+    try {
+        GetNews.updateOne({ _id: req.body.id }, {
+            title: req.body.title,
+            message: req.body.message
+        }).then(() => {
+            res.send({ data: "succeed" })
+        }).catch((err) => {
+            console.log(err);
+        })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Delete News
+app.post("/DeleteNews", (req, res) => {
+    try {
+        GetNews.deleteOne({ _id: req.body.id }).then(() => { res.send({ data: "succeed" }) }).catch((err) => { console.log(err); })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Change Status News
+app.post("/ChangeNewsStatus", (req, res) => {
+    try {
+        if (req.body.status === 1) {
+            GetNews.updateOne({ _id: req.body.id }, {
+                status: 2
+            }).then(() => {
+                res.send({ data: "succeed" })
+            }).catch((err) => {
+                console.log(err);
+            })
+        }
+        if (req.body.status === 2) {
+            GetNews.updateOne({ _id: req.body.id }, {
+                status: 1
+            }).then(() => {
+                res.send({ data: "succeed" })
+            }).catch((err) => {
+                console.log(err);
+            })
+        }
+    } catch (e) {
+        console.log(e);
+    }
+})
 
 //Register
 app.post("/Register", (request, response) => {

@@ -126,6 +126,12 @@ function Header({ type }) {
         window.location.href = "/"
         cookies.remove("TOKEN", { path: '/' });
     }
+
+    const logoutThat = () => {
+        window.location.href = "/"
+        localStorage.removeItem('tabs');
+        cookies.remove("TOKEN", { path: '/' });
+    }
     return (
         <>
             <nav className="navbar navbar-expand-lg GroundW navbar-dark px-4 px-lg-5 py-3 py-lg-0">
@@ -170,6 +176,7 @@ function Header({ type }) {
                                 <NavLink reloadDocument to="/CategorySite/Vegetables/nto" className="dropdown-item">Vegetables</NavLink>
                             </div>
                         </div>
+                        <NavLink reloadDocument to="/Announcement" className="nav-item nav-link Wrinked">Announcement</NavLink>
                         <NavLink reloadDocument to="/TrackOrder" className="nav-item nav-link Wrinked">Track Order</NavLink>
                         <NavLink reloadDocument to="/BookingSite" className="nav-item nav-link Wrinked">Booking</NavLink>
                         <NavLink reloadDocument to="/ContactSite" className="nav-item nav-link Wrinked">Contact</NavLink>
@@ -208,15 +215,26 @@ function Header({ type }) {
                                             <img className="nav-link dropdown-toggle Move2 imgUser" src="https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg" width={70} height={55} alt="" />
                                             <div className="dropdown-menu m-0 text-center Move3">
                                                 {decode.userRole === 1 ? (
-                                                    <NavLink reloadDocument to={`/UserPanel/${i._id}`} className="dropdown-item">Account</NavLink>
+                                                    <>
+                                                        <NavLink reloadDocument to={`/UserPanel/${i._id}`} className="dropdown-item">Account</NavLink>
+                                                        <button onClick={() => logoutThis()} className="dropdown-item"><i className="fa-solid fa-right-from-bracket"></i> Logout</button>
+                                                    </>
                                                 ) : decode.userRole === 2 ? (
-                                                    <NavLink reloadDocument to={"/EmployeePanel"} className="dropdown-item">Employee Panel</NavLink>
+                                                    <>
+                                                        <NavLink reloadDocument to={"/EmployeePanel"} className="dropdown-item">Employee Panel</NavLink>
+                                                        <button onClick={() => logoutThat()} className="dropdown-item"><i className="fa-solid fa-right-from-bracket"></i> Logout</button>
+                                                    </>
                                                 ) : decode.userRole === 3 ? (
-                                                    <NavLink reloadDocument to={"/ManagerPanel"} className="dropdown-item">Manager Panel</NavLink>
+                                                    <>
+                                                        <NavLink reloadDocument to={"/ManagerPanel"} className="dropdown-item">Manager Panel</NavLink>
+                                                        <button onClick={() => logoutThat()} className="dropdown-item"><i className="fa-solid fa-right-from-bracket"></i> Logout</button>
+                                                    </>
                                                 ) : decode.userRole === 4 ? (
-                                                    <NavLink reloadDocument to={"/AdminPanel"} className="dropdown-item">Admin Panel</NavLink>
+                                                    <>
+                                                        <NavLink reloadDocument to={"/AdminPanel"} className="dropdown-item">Admin Panel</NavLink>
+                                                        <button onClick={() => logoutThat()} className="dropdown-item"><i className="fa-solid fa-right-from-bracket"></i> Logout</button>
+                                                    </>
                                                 ) : null}
-                                                <button onClick={() => logoutThis()} className="dropdown-item"><i className="fa-solid fa-right-from-bracket"></i> Logout</button>
                                             </div>
                                         </div>
                                     )
