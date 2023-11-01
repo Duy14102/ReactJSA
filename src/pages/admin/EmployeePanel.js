@@ -10,6 +10,7 @@ import MainBooking from '../../component/employee/MainBooking';
 import MainOrder from '../../component/admin/MainOrder';
 import MainTable from '../../component/employee/MainTable';
 import TaskHandle from '../../component/employee/TaskHandle';
+import NotFound from '../../component/outOfBorder/NotFound';
 
 function EmployeePanel() {
     const cookies = new Cookies()
@@ -217,6 +218,10 @@ function EmployeePanel() {
         if (e === "about") {
             localStorage.setItem('tabs', e)
         }
+    }
+
+    if (name.userRole !== 2) {
+        return NotFound()
     }
 
     const logoutThis = () => {

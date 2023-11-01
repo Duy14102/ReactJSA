@@ -7,6 +7,7 @@ import MainUser from '../../component/admin/MainUser';
 import jwtDecode from 'jwt-decode';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import NotFound from '../../component/outOfBorder/NotFound'
 
 function AdminPanel() {
     const cookies = new Cookies();
@@ -147,6 +148,10 @@ function AdminPanel() {
                     window.location.reload();
                 })
             })
+    }
+
+    if (name.userRole !== 4) {
+        return NotFound()
     }
 
     const logoutThis = () => {

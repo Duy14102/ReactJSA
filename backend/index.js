@@ -886,6 +886,16 @@ app.get("/GetThisMenu", async (req, res) => {
     }
 })
 
+//Get Carousel Detail Page
+app.get("/GetSimilarP", async (req, res) => {
+    try {
+        const getIt = await getThisMenu.find({ foodcategory: req.query.Name }).limit(5);
+        res.send({ data: getIt })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
 //Get Cart Item
 app.get("/GetCartItem", async (req, res) => {
     try {
@@ -1448,6 +1458,30 @@ app.post("/AddTableByHand", (req, res) => {
         }).catch((e) => {
             console.log(e);
         })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Change Table Name
+app.post("/ChangeTableNameQuick", (req, res) => {
+    try {
+        GetTable.updateOne({ _id: req.body.id }, {
+            tablename: req.body.name
+        }).then(() => {
+            res.send({ data: "succeed" })
+        }).catch((err) => {
+            console.log(err);
+        })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Delete Table by manager
+app.post("/DeleteTableNow", (req, res) => {
+    try {
+        GetTable.deleteOne({ _id: req.body.id }).then(() => { res.send({ data: "succeed" }) }).catch((err) => { console.log(err); })
     } catch (e) {
         console.log(e);
     }

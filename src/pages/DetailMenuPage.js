@@ -29,6 +29,8 @@ function DetailMenuPage() {
     const [wowreview, setWowReview] = useState([])
     const [checkStar, setCheckStar] = useState(false)
     const [callAlert, setCallAlert] = useState(false)
+    const [checkKiu, setCheckKiu] = useState(false)
+    const [gotReview, setGotReview] = useState()
     var [quantity, setQuantity] = useState(0)
 
     const [pageCount, setPageCount] = useState(6);
@@ -112,7 +114,7 @@ function DetailMenuPage() {
             })
         }
 
-        fetch(`http://localhost:3000/GetThisMenu?Name=${appler.cate}`, {
+        fetch(`http://localhost:3000/GetSimilarP?Name=${appler.cate}`, {
             method: "get",
         }).then((res) => res.json()).then((menu) => {
             setMenu(menu.data);
@@ -249,6 +251,19 @@ function DetailMenuPage() {
         }
     }
 
+    useEffect(() => {
+        wowreview.map((f) => {
+            if (token) {
+                const decode = jwtDecode(token)
+                if (f.id === decode.userId) {
+                    setCheckKiu(true)
+                    setGotReview(f)
+                }
+            }
+            return null
+        })
+    }, [token, wowreview])
+
     // localStorage.clear()
 
     function handlePageClick(e, i) {
@@ -264,6 +279,7 @@ function DetailMenuPage() {
         style: 'currency',
         currency: 'VND',
     });
+    const rating = stars => '★★★★★☆☆☆☆☆'.slice(5 - stars, 10 - stars);
     return (
         <>
             <Header type={"Yes"} />
@@ -330,136 +346,166 @@ function DetailMenuPage() {
                                             {i.fooddescription}
                                         </div>
                                         <div className="tab-pane" id="review">
-                                            {i.review?.length <= 0 ? (
-                                                <>
-                                                    <div className="review-heading">REVIEWS</div>
-                                                    <p className="mb-20">There are no reviews yet.</p>
-                                                    <form onSubmit={(e) => addreview(e, i._id)} className="review-form">
-                                                        <div className="form-group">
-                                                            <div className='d-flex' style={{ gap: 3 + "%" }}>
-                                                                <div>
-                                                                    <label>Your rating</label>
-                                                                    <div className="reviews-counter">
-                                                                        <div className="rate">
-                                                                            <input type='radio' style={{ display: "none" }} required />
-                                                                            <input type="radio" onChange={(e) => setReviewStar(e.target.value)} id="star5" name="rate" value="5" />
-                                                                            <label title="text" htmlFor='star5'>5 stars</label>
-                                                                            <input type="radio" onChange={(e) => setReviewStar(e.target.value)} id="star4" name="rate" value="4" />
-                                                                            <label title="text" htmlFor='star4'>4 stars</label>
-                                                                            <input type="radio" onChange={(e) => setReviewStar(e.target.value)} id="star3" name="rate" value="3" />
-                                                                            <label title="text" htmlFor='star3'>3 stars</label>
-                                                                            <input type="radio" onChange={(e) => setReviewStar(e.target.value)} id="star2" name="rate" value="2" />
-                                                                            <label title="text" htmlFor='star2'>2 stars</label>
-                                                                            <input type="radio" onChange={(e) => setReviewStar(e.target.value)} id="star1" name="rate" value="1" />
-                                                                            <label title="text" htmlFor='star1'>1 star</label>
+                                            {token ? (
+                                                i.review?.length <= 0 ? (
+                                                    <>
+                                                        <div className="review-heading">REVIEWS</div>
+                                                        <p className="mb-20">There are no reviews yet.</p>
+                                                        <form onSubmit={(e) => addreview(e, i._id)} className="review-form">
+                                                            <div className="form-group">
+                                                                <div className='d-flex' style={{ gap: 3 + "%" }}>
+                                                                    <div>
+                                                                        <label>Your rating</label>
+                                                                        <div className="reviews-counter">
+                                                                            <div className="rate">
+                                                                                <input type='radio' style={{ display: "none" }} required />
+                                                                                <input type="radio" onChange={(e) => setReviewStar(e.target.value)} id="star5" name="rate" value="5" />
+                                                                                <label title="text" htmlFor='star5'>5 stars</label>
+                                                                                <input type="radio" onChange={(e) => setReviewStar(e.target.value)} id="star4" name="rate" value="4" />
+                                                                                <label title="text" htmlFor='star4'>4 stars</label>
+                                                                                <input type="radio" onChange={(e) => setReviewStar(e.target.value)} id="star3" name="rate" value="3" />
+                                                                                <label title="text" htmlFor='star3'>3 stars</label>
+                                                                                <input type="radio" onChange={(e) => setReviewStar(e.target.value)} id="star2" name="rate" value="2" />
+                                                                                <label title="text" htmlFor='star2'>2 stars</label>
+                                                                                <input type="radio" onChange={(e) => setReviewStar(e.target.value)} id="star1" name="rate" value="1" />
+                                                                                <label title="text" htmlFor='star1'>1 star</label>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
+                                                                    {checkStar ? (
+                                                                        <p className='text-danger'>Choose star for this item !</p>
+                                                                    ) : null}
                                                                 </div>
-                                                                {checkStar ? (
-                                                                    <p className='text-danger'>Choose star for this item !</p>
-                                                                ) : null}
                                                             </div>
-                                                        </div>
-                                                        {token ? null : (
-                                                            <div className="form-group">
-                                                                <label>Your name</label>
-                                                                <input onChange={(e) => setReviewName(e.target.value)} type="text" name="" className="form-control" required />
+                                                            {token ? null : (
+                                                                <div className="form-group">
+                                                                    <label>Your name</label>
+                                                                    <input onChange={(e) => setReviewName(e.target.value)} type="text" name="" className="form-control" required />
+                                                                </div>
+                                                            )}
+                                                            <div className="form-group pt-4">
+                                                                <label>Your message</label>
+                                                                <textarea onChange={(e) => setReviewMessage(e.target.value)} className="form-control" rows="10" required />
                                                             </div>
-                                                        )}
-                                                        <div className="form-group pt-4">
-                                                            <label>Your message</label>
-                                                            <textarea onChange={(e) => setReviewMessage(e.target.value)} className="form-control" rows="10" required />
-                                                        </div>
-                                                        <button type='submit' className="round-black-btn">Submit Review</button>
-                                                    </form>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <div className='d-flex justify-content-between w-100'>
-                                                        <div style={{ width: 58 + "%" }}>
-                                                            {wowreview.map((r) => {
-                                                                const rating = stars => '★★★★★☆☆☆☆☆'.slice(5 - stars, 10 - stars);
-                                                                return (
-                                                                    <Fragment key={r.date}>
+                                                            <button type='submit' className="round-black-btn">Submit Review</button>
+                                                        </form>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <div className='d-flex justify-content-between w-100'>
+                                                            <div style={{ width: 58 + "%" }}>
+                                                                {wowreview.map((r) => {
+                                                                    return (
+                                                                        <Fragment key={r.date}>
+                                                                            <div className='gutton'>
+                                                                                {r.image ? (
+                                                                                    <img alt='' height={50} width={50} src={r.image} />
+                                                                                ) : (
+                                                                                    <img alt='' height={50} width={50} src="https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg" />
+                                                                                )}
+                                                                                <div>
+                                                                                    <div>{rating(r.star)}</div>
+                                                                                    <p className='m-0'><b>{r.name}</b> - {r.date}</p>
+                                                                                    <p className='m-0'>{r.message}</p>
+                                                                                </div>
+                                                                            </div>
+                                                                            <hr />
+                                                                        </Fragment>
+                                                                    )
+                                                                })}
+                                                                <ReactPaginate
+                                                                    breakLabel="..."
+                                                                    nextLabel="Next >"
+                                                                    onPageChange={(e) => handlePageClick(e.selected, i)}
+                                                                    pageRangeDisplayed={5}
+                                                                    pageCount={pageCount}
+                                                                    previousLabel="< Previous"
+                                                                    renderOnZeroPageCount={null}
+                                                                    marginPagesDisplayed={2}
+                                                                    containerClassName="pagination justify-content-center"
+                                                                    pageClassName="page-item"
+                                                                    pageLinkClassName="page-link"
+                                                                    previousClassName="page-item"
+                                                                    previousLinkClassName="page-link"
+                                                                    nextClassName="page-item"
+                                                                    nextLinkClassName="page-link"
+                                                                    activeClassName="active"
+                                                                    forcePage={currentPage.current - 1}
+                                                                />
+                                                            </div>
+                                                            <div className='holdTall' style={{ width: 40 + "%" }}>
+                                                                {checkKiu ? (
+                                                                    <>
+                                                                        <div className='text-center'>
+                                                                            <div className="review-heading">REVIEWS</div>
+                                                                            <p>You have review this item!</p>
+                                                                        </div>
                                                                         <div className='gutton'>
-                                                                            {r.image ? (
-                                                                                <img alt='' height={50} width={50} src={r.image} />
+                                                                            {gotReview.image ? (
+                                                                                <img alt='' height={50} width={50} src={gotReview.image} />
                                                                             ) : (
                                                                                 <img alt='' height={50} width={50} src="https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg" />
                                                                             )}
                                                                             <div>
-                                                                                <div>{rating(r.star)}</div>
-                                                                                <p className='m-0'><b>{r.name}</b> - {r.date}</p>
-                                                                                <p className='m-0'>{r.message}</p>
+                                                                                <div>{rating(gotReview.star)}</div>
+                                                                                <p className='m-0'><b>{gotReview.name}</b> - {gotReview.date}</p>
+                                                                                <p className='m-0'>{gotReview.message}</p>
                                                                             </div>
                                                                         </div>
-                                                                        <hr />
-                                                                    </Fragment>
-                                                                )
-                                                            })}
-                                                            <ReactPaginate
-                                                                breakLabel="..."
-                                                                nextLabel="Next >"
-                                                                onPageChange={(e) => handlePageClick(e.selected, i)}
-                                                                pageRangeDisplayed={5}
-                                                                pageCount={pageCount}
-                                                                previousLabel="< Previous"
-                                                                renderOnZeroPageCount={null}
-                                                                marginPagesDisplayed={2}
-                                                                containerClassName="pagination justify-content-center"
-                                                                pageClassName="page-item"
-                                                                pageLinkClassName="page-link"
-                                                                previousClassName="page-item"
-                                                                previousLinkClassName="page-link"
-                                                                nextClassName="page-item"
-                                                                nextLinkClassName="page-link"
-                                                                activeClassName="active"
-                                                                forcePage={currentPage.current - 1}
-                                                            />
-                                                        </div>
-                                                        <div className='holdTall' style={{ width: 40 + "%" }}>
-                                                            <div className="review-heading">REVIEWS</div>
-                                                            <form onSubmit={(e) => addreview(e, i._id)} className="review-form">
-                                                                <div className="form-group">
-                                                                    <div className='d-flex' style={{ gap: 3 + "%" }}>
-                                                                        <div>
-                                                                            <label>Your rating</label>
-                                                                            <div className="reviews-counter">
-                                                                                <div className="rate">
-                                                                                    <input type='radio' style={{ display: "none" }} required />
-                                                                                    <input type="radio" onChange={(e) => setReviewStar(e.target.value)} id="star5" name="rate" value="5" />
-                                                                                    <label title="text" htmlFor='star5'>5 stars</label>
-                                                                                    <input type="radio" onChange={(e) => setReviewStar(e.target.value)} id="star4" name="rate" value="4" />
-                                                                                    <label title="text" htmlFor='star4'>4 stars</label>
-                                                                                    <input type="radio" onChange={(e) => setReviewStar(e.target.value)} id="star3" name="rate" value="3" />
-                                                                                    <label title="text" htmlFor='star3'>3 stars</label>
-                                                                                    <input type="radio" onChange={(e) => setReviewStar(e.target.value)} id="star2" name="rate" value="2" />
-                                                                                    <label title="text" htmlFor='star2'>2 stars</label>
-                                                                                    <input type="radio" onChange={(e) => setReviewStar(e.target.value)} id="star1" name="rate" value="1" />
-                                                                                    <label title="text" htmlFor='star1'>1 star</label>
+                                                                    </>
+                                                                ) : (
+                                                                    <>
+                                                                        <div className="review-heading">REVIEWS</div>
+                                                                        <form onSubmit={(e) => addreview(e, i._id)} className="review-form">
+                                                                            <div className="form-group">
+                                                                                <div className='d-flex' style={{ gap: 3 + "%" }}>
+                                                                                    <div>
+                                                                                        <label>Your rating</label>
+                                                                                        <div className="reviews-counter">
+                                                                                            <div className="rate">
+                                                                                                <input type='radio' style={{ display: "none" }} required />
+                                                                                                <input type="radio" onChange={(e) => setReviewStar(e.target.value)} id="star5" name="rate" value="5" />
+                                                                                                <label title="text" htmlFor='star5'>5 stars</label>
+                                                                                                <input type="radio" onChange={(e) => setReviewStar(e.target.value)} id="star4" name="rate" value="4" />
+                                                                                                <label title="text" htmlFor='star4'>4 stars</label>
+                                                                                                <input type="radio" onChange={(e) => setReviewStar(e.target.value)} id="star3" name="rate" value="3" />
+                                                                                                <label title="text" htmlFor='star3'>3 stars</label>
+                                                                                                <input type="radio" onChange={(e) => setReviewStar(e.target.value)} id="star2" name="rate" value="2" />
+                                                                                                <label title="text" htmlFor='star2'>2 stars</label>
+                                                                                                <input type="radio" onChange={(e) => setReviewStar(e.target.value)} id="star1" name="rate" value="1" />
+                                                                                                <label title="text" htmlFor='star1'>1 star</label>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    {checkStar ? (
+                                                                                        <p className='text-danger'>Choose star for this item !</p>
+                                                                                    ) : null}
                                                                                 </div>
                                                                             </div>
-                                                                        </div>
-                                                                        {checkStar ? (
-                                                                            <p className='text-danger'>Choose star for this item !</p>
-                                                                        ) : null}
-                                                                    </div>
-                                                                </div>
-                                                                {token ? null : (
-                                                                    <div className="form-group">
-                                                                        <label>Your name</label>
-                                                                        <input onChange={(e) => setReviewName(e.target.value)} type="text" name="" className="textDeny" required />
-                                                                    </div>
+                                                                            {token ? null : (
+                                                                                <div className="form-group">
+                                                                                    <label>Your name</label>
+                                                                                    <input onChange={(e) => setReviewName(e.target.value)} type="text" name="" className="textDeny" required />
+                                                                                </div>
+                                                                            )}
+                                                                            <div className="form-group pt-4">
+                                                                                <label>Your message</label>
+                                                                                <textarea onChange={(e) => setReviewMessage(e.target.value)} className="textDeny" rows="10" required />
+                                                                            </div>
+                                                                            <button type='submit' className="round-black-btn">Submit Review</button>
+                                                                        </form>
+                                                                    </>
                                                                 )}
-                                                                <div className="form-group pt-4">
-                                                                    <label>Your message</label>
-                                                                    <textarea onChange={(e) => setReviewMessage(e.target.value)} className="textDeny" rows="10" required />
-                                                                </div>
-                                                                <button type='submit' className="round-black-btn">Submit Review</button>
-                                                            </form>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </>
+                                                    </>
+                                                )
+                                            ) : (
+                                                <div className='d-flex align-items-center justify-content-center'>
+                                                    <p className='text-center m-0'>You need </p>
+                                                    <NavLink className="nav-link p-0" reloadDocument to="/LoginSite">Login</NavLink>
+                                                    <p className='text-center m-0'> to review!</p>
+                                                </div>
                                             )}
                                         </div>
                                     </div>

@@ -10,8 +10,13 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import UserAddressControl from "../../component/admin/UserAddressControl";
 import UserBookingPanel from "../../component/admin/UserBookingPanel";
+import Cookies from "universal-cookie";
+import jwtDecode from "jwt-decode";
 
 function UserPanel() {
+    const cookies = new Cookies();
+    const token = cookies.get("TOKEN");
+    const name = jwtDecode(token)
     let appler = useParams()
     const [updateemail, setEmail] = useState()
     const [updatepassword, setPassword] = useState()
@@ -144,6 +149,10 @@ function UserPanel() {
         }
         document.getElementById(cityName).style.display = "block";
         evt.currentTarget.className += " active6";
+    }
+
+    if (name.userRole !== 1) {
+        return NotFound()
     }
 
     return (

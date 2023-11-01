@@ -176,6 +176,17 @@
     cursor: pointer;
 }
 
+.editTableName {
+    padding: 0.3%;
+    border: 1px solid lightgray;
+}
+
+.editTableName:hover,
+.editTableName:active {
+    transition: all 0.2s;
+    background-color: lightgray;
+}
+
 .subOver .drawer .menu {
     display: flex;
     flex-direction: column;

@@ -8,7 +8,15 @@ import Header from '../../component/Header';
 import Footer from '../../component/Footer';
 import Swal from 'sweetalert2';
 import Cookies from "universal-cookie";
+import NotFound from '../../component/outOfBorder/NotFound';
+
 function LoginSite() {
+    const cookies = new Cookies();
+    const token = cookies.get("TOKEN");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [role] = useState("");
+    const [fullname] = useState("");
     document.title = "EatCom - Login";
     $(function () {
         // [Focus input] * /
@@ -94,13 +102,6 @@ function LoginSite() {
         });
     });
 
-    const cookies = new Cookies();
-
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [role] = useState("");
-    const [fullname] = useState("");
-
     const handleSubmit = (e) => {
         // prevent the form from refreshing the whole page
         e.preventDefault();
@@ -146,6 +147,10 @@ function LoginSite() {
                     location.reload();
                 })
             });
+    }
+
+    if (token) {
+        return NotFound()
     }
     return (
         <>

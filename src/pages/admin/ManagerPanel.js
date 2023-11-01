@@ -16,6 +16,7 @@ import RevenueYear from '../../component/outOfBorder/RevenueYear';
 import MainMenu from '../../component/admin/MainMenu';
 import MainGiveTask from '../../component/admin/MainGiveTask';
 import MainAnnounce from '../../component/employee/MainAnnounce';
+import NotFound from '../../component/outOfBorder/NotFound';
 
 function ManagerPanel() {
     const cookies = new Cookies();
@@ -252,6 +253,10 @@ function ManagerPanel() {
         if (e === "announce") {
             localStorage.setItem('tabs', e)
         }
+    }
+
+    if (name.userRole !== 3) {
+        return NotFound()
     }
 
     const logoutThis = () => {

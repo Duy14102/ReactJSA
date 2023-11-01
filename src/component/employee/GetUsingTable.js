@@ -19,7 +19,9 @@ function GetUsingTable() {
     const [TableData, setTableData] = useState([])
     const [changeThis, setChangeThis] = useState()
     const [CheckTableId, setCheckTableId] = useState(false)
+    const [openTBname, setopenTBname] = useState(false)
     const [pageCount, setPageCount] = useState(6);
+    const [TBnamechange, setTBnamechange] = useState()
     const currentPage = useRef();
     const limit = 9
     const cookies = new Cookies()
@@ -199,6 +201,60 @@ function GetUsingTable() {
         }
     }
 
+    const deleteTable = () => {
+        const configuration = {
+            method: "post",
+            url: "http://localhost:3000/DeleteTableNow",
+            data: {
+                id: ModalData._id
+            }
+        }
+        axios(configuration)
+            .then(() => {
+                Swal.fire(
+                    'Delete Table Successfully!',
+                    '',
+                    'success'
+                ).then(function () {
+                    window.location.reload()
+                })
+            }).catch(() => {
+                Swal.fire(
+                    'Delete Table Fail!',
+                    '',
+                    'error'
+                )
+            })
+    }
+
+    const changeTableName = (e) => {
+        e.preventDefault()
+        const configuration = {
+            method: "post",
+            url: "http://localhost:3000/ChangeTableNameQuick",
+            data: {
+                id: ModalData._id,
+                name: TBnamechange
+            }
+        }
+        axios(configuration)
+            .then(() => {
+                Swal.fire(
+                    'Change Successfully!',
+                    '',
+                    'success'
+                ).then(function () {
+                    window.location.reload()
+                })
+            }).catch(() => {
+                Swal.fire(
+                    'Change Fail!',
+                    '',
+                    'error'
+                )
+            })
+    }
+
     const VND = new Intl.NumberFormat('vi-VN', {
         style: 'currency',
         currency: 'VND',
@@ -309,7 +365,24 @@ function GetUsingTable() {
                 </div>
                 <hr />
                 <div className="hugeImpace">
-                    <p><b>Table name</b> : {ModalData.tablename}</p>
+                    {openTBname ? (
+                        <form onSubmit={(e) => changeTableName(e)}>
+                            <p className="d-flex align-items-center" style={{ gap: 1 + "%" }}>
+                                <span><b>Table name</b> : <input onChange={(e) => setTBnamechange(e.target.value)} defaultValue={ModalData.tablename} /></span>
+                                <div className="d-flex" style={{ gap: 5 + "px" }}>
+                                    <button type="submit" className="editTableName">✔️</button>
+                                    <button onClick={() => setopenTBname(false)} type="button" className="editTableName">✖️</button>
+                                </div>
+                            </p>
+                        </form>
+                    ) : (
+                        <p className="d-flex align-items-center" style={{ gap: 1 + "%" }}>
+                            <span><b>Table name</b> : {ModalData.tablename}</span>
+                            {ModalData.tablestatus === 1 ? (
+                                <button onClick={() => setopenTBname(true)} className="editTableName"><i className="fas fa-edit"></i></button>
+                            ) : null}
+                        </p>
+                    )}
                     {ModalData.tablestatus === 2 ? (
                         <p><b>Date</b> : {datetime}</p>
                     ) : null}
@@ -358,6 +431,13 @@ function GetUsingTable() {
                         </tr>
                     </tbody>
                 </table>
+                {decode.userRole === 3 ? (
+                    ModalData.tablestatus === 1 ? (
+                        <div className="text-center">
+                            <button onClick={() => deleteTable()} className="btn btn-danger">Delete Table</button>
+                        </div>
+                    ) : null
+                ) : null}
                 {ModalData.tablestatus !== 1 && ModalData.tableitems?.length > 0 ? (
                     ModalData.customerid ? (
                         <div className="ladyPurge ohooo">
