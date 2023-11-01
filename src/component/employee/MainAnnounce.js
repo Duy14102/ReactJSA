@@ -148,7 +148,7 @@ function MainAnnounce() {
 
     return (
         <>
-            <div className="addAnn" style={{ gap: 1 + "%" }}>
+            <div className="addAnn">
                 <button onClick={() => setModalOpenDetail(true)} className="btn btn-primary">🔎 Announce</button>
                 <AddAnnounce />
             </div>
@@ -173,7 +173,7 @@ function MainAnnounce() {
                         zIndex: 999
                     },
                 }}>
-                <h2 className='text-center'>Input booking date</h2>
+                <h2 className='text-center text-nowrap'>Input announce date</h2>
                 <div className='overOutsider'>
                     <div className='outsider'>
                         <form onSubmit={(e) => findAnnounce(e)}>

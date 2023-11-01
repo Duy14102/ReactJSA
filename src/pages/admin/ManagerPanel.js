@@ -291,12 +291,12 @@ function ManagerPanel() {
                         )
                     })}
                     <div className="menu">
-                        <a data-menu="dashboard" onClick={() => setPage("dashboard")} href="#Home" className="unchange2"><i className="fa-solid fa-house"></i><p className='appearNow'>Home</p></a>
-                        <a data-menu="about" onClick={() => setPage("about")} href="#Cart" className='unchange2'><i className="fa-solid fa-cart-shopping"></i><p className='appearNow'>Cart</p></a>
-                        <a data-menu="table" onClick={() => setPage("table")} href="#Table" className='unchange2'><i className="fa-solid fa-calendar-check"></i><p className='appearNow'>Table</p></a>
-                        <a data-menu="booking" onClick={() => setPage("booking")} href="#Booking" className='unchange2'><i className="fa-solid fa-calendar-plus"></i><p className='appearNow'>Booking</p></a>
-                        <a data-menu="download" onClick={() => setPage("download")} href="#Menu" className='unchange2'><i className="fa-solid fa-utensils"></i><p className='appearNow'>Menu</p></a>
-                        <a data-menu="announce" onClick={() => setPage("announce")} href="#announce" className='unchange2'><i className="fa-solid fa-bullhorn"></i><p className='appearNow'>Announce</p></a>
+                        <a data-menu="dashboard" onClick={() => setPage("dashboard")} href="# " className="unchange2"><i className="fa-solid fa-house"></i><p className='appearNow'>Home</p></a>
+                        <a data-menu="about" onClick={() => setPage("about")} href="# " className='unchange2'><i className="fa-solid fa-cart-shopping"></i><p className='appearNow'>Cart</p></a>
+                        <a data-menu="table" onClick={() => setPage("table")} href="# " className='unchange2'><i className="fa-solid fa-calendar-check"></i><p className='appearNow'>Table</p></a>
+                        <a data-menu="booking" onClick={() => setPage("booking")} href="# " className='unchange2'><i className="fa-solid fa-calendar-plus"></i><p className='appearNow'>Booking</p></a>
+                        <a data-menu="download" onClick={() => setPage("download")} href="# " className='unchange2'><i className="fa-solid fa-utensils"></i><p className='appearNow'>Menu</p></a>
+                        <a data-menu="announce" onClick={() => setPage("announce")} href="# " className='unchange2'><i className="fa-solid fa-bullhorn"></i><p className='appearNow'>Announce</p></a>
                         <a data-dialog="logout" href="# " className='unchange2'><i className="fa-solid fa-right-from-bracket"></i><p className='appearNow'>Logout</p></a>
                     </div>
                 </div>

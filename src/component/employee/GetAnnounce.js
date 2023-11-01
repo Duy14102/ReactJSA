@@ -143,7 +143,7 @@ function GetAnnounce() {
                     <table className="table table-bordered solotable text-center">
                         <thead>
                             <tr className="text-white" style={{ background: "#374148" }}>
-                                <th>Title</th>
+                                <th className='thhuhu'>Title</th>
                                 <th>Date</th>
                                 <th>Status</th>
                                 <th></th>
@@ -162,7 +162,7 @@ function GetAnnounce() {
                                 }
                                 return (
                                     <tr key={i._id}>
-                                        <td>{i.title}</td>
+                                        <td className='thhuhu'>{i.title}</td>
                                         <td>{datetime}</td>
                                         <td>{call}</td>
                                         <td><button onClick={() => { setModalOpen(true); setModalData(i) }} className="btn btn-success">Detail</button></td>

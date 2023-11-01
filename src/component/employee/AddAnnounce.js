@@ -37,6 +37,8 @@ function AddAnnounce() {
                 )
             })
     }
+
+    var titles = "Title (optional)"
     return (
         <>
             <button onClick={() => setModalOpenDetail(true)} className="btn btn-primary">➕ Announce</button>
@@ -62,8 +64,8 @@ function AddAnnounce() {
                 }}>
                 <h2 className='text-center'>Add Announce</h2>
                 <form onSubmit={(e) => addAnn(e)}>
-                    <label htmlFor="putTheFuckName2">Title</label>
-                    <input id="putTheFuckName2" className="textDeny" onChange={(e) => setTitle(e.target.value)} required />
+                    <label htmlFor="putTheFuckName2">{titles}</label>
+                    <input id="putTheFuckName2" className="textDeny" onChange={(e) => setTitle(e.target.value)} />
                     <label className="pt-4" htmlFor="">Message</label>
                     <JoditEditor
                         required

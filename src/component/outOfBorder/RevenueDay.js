@@ -162,13 +162,13 @@ function RevenueDay() {
                 </div>
             </div>
             <div className='downGraph' >
-                <div className='d-flex text-nowrap' style={{ gap: 5 + "%" }}>
+                <div className='downHure Hurekaka'>
                     <b>🟩</b> : <p className='m-0 text-muted'>Income %</p>
                 </div>
-                <div className='d-flex text-nowrap' style={{ gap: 5 + "%" }}>
+                <div className='downHure'>
                     <b className='text-white'>8</b> : <p className='m-0 text-muted'>Time</p>
                 </div>
-                <div className='d-flex text-nowrap' style={{ gap: 5 + "%" }}>
+                <div className='downHure'>
                     <b className='text-white'>Max</b> : <p className='m-0 text-muted'>{VND.format(2000000)}</p>
                 </div>
             </div>

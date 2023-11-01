@@ -22,7 +22,6 @@
     "react-paginate": "^8.2.0",
     "react-router-dom": "^6.11.1",
     "react-scripts": "5.0.1",
-    "simple-datatables": "^7.2.0",
     "sweetalert2": "^11.7.16",
     "universal-cookie": "^4.0.4",
     "web-vitals": "^2.1.4",
