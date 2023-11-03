@@ -17,6 +17,7 @@ import MainMenu from '../../component/admin/MainMenu';
 import MainGiveTask from '../../component/admin/MainGiveTask';
 import MainAnnounce from '../../component/employee/MainAnnounce';
 import NotFound from '../../component/outOfBorder/NotFound';
+import MainUiux from '../../component/employee/MainUiux';
 
 function ManagerPanel() {
     const cookies = new Cookies();
@@ -67,16 +68,16 @@ function ManagerPanel() {
                 elem[i].classList.add('active');
             }
         }
-        if ($('.content .page:nth-child(2)').hasClass('active') === true) {
+        if ($('.content .page:nth-child(3)').hasClass('active') === true) {
             setLoad1(true)
         }
-        if ($('.content .page:nth-child(3)').hasClass('active') === true) {
+        if ($('.content .page:nth-child(4)').hasClass('active') === true) {
             setLoad2(true)
         }
-        if ($('.content .page:nth-child(4)').hasClass('active') === true) {
+        if ($('.content .page:nth-child(5)').hasClass('active') === true) {
             setLoad3(true)
         }
-        if ($('.content .page:nth-child(5)').hasClass('active') === true) {
+        if ($('.content .page:nth-child(6)').hasClass('active') === true) {
             setLoad4(true)
         }
     }, [name.userId])
@@ -89,16 +90,16 @@ function ManagerPanel() {
             $('.active[data-page]').removeClass('active');
             $('[data-page="' + menu + '"]').addClass('active');
 
-            if ($('.content .page:nth-child(2)').hasClass('active') === true) {
+            if ($('.content .page:nth-child(3)').hasClass('active') === true) {
                 setLoad1(true)
             }
-            if ($('.content .page:nth-child(3)').hasClass('active') === true) {
+            if ($('.content .page:nth-child(4)').hasClass('active') === true) {
                 setLoad2(true)
             }
-            if ($('.content .page:nth-child(4)').hasClass('active') === true) {
+            if ($('.content .page:nth-child(5)').hasClass('active') === true) {
                 setLoad3(true)
             }
-            if ($('.content .page:nth-child(5)').hasClass('active') === true) {
+            if ($('.content .page:nth-child(6)').hasClass('active') === true) {
                 setLoad4(true)
             }
         });
@@ -238,6 +239,9 @@ function ManagerPanel() {
         if (e === "dashboard") {
             localStorage.setItem('tabs', e)
         }
+        if (e === "uiux") {
+            localStorage.setItem('tabs', e)
+        }
         if (e === "about") {
             localStorage.setItem('tabs', e)
         }
@@ -253,6 +257,7 @@ function ManagerPanel() {
         if (e === "announce") {
             localStorage.setItem('tabs', e)
         }
+
     }
 
     if (name.userRole !== 3) {
@@ -297,6 +302,7 @@ function ManagerPanel() {
                     })}
                     <div className="menu">
                         <a data-menu="dashboard" onClick={() => setPage("dashboard")} href="# " className="unchange2"><i className="fa-solid fa-house"></i><p className='appearNow'>Home</p></a>
+                        <a data-menu="uiux" onClick={() => setPage("uiux")} href="# " className="unchange2"><i className="fa-solid fa-palette"></i><p className='appearNow'>Interface</p></a>
                         <a data-menu="about" onClick={() => setPage("about")} href="# " className='unchange2'><i className="fa-solid fa-cart-shopping"></i><p className='appearNow'>Cart</p></a>
                         <a data-menu="table" onClick={() => setPage("table")} href="# " className='unchange2'><i className="fa-solid fa-calendar-check"></i><p className='appearNow'>Table</p></a>
                         <a data-menu="booking" onClick={() => setPage("booking")} href="# " className='unchange2'><i className="fa-solid fa-calendar-plus"></i><p className='appearNow'>Booking</p></a>
@@ -397,6 +403,16 @@ function ManagerPanel() {
                                 <h4 className='text-center text-white'>Contact</h4>
                                 <GetContact />
                             </div>
+                        </div>
+                    </div>
+                    <div className="page noflex" data-page="uiux" id='Uiux'>
+                        <div className="header">
+                            <div className="title">
+                                <h2>Interface</h2>
+                            </div>
+                        </div>
+                        <div className='callMeOutUI'>
+                            <MainUiux />
                         </div>
                     </div>
                     <div className="page noflex" data-page="about" id='Cart'>

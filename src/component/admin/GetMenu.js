@@ -86,6 +86,7 @@ function GetMenu({ cate }) {
         reader.readAsDataURL(e.target.files[0]);
         reader.onload = () => {
             setFoodimage(reader.result);
+            document.getElementById("output2").src = reader.result
         };
         reader.onerror = error => {
             console.log(error);
@@ -127,20 +128,6 @@ function GetMenu({ cate }) {
                 )
             });
     }
-
-    useEffect(() => {
-        const getHome = document.getElementById('inputimage2')
-        if (getHome) {
-            getHome.onchange = function () {
-                var files = this.files;
-                for (var i = 0; i < files.length; i++) {
-                    var file = files[i],
-                        src = (URL || window.webkitURL).createObjectURL(file);
-                    document.getElementById('output2').src = src
-                }
-            }
-        }
-    })
 
     const VND = new Intl.NumberFormat('vi-VN', {
         style: 'currency',

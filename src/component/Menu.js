@@ -2,12 +2,54 @@ import $ from 'jquery';
 import ItemMenuComponent from './outOfBorder/ItemMenuComponent';
 import { NavLink } from 'react-router-dom';
 import Hammer from 'hammerjs'
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
+import axios from 'axios';
 
 function Menu() {
     const [Load1, setLoad1] = useState(false)
     const [Load2, setLoad2] = useState(false)
     const [Load3, setLoad3] = useState(false)
+    const [menu, setMenu] = useState([])
+    const [kakadu, setKakadu] = useState()
+    const [spacekaka, setSpacekaka] = useState()
+    useEffect(() => {
+        const configuration = {
+            method: "get",
+            url: "http://localhost:3000/GetTheMenuWow",
+        }
+        axios(configuration)
+            .then((res) => {
+                setMenu(res.data)
+            }).catch((err) => {
+                console.log(err);
+            })
+    }, [])
+
+    useEffect(() => {
+        Object.values(menu).map((i) => {
+            i.image?.map((a) => {
+                if (a.name === "menucover") {
+                    setKakadu({
+                        "background": `url(${a.url})`,
+                        "backgroundSize": "100% 100%",
+                        "backgroundRepeat": "no-repeat",
+                        "backgroundPosition": "center center"
+                    })
+                }
+                if (a.name === "menupage") {
+                    setSpacekaka({
+                        "background": `url(${a.url})`,
+                        "backgroundSize": "100% 100%",
+                        "backgroundRepeat": "no-repeat",
+                        "backgroundPosition": "center center"
+                    })
+                }
+                return null
+            })
+            return null
+        })
+    }, [menu])
+
     useEffect(() => {
         const elem = document.getElementById("book")
         const hammer = new Hammer(elem)
@@ -105,26 +147,32 @@ function Menu() {
                     <div className="scene thhuhu" id="scene">
                         <article id="book">
                             <section className="paged activet">
-                                <div className="front kakaDu">
+                                <div className="front" style={kakadu}>
                                 </div>
-                                <div className="back spaceKaka p-5">
+                                <div className="back p-5" style={spacekaka}>
                                     <h4 className='text-center'>Foreword</h4>
                                     <div className='text-start'>
-                                        <p className='pt-3'><b>1. </b> Hello and thank you for using our service</p>
-                                        <p className='pt-2'><b>2. </b> This is a menu containing a number of dishes that you can refer to before enjoying</p>
-                                        <p className='pt-2'><b>3. </b> We hope you have a great experience with our services. Have a nice day and enjoy the food</p>
+                                        {Object.values(menu).map((i) => {
+                                            return (
+                                                <Fragment key={i._id}>
+                                                    <p className='pt-3'><b>1. </b> {i.word.up}</p>
+                                                    <p className='pt-2'><b>2. </b> {i.word.middle}</p>
+                                                    <p className='pt-2'><b>3. </b> {i.word.down}</p>
+                                                </Fragment>
+                                            )
+                                        })}
                                     </div>
                                 </div>
                             </section>
 
                             <section className="paged d-none">
-                                <div className="front spaceKaka p-5">
+                                <div className="front p-5" style={spacekaka}>
                                     <h4 className='text-center'>Meat</h4>
                                     {Load1 ? (
                                         <ItemMenuComponent Name='Meat' start={0} end={4} />
                                     ) : null}
                                 </div>
-                                <div className="back spaceKaka p-5">
+                                <div className="back p-5" style={spacekaka}>
                                     <h4 className='text-center'>Meat</h4>
                                     {Load1 ? (
                                         <ItemMenuComponent Name='Meat' start={4} end={8} />
@@ -136,13 +184,13 @@ function Menu() {
                             </section>
 
                             <section className="paged d-none">
-                                <div className="front spaceKaka p-5">
+                                <div className="front p-5" style={spacekaka}>
                                     <h4 className='text-center'>Vegetables</h4>
                                     {Load2 ? (
                                         <ItemMenuComponent Name='Vegetables' start={0} end={4} />
                                     ) : null}
                                 </div>
-                                <div className="back spaceKaka p-5">
+                                <div className="back p-5" style={spacekaka}>
                                     <h4 className='text-center'>Vegetables</h4>
                                     {Load2 ? (
                                         <ItemMenuComponent Name='Vegetables' start={4} end={8} />
@@ -154,13 +202,13 @@ function Menu() {
                             </section>
 
                             <section className="paged d-none">
-                                <div className="front spaceKaka p-5">
+                                <div className="front p-5" style={spacekaka}>
                                     <h4 className='text-center'>Drink</h4>
                                     {Load3 ? (
                                         <ItemMenuComponent Name='Drink' start={0} end={4} />
                                     ) : null}
                                 </div>
-                                <div className="back spaceKaka p-5">
+                                <div className="back p-5" style={spacekaka}>
                                     <h4 className='text-center'>Drink</h4>
                                     {Load3 ? (
                                         <ItemMenuComponent Name='Drink' start={4} end={8} />
@@ -172,11 +220,9 @@ function Menu() {
                             </section>
 
                             <section className="paged d-none">
-                                <div className="front spaceKaka">
-
+                                <div className="front" style={spacekaka}>
                                 </div>
-                                <div className="back kakaDu">
-
+                                <div className="back" style={kakadu}>
                                 </div>
                             </section>
                         </article>

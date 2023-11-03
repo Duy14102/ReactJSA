@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import WOW from 'wowjs';
 import LoginSite from "./pages/admin/LoginSite";
 import SignupSite from "./pages/admin/Register";
@@ -28,6 +28,7 @@ import EmployeePanel from "./pages/admin/EmployeePanel";
 import ManagerPanel from "./pages/admin/ManagerPanel";
 import QrCodeTable from "./pages/QrCodeTable";
 import Announcement from "./pages/Announcement";
+import axios from "axios";
 
 const cookies = new Cookies();
 const token = cookies.get("TOKEN");
@@ -52,15 +53,37 @@ const PrivateRoute = ({ children }) => {
 }
 
 function Wrapped() {
+    const [styleA, setStyleA] = useState()
     useEffect(() => {
         new WOW.WOW({
             live: false
         }).init();
     }, [])
 
+    useEffect(() => {
+        const configuration = {
+            method: "get",
+            url: "http://localhost:3000/GetHeroUI",
+            params: {
+                name: "bghero"
+            }
+        }
+        axios(configuration)
+            .then((res) => {
+                setStyleA({
+                    "background": `linear-gradient(rgba(15, 23, 43, .9), rgba(15, 23, 43, .9)), url(${res.data.data})`,
+                    "backgroundPosition": "center center",
+                    "backgroundRepeat": "no-repeat",
+                    "backgroundSize": "cover",
+                    "backgroundAttachment": "fixed"
+                })
+            }).catch((err) => {
+                console.log(err);
+            })
+    }, [])
     return (
         <>
-            <div className="container-fluid bg-white theEndNear p-0">
+            <div className="container-fluid p-0" style={styleA}>
                 <Spinner />
                 <Routes>
                     <Route path="/" element={<App />} />

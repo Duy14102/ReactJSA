@@ -3,7 +3,6 @@ import GetMenu from './GetMenu';
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import $ from 'jquery'
 import ReactPaginate from 'react-paginate';
 import DetailSearchMenu from './DetailSearchMenu';
 
@@ -44,19 +43,6 @@ function MainMenu() {
         document.getElementById(cityName).style.display = "block";
         evt.currentTarget.className += " active5";
     }
-
-    $(function () {
-        const $image = $('#inputimage')
-        $image.on("change", function () {
-            const $inputnow = $('#output')
-            var files = this.files;
-            for (var i = 0; i < files.length; i++) {
-                var file = files[i],
-                    src = (URL || window.webkitURL).createObjectURL(file);
-                $inputnow.attr("src", src)
-            }
-        })
-    })
 
     const handleSubmit = (e) => {
         // prevent the form from refreshing the whole page
@@ -124,6 +110,7 @@ function MainMenu() {
         reader.readAsDataURL(e.target.files[0]);
         reader.onload = () => {
             setFoodimage(reader.result);
+            document.getElementById("output").src = reader.result
         };
         reader.onerror = error => {
             console.log(error);

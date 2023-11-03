@@ -1,6 +1,28 @@
+import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
+import axios from 'axios'
 
 function Footer() {
+    const [address, setAddress] = useState()
+    const [phone, setPhone] = useState()
+    const [email, setEmail] = useState()
+    const [time, setTime] = useState()
+
+    useEffect(() => {
+        const configuration = {
+            method: "get",
+            url: "http://localhost:3000/GetTheFooter"
+        }
+        axios(configuration)
+            .then((res) => {
+                setAddress(res.data.data.word.up)
+                setPhone(res.data.data.word.middle)
+                setEmail(res.data.data.word.down)
+                setTime(res.data.data.word.time)
+            }).catch((err) => {
+                console.log(err);
+            })
+    }, [])
     return (
         <div className="container-fluid bg-dark text-light footer pt-5 fadeIn">
             <div className="container py-5">
@@ -14,9 +36,9 @@ function Footer() {
                     </div>
                     <div className="col-lg-3 col-md-6">
                         <h4 className="section-title ff-secondary text-start text-primary fw-normal mb-4">Contact</h4>
-                        <p className="mb-2"><i className="fa fa-map-marker-alt me-3"></i>18 Tam Trinh, Ha Noi, Viet Nam</p>
-                        <p className="mb-2"><i className="fa fa-phone-alt me-3"></i>+012 345 67890</p>
-                        <p className="mb-2"><i className="fa fa-envelope me-3"></i>FreeFire@SDTHT.com</p>
+                        <p className="mb-2"><i className="fa fa-map-marker-alt me-3"></i>{address}</p>
+                        <p className="mb-2"><i className="fa fa-phone-alt me-3"></i>{phone}</p>
+                        <p className="mb-2"><i className="fa fa-envelope me-3"></i>{email}</p>
                         <div className="d-flex pt-2">
                             <NavLink to="/" className="btn btn-outline-light btn-social" ><i className="fab fa-twitter"></i></NavLink>
                             <NavLink to="/" className="btn btn-outline-light btn-social" ><i className="fab fa-facebook-f"></i></NavLink>
@@ -26,10 +48,8 @@ function Footer() {
                     </div>
                     <div className="col-lg-3 col-md-6">
                         <h4 className="section-title ff-secondary text-start text-primary fw-normal mb-4">Opening</h4>
-                        <h5 className="text-light fw-normal">Monday - Saturday</h5>
-                        <p>09AM - 09PM</p>
-                        <h5 className="text-light fw-normal">Sunday</h5>
-                        <p>10AM - 08PM</p>
+                        <h5 className="text-light fw-normal">All week</h5>
+                        <p>{time}</p>
                     </div>
                     <div className="col-lg-3 col-md-6">
                         <h4 className="section-title ff-secondary text-start text-primary fw-normal mb-4">Newsletter</h4>

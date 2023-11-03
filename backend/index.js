@@ -42,6 +42,124 @@ const Table = require("./model/Table");
 const GetTable = mongoose.model("Table");
 const News = require("./model/News");
 const GetNews = mongoose.model("News");
+const UI = require("./model/UI");
+const GetUI = mongoose.model("UI");
+
+//Change Hero Image
+app.post("/ChangeHeroImage", (req, res) => {
+    try {
+        GetUI.updateOne({ title: req.body.title, "image.name": req.body.name }, {
+            "image.$.url": req.body.image
+        }).then(() => { res.send({ data: "succeed" }) }).catch((err) => { console.log(err); })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Change Hero Word
+app.post("/ChangeWordUp", (req, res) => {
+    try {
+        GetUI.updateOne({ title: req.body.title }, {
+            "word.up": req.body.wordup
+        }).then(() => { res.send({ data: "succeed" }) }).catch((err) => { console.log(err); })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+app.post("/ChangeWordMiddle", (req, res) => {
+    try {
+        GetUI.updateOne({ title: req.body.title }, {
+            "word.middle": req.body.wordmiddle
+        }).then(() => { res.send({ data: "succeed" }) }).catch((err) => { console.log(err); })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+app.post("/ChangeWordDown", (req, res) => {
+    try {
+        GetUI.updateOne({ title: req.body.title }, {
+            "word.down": req.body.worddown
+        }).then(() => { res.send({ data: "succeed" }) }).catch((err) => { console.log(err); })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+app.post("/ChangeWordTime", (req, res) => {
+    try {
+        GetUI.updateOne({ title: req.body.title }, {
+            "word.time": req.body.wordtime
+        }).then(() => { res.send({ data: "succeed" }) }).catch((err) => { console.log(err); })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//GetBgHero
+app.get("/GetHeroUI", async (req, res) => {
+    try {
+        const getIt = await GetUI.findOne({ title: "Hero" })
+        for (var i = 0; i < getIt.image.length; i++) {
+            if (getIt.image[i].name === req.query.name) {
+                res.send({ data: getIt.image[i].url })
+            }
+        }
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Get Hero 4 Manager
+app.get("/GetHeroManager", async (req, res) => {
+    try {
+        const getIt = await GetUI.find({})
+        res.send({ data: getIt })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Get Hero Text
+app.get("/GetHeroText", async (req, res) => {
+    try {
+        const getIt = await GetUI.findOne({ title: "Hero" })
+        res.send({ data: getIt.word })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Get all About
+app.get("/GetAllAbout", async (req, res) => {
+    try {
+        const getIt = await GetUI.findOne({ title: "About" })
+        res.send({ data: getIt })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Get Menu Cover&Page
+app.get("/GetTheMenuWow", async (req, res) => {
+    try {
+        const getIt = await GetUI.findOne({ title: "Menu" })
+        res.send({ data: getIt })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Get Foodter
+app.get("/GetTheFooter", async (req, res) => {
+    try {
+        const getIt = await GetUI.findOne({ title: "Footer" })
+        res.send({ data: getIt })
+    } catch (e) {
+        console.log(e);
+    }
+})
 
 //Get All News
 app.get("/GetAllNews", async (req, res) => {

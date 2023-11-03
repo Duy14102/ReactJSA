@@ -91,7 +91,8 @@
 #myDIV2 .active2,
 #myDIV3 .active3,
 #myDIV4 .active4,
-#myDIV5 .active5 {
+#myDIV5 .active5,
+#myDIV9 .active9 {
     border: 2px solid #4285f4;
     background: #4285f4;
     border-radius: 5px;
@@ -125,7 +126,8 @@
 #myDIV2 .MBbutton2,
 #myDIV3 .MBbutton3,
 #myDIV4 .MBbutton4,
-#myDIV5 .MBbutton5 {
+#myDIV5 .MBbutton5,
+#myDIV9 .MBbutton9 {
     border: 2px solid #4285f4;
     color: #fff;
     border-radius: 5px;
@@ -138,7 +140,8 @@
 #myDIV2 .MBbutton2:hover,
 #myDIV3 .MBbutton3:hover,
 #myDIV4 .MBbutton4:hover,
-#myDIV5 .MBbutton5:hover {
+#myDIV5 .MBbutton5:hover,
+#myDIV9 .MBbutton9:hover {
     background: #4285f4;
 }
 
@@ -151,7 +154,8 @@
 #myDIV2 .MBbutton2 p,
 #myDIV3 .MBbutton3 p,
 #myDIV4 .MBbutton4 p,
-#myDIV5 .MBbutton5 p {
+#myDIV5 .MBbutton5 p,
+#myDIV9 .MBbutton9 p {
     margin: 0;
     text-align: center;
     white-space: nowrap;
@@ -179,6 +183,14 @@
 .editTableName {
     padding: 0.3%;
     border: 1px solid lightgray;
+    background: #fff;
+}
+
+.jkarta {
+    display: flex;
+    align-items: center;
+    width: 250px;
+    height: 250px;
 }
 
 .editTableName:hover,
