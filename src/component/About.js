@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 
 function About() {
     const [getLaid, setGetLaid] = useState()
@@ -23,7 +23,7 @@ function About() {
                         <div className="row g-3">
                             {getLaid?.image.map((i) => {
                                 return (
-                                    <>
+                                    <Fragment key={i.name}>
                                         {i.name === "image1" ? (
                                             <div key={i.name} className="col-6 text-start">
                                                 <img loading="lazy" className="img-fluid rounded w-100 wow zoomIn" data-wow-delay="0.1s" src={i.url} alt="about1" />
@@ -44,7 +44,7 @@ function About() {
                                                 <img loading="lazy" className="img-fluid rounded w-100 wow zoomIn" data-wow-delay="0.7s" src={i.url} alt="about4" />
                                             </div>
                                         ) : null}
-                                    </>
+                                    </Fragment>
                                 )
                             })}
                         </div>

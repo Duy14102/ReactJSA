@@ -53,7 +53,14 @@ function Menu() {
     useEffect(() => {
         const elem = document.getElementById("book")
         const hammer = new Hammer(elem)
-        $('#book').on('click', '.flipped', prevPage).on('click', '.activet', nextPage);
+
+        $(".front").on('click', nextPage)
+        $(".back").on('click', prevPage)
+
+        $('.front .upPerTown').on('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        })
 
         hammer.on("swipeleft", nextPage);
         hammer.on("swiperight", prevPage);

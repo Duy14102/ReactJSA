@@ -57,13 +57,20 @@ function Cart() {
     });
 
     function changeInput(e, name) {
+        var value = e.target.value
+        var min = e.target.attributes.min.value
+        var max = e.target.attributes.max.value
+        if (value <= min) {
+            value = min
+        } else if (value >= max) {
+            value = max
+        }
         var stored2 = JSON.parse(localStorage.getItem("cart"));
         if (stored2) {
             for (var k = 0; k < stored2.length; k++) {
                 if (name === stored2[k].name) {
-                    stored2[k].quantity = e
+                    stored2[k].quantity = value
                     localStorage.setItem("cart", JSON.stringify(stored2));
-                    window.location.reload()
                 }
             }
         }
@@ -89,7 +96,7 @@ function Cart() {
                 <td style={{ width: 10 + "%" }}><img alt="" src={i.foodimage} width={70} height={60} /></td>
                 <td>{i.foodname}<span className="jackass"><br />{VND.format(i.foodprice)}</span></td>
                 <td className="thhuhu">{VND.format(i.foodprice)}</td>
-                <td><input style={{ width: 100 + "%" }} id="edValue" type="number" defaultValue={e} onInput={(e) => changeInput(e.target.value, i.foodname)} /></td>
+                <td><input style={{ width: 100 + "%" }} id="edValue" type="number" min={1} max={i.foodquantity} defaultValue={e} onInput={(e) => changeInput(e, i.foodname)} /></td>
                 <td className="thhuhu">{VND.format(total)}</td>
             </tr>
         )

@@ -31,7 +31,7 @@ function DetailMenuPage() {
     const [callAlert, setCallAlert] = useState(false)
     const [checkKiu, setCheckKiu] = useState(false)
     const [gotReview, setGotReview] = useState()
-    var [quantity, setQuantity] = useState(0)
+    var [quantity, setQuantity] = useState(1)
 
     const [pageCount, setPageCount] = useState(6);
     const currentPage = useRef();
@@ -93,16 +93,21 @@ function DetailMenuPage() {
         });
     });
 
-    const handleIncrement = () => {
-        setQuantity(quantity + 1)
+    const handleIncrement = (e) => {
+        if (quantity >= e) {
+            setQuantity(e)
+        } else {
+            setQuantity(quantity + 1)
+        }
     }
     const handleDecrement = () => {
-        setQuantity(quantity - 1)
+        if (quantity <= 1) {
+            setQuantity(1)
+        } else {
+            setQuantity(quantity - 1)
+        }
     }
 
-    if (quantity < 1) {
-        quantity = 1;
-    }
     //Get Bonus
     useEffect(() => {
         if (token) {
@@ -195,7 +200,6 @@ function DetailMenuPage() {
     }
 
     useEffect(() => {
-
         currentPage.current = 1;
         Object.values(detail).map(i => {
             outshin(i)
@@ -294,7 +298,7 @@ function DetailMenuPage() {
                     return (
                         <Fragment key={i._id}>
                             <div className="container py-5">
-                                <p><NavLink reloadDocument className="Allright" to="/">Home</NavLink> / <NavLink reloadDocument className="Allright" to={`/CategorySite/${i.foodcategory}`}>{i.foodcategory}</NavLink> / <NavLink to="/DetailMenuPage" state={{ id: i._id }} className="Allright">{i.foodname}</NavLink></p>
+                                <p><NavLink reloadDocument className="Allright" to="/">Home</NavLink> / <NavLink reloadDocument className="Allright" to={`/CategorySite/${i.foodcategory}/nto`}>{i.foodcategory}</NavLink> / <NavLink to="# " state={{ id: i._id }} className="Allright">{i.foodname}</NavLink></p>
                                 <div className="buhhuh">
                                     <img loading="lazy" alt='' src={i.foodimage} className='thisImageRespon' />
                                     <div className='sonbuhhuh'>
@@ -312,9 +316,9 @@ function DetailMenuPage() {
                                                 <label>Quantity</label>
                                                 {i.foodquantity > 0 ? (
                                                     <div className='d-flex'>
-                                                        <button onClick={handleDecrement} className="btn btn-secondary">-</button>
-                                                        <input type="number" value={quantity} className='qty mx-1' />
-                                                        <button onClick={handleIncrement} className="btn btn-secondary">+</button>
+                                                        <button onClick={() => handleDecrement()} className="btn btn-secondary">-</button>
+                                                        <input type="number" min={1} max={i.foodquantity} value={quantity} className='qty mx-1' readOnly />
+                                                        <button onClick={() => handleIncrement(i.foodquantity)} className="btn btn-secondary">+</button>
                                                     </div>
                                                 ) : (
                                                     <div style={{ pointerEvents: "none", opacity: 0.5 }} className='d-flex'>
