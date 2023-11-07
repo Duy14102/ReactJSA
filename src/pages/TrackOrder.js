@@ -2,7 +2,6 @@ import { NavLink } from "react-router-dom";
 import Header from "../component/Header";
 import Footer from "../component/Footer";
 import "../css/style.css";
-import LazyLoad from "react-lazyload";
 import Tracking from "../component/Tracking";
 
 function TrackOrder() {
@@ -24,9 +23,7 @@ function TrackOrder() {
             </div>
 
             <div className="bg-white p-5">
-                <LazyLoad>
-                    <Tracking />
-                </LazyLoad>
+                <Tracking />
             </div>
 
             <Footer />

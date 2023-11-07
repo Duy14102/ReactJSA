@@ -2,7 +2,6 @@ import { NavLink } from "react-router-dom";
 import Header from "../component/Header";
 import Footer from "../component/Footer";
 import "../css/style.css";
-import LazyLoad from "react-lazyload";
 import Contact from "../component/Contact";
 
 function ContactSite() {
@@ -23,9 +22,7 @@ function ContactSite() {
                 </div>
             </div>
             <div className="bg-white">
-                <LazyLoad>
                     <Contact />
-                </LazyLoad>
             </div>
 
             <Footer />

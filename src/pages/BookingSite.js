@@ -3,7 +3,6 @@ import { NavLink } from "react-router-dom";
 import Header from "../component/Header";
 import Footer from "../component/Footer";
 import "../css/style.css";
-import LazyLoad from "react-lazyload";
 
 function BookingSite() {
     document.title = "EatCom - Booking";
@@ -24,9 +23,7 @@ function BookingSite() {
                 </div>
             </div>
 
-            <LazyLoad>
-                <Reservation />
-            </LazyLoad>
+            <Reservation />
 
             <Footer />
 
