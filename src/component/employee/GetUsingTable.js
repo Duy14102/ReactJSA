@@ -379,7 +379,7 @@ function GetUsingTable() {
                         <p className="d-flex align-items-center" style={{ gap: 1 + "%" }}>
                             <span><b>Table name</b> : {ModalData.tablename}</span>
                             {ModalData.tablestatus === 1 ? (
-                                <button onClick={() => setopenTBname(true)} className="editTableName"><i className="fas fa-edit"></i></button>
+                                <button onClick={() => setopenTBname(true)} className="editTableName"><i className="fi fi-sr-file-edit"></i></button>
                             ) : null}
                         </p>
                     )}
@@ -395,7 +395,7 @@ function GetUsingTable() {
                         )}
                         <div className="d-flex text-nowrap" style={{ gap: 3 + "%" }}>
                             <button onClick={() => { setModalOpenDetail(false); setModalOpenDetail2(true) }} className="btn btn-primary">Add items</button>
-                            <button onClick={() => { setModalOpenDetail(false); setModalQr(true) }} className="entityQ"><i className="fa-solid fa-qrcode"></i></button>
+                            <button onClick={() => { setModalOpenDetail(false); setModalQr(true) }} className="entityQ"><i className="fi fi-br-qr-scan"></i></button>
                         </div>
                     </div>
                 </div>

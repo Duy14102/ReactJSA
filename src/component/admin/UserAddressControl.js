@@ -99,7 +99,7 @@ function UserAddressControl({ address, edit, userid }) {
                         </button>
                     )}
                     {edit ? (
-                        <button onClick={setModalOpenDetail} type="button" className="plusElf"><i className="fas fa-edit"></i></button>
+                        <button onClick={setModalOpenDetail} type="button" className="plusElf"><i className="fi fi-sr-file-edit"></i></button>
                     ) : null}
                 </div>
                 <div id="myDropdownThis" className="dropdown-content">

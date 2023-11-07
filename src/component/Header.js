@@ -136,15 +136,15 @@ function Header({ type }) {
         <>
             <nav className="navbar navbar-expand-lg GroundW navbar-dark px-4 px-lg-5 py-3 py-lg-0">
                 <a href="/" className="navbar-brand p-0">
-                    <h1 className="text-primary m-0"><i className="fa fa-utensils me-3"></i>EatCom</h1>
+                    <h1 className="text-primary m-0"><i className="fi fi-ss-utensils me-3"></i>EatCom</h1>
                 </a>
                 <div className="d-flex">
                     <NavLink reloadDocument to="/Cart" className="nav-item nav-link responFormSearch">
-                        <i className="fa-solid fa-cart-shopping"></i>
+                        <i className="fi fi-ss-shopping-cart"></i>
                         <span className='badge' id='lblCartCount'> {countVal} </span>
                     </NavLink>
                     <button id="buttonCollapse" className="navbar-toggler" type="button">
-                        <span className="fa fa-bars"></span>
+                        <i className="fi fi-br-menu-burger"></i>
                     </button>
                 </div>
                 <div className="collapse navbar-collapse" id="navbarCollapse">
@@ -155,10 +155,10 @@ function Header({ type }) {
                                     <input className="inputSearch" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search something..." required />
                                     <input type="submit" style={{ display: "none" }}></input>
                                 </div>
-                                <button className="SearchSubmit" type="submit"><i className="fa-solid fa-magnifying-glass"></i></button>
+                                <button className="SearchSubmit" type="submit"><i className="fi fi-br-search"></i></button>
                             </div>
                         </form>
-                        <button onClick={setLogout} className="nav-item nav-link Wrinked nav-link-button responSearch" to="/"><i className="fa-solid fa-magnifying-glass"></i></button>
+                        <button onClick={setLogout} className="nav-item nav-link Wrinked nav-link-button responSearch" to="/"><i className="fi fi-br-search"></i></button>
                         <NavLink reloadDocument to="/" activeclassname="active" className="nav-item nav-link Wrinked">Home</NavLink>
                         <div id="headups1" className="nav-item dropdown responSearch">
                             <a href="# " className="nav-link dropdown-toggle">Menu</a>
@@ -181,7 +181,7 @@ function Header({ type }) {
                         <NavLink reloadDocument to="/BookingSite" className="nav-item nav-link Wrinked">Booking</NavLink>
                         <NavLink reloadDocument to="/ContactSite" className="nav-item nav-link Wrinked">Contact</NavLink>
                         <NavLink reloadDocument to="/Cart" className="nav-item nav-link Wrinked responSearch">
-                            <i className="fa-solid fa-cart-shopping"></i>
+                            <i className="fi fi-ss-shopping-cart"></i>
                             <span className='badge' id='lblCartCount'> {countVal} </span>
                         </NavLink>
                     </div>
@@ -203,7 +203,7 @@ function Header({ type }) {
                                                 ) : decode.userRole === 4 ? (
                                                     <NavLink reloadDocument to={"/AdminPanel"} className="dropdown-item">Admin Panel</NavLink>
                                                 ) : null}
-                                                <button onClick={() => logoutThis()} className="dropdown-item"><i className="fa-solid fa-right-from-bracket"></i> Logout</button>
+                                                <button onClick={() => logoutThis()} className="dropdown-item"><i className="fi fi-br-sign-out-alt"></i> Logout</button>
                                             </div>
                                         </div>
                                     )
@@ -217,22 +217,22 @@ function Header({ type }) {
                                                 {decode.userRole === 1 ? (
                                                     <>
                                                         <NavLink reloadDocument to={`/UserPanel/${i._id}`} className="dropdown-item">Account</NavLink>
-                                                        <button onClick={() => logoutThis()} className="dropdown-item"><i className="fa-solid fa-right-from-bracket"></i> Logout</button>
+                                                        <button onClick={() => logoutThis()} className="dropdown-item"><i className="fi fi-br-sign-out-alt"></i> Logout</button>
                                                     </>
                                                 ) : decode.userRole === 2 ? (
                                                     <>
                                                         <NavLink reloadDocument to={"/EmployeePanel"} className="dropdown-item">Employee Panel</NavLink>
-                                                        <button onClick={() => logoutThat()} className="dropdown-item"><i className="fa-solid fa-right-from-bracket"></i> Logout</button>
+                                                        <button onClick={() => logoutThat()} className="dropdown-item"><i className="fi fi-br-sign-out-alt"></i> Logout</button>
                                                     </>
                                                 ) : decode.userRole === 3 ? (
                                                     <>
                                                         <NavLink reloadDocument to={"/ManagerPanel"} className="dropdown-item">Manager Panel</NavLink>
-                                                        <button onClick={() => logoutThat()} className="dropdown-item"><i className="fa-solid fa-right-from-bracket"></i> Logout</button>
+                                                        <button onClick={() => logoutThat()} className="dropdown-item"><i className="fi fi-br-sign-out-alt"></i> Logout</button>
                                                     </>
                                                 ) : decode.userRole === 4 ? (
                                                     <>
                                                         <NavLink reloadDocument to={"/AdminPanel"} className="dropdown-item">Admin Panel</NavLink>
-                                                        <button onClick={() => logoutThat()} className="dropdown-item"><i className="fa-solid fa-right-from-bracket"></i> Logout</button>
+                                                        <button onClick={() => logoutThat()} className="dropdown-item"><i className="fi fi-br-sign-out-alt"></i> Logout</button>
                                                     </>
                                                 ) : null}
                                             </div>
@@ -256,7 +256,7 @@ function Header({ type }) {
                                     <Fragment key={i._id}>
                                         <div className="navbar-nav ms-auto py-0">
                                             <NavLink reloadDocument to={`/UserPanel/${i._id}`} className="nav-item nav-link Wrinked">Account</NavLink>
-                                            <button onClick={() => logoutThis()} className="nav-item nav-link Wrinked"><i className="fa-solid fa-right-from-bracket"></i> Logout</button>
+                                            <button onClick={() => logoutThis()} className="nav-item nav-link Wrinked"><i className="fi fi-br-sign-out-alt"></i>Logout</button>
                                         </div>
                                     </Fragment>
                                 )
@@ -297,7 +297,7 @@ function Header({ type }) {
                         <input className="inputSearch" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search something..." required />
                         <input type="submit" style={{ display: "none" }}></input>
                     </form>
-                    <button className="SearchSubmit" onClick={(e) => SearchType(e)} type="submit"><i className="fa-solid fa-magnifying-glass"></i></button>
+                    <button className="SearchSubmit" onClick={(e) => SearchType(e)} type="submit"><i className="fi fi-br-search"></i></button>
                 </div>
             </Modal>
         </>

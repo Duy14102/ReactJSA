@@ -36,14 +36,13 @@ function Footer() {
                     </div>
                     <div className="col-lg-3 col-md-6">
                         <h4 className="section-title ff-secondary text-start text-primary fw-normal mb-4">Contact</h4>
-                        <p className="mb-2"><i className="fa fa-map-marker-alt me-3"></i>{address}</p>
-                        <p className="mb-2"><i className="fa fa-phone-alt me-3"></i>{phone}</p>
-                        <p className="mb-2"><i className="fa fa-envelope me-3"></i>{email}</p>
+                        <p className="mb-2"><i className="fi fi-ss-marker me-3"></i>{address}</p>
+                        <p className="mb-2"><i className="fi fi-sr-phone-call me-3"></i>{phone}</p>
+                        <p className="mb-2"><i className="fi fi-sr-envelope me-3"></i>{email}</p>
                         <div className="d-flex pt-2">
-                            <NavLink to="/" className="btn btn-outline-light btn-social" ><i className="fab fa-twitter"></i></NavLink>
-                            <NavLink to="/" className="btn btn-outline-light btn-social" ><i className="fab fa-facebook-f"></i></NavLink>
-                            <NavLink to="/" className="btn btn-outline-light btn-social" ><i className="fab fa-youtube"></i></NavLink>
-                            <NavLink to="/" className="btn btn-outline-light btn-social" ><i className="fab fa-linkedin-in"></i></NavLink>
+                            <NavLink to="/" className="btn btn-outline-light btn-social" ><i className="fi fi-brands-twitter-alt"></i></NavLink>
+                            <NavLink to="/" className="btn btn-outline-light btn-social" ><i className="fi fi-brands-facebook"></i></NavLink>
+                            <NavLink to="/" className="btn btn-outline-light btn-social" ><i className="fi fi-brands-instagram"></i></NavLink>
                         </div>
                     </div>
                     <div className="col-lg-3 col-md-6">
@@ -77,7 +76,7 @@ function Footer() {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 }
 export default Footer;

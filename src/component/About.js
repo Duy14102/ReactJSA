@@ -51,7 +51,7 @@ function About() {
                     </div>
                     <div className="col-lg-6">
                         <h5 className="section-title ff-secondary text-start text-primary fw-normal">About Us</h5>
-                        <h1 className="mb-4">Welcome to <i className="fa fa-utensils text-primary me-2"></i>EatCom</h1>
+                        <h1 className="mb-4">Welcome to <i className="fi fi-ss-utensils me-2 text-primary"></i>EatCom</h1>
                         <p className="mb-4">{getLaid?.word.up}</p>
                         <p className="mb-4">{getLaid?.word.middle}</p>
                         <p className="mb-4">{getLaid?.word.down}</p>

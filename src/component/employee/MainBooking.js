@@ -212,7 +212,7 @@ function MainBooking() {
                                 <input type='submit' style={{ display: "none" }} />
                                 <div className='d-flex justify-content-between w-100'>
                                     <input onInput={(e) => setDateInput(e.target.value)} type='date' required />
-                                    <button style={{ width: 10 + "%" }} type="submit"><i className="fa-solid fa-magnifying-glass"></i></button>
+                                    <button style={{ width: 10 + "%" }} type="submit"><i className="fi fi-br-search"></i></button>
                                 </div>
                             </form>
                         </div>

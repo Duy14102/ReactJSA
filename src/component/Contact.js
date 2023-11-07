@@ -19,7 +19,7 @@ function Contact() {
             setEmail(decode.userEmail)
         }
     }, [token])
-    
+
     const addcontact = (e) => {
         e.preventDefault()
         const configuration = {
@@ -63,17 +63,17 @@ function Contact() {
                         <div className="row gy-4">
                             <div className="col-md-4">
                                 <h5 className="section-title ff-secondary fw-normal text-start text-primary">Address</h5>
-                                <p><i className="fa fa-map-marker-alt text-primary me-2"></i>18 Tam Trinh, Ha Noi, Viet Nam</p>
+                                <p><i className="fi fi-ss-marker me-2 text-primary"></i>18 Tam Trinh, Ha Noi, Viet Nam</p>
                             </div>
                             <div className="col-md-4">
                                 <div>
                                     <h5 className="section-title ff-secondary fw-normal text-start text-primary">Phone Number</h5>
-                                    <p><i className="fa fa-phone-alt text-primary me-2"></i>+012 345 67890</p>
+                                    <p><i className="fi fi-sr-phone-call me-2 text-primary"></i>+012 345 67890</p>
                                 </div>
                             </div>
                             <div className="col-md-4">
                                 <h5 className="section-title ff-secondary fw-normal text-start text-primary">Email</h5>
-                                <p><i className="fa fa-envelope-open text-primary me-2"></i>FreeFire@SDTHT.com</p>
+                                <p><i className="fi fi-sr-envelope me-2 text-primary"></i>FreeFire@SDTHT.com</p>
                             </div>
                         </div>
                     </div>

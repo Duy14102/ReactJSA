@@ -96,7 +96,7 @@ function DetailSearchMenu({ i }) {
                             <label className="inputImageDup" htmlFor="inputimage2">
                                 <div className="aboveCameraAppear">
                                     <div className="cameraAppear">
-                                        <i className="fa fa-camera fa-2x"></i>
+                                        <i style={{ fontSize: "xx-large" }} className="fi fi-sr-camera"></i>
                                     </div>
                                 </div>
                                 <img id="output2" width="100%" height="100%" alt="" src={i.foodimage} />

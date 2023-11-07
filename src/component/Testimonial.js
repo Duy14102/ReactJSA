@@ -60,7 +60,7 @@ function Testimonial() {
                                 return (
                                     <div key={i._id} className="testimonial-item bg-transparent border rounded p-4">
                                         <div className="d-flex align-items-center" style={{ gap: 2 + "%" }}>
-                                            <i className="fa fa-quote-left fa-2x text-primary mb-3"></i>
+                                            <i style={{ fontSize: "x-large" }} className="fi fi-br-quote-right text-primary mb-3"></i>
                                             <p>{i.title}</p>
                                         </div>
                                         <p>{i.message}</p>

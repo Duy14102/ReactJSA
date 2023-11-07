@@ -175,7 +175,7 @@ function MainMenu() {
                                 <input type='submit' style={{ display: "none" }} />
                                 <div className='d-flex justify-content-between w-100'>
                                     <input onInput={(e) => setNameInput(e.target.value)} type='text' placeholder='User name...' required />
-                                    <button style={{ width: 10 + "%" }} type="submit"><i className="fa-solid fa-magnifying-glass"></i></button>
+                                    <button style={{ width: 10 + "%" }} type="submit"><i className="fi fi-br-search"></i></button>
                                 </div>
                             </form>
                         </div>
@@ -284,7 +284,7 @@ function MainMenu() {
                                 <label className="inputImageDup" htmlFor="inputimage">
                                     <div className="aboveCameraAppear">
                                         <div className="cameraAppear">
-                                            <i className="fa fa-camera fa-2x"></i>
+                                            <i style={{ fontSize: "xx-large" }} className="fi fi-sr-camera"></i>
                                         </div>
                                     </div>
                                     <img id="output" width="100%" height="100%" alt="" src="https://phutungnhapkhauchinhhang.com/wp-content/uploads/2020/06/default-thumbnail.jpg" />

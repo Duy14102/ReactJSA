@@ -8,6 +8,7 @@ import { NavLink } from "react-router-dom";
 import "../css/style.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import LazyLoad from "react-lazyload";
 
 function App() {
   const [styleA, setStyleA] = useState()
@@ -71,7 +72,9 @@ function App() {
 
       <Menu />
 
-      <Testimonial />
+      <LazyLoad>
+        <Testimonial />
+      </LazyLoad>
 
       <Footer />
     </>

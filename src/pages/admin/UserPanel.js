@@ -194,7 +194,7 @@ function UserPanel() {
                                                         <label htmlFor="newProfilePhoto" className="upload-file-block">
                                                             <div className="text-center">
                                                                 <div className="mb-2">
-                                                                    <i className="fa fa-camera fa-2x"></i>
+                                                                    <i className="fi fi-sr-camera"></i>
                                                                 </div>
                                                                 <div className="text-uppercase">
                                                                     Update <br /> Profile Photo
@@ -215,7 +215,7 @@ function UserPanel() {
                                                         <label htmlFor="newProfilePhoto" className="upload-file-block">
                                                             <div className="text-center">
                                                                 <div className="mb-2">
-                                                                    <i className="fa fa-camera fa-2x"></i>
+                                                                    <i className="fi fi-sr-camera"></i>
                                                                 </div>
                                                                 <div className="text-uppercase">
                                                                     Update <br /> Profile Photo

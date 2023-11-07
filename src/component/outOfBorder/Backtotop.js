@@ -16,7 +16,7 @@ function Backtotop() {
     return (
         <>
             <div className="back-to-top">
-                <button className="btn btn-lg btn-primary btn-lg-square"><i className="bi bi-arrow-up text-center"></i></button>
+                <button className="btn btn-lg btn-primary btn-lg-square"><i className="fi fi-br-arrow-up text-center"></i></button>
             </div>
         </>
     );

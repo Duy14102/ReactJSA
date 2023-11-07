@@ -144,7 +144,7 @@ function FooterChange({ data }) {
                                         ) : (
                                             <div className="d-flex" style={{ gap: 2 + "%" }}>
                                                 <input style={{ pointerEvents: "none" }} className="textDeny" id="word1" defaultValue={i.word.up} />
-                                                <button onClick={() => setCheckWord1(true)} className="editTableName"><i className="fas fa-edit"></i></button>
+                                                <button onClick={() => setCheckWord1(true)} className="editTableName"><i className="fi fi-sr-file-edit"></i></button>
                                             </div>
                                         )}
                                     </div>
@@ -161,7 +161,7 @@ function FooterChange({ data }) {
                                         ) : (
                                             <div className="d-flex" style={{ gap: 2 + "%" }}>
                                                 <input style={{ pointerEvents: "none" }} className="textDeny" id="word2" defaultValue={i.word.middle} />
-                                                <button onClick={() => setCheckWord2(true)} className="editTableName"><i className="fas fa-edit"></i></button>
+                                                <button onClick={() => setCheckWord2(true)} className="editTableName"><i className="fi fi-sr-file-edit"></i></button>
                                             </div>
                                         )}
                                     </div>
@@ -178,7 +178,7 @@ function FooterChange({ data }) {
                                         ) : (
                                             <div className="d-flex" style={{ gap: 2 + "%" }}>
                                                 <input style={{ pointerEvents: "none" }} className="textDeny" id="word3" defaultValue={i.word.down} />
-                                                <button onClick={() => setCheckWord3(true)} className="editTableName"><i className="fas fa-edit"></i></button>
+                                                <button onClick={() => setCheckWord3(true)} className="editTableName"><i className="fi fi-sr-file-edit"></i></button>
                                             </div>
                                         )}
                                     </div>
@@ -195,7 +195,7 @@ function FooterChange({ data }) {
                                         ) : (
                                             <div className="d-flex" style={{ gap: 2 + "%" }}>
                                                 <input style={{ pointerEvents: "none" }} className="textDeny" id="word4" defaultValue={i.word.time} />
-                                                <button onClick={() => setCheckWord4(true)} className="editTableName"><i className="fas fa-edit"></i></button>
+                                                <button onClick={() => setCheckWord4(true)} className="editTableName"><i className="fi fi-sr-file-edit"></i></button>
                                             </div>
                                         )}
                                     </div>

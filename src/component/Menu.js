@@ -125,7 +125,7 @@ function Menu() {
                     <ul style={{ flexWrap: "nowrap" }} className="nav nav-pills perKnow">
                         <li className="nav-item">
                             <NavLink reloadDocument className="nav-hex d-flex align-items-center text-start pb-3" to="/CategorySite/Meat/nto">
-                                <i className="fa fa-drumstick-bite fa-2x text-primary"></i>
+                                <i style={{ fontSize: "x-large" }} className="fi fi-sr-drumstick-bite text-primary"></i>
                                 <div className='ps-3'>
                                     <small className="text-muted">Popular</small>
                                     <h6 className="mt-n1 mb-0 text-white">Meat</h6>
@@ -134,7 +134,7 @@ function Menu() {
                         </li>
                         <li className="nav-item">
                             <NavLink reloadDocument className="nav-hex d-flex align-items-center text-start mx-3 pb-3" to="/CategorySite/Vegetables/nto">
-                                <i className="fa fa-carrot fa-2x text-primary"></i>
+                                <i style={{ fontSize: "x-large" }} className="fi fi-sr-carrot text-primary"></i>
                                 <div className="ps-3">
                                     <small className="text-muted">Special</small>
                                     <h6 className="mt-n1 mb-0 text-white">Vegetables</h6>
@@ -143,7 +143,7 @@ function Menu() {
                         </li>
                         <li className="nav-item">
                             <NavLink reloadDocument className="nav-hex d-flex align-items-center text-start mx-3 me-0 pb-3" to="/CategorySite/Drink/nto">
-                                <i className="fa fa-bottle-water fa-2x text-primary"></i>
+                                <i style={{ fontSize: "x-large" }} className="fi fi-sr-mug-hot-alt text-primary"></i>
                                 <div className="ps-3">
                                     <small className="text-muted">Lovely</small>
                                     <h6 className="mt-n1 mb-0 text-white">Drink</h6>

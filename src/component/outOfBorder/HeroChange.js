@@ -184,7 +184,7 @@ function HeroChange({ data }) {
                                         ) : (
                                             <div className="d-flex" style={{ gap: 2 + "%" }}>
                                                 <textarea style={{ pointerEvents: "none" }} className="textDeny junlen" id="word1" defaultValue={i.word.up} />
-                                                <button onClick={() => setCheckWord1(true)} className="editTableName"><i className="fas fa-edit"></i></button>
+                                                <button onClick={() => setCheckWord1(true)} className="editTableName"><i className="fi fi-sr-file-edit"></i></button>
                                             </div>
                                         )}
                                     </div>
@@ -201,7 +201,7 @@ function HeroChange({ data }) {
                                         ) : (
                                             <div className="d-flex" style={{ gap: 2 + "%" }}>
                                                 <textarea style={{ pointerEvents: "none" }} className="textDeny junlen" id="word2" defaultValue={i.word.middle} />
-                                                <button onClick={() => setCheckWord2(true)} className="editTableName"><i className="fas fa-edit"></i></button>
+                                                <button onClick={() => setCheckWord2(true)} className="editTableName"><i className="fi fi-sr-file-edit"></i></button>
                                             </div>
                                         )}
                                     </div>
@@ -218,7 +218,7 @@ function HeroChange({ data }) {
                                         ) : (
                                             <div className="d-flex" style={{ gap: 2 + "%" }}>
                                                 <textarea style={{ pointerEvents: "none" }} className="textDeny junlen" id="word3" defaultValue={i.word.down} />
-                                                <button onClick={() => setCheckWord3(true)} className="editTableName"><i className="fas fa-edit"></i></button>
+                                                <button onClick={() => setCheckWord3(true)} className="editTableName"><i className="fi fi-sr-file-edit"></i></button>
                                             </div>
                                         )}
                                     </div>
@@ -258,13 +258,13 @@ function HeroChange({ data }) {
                                     <img width="100%" height="100%" alt="" src={ModalData.url} />
                                 </div>
                             </div>
-                            <h1 className="thhuhu"><i className="fa-solid fa-arrow-right"></i></h1>
-                            <h1 className="image4You"><i className="fa-solid fa-arrow-down"></i></h1>
+                            <h1 className="thhuhu"><i className="fi fi-br-arrow-right"></i></h1>
+                            <h1 className="image4You"><i className="fi fi-sr-arrow-down"></i></h1>
                             <div className="jkarta">
                                 <label className="inputImageDup" htmlFor="inputimage10">
                                     <div className="aboveCameraAppear">
                                         <div className="cameraAppear">
-                                            <i className="fa fa-camera fa-2x"></i>
+                                            <i style={{ fontSize: "xx-large" }} className="fi fi-sr-camera"></i>
                                         </div>
                                     </div>
                                     <img id="output10" width="100%" height="100%" alt="" src="https://phutungnhapkhauchinhhang.com/wp-content/uploads/2020/06/default-thumbnail.jpg" />

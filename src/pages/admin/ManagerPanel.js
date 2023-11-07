@@ -4,48 +4,32 @@ import $ from 'jquery';
 import { useEffect, useState } from 'react';
 import Cookies from 'universal-cookie';
 import jwtDecode from 'jwt-decode';
-import GetContact from '../../component/admin/GetContact';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import MainOrder from '../../component/admin/MainOrder';
 import MainBooking from '../../component/employee/MainBooking';
 import MainTable from '../../component/employee/MainTable';
-import RevenueDay from '../../component/outOfBorder/RevenueDay';
-import RevenueMonth from '../../component/outOfBorder/RevenueMonth';
-import RevenueYear from '../../component/outOfBorder/RevenueYear';
 import MainMenu from '../../component/admin/MainMenu';
-import MainGiveTask from '../../component/admin/MainGiveTask';
 import MainAnnounce from '../../component/employee/MainAnnounce';
 import NotFound from '../../component/outOfBorder/NotFound';
 import MainUiux from '../../component/employee/MainUiux';
+import ManagerDashboard from '../../component/outOfBorder/ManagerDashboard';
 
 function ManagerPanel() {
     const cookies = new Cookies();
     const token = cookies.get("TOKEN");
     const name = jwtDecode(token)
-    const [CountData, setCountData] = useState()
     const [GetUser, setGetUser] = useState([])
     const [UserImage, setImage] = useState()
+    const [Load0, setLoad0] = useState(false)
+    const [Load6, setLoad6] = useState(false)
     const [Load1, setLoad1] = useState(false)
     const [Load2, setLoad2] = useState(false)
     const [Load3, setLoad3] = useState(false)
     const [Load4, setLoad4] = useState(false)
+    const [Load5, setLoad5] = useState(false)
 
     useEffect(() => {
-        document.getElementById("defaultMe").click();
-
-        const configuration = {
-            method: "get",
-            url: "http://localhost:3000/GetData4Admin",
-        }
-        axios(configuration)
-            .then((res) => {
-                setCountData(res.data)
-            })
-            .catch((err) => {
-                console.log(err);
-            })
-
         const configuration2 = {
             method: "get",
             url: 'http://localhost:3000/GetDetailUser',
@@ -68,6 +52,12 @@ function ManagerPanel() {
                 elem[i].classList.add('active');
             }
         }
+        if ($('.content .page:nth-child(1)').hasClass('active') === true) {
+            setLoad0(true)
+        }
+        if ($('.content .page:nth-child(2)').hasClass('active') === true) {
+            setLoad6(true)
+        }
         if ($('.content .page:nth-child(3)').hasClass('active') === true) {
             setLoad1(true)
         }
@@ -80,6 +70,9 @@ function ManagerPanel() {
         if ($('.content .page:nth-child(6)').hasClass('active') === true) {
             setLoad4(true)
         }
+        if ($('.content .page:nth-child(7)').hasClass('active') === true) {
+            setLoad5(true)
+        }
     }, [name.userId])
 
     $(function () {
@@ -90,6 +83,12 @@ function ManagerPanel() {
             $('.active[data-page]').removeClass('active');
             $('[data-page="' + menu + '"]').addClass('active');
 
+            if ($('.content .page:nth-child(1)').hasClass('active') === true) {
+                setLoad0(true)
+            }
+            if ($('.content .page:nth-child(2)').hasClass('active') === true) {
+                setLoad6(true)
+            }
             if ($('.content .page:nth-child(3)').hasClass('active') === true) {
                 setLoad1(true)
             }
@@ -101,6 +100,9 @@ function ManagerPanel() {
             }
             if ($('.content .page:nth-child(6)').hasClass('active') === true) {
                 setLoad4(true)
+            }
+            if ($('.content .page:nth-child(7)').hasClass('active') === true) {
+                setLoad5(true)
             }
         });
 
@@ -191,20 +193,6 @@ function ManagerPanel() {
         }
     });
 
-    function openMe(evt, cityName) {
-        var i, tabcontent, tablinks;
-        tabcontent = document.getElementsByClassName("contentMe");
-        for (i = 0; i < tabcontent.length; i++) {
-            tabcontent[i].style.display = "none";
-        }
-        tablinks = document.getElementsByClassName("buttonMe");
-        for (i = 0; i < tablinks.length; i++) {
-            tablinks[i].className = tablinks[i].className.replace(" activeMe", "");
-        }
-        document.getElementById(cityName).style.display = "block";
-        evt.currentTarget.className += " activeMe";
-    }
-
     const changeImage = (e, id) => {
         e.preventDefault()
         const configuration = {
@@ -291,7 +279,7 @@ function ManagerPanel() {
                                         )}
                                         <label htmlFor="newProfilePhoto" className="upload-file-block">
                                             <div className="text-center">
-                                                <i className="fa fa-camera fa-2x"></i>
+                                                <i className="fi fi-sr-camera"></i>
                                             </div>
                                         </label>
                                     </div>
@@ -301,14 +289,14 @@ function ManagerPanel() {
                         )
                     })}
                     <div className="menu">
-                        <a data-menu="dashboard" onClick={() => setPage("dashboard")} href="# " className="unchange2"><i className="fa-solid fa-house"></i><p className='appearNow'>Home</p></a>
-                        <a data-menu="uiux" onClick={() => setPage("uiux")} href="# " className="unchange2"><i className="fa-solid fa-palette"></i><p className='appearNow'>Interface</p></a>
-                        <a data-menu="about" onClick={() => setPage("about")} href="# " className='unchange2'><i className="fa-solid fa-cart-shopping"></i><p className='appearNow'>Cart</p></a>
-                        <a data-menu="table" onClick={() => setPage("table")} href="# " className='unchange2'><i className="fa-solid fa-calendar-check"></i><p className='appearNow'>Table</p></a>
-                        <a data-menu="booking" onClick={() => setPage("booking")} href="# " className='unchange2'><i className="fa-solid fa-calendar-plus"></i><p className='appearNow'>Booking</p></a>
-                        <a data-menu="download" onClick={() => setPage("download")} href="# " className='unchange2'><i className="fa-solid fa-utensils"></i><p className='appearNow'>Menu</p></a>
-                        <a data-menu="announce" onClick={() => setPage("announce")} href="# " className='unchange2'><i className="fa-solid fa-bullhorn"></i><p className='appearNow'>Announce</p></a>
-                        <a data-dialog="logout" href="# " className='unchange2'><i className="fa-solid fa-right-from-bracket"></i><p className='appearNow'>Logout</p></a>
+                        <a data-menu="dashboard" onClick={() => setPage("dashboard")} href="# " className="unchange2"><i className="fi fi-sr-home"></i><p className='appearNow'>Home</p></a>
+                        <a data-menu="uiux" onClick={() => setPage("uiux")} href="# " className="unchange2"><i className="fi fi-sr-palette"></i><p className='appearNow'>Interface</p></a>
+                        <a data-menu="about" onClick={() => setPage("about")} href="# " className='unchange2'><i className="fi fi-ss-shopping-cart"></i><p className='appearNow'>Cart</p></a>
+                        <a data-menu="table" onClick={() => setPage("table")} href="# " className='unchange2'><i className="fi fi-sr-lamp"></i><p className='appearNow'>Table</p></a>
+                        <a data-menu="booking" onClick={() => setPage("booking")} href="# " className='unchange2'><i className="fi fi-sr-calendar-pen"></i><p className='appearNow'>Booking</p></a>
+                        <a data-menu="download" onClick={() => setPage("download")} href="# " className='unchange2'><i className="fi fi-ss-utensils"></i><p className='appearNow'>Menu</p></a>
+                        <a data-menu="announce" onClick={() => setPage("announce")} href="# " className='unchange2'><i className="fi fi-sr-megaphone"></i><p className='appearNow'>Announce</p></a>
+                        <a data-dialog="logout" href="# " className='unchange2'><i className="fi fi-br-sign-out-alt"></i><p className='appearNow'>Logout</p></a>
                     </div>
                 </div>
                 <div className="content">
@@ -318,92 +306,9 @@ function ManagerPanel() {
                                 <h2>Dashboard</h2>
                             </div>
                         </div>
-                        <div className="grid pt-4">
-                            <div className="card-verticle ">
-                                <div className="card-small" style={{ background: "#2298F1" }}>
-                                    <span className="title">
-                                        Total Employee
-                                    </span>
-                                    <h2 className="text">{CountData?.userLength}</h2>
-                                    <hr />
-                                    <div className='d-flex justify-content-between'>
-                                        <p className='m-0 text-white'>1% increase</p>
-                                        <MainGiveTask />
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="card-verticle">
-                                <div className="card-small" style={{ background: "#66B92E" }}>
-                                    <span className="title">
-                                        Active Order
-                                    </span>
-                                    <h2 className="text">{CountData?.orderLength}</h2>
-                                    <hr />
-                                    <p className='m-0 text-white'>5% increase</p>
-                                </div>
-                            </div>
-                            <div className="card-verticle">
-                                <div className="card-small" style={{ background: "#FEA116" }}>
-                                    <span className="title">
-                                        Active Table
-                                    </span>
-                                    <h2 className="text">{CountData?.tableLength}</h2>
-                                    <hr />
-                                    <p className='m-0 text-white'>9% increase</p>
-                                </div>
-                            </div>
-                            <div className="card-verticle">
-                                <div className="card-small" style={{ background: "#ff9999" }}>
-                                    <div className='flexOverPage'>
-                                        <div>
-                                            <span className="title">Active Booking</span>
-                                            <h2 className="text text-center">{CountData?.actBookingLength}</h2>
-                                        </div>
-                                        <div>
-                                            <span className="title">Serving Booking</span>
-                                            <h2 className="text text-center">{CountData?.waitBookingLength}</h2>
-                                        </div>
-                                    </div>
-                                    <hr />
-                                    <p className='m-0 text-white'>1.5% increase</p>
-                                </div>
-                            </div>
-                            <div className="card-verticle">
-                                <div className="card-small" style={{ background: "#D65B4A" }}>
-                                    <span className="title">
-                                        Total Menu
-                                    </span>
-                                    <h2 className="text">{CountData?.menuLength}</h2>
-                                    <hr />
-                                    <p className='m-0 text-white'>0% increase</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='butItWrong'>
-                            <div className='bestie'>
-                                <h4 className='text-center text-white'>Income</h4>
-                                <div style={{ background: "#2C343A", borderRadius: 3 + "px" }}>
-                                    <div className='d-flex' style={{ gap: 1 + "%" }}>
-                                        <button id='defaultMe' className='btn btn-secondary w-100 buttonMe activeMe' onClick={(e) => openMe(e, 'IncomeDay')}>Day</button>
-                                        <button className='btn btn-secondary w-100 buttonMe' onClick={(e) => openMe(e, 'IncomeMonth')}>Month</button>
-                                        <button className='btn btn-secondary w-100 buttonMe' onClick={(e) => openMe(e, 'IncomeYear')}>Year</button>
-                                    </div>
-                                </div>
-                                <div id="IncomeDay" className="contentMe">
-                                    <RevenueDay />
-                                </div>
-                                <div id="IncomeMonth" className="contentMe">
-                                    <RevenueMonth />
-                                </div>
-                                <div id="IncomeYear" className="contentMe">
-                                    <RevenueYear />
-                                </div>
-                            </div>
-                            <div className="bestie">
-                                <h4 className='text-center text-white'>Contact</h4>
-                                <GetContact />
-                            </div>
-                        </div>
+                        {Load0 ? (
+                            <ManagerDashboard />
+                        ) : null}
                     </div>
                     <div className="page noflex" data-page="uiux" id='Uiux'>
                         <div className="header">
@@ -412,7 +317,9 @@ function ManagerPanel() {
                             </div>
                         </div>
                         <div className='callMeOutUI'>
-                            <MainUiux />
+                            {Load6 ? (
+                                <MainUiux />
+                            ) : null}
                         </div>
                     </div>
                     <div className="page noflex" data-page="about" id='Cart'>
@@ -470,7 +377,9 @@ function ManagerPanel() {
                             </div>
                         </div>
                         <div className='callMeOutUI'>
-                            <MainAnnounce />
+                            {Load5 ? (
+                                <MainAnnounce />
+                            ) : null}
                         </div>
                     </div>
                 </div>

@@ -1,5 +1,4 @@
 /********** Template CSS **********/
-@import url(https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css);
 @import url(https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Nunito:wght@600;700;800&family=Pacifico&display=swap);
 
 :root {
@@ -21,6 +20,59 @@
 
 .fw-medium {
     font-weight: 600 !important;
+}
+
+.connectNow {
+    z-index: 1000;
+    box-shadow: 0 8px 20px 0 rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    padding: 20px;
+    background: #fff;
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 270px;
+    bottom: 0;
+    left: 2%;
+    opacity: 0;
+    animation: smooth-appear 0.5s ease forwards;
+}
+
+@keyframes smooth-appear {
+    to {
+        bottom: 2%;
+        opacity: 1;
+    }
+}
+
+.connectNow p {
+    text-wrap: nowrap;
+}
+
+.connectNow .reLive {
+    color: #0064D1;
+}
+
+.connectNow .reLive:hover {
+    text-decoration: underline;
+}
+
+.connectNow h4 {
+    background-color: #E4E6EB;
+    border-radius: 50%;
+    padding-left: 5px;
+    padding-right: 5px;
+    cursor: pointer;
+}
+
+.greenW {
+    color: #36D744;
+}
+
+.connectNow h4:hover,
+.connectNow h4:active {
+    background-color: #d4d6db;
 }
 
 .fw-semi-bold {
@@ -1147,14 +1199,6 @@
     font-weight: normal;
     text-transform: capitalize;
     transition: .3s;
-}
-
-.footer .btn.btn-link::before {
-    position: relative;
-    content: "\f105";
-    font-family: "Font Awesome 5 Free";
-    font-weight: 900;
-    margin-right: 10px;
 }
 
 .footer .btn.btn-link:hover {

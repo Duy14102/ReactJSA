@@ -54,11 +54,35 @@ const PrivateRoute = ({ children }) => {
 
 function Wrapped() {
     const [styleA, setStyleA] = useState()
+    const [offline, setOffline] = useState(false)
+    const [online, setOnline] = useState(false)
+    function reloadIt() {
+        window.location.reload()
+    }
+
+    window.addEventListener('offline', e => {
+        setOnline(false)
+        setOffline(true)
+    })
+
+    window.addEventListener('online', e => {
+        setOffline(false)
+        setOnline(true)
+    })
+
     useEffect(() => {
         new WOW.WOW({
             live: false
         }).init();
     }, [])
+
+    useEffect(() => {
+        if (online) {
+            setTimeout(() => {
+                setOnline(false)
+            }, 3000)
+        }
+    }, [online])
 
     useEffect(() => {
         const configuration = {
@@ -85,6 +109,21 @@ function Wrapped() {
         <>
             <div className="container-fluid p-0" style={styleA}>
                 <Spinner />
+                {offline ? (
+                    <div className="connectNow">
+                        <span className="w-100"><i className="fi fi-br-wifi-slash"></i></span>
+                        <p className="m-0 text-black">You are offline.</p>
+                        <button onClick={() => reloadIt()} className="reLive">Refresh</button>
+                        <h4 onClick={() => setOffline(false)} className="returnX m-0">⨯</h4>
+                    </div>
+                ) : null}
+                {online ? (
+                    <div className="connectNow">
+                        <span><i className="fi fi-br-wifi greenW"></i></span>
+                        <p className="m-0 text-black">Updated the internet.</p>
+                        <h4 onClick={() => setOnline(false)} className="returnX m-0">⨯</h4>
+                    </div>
+                ) : null}
                 <Routes>
                     <Route path="/" element={<App />} />
                     <Route path="ContactSite" element={<ContactSite />} />

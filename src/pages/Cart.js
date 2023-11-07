@@ -170,7 +170,7 @@ function Cart() {
                                     <tr>
                                         <td colSpan={2}>
                                             <NavLink to="/Checkout" state={{ valid: pushData, shippingFee: shippingFee }} className="btnCheckout"><b>Checkout</b></NavLink>
-                                            <p className="pt-3" style={{ margin: 0 }}> <i className="fa-solid fa-tag"></i> Coupon</p>
+                                            <p className="pt-3" style={{ margin: 0 }}> <i className="fi fi-sr-tags"></i> Coupon</p>
                                         </td>
                                     </tr>
                                     <tr>

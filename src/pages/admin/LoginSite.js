@@ -171,7 +171,7 @@ function LoginSite() {
 
                             <div className="wrap-input100 validate-input" data-validate="Enter password">
                                 <span className="btn-show-pass">
-                                    <i className="fa fa-eye"></i>
+                                    <i className="fi fi-sr-eye"></i>
                                 </span>
                                 <input className="input100" type="password" name="password" value={password} onChange={(e) => setPassword(e.target.value)} />
                                 <span className="focus-input100" data-placeholder="Password"></span>

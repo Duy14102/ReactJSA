@@ -252,7 +252,7 @@ function EmployeePanel() {
                                             )}
                                             <label htmlFor="newProfilePhoto" className="upload-file-block">
                                                 <div className="text-center">
-                                                    <i className="fa fa-camera fa-2x"></i>
+                                                    <i className="fi fi-sr-camera"></i>
                                                 </div>
                                             </label>
                                         </div>
@@ -262,11 +262,11 @@ function EmployeePanel() {
                             )
                         })}
                         <div className="menu">
-                            <a data-menu="dashboard" href="#dashboard" onClick={() => setPage("dashboard")} className="unchange2"><i className="fa-solid fa-house"></i><p className='appearNow'>Home</p></a>
-                            <a data-menu="download" href="#download" onClick={() => setPage("download")} className='unchange2'><i className="fa-solid fa-calendar-check"></i><p className='appearNow'>Table</p></a>
-                            <a data-menu="users" href="#users" onClick={() => setPage("users")} className='unchange2'><i className="fa-solid fa-briefcase"></i><p className='appearNow'>Booking</p></a>
-                            <a data-menu="about" href="#about" onClick={() => setPage("about")} className='unchange2'><i className="fa-solid fa-cart-shopping"></i><p className='appearNow'>Cart</p></a>
-                            <a data-dialog="logout" href="# " className='unchange2'><i className="fa-solid fa-right-from-bracket"></i><p className='appearNow'>Logout</p></a>
+                            <a data-menu="dashboard" href="#dashboard" onClick={() => setPage("dashboard")} className="unchange2"><i className="fi fi-sr-home"></i><p className='appearNow'>Home</p></a>
+                            <a data-menu="download" href="#download" onClick={() => setPage("download")} className='unchange2'><i className="fi fi-sr-lamp"></i><p className='appearNow'>Table</p></a>
+                            <a data-menu="users" href="#users" onClick={() => setPage("users")} className='unchange2'><i className="fi fi-sr-calendar-pen"></i><p className='appearNow'>Booking</p></a>
+                            <a data-menu="about" href="#about" onClick={() => setPage("about")} className='unchange2'><i className="fi fi-ss-shopping-cart"></i><p className='appearNow'>Cart</p></a>
+                            <a data-dialog="logout" href="# " className='unchange2'><i className="fi fi-br-sign-out-alt"></i><p className='appearNow'>Logout</p></a>
                         </div>
                     </div>
                     <div className="content">
