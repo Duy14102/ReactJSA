@@ -1131,6 +1131,20 @@ app.get("/GetSearch", async (req, res) => {
     }
 })
 
+//Get Search autocomplete
+app.get("/GetSearchAutoComplete", async (req, res) => {
+    try {
+        const getIt = await getThisMenu.find({})
+        var data = []
+        for (var i = 0; i < getIt.length; i++) {
+            data.push(getIt[i].foodname)
+        }
+        res.send({ data: data })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
 //Get Category Menu
 app.get("/GetCategoryMenu", async (req, res) => {
     try {

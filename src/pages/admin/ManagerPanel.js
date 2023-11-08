@@ -1,5 +1,3 @@
-import '../../css/Admin.css';
-import '../../css/style.css';
 import $ from 'jquery';
 import { useEffect, useState } from 'react';
 import Cookies from 'universal-cookie';
@@ -14,6 +12,7 @@ import MainAnnounce from '../../component/employee/MainAnnounce';
 import NotFound from '../../component/outOfBorder/NotFound';
 import MainUiux from '../../component/employee/MainUiux';
 import ManagerDashboard from '../../component/outOfBorder/ManagerDashboard';
+import LayoutManager from './LayoutManager';
 
 function ManagerPanel() {
     const cookies = new Cookies();
@@ -258,7 +257,7 @@ function ManagerPanel() {
         window.location.href = '/';
     }
     return (
-        <div style={{ height: 100 + "vh" }}>
+        <LayoutManager>
             <div className="subOver">
                 <div className="drawer pt-4">
                     {Object.values(GetUser).map((a) => {
@@ -396,7 +395,7 @@ function ManagerPanel() {
                     </div>
                 </div>
             </div>
-        </div >
+        </LayoutManager>
     );
 }
 export default ManagerPanel;

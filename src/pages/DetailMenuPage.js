@@ -1,6 +1,3 @@
-import '../css/DetailMenuPage.css';
-import Header from '../component/Header';
-import Footer from '../component/Footer';
 import { NavLink, useParams } from 'react-router-dom';
 import NotFound from '../component/outOfBorder/NotFound';
 import { useEffect, Fragment, useState, useRef } from 'react';
@@ -12,6 +9,7 @@ import jwtDecode from "jwt-decode";
 import Cookies from "universal-cookie";
 import ReactPaginate from 'react-paginate';
 import Alert from '../component/outOfBorder/Alert';
+import Layout from '../Layout';
 window.jQuery = jQuery
 require('owl.carousel')
 
@@ -285,8 +283,7 @@ function DetailMenuPage() {
     });
     const rating = stars => '★★★★★☆☆☆☆☆'.slice(5 - stars, 10 - stars);
     return (
-        <>
-            <Header type={"Yes"} />
+        <Layout>
             {callAlert ? (
                 <Alert type={"Green"} />
             ) : null}
@@ -551,8 +548,7 @@ function DetailMenuPage() {
                     )
                 })}
             </div>
-            <Footer />
-        </>
+        </Layout>
     );
 }
 export default DetailMenuPage;

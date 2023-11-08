@@ -1,10 +1,11 @@
 import axios from "axios"
-import { useEffect, useState } from "react"
-import MainGiveTask from "../admin/MainGiveTask"
-import RevenueDay from "./RevenueDay"
-import RevenueMonth from "./RevenueMonth"
-import RevenueYear from "./RevenueYear"
-import GetContact from "../admin/GetContact"
+import { Suspense, lazy, useEffect, useState } from "react"
+import Spinner from '../Spinner'
+const Givetask = lazy(() => import("../admin/MainGiveTask"))
+const RevenueDay = lazy(() => import("./RevenueDay"))
+const RevenueMonth = lazy(() => import("./RevenueMonth"))
+const RevenueYear = lazy(() => import("./RevenueYear"))
+const GetContact = lazy(() => import("../admin/GetContact"))
 
 function ManagerDashboard() {
     const [CountData, setCountData] = useState()
@@ -49,7 +50,9 @@ function ManagerDashboard() {
                         <hr />
                         <div className='d-flex justify-content-between'>
                             <p className='m-0 text-white'>1% increase</p>
-                            <MainGiveTask />
+                            <Suspense fallback={<Spinner />}>
+                                <Givetask />
+                            </Suspense>
                         </div>
                     </div>
                 </div>
@@ -111,18 +114,26 @@ function ManagerDashboard() {
                         </div>
                     </div>
                     <div id="IncomeDay" className="contentMe">
-                        <RevenueDay />
+                        <Suspense fallback={<Spinner />}>
+                            <RevenueDay />
+                        </Suspense>
                     </div>
                     <div id="IncomeMonth" className="contentMe">
-                        <RevenueMonth />
+                        <Suspense fallback={<Spinner />}>
+                            <RevenueMonth />
+                        </Suspense>
                     </div>
                     <div id="IncomeYear" className="contentMe">
-                        <RevenueYear />
+                        <Suspense fallback={<Spinner />}>
+                            <RevenueYear />
+                        </Suspense>
                     </div>
                 </div>
                 <div className="bestie">
                     <h4 className='text-center text-white'>Contact</h4>
-                    <GetContact />
+                    <Suspense fallback={<Spinner />}>
+                        <GetContact />
+                    </Suspense>
                 </div>
             </div>
         </>

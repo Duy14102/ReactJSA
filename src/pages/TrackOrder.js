@@ -1,14 +1,11 @@
 import { NavLink } from "react-router-dom";
-import Header from "../component/Header";
-import Footer from "../component/Footer";
-import "../css/style.css";
 import Tracking from "../component/Tracking";
+import Layout from "../Layout";
 
 function TrackOrder() {
     document.title = "EatCom - Contact";
     return (
-        <>
-            <Header />
+        <Layout>
 
             <div className="py-5 hero-header mb-5">
                 <div className="container text-center my-5 pt-5 pb-4">
@@ -26,9 +23,7 @@ function TrackOrder() {
                 <Tracking />
             </div>
 
-            <Footer />
-
-        </>
+        </Layout>
     );
 }
 export default TrackOrder;

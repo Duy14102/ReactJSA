@@ -1,154 +1,54 @@
 import { Routes, Route } from "react-router-dom";
-import { useEffect, useState } from "react";
-import WOW from 'wowjs';
-import LoginSite from "./pages/admin/LoginSite";
-import SignupSite from "./pages/admin/Register";
-import App from "./pages/App";
-import BookingSite from "./pages/BookingSite";
-import Backtotop from "./component/outOfBorder/Backtotop";
-import PrivacyAndTerm from "./pages/PrivacyAndTerm";
-import AdminPanel from "./pages/admin/AdminPanel";
-import Spinner from "./component/Spinner";
-import Cookies from "universal-cookie";
-import NotFound from "./component/outOfBorder/NotFound";
-import "./css/bootstrap.min.css";
-import "./lib/animate/animate.min.css";
-import "./lib/tempusdominus/css/tempusdominus-bootstrap-4.min.css";
-import jwtDecode from "jwt-decode";
-import DetailMenuPage from "./pages/DetailMenuPage";
-import CategoryPage from "./pages/CategoryPage";
-import SearchSite from "./pages/SearchSite";
-import Cart from "./pages/Cart";
-import Checkout from "./pages/Checkout";
-import OrderComplete from "./pages/OrderComplete";
-import TrackOrder from "./pages/TrackOrder";
-import ContactSite from "./pages/ContactSite";
-import UserPanel from "./pages/admin/UserPanel";
-import EmployeePanel from "./pages/admin/EmployeePanel";
-import ManagerPanel from "./pages/admin/ManagerPanel";
-import QrCodeTable from "./pages/QrCodeTable";
-import Announcement from "./pages/Announcement";
-import axios from "axios";
-
-const cookies = new Cookies();
-const token = cookies.get("TOKEN");
-const PrivateRoute = ({ children }) => {
-    if (token) {
-        const decode = jwtDecode(token);
-        switch (decode.userRole) {
-            case 1:
-                return children
-            case 2:
-                return children
-            case 3:
-                return children
-            case 4:
-                return children
-            default:
-                return NotFound()
-        }
-    } else {
-        return NotFound();
-    }
-}
+import { lazy, Suspense } from "react";
+import Spinner from '../src/component/Spinner'
+const mainApp = lazy(() => import("./pages/App"))
+const mainContact = lazy(() => import("./pages/ContactSite"))
+const mainCategory = lazy(() => import("./pages/CategoryPage"))
+const mainSearch = lazy(() => import("./pages/SearchSite"))
+const mainBooking = lazy(() => import("./pages/BookingSite"))
+const mainTrack = lazy(() => import("./pages/TrackOrder"))
+const mainPnT = lazy(() => import("./pages/PrivacyAndTerm"))
+const mainLogin = lazy(() => import("./pages/admin/LoginSite"))
+const mainSignup = lazy(() => import("./pages/admin/Register"))
+const mainCart = lazy(() => import("./pages/Cart"))
+const mainCheckout = lazy(() => import("./pages/Checkout"))
+const mainOrderComplete = lazy(() => import("./pages/OrderComplete"))
+const mainDetail = lazy(() => import("./pages/DetailMenuPage"))
+const mainQr = lazy(() => import("./pages/QrCodeTable"))
+const mainNotFound = lazy(() => import("./component/outOfBorder/NotFound"))
+const mainUserPanel = lazy(() => import("./pages/admin/UserPanel"))
+const mainEmPanel = lazy(() => import("./pages/admin/EmployeePanel"))
+const mainAdminPanel = lazy(() => import("./pages/admin/AdminPanel"))
+const mainManaPanel = lazy(() => import("./pages/admin/ManagerPanel"))
+const mainAnnounce = lazy(() => import("./pages/Announcement"))
 
 function Wrapped() {
-    const [styleA, setStyleA] = useState()
-    const [offline, setOffline] = useState(false)
-    const [online, setOnline] = useState(false)
-    function reloadIt() {
-        window.location.reload()
-    }
 
-    window.addEventListener('offline', e => {
-        setOnline(false)
-        setOffline(true)
-    })
-
-    window.addEventListener('online', e => {
-        setOffline(false)
-        setOnline(true)
-    })
-
-    useEffect(() => {
-        new WOW.WOW({
-            live: false
-        }).init();
-    }, [])
-
-    useEffect(() => {
-        if (online) {
-            setTimeout(() => {
-                setOnline(false)
-            }, 3000)
-        }
-    }, [online])
-
-    useEffect(() => {
-        const configuration = {
-            method: "get",
-            url: "http://localhost:3000/GetHeroUI",
-            params: {
-                name: "bghero"
-            }
-        }
-        axios(configuration)
-            .then((res) => {
-                setStyleA({
-                    "background": `linear-gradient(rgba(15, 23, 43, .9), rgba(15, 23, 43, .9)), url(${res.data.data})`,
-                    "backgroundPosition": "center center",
-                    "backgroundRepeat": "no-repeat",
-                    "backgroundSize": "cover",
-                    "backgroundAttachment": "fixed"
-                })
-            }).catch((err) => {
-                console.log(err);
-            })
-    }, [])
     return (
-        <>
-            <div className="container-fluid p-0" style={styleA}>
-                <Spinner />
-                {offline ? (
-                    <div className="connectNow">
-                        <span className="w-100"><i className="fi fi-br-wifi-slash"></i></span>
-                        <p className="m-0 text-black">You are offline.</p>
-                        <button onClick={() => reloadIt()} className="reLive">Refresh</button>
-                        <h4 onClick={() => setOffline(false)} className="returnX m-0">⨯</h4>
-                    </div>
-                ) : null}
-                {online ? (
-                    <div className="connectNow">
-                        <span><i className="fi fi-br-wifi greenW"></i></span>
-                        <p className="m-0 text-black">Updated the internet.</p>
-                        <h4 onClick={() => setOnline(false)} className="returnX m-0">⨯</h4>
-                    </div>
-                ) : null}
-                <Routes>
-                    <Route path="/" element={<App />} />
-                    <Route path="ContactSite" element={<ContactSite />} />
-                    <Route path="CategorySite/:id/:fil" element={<CategoryPage />} />
-                    <Route path="SearchSite/:id/:fil" element={<SearchSite />} />
-                    <Route path="BookingSite" element={<BookingSite />} />
-                    <Route path="Announcement" element={<Announcement />} />
-                    <Route path="TrackOrder" element={<TrackOrder />} />
-                    <Route path="PAndT" element={<PrivacyAndTerm />} />
-                    <Route path="LoginSite" element={<LoginSite />} />
-                    <Route path="SignupSite" element={<SignupSite />} />
-                    <Route path="Cart" element={<Cart />} />
-                    <Route path="Checkout" element={<Checkout />} />
-                    <Route path="OrderComplete" element={<OrderComplete />} />
-                    <Route path="DetailMenuPage/:id/:cate" element={<DetailMenuPage />} />
-                    <Route path="QrCodeTable/:id/:qr/:cate/:fil" element={<QrCodeTable />} />
-                    <Route path="*" element={<NotFound />} />
-                    <Route path="UserPanel/:id" element={<PrivateRoute><UserPanel /></PrivateRoute>} />
-                    <Route path="EmployeePanel" element={<PrivateRoute><EmployeePanel /></PrivateRoute>} />
-                    <Route path="AdminPanel" element={<PrivateRoute><AdminPanel /></PrivateRoute>} />
-                    <Route path="ManagerPanel" element={<PrivateRoute><ManagerPanel /></PrivateRoute>} />
-                </Routes>
-                <Backtotop />
-            </div>
-        </>
+        <Suspense fallback={<Spinner />}>
+            <Routes>
+                <Route path="/" Component={mainApp} />
+                <Route path="ContactSite" Component={mainContact} />
+                <Route path="CategorySite/:id/:fil" Component={mainCategory} />
+                <Route path="SearchSite/:id/:fil" Component={mainSearch} />
+                <Route path="BookingSite" Component={mainBooking} />
+                <Route path="Announcement" Component={mainAnnounce} />
+                <Route path="TrackOrder" Component={mainTrack} />
+                <Route path="PAndT" Component={mainPnT} />
+                <Route path="LoginSite" Component={mainLogin} />
+                <Route path="SignupSite" Component={mainSignup} />
+                <Route path="Cart" Component={mainCart} />
+                <Route path="Checkout" Component={mainCheckout} />
+                <Route path="OrderComplete" Component={mainOrderComplete} />
+                <Route path="DetailMenuPage/:id/:cate" Component={mainDetail} />
+                <Route path="QrCodeTable/:id/:qr/:cate/:fil" Component={mainQr} />
+                <Route path="*" Component={mainNotFound} />
+                <Route path="UserPanel/:id" Component={mainUserPanel} />
+                <Route path="EmployeePanel" Component={mainEmPanel} />
+                <Route path="AdminPanel" Component={mainAdminPanel} />
+                <Route path="ManagerPanel" Component={mainManaPanel} />
+            </Routes>
+        </Suspense>
     );
 }
 export default Wrapped;

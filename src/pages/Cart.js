@@ -1,8 +1,6 @@
 import { NavLink } from "react-router-dom";
-import Footer from "../component/Footer";
-import Header from "../component/Header";
-import '../css/Cart.css'
 import { useState, useEffect } from "react";
+import Layout from "../Layout";
 
 function Cart() {
     const val = JSON.parse(localStorage.getItem('cart'))
@@ -111,8 +109,7 @@ function Cart() {
     }
 
     return (
-        <>
-            <Header type={"Yes"} />
+        <Layout>
             <div className="bg-white">
                 <div className="container">
                     <div className="py-5 text-center businessWay">
@@ -189,8 +186,7 @@ function Cart() {
                     )}
                 </div>
             </div>
-            <Footer />
-        </>
+        </Layout>
     )
 }
 export default Cart;

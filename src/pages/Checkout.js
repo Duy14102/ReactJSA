@@ -1,12 +1,11 @@
 import { NavLink, useLocation } from "react-router-dom";
-import Footer from "../component/Footer";
-import Header from "../component/Header";
 import NotFound from "../component/outOfBorder/NotFound";
 import '../css/Category.css'
 import { Fragment, useEffect, useState } from "react";
 import axios from "axios";
 import Cookies from "universal-cookie";
 import jwtDecode from "jwt-decode";
+import Layout from "../Layout";
 
 function Checkout() {
     var paymentmethod = 0
@@ -190,8 +189,7 @@ function Checkout() {
     }
 
     return (
-        <>
-            <Header type={"Yes"} />
+        <Layout>
             <div className="bg-white">
                 <div className="container">
                     <div className="py-5 text-center businessWay">
@@ -367,8 +365,7 @@ function Checkout() {
                     </div>
                 </div>
             </div>
-            <Footer />
-        </>
+        </Layout>
     )
 }
 export default Checkout;

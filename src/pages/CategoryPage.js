@@ -1,12 +1,10 @@
-import '../css/Category.css';
-import Footer from '../component/Footer';
-import Header from '../component/Header';
 import { NavLink, useParams } from 'react-router-dom';
 import { useState, useEffect, useRef } from 'react';
 import NotFound from '../component/outOfBorder/NotFound';
 import axios from 'axios';
 import $ from 'jquery'
 import ReactPaginate from 'react-paginate';
+import Layout from '../Layout';
 
 function CategoryPage() {
     let appler = useParams()
@@ -138,8 +136,7 @@ function CategoryPage() {
         return NotFound();
     }
     return (
-        <>
-            <Header type={"Yes"} />
+        <Layout>
             <div className='bg-white'>
                 <div className='container'>
                     <div className='pt-3'>
@@ -230,8 +227,7 @@ function CategoryPage() {
                     </div>
                 </div>
             </div>
-            <Footer />
-        </>
+        </Layout>
     )
 }
 export default CategoryPage;

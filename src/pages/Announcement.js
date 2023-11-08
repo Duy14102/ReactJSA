@@ -1,12 +1,10 @@
 import { NavLink } from "react-router-dom"
-import Footer from "../component/Footer"
-import Header from "../component/Header"
 import AnnounceMe from "../component/AnnounceMe"
+import Layout from "../Layout"
 
 function Announcement() {
     return (
-        <>
-            <Header />
+        <Layout>
 
             <div className="py-5 hero-header mb-5">
                 <div className="container text-center my-5 pt-5 pb-4">
@@ -24,8 +22,7 @@ function Announcement() {
                 <AnnounceMe />
             </div>
 
-            <Footer />
-        </>
+        </Layout>
     )
 }
 export default Announcement

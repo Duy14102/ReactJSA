@@ -1,12 +1,10 @@
-import '../css/Category.css';
 import { NavLink, useParams } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
-import Header from "../component/Header";
-import Footer from "../component/Footer";
 import NotFound from "../component/outOfBorder/NotFound";
 import $ from 'jquery';
 import axios from "axios";
 import ReactPaginate from 'react-paginate';
+import Layout from '../Layout';
 
 function SearchSite() {
     let appler = useParams()
@@ -123,8 +121,7 @@ function SearchSite() {
         return NotFound()
     }
     return (
-        <>
-            <Header type={"Yes"} />
+        <Layout>
             <div className='bg-white'>
                 <div className='container'>
                     <div className='ruler pt-3'>
@@ -206,8 +203,7 @@ function SearchSite() {
                     </div>
                 </div>
             </div>
-            <Footer />
-        </>
+        </Layout>
     );
 }
 export default SearchSite;

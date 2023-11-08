@@ -1,5 +1,3 @@
-import '../../css/Admin.css';
-import '../../css/style.css';
 import $ from 'jquery';
 import { Fragment, useEffect, useState } from 'react';
 import Cookies from 'universal-cookie';
@@ -11,6 +9,7 @@ import MainOrder from '../../component/admin/MainOrder';
 import MainTable from '../../component/employee/MainTable';
 import TaskHandle from '../../component/employee/TaskHandle';
 import NotFound from '../../component/outOfBorder/NotFound';
+import LayoutManager from './LayoutManager';
 
 function EmployeePanel() {
     const cookies = new Cookies()
@@ -230,203 +229,201 @@ function EmployeePanel() {
         window.location.href = '/';
     }
     return (
-        <>
-            <div style={{ height: 100 + "vh" }}>
-                <div className="subOver">
-                    <div className="drawer pt-4">
-                        {Object.values(GetUser).map((a) => {
-                            return (
-                                <form key={a._id} className='thisSubmitChange' onSubmit={(e) => changeImage(e, a._id)}>
-                                    <div className="profile-pic-wrapper">
-                                        <div className="pic-holder2">
-                                            {a.userimage ? (
-                                                <>
-                                                    <img id="profilePic" className="pic" src={a.userimage} alt="" />
-                                                    <input onChange={convertToBase64} className="uploadProfileInput" type="file" name="updateimage" id="newProfilePhoto" style={{ opacity: 0 }} />
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <img id="profilePic" className="pic" src="https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg" alt="" />
-                                                    <input onChange={convertToBase64} className="uploadProfileInput" type="file" name="updateimage" id="newProfilePhoto" style={{ opacity: 0 }} />
-                                                </>
-                                            )}
-                                            <label htmlFor="newProfilePhoto" className="upload-file-block">
-                                                <div className="text-center">
-                                                    <i className="fi fi-sr-camera"></i>
-                                                </div>
-                                            </label>
-                                        </div>
+        <LayoutManager>
+            <div className="subOver">
+                <div className="drawer pt-4">
+                    {Object.values(GetUser).map((a) => {
+                        return (
+                            <form key={a._id} className='thisSubmitChange' onSubmit={(e) => changeImage(e, a._id)}>
+                                <div className="profile-pic-wrapper">
+                                    <div className="pic-holder2">
+                                        {a.userimage ? (
+                                            <>
+                                                <img id="profilePic" className="pic" src={a.userimage} alt="" />
+                                                <input onChange={convertToBase64} className="uploadProfileInput" type="file" name="updateimage" id="newProfilePhoto" style={{ opacity: 0 }} />
+                                            </>
+                                        ) : (
+                                            <>
+                                                <img id="profilePic" className="pic" src="https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg" alt="" />
+                                                <input onChange={convertToBase64} className="uploadProfileInput" type="file" name="updateimage" id="newProfilePhoto" style={{ opacity: 0 }} />
+                                            </>
+                                        )}
+                                        <label htmlFor="newProfilePhoto" className="upload-file-block">
+                                            <div className="text-center">
+                                                <i className="fi fi-sr-camera"></i>
+                                            </div>
+                                        </label>
                                     </div>
-                                    <button id='clickThisSubmit' type='submit' style={{ display: "none" }}></button>
-                                </form>
-                            )
-                        })}
-                        <div className="menu">
-                            <a data-menu="dashboard" href="#dashboard" onClick={() => setPage("dashboard")} className="unchange2"><i className="fi fi-sr-home"></i><p className='appearNow'>Home</p></a>
-                            <a data-menu="download" href="#download" onClick={() => setPage("download")} className='unchange2'><i className="fi fi-sr-lamp"></i><p className='appearNow'>Table</p></a>
-                            <a data-menu="users" href="#users" onClick={() => setPage("users")} className='unchange2'><i className="fi fi-sr-calendar-pen"></i><p className='appearNow'>Booking</p></a>
-                            <a data-menu="about" href="#about" onClick={() => setPage("about")} className='unchange2'><i className="fi fi-ss-shopping-cart"></i><p className='appearNow'>Cart</p></a>
-                            <a data-dialog="logout" href="# " className='unchange2'><i className="fi fi-br-sign-out-alt"></i><p className='appearNow'>Logout</p></a>
-                        </div>
+                                </div>
+                                <button id='clickThisSubmit' type='submit' style={{ display: "none" }}></button>
+                            </form>
+                        )
+                    })}
+                    <div className="menu">
+                        <a data-menu="dashboard" href="#dashboard" onClick={() => setPage("dashboard")} className="unchange2"><i className="fi fi-sr-home"></i><p className='appearNow'>Home</p></a>
+                        <a data-menu="download" href="#download" onClick={() => setPage("download")} className='unchange2'><i className="fi fi-sr-lamp"></i><p className='appearNow'>Table</p></a>
+                        <a data-menu="users" href="#users" onClick={() => setPage("users")} className='unchange2'><i className="fi fi-sr-calendar-pen"></i><p className='appearNow'>Booking</p></a>
+                        <a data-menu="about" href="#about" onClick={() => setPage("about")} className='unchange2'><i className="fi fi-ss-shopping-cart"></i><p className='appearNow'>Cart</p></a>
+                        <a data-dialog="logout" href="# " className='unchange2'><i className="fi fi-br-sign-out-alt"></i><p className='appearNow'>Logout</p></a>
                     </div>
-                    <div className="content">
-                        <div className="page" data-page="dashboard">
-                            <div className="header">
-                                <div className="title">
-                                    <h2>Dashboard</h2>
-                                </div>
+                </div>
+                <div className="content">
+                    <div className="page" data-page="dashboard">
+                        <div className="header">
+                            <div className="title">
+                                <h2>Dashboard</h2>
                             </div>
-                            <div className="grid pt-4">
-                                <div className="card-verticle ">
-                                    <div className="card-small" style={{ background: "#2298F1" }}>
-                                        <div className='flexOverPage'>
-                                            <div>
-                                                <span className="title">Active Booking</span>
-                                                <h2 className="text text-center">{CountData?.actBookingLength}</h2>
-                                            </div>
-                                            <div>
-                                                <span className="title">Serving Booking</span>
-                                                <h2 className="text text-center">{CountData?.waitBookingLength}</h2>
-                                            </div>
+                        </div>
+                        <div className="grid pt-4">
+                            <div className="card-verticle ">
+                                <div className="card-small" style={{ background: "#2298F1" }}>
+                                    <div className='flexOverPage'>
+                                        <div>
+                                            <span className="title">Active Booking</span>
+                                            <h2 className="text text-center">{CountData?.actBookingLength}</h2>
                                         </div>
-                                        <hr />
-                                        <p className='m-0 text-white'>1% increase</p>
+                                        <div>
+                                            <span className="title">Serving Booking</span>
+                                            <h2 className="text text-center">{CountData?.waitBookingLength}</h2>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="card-verticle">
-                                    <div className="card-small" style={{ background: "#66B92E" }}>
-                                        <span className="title">
-                                            Active Cart
-                                        </span>
-                                        <h2 className="text">{CountData?.orderLength}</h2>
-                                        <hr />
-                                        <p className='m-0 text-white'>5% increase</p>
-                                    </div>
-                                </div>
-                                <div className="card-verticle">
-                                    <div className="card-small" style={{ background: "#FEA116" }}>
-                                        <span className="title">
-                                            Active Table
-                                        </span>
-                                        <h2 className="text">{CountData?.tableLength}</h2>
-                                        <hr />
-                                        <p className='m-0 text-white'>9% increase</p>
-                                    </div>
-                                </div>
-                                <div className="card-verticle">
-                                    <div className="card-small" style={{ background: "#D65B4A" }}>
-                                        <span className="title">
-                                            Total Task
-                                        </span>
-                                        {Object.values(GetUser).map((r) => {
-                                            return (
-                                                <h2 key={r._id} className="text">{r.task.length}</h2>
-                                            )
-                                        })}
-                                        <hr />
-                                        <p className='m-0 text-white'>0% increase</p>
-                                    </div>
+                                    <hr />
+                                    <p className='m-0 text-white'>1% increase</p>
                                 </div>
                             </div>
-                            <div className='d-flex justify-content-center pt-5'>
-                                <div style={{ width: 70 + "vw" }}>
-                                    <h4 style={{ whiteSpace: "nowrap" }} className='text-center text-white'>Task For You</h4>
-                                    {Object.values(GetUser).map((v) => {
-                                        if (v.task.length > 0) {
-                                            return (
-                                                <Fragment key={v._id}>
-                                                    <table className='table table-bordered w-100 solotable'>
-                                                        <thead>
-                                                            <tr className="text-white text-center" style={{ background: "#374148" }}>
-                                                                <th className='thhuhu'>Title</th>
-                                                                <th>Date</th>
-                                                                <th className='thhuhu'>Status</th>
-                                                                <th></th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            {v.task?.map((j) => {
-                                                                var draw = ""
-                                                                if (j.task.status === 1) {
-                                                                    draw = "Pending"
-                                                                }
-                                                                else if (j.task.status === 2) {
-                                                                    draw = "Completed"
-                                                                }
-                                                                return (
-                                                                    <tr className='text-center' key={j.id} style={{ background: "#2C343A", color: "lightgray", verticalAlign: "middle" }}>
-                                                                        <td className='thhuhu'>{j.task.title}</td>
-                                                                        <td>{j.task.date}</td>
-                                                                        <td className='thhuhu'>{draw}</td>
-                                                                        <td><TaskHandle id={j} name={v} /></td>
-                                                                    </tr>
-                                                                )
-                                                            })}
-                                                        </tbody>
-                                                    </table>
-                                                </Fragment>
-                                            )
-                                        } else {
-                                            return (
-                                                <p key={v} className="text-center" style={{ color: "lightgray", whiteSpace: "nowrap" }}>Task list empty!</p>
-                                            )
-                                        }
+                            <div className="card-verticle">
+                                <div className="card-small" style={{ background: "#66B92E" }}>
+                                    <span className="title">
+                                        Active Cart
+                                    </span>
+                                    <h2 className="text">{CountData?.orderLength}</h2>
+                                    <hr />
+                                    <p className='m-0 text-white'>5% increase</p>
+                                </div>
+                            </div>
+                            <div className="card-verticle">
+                                <div className="card-small" style={{ background: "#FEA116" }}>
+                                    <span className="title">
+                                        Active Table
+                                    </span>
+                                    <h2 className="text">{CountData?.tableLength}</h2>
+                                    <hr />
+                                    <p className='m-0 text-white'>9% increase</p>
+                                </div>
+                            </div>
+                            <div className="card-verticle">
+                                <div className="card-small" style={{ background: "#D65B4A" }}>
+                                    <span className="title">
+                                        Total Task
+                                    </span>
+                                    {Object.values(GetUser).map((r) => {
+                                        return (
+                                            <h2 key={r._id} className="text">{r.task.length}</h2>
+                                        )
                                     })}
+                                    <hr />
+                                    <p className='m-0 text-white'>0% increase</p>
                                 </div>
                             </div>
                         </div>
-                        <div className="page noflex" data-page="download">
-                            <div className="header">
-                                <div className="title">
-                                    <h2>Table</h2>
-                                </div>
-                            </div>
-                            <div className=' callMeOutUI'>
-                                {Load1 ? (
-                                    <MainTable />
-                                ) : null}
-                            </div>
-                        </div>
-                        <div className="page noflex" data-page="users">
-                            <div className="header">
-                                <div className="title">
-                                    <h2>Booking</h2>
-                                </div>
-                            </div>
-                            <div className='callMeOutUI'>
-                                {Load2 ? (
-                                    <MainBooking />
-                                ) : null}
-                            </div>
-                        </div>
-                        <div className="page noflex" data-page="about">
-                            <div className="header">
-                                <div className="title">
-                                    <h2>Cart</h2>
-                                </div>
-                            </div>
-                            <div className='callMeOutUI'>
-                                {Load3 ? (
-                                    <MainOrder />
-                                ) : null}
+                        <div className='d-flex justify-content-center pt-5'>
+                            <div style={{ width: 70 + "vw" }}>
+                                <h4 style={{ whiteSpace: "nowrap" }} className='text-center text-white'>Task For You</h4>
+                                {Object.values(GetUser).map((v) => {
+                                    if (v.task.length > 0) {
+                                        return (
+                                            <Fragment key={v._id}>
+                                                <table className='table table-bordered w-100 solotable'>
+                                                    <thead>
+                                                        <tr className="text-white text-center" style={{ background: "#374148" }}>
+                                                            <th className='thhuhu'>Title</th>
+                                                            <th>Date</th>
+                                                            <th className='thhuhu'>Status</th>
+                                                            <th></th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {v.task?.map((j) => {
+                                                            var draw = ""
+                                                            if (j.task.status === 1) {
+                                                                draw = "Pending"
+                                                            }
+                                                            else if (j.task.status === 2) {
+                                                                draw = "Completed"
+                                                            }
+                                                            return (
+                                                                <tr className='text-center' key={j.id} style={{ background: "#2C343A", color: "lightgray", verticalAlign: "middle" }}>
+                                                                    <td className='thhuhu'>{j.task.title}</td>
+                                                                    <td>{j.task.date}</td>
+                                                                    <td className='thhuhu'>{draw}</td>
+                                                                    <td><TaskHandle id={j} name={v} /></td>
+                                                                </tr>
+                                                            )
+                                                        })}
+                                                    </tbody>
+                                                </table>
+                                            </Fragment>
+                                        )
+                                    } else {
+                                        return (
+                                            <p key={v} className="text-center" style={{ color: "lightgray", whiteSpace: "nowrap" }}>Task list empty!</p>
+                                        )
+                                    }
+                                })}
                             </div>
                         </div>
                     </div>
-                    <div className="sidebar">
+                    <div className="page noflex" data-page="download">
+                        <div className="header">
+                            <div className="title">
+                                <h2>Table</h2>
+                            </div>
+                        </div>
+                        <div className=' callMeOutUI'>
+                            {Load1 ? (
+                                <MainTable />
+                            ) : null}
+                        </div>
+                    </div>
+                    <div className="page noflex" data-page="users">
+                        <div className="header">
+                            <div className="title">
+                                <h2>Booking</h2>
+                            </div>
+                        </div>
+                        <div className='callMeOutUI'>
+                            {Load2 ? (
+                                <MainBooking />
+                            ) : null}
+                        </div>
+                    </div>
+                    <div className="page noflex" data-page="about">
+                        <div className="header">
+                            <div className="title">
+                                <h2>Cart</h2>
+                            </div>
+                        </div>
+                        <div className='callMeOutUI'>
+                            {Load3 ? (
+                                <MainOrder />
+                            ) : null}
+                        </div>
+                    </div>
+                </div>
+                <div className="sidebar">
 
-                    </div>
-                    <div className="dialog">
-                        <div className="dialog-block">
-                            <h4 className='text-center text-white pt-4'>Are you sure you want to logout?</h4>
-                            <div className="controls">
-                                <button data-dialog-action="cancel" className="btn btn-secondary">Cancel</button>
-                                <button onClick={() => logoutThis()} className="btn btn-warning">Logout</button>
-                            </div>
+                </div>
+                <div className="dialog">
+                    <div className="dialog-block">
+                        <h4 className='text-center text-white pt-4'>Are you sure you want to logout?</h4>
+                        <div className="controls">
+                            <button data-dialog-action="cancel" className="btn btn-secondary">Cancel</button>
+                            <button onClick={() => logoutThis()} className="btn btn-warning">Logout</button>
                         </div>
                     </div>
                 </div>
             </div>
-        </>
+        </LayoutManager>
     )
 }
 export default EmployeePanel

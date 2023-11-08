@@ -1,8 +1,5 @@
 import { useParams } from "react-router-dom";
 import NotFound from "../../component/outOfBorder/NotFound"
-import Header from "../../component/Header";
-import Footer from "../../component/Footer"
-import '../../css/Admin.css'
 import { useState, useEffect } from "react";
 import UserDataPanel from "../../component/admin/UserDataPanel";
 import { Fragment } from 'react';
@@ -12,6 +9,7 @@ import UserAddressControl from "../../component/admin/UserAddressControl";
 import UserBookingPanel from "../../component/admin/UserBookingPanel";
 import Cookies from "universal-cookie";
 import jwtDecode from "jwt-decode";
+import Layout from "../../Layout";
 
 function UserPanel() {
     const cookies = new Cookies();
@@ -156,8 +154,7 @@ function UserPanel() {
     }
 
     return (
-        <>
-            <Header type={"Yes"} />
+        <Layout>
             <div className="bg-white">
                 <div className="container py-4">
                     <div className="coverUser">
@@ -297,8 +294,7 @@ function UserPanel() {
                     </div>
                 </div >
             </div>
-            <Footer />
-        </>
+        </Layout>
     )
 }
 export default UserPanel;

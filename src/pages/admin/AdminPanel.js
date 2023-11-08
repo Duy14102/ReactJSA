@@ -1,5 +1,3 @@
-import '../../css/Admin.css';
-import '../../css/style.css';
 import $ from 'jquery';
 import { useEffect, useState } from 'react';
 import Cookies from 'universal-cookie';
@@ -8,6 +6,7 @@ import jwtDecode from 'jwt-decode';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import NotFound from '../../component/outOfBorder/NotFound'
+import LayoutManager from './LayoutManager';
 
 function AdminPanel() {
     const cookies = new Cookies();
@@ -160,7 +159,7 @@ function AdminPanel() {
         window.location.href = '/';
     }
     return (
-        <div style={{ height: 100 + "vh" }}>
+        <LayoutManager>
             <div className="subOver">
                 <div className="drawer pt-4">
                     {Object.values(GetUser).map((a) => {
@@ -220,7 +219,7 @@ function AdminPanel() {
                     </div>
                 </div>
             </div>
-        </div >
+        </LayoutManager>
     );
 }
 export default AdminPanel;

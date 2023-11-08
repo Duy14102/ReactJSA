@@ -18,7 +18,7 @@ function Header({ type }) {
     const cookies = new Cookies();
     const token = cookies.get("TOKEN");
     const [logout, setLogout] = useState(false);
-    const [search, setSearch] = useState("")
+    const [search, setSearch] = useState()
 
     useEffect(() => {
         const getDetailUser = () => {
@@ -278,21 +278,19 @@ function Header({ type }) {
                         backgroundColor: 'rgb(33 33 33 / 75%)'
                     },
                     content: {
-                        borderRadius: "99px",
                         border: "none",
-                        padding: "7px",
                         top: "50%",
                         left: "50%",
                         right: "auto",
                         bottom: "auto",
                         marginRight: "-50%",
                         transform: "translate(-50%, -50%)",
-                        backgroundColor: "white",
+                        backgroundColor: "transparent",
                         width: 400,
                         overflow: "hidden",
                     },
                 }}>
-                <div className="d-flex justify-content-between">
+                <div className="searchNaN">
                     <form onSubmit={(e) => SearchType(e)} className="SearchForm">
                         <input className="inputSearch" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search something..." required />
                         <input type="submit" style={{ display: "none" }}></input>

@@ -1,15 +1,11 @@
 import Reservation from "../component/Reservation";
 import { NavLink } from "react-router-dom";
-import Header from "../component/Header";
-import Footer from "../component/Footer";
-import "../css/style.css";
+import Layout from "../Layout";
 
 function BookingSite() {
     document.title = "EatCom - Booking";
     return (
-        <>
-
-            <Header />
+        <Layout>
 
             <div className="py-5 hero-header mb-5">
                 <div className="container text-center my-5 pt-5 pb-4">
@@ -25,9 +21,7 @@ function BookingSite() {
 
             <Reservation />
 
-            <Footer />
-
-        </>
+        </Layout>
     );
 }
 export default BookingSite;

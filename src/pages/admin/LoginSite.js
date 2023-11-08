@@ -1,14 +1,11 @@
 import $ from 'jquery';
 import axios from 'axios';
 import { useState } from 'react';
-import '../../css/main.css';
-import '../../css/util.css';
 import { NavLink } from 'react-router-dom';
-import Header from '../../component/Header';
-import Footer from '../../component/Footer';
 import Swal from 'sweetalert2';
 import Cookies from "universal-cookie";
 import NotFound from '../../component/outOfBorder/NotFound';
+import Layout from '../../Layout';
 
 function LoginSite() {
     const cookies = new Cookies();
@@ -153,8 +150,7 @@ function LoginSite() {
         return NotFound()
     }
     return (
-        <>
-            <Header type={"Yes"} />
+        <Layout>
 
             <div className="limiter">
                 <div className="container-login100">
@@ -196,8 +192,7 @@ function LoginSite() {
                     </div>
                 </div>
             </div>
-            <Footer />
-        </>
+        </Layout>
     );
 }
 export default LoginSite;

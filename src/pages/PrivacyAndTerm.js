@@ -1,15 +1,11 @@
 import PAndT from "../component/PAndT";
 import { NavLink } from "react-router-dom";
-import Header from "../component/Header";
-import Footer from "../component/Footer";
-import "../css/style.css";
+import Layout from "../Layout";
 
 function PrivacyAndTerm() {
     document.title = "EatCom - Privacy and policy || Term and conditions";
     return (
-        <>
-
-            <Header />
+        <Layout>
 
             <div className="py-5 hero-header mb-5">
                 <div className="container text-center my-5 pt-5 pb-4">
@@ -23,12 +19,10 @@ function PrivacyAndTerm() {
                 </div>
             </div>
             <div className="bg-white p-5">
-                    <PAndT />
+                <PAndT />
             </div>
 
-            <Footer />
-
-        </>
+        </Layout>
 
     );
 }

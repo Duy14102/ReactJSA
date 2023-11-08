@@ -1,9 +1,10 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
-import HeroChange from "../outOfBorder/HeroChange";
-import AboutChange from "../outOfBorder/AboutChange";
-import MenuChange from "../outOfBorder/MenuChange";
-import FooterChange from "../outOfBorder/FooterChange";
+import { useEffect, useState, lazy, Suspense } from "react";
+import Spinner from "../Spinner";
+const HeroChange = lazy(() => import("../outOfBorder/HeroChange"))
+const AboutChange = lazy(() => import("../outOfBorder/AboutChange"))
+const MenuChange = lazy(() => import("../outOfBorder/MenuChange"))
+const FooterChange = lazy(() => import("../outOfBorder/FooterChange"))
 
 function MainUiux() {
     const [data, setData] = useState([])
@@ -47,23 +48,31 @@ function MainUiux() {
             </div>
             <div id="hero" className="tabcontent9">
                 <div className="pt-4">
-                    <HeroChange data={data} />
+                    <Suspense fallback={<Spinner />}>
+                        <HeroChange data={data} />
+                    </Suspense>
                 </div>
             </div>
 
             <div id="About" className="tabcontent9">
                 <div className="pt-4">
-                    <AboutChange data={data} />
+                    <Suspense fallback={<Spinner />}>
+                        <AboutChange data={data} />
+                    </Suspense>
                 </div>
             </div>
             <div id="Menu" className="tabcontent9">
                 <div className="pt-4">
-                    <MenuChange data={data} />
+                    <Suspense fallback={<Spinner />}>
+                        <MenuChange data={data} />
+                    </Suspense>
                 </div>
             </div>
             <div id="Footer" className="tabcontent9">
                 <div className="pt-4">
-                    <FooterChange data={data} />
+                    <Suspense fallback={<Spinner />}>
+                        <FooterChange data={data} />
+                    </Suspense>
                 </div>
             </div>
         </>

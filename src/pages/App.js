@@ -2,12 +2,10 @@ import Services from "../component/Services";
 import About from "../component/About";
 import Menu from "../component/Menu";
 import Testimonial from "../component/Testimonial";
-import Header from "../component/Header";
-import Footer from "../component/Footer";
 import { NavLink } from "react-router-dom";
-import "../css/style.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Layout from "../Layout";
 
 function App() {
   const [styleA, setStyleA] = useState()
@@ -40,8 +38,7 @@ function App() {
   }, [])
   document.title = "EatCom - Home";
   return (
-    <>
-      <Header />
+    <Layout>
       {/* Loading Screen */}
       {/* <div id="spinner" className="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
         <div className="spinner-border text-primary" style={{ width: 3 + "rem", height: 3 + "rem" }} role="status">
@@ -72,9 +69,7 @@ function App() {
       <Menu />
 
       <Testimonial />
-
-      <Footer />
-    </>
+    </Layout>
   );
 }
 

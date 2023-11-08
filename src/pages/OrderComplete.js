@@ -1,8 +1,6 @@
 import { NavLink } from "react-router-dom";
-import Footer from "../component/Footer";
-import Header from "../component/Header";
 import NotFound from "../component/outOfBorder/NotFound";
-import '../css/Cart.css'
+import Layout from "../Layout";
 
 function OrderComplete() {
     function goAway() {
@@ -18,8 +16,7 @@ function OrderComplete() {
         return NotFound()
     }
     return (
-        <>
-            <Header type={"Yes"} />
+        <Layout>
             <div className="bg-white">
                 <div style={{ height: 45 + "vh" }}>
                     <div className="container text-center">
@@ -33,8 +30,7 @@ function OrderComplete() {
                 </div>
             </div>
 
-            <Footer />
-        </>
+        </Layout>
     )
 }
 export default OrderComplete;

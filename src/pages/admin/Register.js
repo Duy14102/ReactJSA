@@ -1,14 +1,11 @@
 import $ from 'jquery';
 import { useState } from 'react';
 import axios from 'axios';
-import '../../css/main.css';
-import '../../css/util.css';
 import Swal from 'sweetalert2';
-import Header from '../../component/Header';
-import Footer from '../../component/Footer';
 import Cookies from 'universal-cookie';
 import NotFound from '../../component/outOfBorder/NotFound';
 import { NavLink } from 'react-router-dom';
+import Layout from '../../Layout';
 
 function LoginSite() {
     document.title = "EatCom - Signup";
@@ -145,8 +142,7 @@ function LoginSite() {
         return NotFound();
     }
     return (
-        <>
-            <Header type={"Yes"} />
+        <Layout>
 
             <div className="limiter">
                 <div className="container-login100">
@@ -207,9 +203,7 @@ function LoginSite() {
                     </div>
                 </div>
             </div>
-
-            <Footer />
-        </>
+        </Layout>
     );
 }
 export default LoginSite;
