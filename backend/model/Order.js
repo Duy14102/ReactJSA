@@ -22,14 +22,19 @@ const OrderSchema = new mongoose.Schema({
     },
 
     paymentmethod: {
-        type: Number
+        method: {
+            type: Number
+        },
+        status: {
+            type: Number
+        }
     },
 
     shippingfee: {
         default: null,
         type: Number
     },
-    
+
     denyreason: {
         default: null,
         type: String

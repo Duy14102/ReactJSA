@@ -46,6 +46,18 @@
     }
 }
 
+.croui {
+    box-shadow: 0 8px 20px 0 rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    width: 50%;
+    margin: 0 auto;
+    padding: 10px;
+}
+
+.croui p {
+    text-align: start;
+}
+
 .connectNow p {
     text-wrap: nowrap;
 }
@@ -706,6 +718,10 @@
 }
 
 @media (max-width:575px) {
+    .croui {
+        width: 70% !important;
+    }
+
     .ImHere4You {
         flex-direction: column;
     }

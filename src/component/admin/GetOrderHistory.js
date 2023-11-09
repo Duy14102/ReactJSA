@@ -1,13 +1,18 @@
 import axios from "axios";
-import { useEffect, useState, Fragment,useRef } from "react";
+import jwtDecode from "jwt-decode";
+import { useEffect, useState, Fragment, useRef } from "react";
 import Modal from 'react-modal';
 import ReactPaginate from "react-paginate";
-
+import Cookies from "universal-cookie";
 
 function GetOrderHistory() {
+    const cookies = new Cookies()
+    const token = cookies.get("TOKEN")
+    const decode = jwtDecode(token)
     const [Order, setOrder] = useState([])
     const [ModalData, setModalData] = useState([])
     const [modalOpenDetail, setModalOpenDetail] = useState(false);
+    const [modalOpenDetail2, setModalOpenDetail2] = useState(false);
     const [pageCount, setPageCount] = useState(6);
     const currentPage = useRef();
     const limit = 9
@@ -41,12 +46,30 @@ function GetOrderHistory() {
             });
     }
 
+    const cancelIt = () => {
+        const configuration = {
+            method: "post",
+            url: "http://localhost:3000/CancelByMag",
+            params: {
+                id: ModalData._id
+            }
+        };
+        axios(configuration)
+            .then(() => {
+                window.location.reload()
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }
+
     const VND = new Intl.NumberFormat('vi-VN', {
         style: 'currency',
         currency: 'VND',
     });
     var statusCheck = ""
     var paymentCheck = ""
+    var kakaCheck = ""
     var total2 = 0
     var fulltotal = 0
     const date = new Date(ModalData.createdAt).toLocaleDateString()
@@ -69,10 +92,15 @@ function GetOrderHistory() {
                         const date = new Date(i.createdAt).toLocaleDateString()
                         const time = new Date(i.createdAt).toLocaleTimeString()
                         const datetime = date + " - " + time
-                        if (i.paymentmethod === 1) {
+                        if (i.paymentmethod.method === 1) {
                             paymentCheck = "ATM"
-                        } else if (i.paymentmethod === 2) {
+                        } else if (i.paymentmethod.method === 2) {
                             paymentCheck = "COD"
+                        }
+                        if (i.paymentmethod.status === 1) {
+                            kakaCheck = "( Unpaid )"
+                        } else if (i.paymentmethod.status === 2) {
+                            kakaCheck = "( Paid )"
                         }
                         if (i.status === 2) {
                             statusCheck = "Accept"
@@ -174,7 +202,7 @@ function GetOrderHistory() {
                     })}
                     <p><b>Phone number</b> : {ModalData.phonenumber}</p>
                     <p><b>Address</b> : {ModalData.address}</p>
-                    <p><b>Payment method</b> : {paymentCheck}</p>
+                    <p><b>Payment method</b> : {paymentCheck} {kakaCheck}</p>
                     <p><b>Status</b> : {statusCheck}</p>
                 </div>
                 <table className='table table-bordered solotable'>
@@ -223,7 +251,12 @@ function GetOrderHistory() {
                 <h5 className="text-center pt-2">Order Processing</h5>
                 <hr />
                 {ModalData.status === 2 ? (
-                    <p>✅ Order has been <b>Accepted</b></p>
+                    <div className="d-flex justify-content-between">
+                        <p>✅ Order has been <b>Accepted</b></p>
+                        {decode.userRole === 3 ? (
+                            <button onClick={() => setModalOpenDetail2(true)} className="btn btn-danger">Cancel</button>
+                        ) : null}
+                    </div>
                 ) : ModalData.status === 3 ? (
                     <>
                         <p>❌ Order has been <b>Denied</b></p>
@@ -236,6 +269,34 @@ function GetOrderHistory() {
                     </>
                 ) : null}
                 <button className='closeModal' onClick={() => setModalOpenDetail(false)}>x</button>
+            </Modal>
+            <Modal isOpen={modalOpenDetail2} onRequestClose={() => setModalOpenDetail2(false)} ariaHideApp={false}
+                style={{
+                    overlay: {
+                        position: 'fixed',
+                        zIndex: 998,
+                        backgroundColor: 'rgb(33 33 33 / 75%)'
+                    },
+                    content: {
+                        top: "50%",
+                        left: "50%",
+                        right: "auto",
+                        bottom: "auto",
+                        marginRight: "-50%",
+                        transform: "translate(-50%, -50%)",
+                        backgroundColor: "white",
+                        width: "20vw",
+                        height: "20vh",
+                        zIndex: 999
+                    },
+                }}>
+                <div className="p-3 text-center">
+                    <h5>Are you sure ?</h5>
+                    <div className="d-flex justify-content-evenly pt-4">
+                        <button onClick={() => cancelIt()} className="btn btn-primary">Yes</button>
+                        <button onClick={() => setModalOpenDetail2(false)} className="btn btn-secondary">No</button>
+                    </div>
+                </div>
             </Modal>
         </>
     )

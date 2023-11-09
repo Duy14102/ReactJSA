@@ -55,12 +55,12 @@ function Cart() {
     });
 
     function changeInput(e, name) {
-        var value = e.target.value
-        var min = e.target.attributes.min.value
-        var max = e.target.attributes.max.value
-        if (value <= min) {
+        var value = parseInt(e.target.value)
+        var min = parseInt(e.target.attributes.min.value)
+        var max = parseInt(e.target.attributes.max.value)
+        if (value < min) {
             value = min
-        } else if (value >= max) {
+        } else if (value > max) {
             value = max
         }
         var stored2 = JSON.parse(localStorage.getItem("cart"));

@@ -20,6 +20,7 @@ function Checkout() {
     const [Lastname, setLastname] = useState("")
     const [phonenumber, setPhonenumber] = useState("")
     const [address, setAddress] = useState("")
+    const [bankCode, setBankCode] = useState()
     const [FullnameToken, setFullnameToken] = useState("")
     const [LoadAddress, setLoadAddress] = useState([])
     var fullname = ""
@@ -54,6 +55,7 @@ function Checkout() {
             getDetailUser()
         }
     }, [AccountAddress, token])
+
 
     useEffect(() => {
         let pro = ""
@@ -122,6 +124,24 @@ function Checkout() {
         )
     }
 
+    const VnpayCheckout = (data) => {
+        const configuration = {
+            method: "post",
+            url: "http://localhost:3000/VnpayCheckout",
+            data: {
+                amount: fulltotal,
+                bankCode: bankCode,
+                orderId: data
+            }
+        }
+        axios(configuration)
+            .then((res) => {
+                localStorage.setItem("complete", data)
+                window.location.href = `${res.data}`
+            })
+            .catch((err) => console.log(err))
+    }
+
     if (Card) {
         paymentmethod = 1
     } else {
@@ -164,8 +184,12 @@ function Checkout() {
                 const data = result.data.message
                 window.history.replaceState({}, document.title)
                 localStorage.clear()
-                localStorage.setItem("complete", data)
-                window.location.href = "/OrderComplete";
+                if (Card) {
+                    VnpayCheckout(data)
+                } else {
+                    localStorage.setItem("complete", data)
+                    window.location.href = "/OrderComplete";
+                }
             })
             .catch((e) => {
                 console.log(e);
@@ -299,42 +323,48 @@ function Checkout() {
                                 </div>
                                 {Card ? (
                                     <>
-                                        <div className="row">
-                                            <div className="col-md-6 mb-3 inputC">
-                                                <label htmlFor="cc-name">Name on card</label>
-                                                <input type="text" className="form-control" id="cc-name" placeholder="" required />
-                                                <div className="invalid-feedback">
-                                                    Name on card is required
-                                                </div>
-                                            </div>
-                                            <div className="col-md-6 mb-3 inputC">
-                                                <label htmlFor="cc-number">Credit card number</label>
-                                                <input type="text" className="form-control" id="cc-number" placeholder="" required />
-                                                <div className="invalid-feedback">
-                                                    Credit card number is required
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="row">
-                                            <div className="col-md-3 mb-3 inputC">
-                                                <label htmlFor="cc-expiration">Expiration</label>
-                                                <input type="text" className="form-control" id="cc-expiration" placeholder="" required />
-                                                <div className="invalid-feedback">
-                                                    Expiration date required
-                                                </div>
-                                            </div>
-                                            <div className="col-md-3 mb-3 inputC">
-                                                <label htmlFor="cc-cvv">CVV</label>
-                                                <input type="text" className="form-control" id="cc-cvv" placeholder="" required />
-                                                <div className="invalid-feedback">
-                                                    Security code required
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <select onChange={(e) => setBankCode(e.target.value)} name="bankcode" id="bankcode" class="form-control bg-white" required>
+                                            <option value="">Không chọn </option>
+                                            <option value="MBAPP">Ung dung MobileBanking</option>
+                                            <option value="VNPAYQR">VNPAYQR</option>
+                                            <option value="VNBANK">LOCAL BANK</option>
+                                            <option value="IB">INTERNET BANKING</option>
+                                            <option value="ATM">ATM CARD</option>
+                                            <option value="INTCARD">INTERNATIONAL CARD</option>
+                                            <option value="VISA">VISA</option>
+                                            <option value="MASTERCARD"> MASTERCARD</option>
+                                            <option value="JCB">JCB</option>
+                                            <option value="UPI">UPI</option>
+                                            <option value="VIB">VIB</option>
+                                            <option value="VIETCAPITALBANK">VIETCAPITALBANK</option>
+                                            <option value="SCB">Ngan hang SCB</option>
+                                            <option value="NCB">Ngan hang NCB</option>
+                                            <option value="SACOMBANK">Ngan hang SacomBank  </option>
+                                            <option value="EXIMBANK">Ngan hang EximBank </option>
+                                            <option value="MSBANK">Ngan hang MSBANK </option>
+                                            <option value="NAMABANK">Ngan hang NamABank </option>
+                                            <option value="VNMART"> Vi dien tu VnMart</option>
+                                            <option value="VIETINBANK">Ngan hang Vietinbank  </option>
+                                            <option value="VIETCOMBANK">Ngan hang VCB </option>
+                                            <option value="HDBANK">Ngan hang HDBank</option>
+                                            <option value="DONGABANK">Ngan hang Dong A</option>
+                                            <option value="TPBANK">Ngân hàng TPBank </option>
+                                            <option value="OJB">Ngân hàng OceanBank</option>
+                                            <option value="BIDV">Ngân hàng BIDV </option>
+                                            <option value="TECHCOMBANK">Ngân hàng Techcombank </option>
+                                            <option value="VPBANK">Ngan hang VPBank </option>
+                                            <option value="AGRIBANK">Ngan hang Agribank </option>
+                                            <option value="MBBANK">Ngan hang MBBank </option>
+                                            <option value="ACB">Ngan hang ACB </option>
+                                            <option value="OCB">Ngan hang OCB </option>
+                                            <option value="IVB">Ngan hang IVB </option>
+                                            <option value="SHB">Ngan hang SHB </option>
+                                            <option value="APPLEPAY">Apple Pay </option>
+                                        </select>
                                     </>
                                 ) : null}
+                                <button className="btn btn-primary my-4" type="submit">Confirm</button>
                                 <hr className="mb-4" />
-                                <button className="btn btn-primary mb-4" type="submit">Confirm</button>
                             </form>
                         </div>
                         <div className="takeSecondUI">

@@ -27,6 +27,7 @@ app.listen(3000);
 const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
 const User = require("./model/Users");
+const moment = require('moment')
 const getUserD = mongoose.model("Users");
 const TableHistory = require("./model/TableHistory");
 const GetTableHistory = mongoose.model("TableHistory");
@@ -747,7 +748,8 @@ app.post("/UploadOrder", (req, res) => {
             user: req.body.user,
             phonenumber: req.body.phonenumber,
             address: req.body.address,
-            paymentmethod: req.body.paymentmethod,
+            "paymentmethod.method": req.body.paymentmethod,
+            "paymentmethod.status": 1,
             shippingfee: req.body.shippingfee,
             fulltotal: req.body.fulltotal,
             status: 1,
@@ -935,6 +937,53 @@ app.post("/DenyOrder", (req, res) => {
                 employee: req.query.employee
             },
             status: req.query.status
+        }).then(() => {
+            res.send({ data: "Updated" })
+        }).catch((err) => {
+            console.log(err);
+        })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Cancel Vnpay payment
+app.post("/CancelVnpayPayment", (req, res) => {
+    try {
+        getThisOrder.updateOne({ _id: req.query.id }, {
+            denyreason: req.query.reason,
+            status: 4
+        }).then(() => {
+            res.send({ data: "Updated" })
+        }).catch((err) => {
+            console.log(err);
+        })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Paid Vnpay
+app.post("/PaidVnpayPayment", (req, res) => {
+    try {
+        getThisOrder.updateOne({ _id: req.query.id }, {
+            "paymentmethod.status": 2
+        }).then(() => {
+            res.send({ data: "Updated" })
+        }).catch((err) => {
+            console.log(err);
+        })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Cancel by Mag
+app.post("/CancelByMag", (req, res) => {
+    try {
+        getThisOrder.updateOne({ _id: req.query.id }, {
+            denyreason: "Canceled by manager.",
+            status: 4
         }).then(() => {
             res.send({ data: "Updated" })
         }).catch((err) => {
@@ -2520,3 +2569,69 @@ app.get("/GetIncomeYear", async (req, res) => {
         console.log(e);
     }
 })
+
+function sortObject(obj) {
+    let sorted = {};
+    let str = [];
+    let key;
+    for (key in obj) {
+        if (obj.hasOwnProperty(key)) {
+            str.push(encodeURIComponent(key));
+        }
+    }
+    str.sort();
+    for (key = 0; key < str.length; key++) {
+        sorted[str[key]] = encodeURIComponent(obj[str[key]]).replace(/%20/g, "+");
+    }
+    return sorted;
+}
+
+//Vnpay post
+app.post('/VnpayCheckout', function (req, res, next) {
+    let date = new Date();
+    let createDate = moment(date).format('YYYYMMDDHHmmss');
+
+    let ipAddr = req.headers['x-forwarded-for'] ||
+        req.connection.remoteAddress ||
+        req.socket.remoteAddress ||
+        req.connection.socket.remoteAddress;
+
+    let tmnCode = 'RRRERL87';
+    let secretKey = 'MCBPYCKVGLDVYBBLNKLNFAHKGGHVGIOR';
+    let vnpUrl = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html';
+    let returnUrl = 'http://localhost:3001/OrderComplete';
+    let orderId = req.body.orderId;
+    let amount = req.body.amount;
+    let bankCode = req.body.bankCode;
+
+    let locale = 'vn';
+    let currCode = 'VND';
+    let vnp_Params = {};
+    vnp_Params['vnp_Version'] = '2.1.0';
+    vnp_Params['vnp_Command'] = 'pay';
+    vnp_Params['vnp_TmnCode'] = tmnCode;
+    vnp_Params['vnp_Locale'] = locale;
+    vnp_Params['vnp_CurrCode'] = currCode;
+    vnp_Params['vnp_TxnRef'] = orderId;
+    vnp_Params['vnp_OrderInfo'] = 'Thanh toan cho ma GD:' + orderId;
+    vnp_Params['vnp_OrderType'] = 'other';
+    vnp_Params['vnp_Amount'] = amount * 100;
+    vnp_Params['vnp_ReturnUrl'] = returnUrl;
+    vnp_Params['vnp_IpAddr'] = ipAddr;
+    vnp_Params['vnp_CreateDate'] = createDate;
+    if (bankCode !== null && bankCode !== '') {
+        vnp_Params['vnp_BankCode'] = bankCode;
+    }
+
+    vnp_Params = sortObject(vnp_Params);
+
+    let querystring = require('qs');
+    let signData = querystring.stringify(vnp_Params, { encode: false });
+    let crypto = require("crypto");
+    let hmac = crypto.createHmac("sha512", secretKey);
+    let signed = hmac.update(new Buffer.from(signData, 'utf-8')).digest("hex");
+    vnp_Params['vnp_SecureHash'] = signed;
+    vnpUrl += '?' + querystring.stringify(vnp_Params, { encode: false });
+
+    res.send(vnpUrl)
+});

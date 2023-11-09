@@ -94,6 +94,7 @@ function OrderAdmin({ Data }) {
 
     var statusCheck = ""
     var paymentCheck = ""
+    var kakaCheck = ""
     var total2 = 0
     var fulltotal = 0
     const date = new Date(ModalData.createdAt).toLocaleDateString()
@@ -105,10 +106,15 @@ function OrderAdmin({ Data }) {
                 const date = new Date(i.createdAt).toLocaleDateString()
                 const time = new Date(i.createdAt).toLocaleTimeString()
                 const datetime = date + " - " + time
-                if (i.paymentmethod === 1) {
+                if (i.paymentmethod.method === 1) {
                     paymentCheck = "ATM"
-                } else if (i.paymentmethod === 2) {
+                } else if (i.paymentmethod.method === 2) {
                     paymentCheck = "COD"
+                }
+                if (i.paymentmethod.status === 1) {
+                    kakaCheck = "( Unpaid )"
+                } else if (i.paymentmethod.status === 2) {
+                    kakaCheck = "( Paid )"
                 }
                 if (i.status === 1) {
                     statusCheck = "Pending"
@@ -183,7 +189,7 @@ function OrderAdmin({ Data }) {
                     })}
                     <p><b>Phone number</b> : {ModalData.phonenumber}</p>
                     <p><b>Address</b> : {ModalData.address}</p>
-                    <p><b>Payment method</b> : {paymentCheck}</p>
+                    <p><b>Payment method</b> : {paymentCheck} {kakaCheck}</p>
                     <p><b>Status</b> : {statusCheck}</p>
                 </div>
                 <table className='table table-bordered solotable'>
