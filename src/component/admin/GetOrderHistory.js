@@ -86,7 +86,7 @@ function GetOrderHistory() {
                         if (i.status === 3) {
                             statusCheck = "Deny"
                         }
-                        else if (i.status === 4) {
+                        else if (i.status === 6) {
                             statusCheck = "Cancel"
                         }
                         else if (i.status === 5) {
@@ -171,11 +171,11 @@ function GetOrderHistory() {
                                 )}
                                 {ModalData.employee?.map((o) => {
                                     return (
-                                        <>
+                                        <Fragment key={o.email}>
                                             {ModalData.status !== 1 ? (
                                                 <p><b>Employee</b> : {o.email}</p>
                                             ) : null}
-                                        </>
+                                        </Fragment>
                                     )
                                 })}
                             </div>
@@ -236,13 +236,13 @@ function GetOrderHistory() {
                         <p>❌ Order has been <b>Denied</b></p>
                         <p>Reason : {ModalData.denyreason}</p>
                     </>
-                ) : ModalData.status === 4 ? (
+                ) : ModalData.status === 5 ? (
+                    <p>⭐ Order has been <b>Completed</b> at {datemodal2}</p>
+                ) : ModalData.status === 6 ? (
                     <>
                         <p>❌ Order has been <b>Canceled</b></p>
                         <p>Reason : {ModalData.denyreason}</p>
                     </>
-                ) : ModalData.status === 5 ? (
-                    <p>⭐ Order has been <b>Completed</b> at {datemodal2}</p>
                 ) : null}
                 <button className='closeModal' onClick={() => setModalOpenDetail(false)}>x</button>
             </Modal>

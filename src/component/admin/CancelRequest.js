@@ -1,8 +1,14 @@
 import axios from "axios";
+import jwtDecode from "jwt-decode";
 import Modal from 'react-modal';
+import Swal from "sweetalert2";
+import Cookies from "universal-cookie";
 
-function CancelByMag({ ModalData, fulltotal, modal, setmodal }) {
-
+function CancelRequest({ ModalData, fulltotal, modal, setmodal }) {
+    const cookies = new Cookies()
+    const token = cookies.get("TOKEN")
+    const decode = jwtDecode(token)
+    const deliverEmployee = { id: decode.userId, email: decode.userEmail }
     const denyOrderKin = () => {
         const configuration = {
             method: "post",
@@ -17,7 +23,13 @@ function CancelByMag({ ModalData, fulltotal, modal, setmodal }) {
             }
         }
         axios(configuration).then(() => {
-            window.location.reload();
+            Swal.fire(
+                'Canceled successfully!',
+                '',
+                'success'
+            ).then(function () {
+                window.location.reload();
+            })
         }).catch((err) => {
             console.log(err);
         })
@@ -26,35 +38,55 @@ function CancelByMag({ ModalData, fulltotal, modal, setmodal }) {
     const cancelIt = () => {
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/CancelByMag",
-            params: {
-                id: ModalData._id
+            url: "http://localhost:3000/totaldenyNow",
+            data: {
+                id: ModalData._id,
+                employee: deliverEmployee,
+                status: 6,
             }
-        };
+        }
         axios(configuration)
             .then(() => {
-                window.location.reload()
+                Swal.fire(
+                    'Canceled successfully!',
+                    '',
+                    'success'
+                ).then(function () {
+                    window.location.reload();
+                })
+            }).catch((err) => {
+                Swal.fire(
+                    'Canceled fail!',
+                    '',
+                    'error'
+                ).then(function () {
+                    console.log(err);
+                })
             })
-            .catch((error) => {
-                console.log(error);
-            });
     }
 
     const cancelItNow = () => {
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/CancelByMag",
-            params: {
-                id: ModalData._id
+            url: "http://localhost:3000/totaldenyNow",
+            data: {
+                id: ModalData._id,
+                employee: deliverEmployee,
+                status: 6,
             }
-        };
+        }
         axios(configuration)
             .then(() => {
                 denyOrderKin()
+            }).catch((err) => {
+                Swal.fire(
+                    'Canceled fail!',
+                    '',
+                    'error'
+                ).then(function () {
+                    console.log(err);
+                })
             })
-            .catch((error) => {
-                console.log(error);
-            });
     }
     return (
         <>
@@ -93,4 +125,4 @@ function CancelByMag({ ModalData, fulltotal, modal, setmodal }) {
         </>
     )
 }
-export default CancelByMag
+export default CancelRequest

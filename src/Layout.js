@@ -4,6 +4,7 @@ import Header from "./component/Header"
 import axios from "axios"
 import WOW from 'wowjs';
 import Backtotop from "./component/outOfBorder/Backtotop";
+import "./css/Admin.css";
 import "./css/style.css";
 import "./css/Cart.css";
 import "./css/Category.css";

@@ -286,7 +286,7 @@ function UserPanel() {
                         </div>
                         <hr className="mt-0" />
                         <div className="UPanelButton" id="Hum">
-                            <UserDataPanel Data={GetOrder} />
+                            <UserDataPanel Data={GetOrder} toke={name} />
                         </div>
                         <div className="UPanelButton" id="Kum">
                             <UserBookingPanel id={appler.id} user={GetUser} />

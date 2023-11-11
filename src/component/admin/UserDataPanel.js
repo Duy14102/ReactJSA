@@ -1,15 +1,21 @@
 import axios from "axios";
 import PropTypes from "prop-types";
-import { Fragment, useState } from "react";
+import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import Modal from 'react-modal';
-import $ from 'jquery'
 
-function UserDataPanel({ Data }) {
+function UserDataPanel({ Data, toke }) {
     const [ModalData, setModalData] = useState([])
     const [Accept, setAccept] = useState(false)
     const [DenyReason, setDenyReason] = useState("")
     const [modalOpenDetail, setModalOpenDetail] = useState(false);
+
+    useEffect(() => {
+        const kaw = document.getElementById("clickFy")
+        if (kaw) {
+            kaw.click()
+        }
+    }, [toke])
 
     const VND = new Intl.NumberFormat('vi-VN', {
         style: 'currency',
@@ -30,7 +36,7 @@ function UserDataPanel({ Data }) {
         axios(configuration)
             .then(() => {
                 Swal.fire(
-                    'Denied successfully!',
+                    'Request cancel successfully!',
                     '',
                     'success'
                 ).then(function () {
@@ -38,7 +44,7 @@ function UserDataPanel({ Data }) {
                 })
             }).catch((e) => {
                 Swal.fire(
-                    'Denied fail!',
+                    'Request cancel fail!',
                     '',
                     'error'
                 ).then(function () {
@@ -47,53 +53,88 @@ function UserDataPanel({ Data }) {
             })
     }
 
-    $(function () {
-        // Variables
-        const $tabLink = $('#tabs-section .tab-link');
-        const $tabBody = $('#tabs-section .tab-body');
-        let timerOpacity;
+    const CancelRequest = () => {
+        const configuration = {
+            method: "post",
+            url: "http://localhost:3000/CancelRequestFour",
+            data: {
+                id: ModalData._id,
+                status: 1
+            }
+        }
+        axios(configuration)
+            .then(() => {
+                Swal.fire(
+                    'Cancel request successfully!',
+                    '',
+                    'success'
+                ).then(function () {
+                    window.location.reload();
+                })
+            }).catch((e) => {
+                Swal.fire(
+                    'Cancel request fail!',
+                    '',
+                    'error'
+                ).then(function () {
+                    console.log(e);
+                })
+            })
+    }
 
-        // Toggle Class
-        const init = () => {
-            // Menu Click
-            $tabLink.off('click').on('click', function (e) {
-                // Prevent Default
-                e.preventDefault();
-                e.stopPropagation();
-
-                // Clear Timers
-                window.clearTimeout(timerOpacity);
-
-                // Toggle Class Logic
-                // Remove Active Classes
-                $tabLink.removeClass('active ');
-                $tabBody.removeClass('active ');
-                $tabBody.removeClass('active-content');
-
-                // Add Active Classes
-                $(this).addClass('active');
-                $($(this).attr('href')).addClass('active');
-
-                // Opacity Transition Class
-                timerOpacity = setTimeout(() => {
-                    $($(this).attr('href')).addClass('active-content');
-                }, 50);
-            });
-        };
-
-        // Document Ready
-        $(function () {
-            init();
-        });
-    });
+    function openCity5(evt, cityName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabbluh");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tabcclink");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(cityName).style.display = "table-row-group";
+        evt.currentTarget.className += " active";
+    }
 
     var total2 = 0
     var fulltotal = 0
     var statusCheck = ""
-    var paymentCheck = ""
+    var statusCheck2 = ""
+    var paymentCheck2 = ""
+    var kakaCheck = ""
+    if (ModalData.paymentmethod?.status === 1) {
+        kakaCheck = "( Unpaid )"
+    } else if (ModalData.paymentmethod?.status === 2) {
+        kakaCheck = "( Paid )"
+    }
+    if (ModalData.paymentmethod?.method === 1) {
+        paymentCheck2 = "ATM"
+    } else if (ModalData.paymentmethod?.method === 2) {
+        paymentCheck2 = "COD"
+    }
+    if (ModalData.status === 1) {
+        statusCheck2 = "Pending"
+    }
+    else if (ModalData.status === 2) {
+        statusCheck2 = "Accept"
+    }
+    else if (ModalData.status === 4) {
+        statusCheck2 = "🕒 Pending cancel"
+    } else if (ModalData.status === 3) {
+        statusCheck2 = "Deny"
+    }
+    else if (ModalData.status === 5) {
+        statusCheck2 = "Complete"
+    }
+    else if (ModalData.status === 6) {
+        statusCheck2 = "Cancel"
+    }
     const date = new Date(ModalData.createdAt).toLocaleDateString()
     const time = new Date(ModalData.createdAt).toLocaleTimeString()
     const datetime = date + " - " + time
+    const date2 = new Date(ModalData.completeAt).toLocaleDateString()
+    const time2 = new Date(ModalData.completeAt).toLocaleTimeString()
+    const datetime2 = date2 + " - " + time2
     return (
         <>
             <h6 className="text-center">Your Order</h6>
@@ -101,8 +142,8 @@ function UserDataPanel({ Data }) {
                 <>
                     <div id="tabs-section">
                         <div className="d-flex px-4 pb-3 Lunatic" style={{ gap: 1 + "%" }}>
-                            <a href="#active" className="noPlusElf tab-link active">Active</a>
-                            <a href="#inactive" className="noPlusElf tab-link">History</a>
+                            <button id="clickFy" onClick={(e) => openCity5(e, 'act')} className="noPlusElf tabcclink">Active</button>
+                            <button onClick={(e) => openCity5(e, 'inact')} className="noPlusElf tabcclink">History</button>
                         </div>
                         <div className="px-4">
                             <table className='table table-bordered text-center'>
@@ -115,60 +156,69 @@ function UserDataPanel({ Data }) {
                                         <th></th>
                                     </tr>
                                 </thead>
-                                <tbody className="holeInWall">
+                                <tbody id="act" className="tabbluh holeInWall">
                                     {Object.values(Data).map((i) => {
                                         const date = new Date(i.createdAt).toLocaleDateString()
                                         const time = new Date(i.createdAt).toLocaleTimeString()
                                         const datetime = date + " - " + time
-                                        if (i.paymentmethod === 1) {
-                                            paymentCheck = "ATM"
-                                        } else if (i.paymentmethod === 2) {
-                                            paymentCheck = "COD"
-                                        }
                                         if (i.status === 1) {
                                             statusCheck = "Pending"
                                         }
                                         else if (i.status === 2) {
                                             statusCheck = "Accept"
-                                        } else if (i.status === 3) {
-                                            statusCheck = "Deny"
                                         }
                                         else if (i.status === 4) {
+                                            statusCheck = "🕒 Pending cancel"
+                                        }
+                                        return (
+                                            i.status === 1 || i.status === 2 || i.status === 4 ? (
+                                                <tr style={{ verticalAlign: "middle" }} key={i._id}>
+                                                    <>
+                                                        {i.user.map((z) => {
+                                                            return (
+                                                                <td key={z}>{z.fullname}</td>
+                                                            )
+                                                        })}
+                                                        <td className='thhuhu'>{i.phonenumber}</td>
+                                                        <td className='thhuhu'>{datetime}</td>
+                                                        <td>{statusCheck}</td>
+                                                        <td onClick={setModalOpenDetail}><button onClick={() => setModalData(i)} className='btn btn-success'>Detail</button></td>
+                                                    </>
+                                                </tr>
+                                            ) : null
+                                        )
+                                    })}
+                                </tbody>
+                                <tbody id="inact" className="tabbluh holeInWall">
+                                    {Object.values(Data).map((i) => {
+                                        const date = new Date(i.createdAt).toLocaleDateString()
+                                        const time = new Date(i.createdAt).toLocaleTimeString()
+                                        const datetime = date + " - " + time
+                                        if (i.status === 3) {
+                                            statusCheck = "Deny"
+                                        }
+                                        else if (i.status === 5) {
+                                            statusCheck = "Complete"
+                                        }
+                                        else if (i.status === 6) {
                                             statusCheck = "Cancel"
                                         }
                                         return (
-                                            <Fragment key={i._id}>
-                                                {i.status === 1 ? (
-                                                    <tr id="active" className="tab-body active active-content" style={{ verticalAlign: "middle" }}>
-                                                        <>
-                                                            {i.user.map((z) => {
-                                                                return (
-                                                                    <td key={z}>{z.fullname}</td>
-                                                                )
-                                                            })}
-                                                            <td className='thhuhu'>{i.phonenumber}</td>
-                                                            <td className='thhuhu'>{datetime}</td>
-                                                            <td>{statusCheck}</td>
-                                                            <td onClick={setModalOpenDetail}><button onClick={() => setModalData(i)} className='btn btn-success'>Detail</button></td>
-                                                        </>
-                                                    </tr>
-                                                ) : null}
-                                                {i.status !== 1 ? (
-                                                    <tr id="inactive" className="tab-body" style={{ verticalAlign: "middle" }}>
-                                                        <>
-                                                            {i.user.map((z) => {
-                                                                return (
-                                                                    <td key={z}>{z.fullname}</td>
-                                                                )
-                                                            })}
-                                                            <td className='thhuhu'>{i.phonenumber}</td>
-                                                            <td className='thhuhu'>{datetime}</td>
-                                                            <td>{statusCheck}</td>
-                                                            <td onClick={setModalOpenDetail}><button onClick={() => setModalData(i)} className='btn btn-success'>Detail</button></td>
-                                                        </>
-                                                    </tr>
-                                                ) : null}
-                                            </Fragment>
+                                            i.status === 3 || i.status === 5 || i.status === 6 ? (
+                                                <tr style={{ verticalAlign: "middle" }} key={i._id}>
+                                                    <>
+                                                        {i.user.map((z) => {
+                                                            return (
+                                                                <td key={z}>{z.fullname}</td>
+                                                            )
+                                                        })}
+                                                        <td className='thhuhu'>{i.phonenumber}</td>
+                                                        <td className='thhuhu'>{datetime}</td>
+                                                        <td>{statusCheck}</td>
+                                                        <td onClick={setModalOpenDetail}><button onClick={() => setModalData(i)} className='btn btn-success'>Detail</button></td>
+                                                    </>
+                                                </tr>
+                                            ) : null
                                         )
                                     })}
                                 </tbody>
@@ -202,19 +252,28 @@ function UserDataPanel({ Data }) {
                             {ModalData.user?.map((t) => {
                                 var textSp = "( visisting guests )"
                                 return (
-                                    <Fragment key={t}>
+                                    <div className="coverNOut" key={t}>
                                         {t.id === "none" ? (
                                             <p><b>Fullname</b> : {t.fullname} {textSp}</p>
                                         ) : (
                                             <p><b>Fullname</b> : {t.fullname}</p>
                                         )}
-                                    </Fragment>
+                                        {ModalData.employee?.map((o) => {
+                                            return (
+                                                <>
+                                                    {ModalData.status !== 1 ? (
+                                                        <p><b>Employee</b> : {o.email}</p>
+                                                    ) : null}
+                                                </>
+                                            )
+                                        })}
+                                    </div>
                                 )
                             })}
                             <p><b>Phone number</b> : {ModalData.phonenumber}</p>
                             <p><b>Address</b> : {ModalData.address}</p>
-                            <p><b>Payment method</b> : {paymentCheck}</p>
-                            <p><b>Status</b> : {statusCheck}</p>
+                            <p><b>Payment method</b> : {paymentCheck2} {kakaCheck}</p>
+                            <p><b>Status</b> : {statusCheck2}</p>
                         </div>
                         <table className='table table-bordered solotable'>
                             <thead>
@@ -280,13 +339,23 @@ function UserDataPanel({ Data }) {
                         ) : null}
                         <div className="pt-2">
                             {ModalData.status === 2 ? (
-                                <p>✅ Order has been <b>Complete</b></p>
+                                <p>✅ Order has been <b>Approve</b></p>
                             ) : ModalData.status === 3 ? (
                                 <>
                                     <p>❌ Order has been <b>Denied</b></p>
                                     <p>Reason : {ModalData.denyreason}</p>
                                 </>
                             ) : ModalData.status === 4 ? (
+                                <>
+                                    <div className="d-flex justify-content-between">
+                                        <p>🕒 Order is waiting to <b>Cancel</b></p>
+                                        <button onClick={() => CancelRequest()} className="btn btn-primary">Cancel request</button>
+                                    </div>
+                                    <p>Reason : {ModalData.denyreason}</p>
+                                </>
+                            ) : ModalData.status === 5 ? (
+                                <p>⭐ Order has been <b>Completed</b> at {datetime2}</p>
+                            ) : ModalData.status === 6 ? (
                                 <>
                                     <p>❌ Order has been <b>Canceled</b></p>
                                     <p>Reason : {ModalData.denyreason}</p>

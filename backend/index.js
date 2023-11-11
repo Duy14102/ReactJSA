@@ -794,6 +794,19 @@ app.get("/GetOrderUserPanel", async (req, res) => {
     }
 })
 
+//CancelRequestFour
+app.post("/CancelRequestFour", (req, res) => {
+    try {
+        getThisOrder.updateOne({ _id: req.body.id }, {
+            status: req.body.status,
+            denyreason: null
+        }).then(() => { res.send({ data: "succeed" }) }).catch((err) => { console.log(err); })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+
 //Find Order
 app.get("/SearchAllOrder", async (req, res) => {
     try {
@@ -841,7 +854,7 @@ app.get("/SearchAllOrder", async (req, res) => {
 app.get("/GetAllOrderHistory", async (req, res) => {
     const filter = { datetime: -1 }
     try {
-        const getOrder = await getThisOrder.find({ status: { $in: [3, 4, 5] } }).sort(filter)
+        const getOrder = await getThisOrder.find({ status: { $in: [3, 5, 6] } }).sort(filter)
         const page = parseInt(req.query.page)
         const limit = parseInt(req.query.limit)
 
@@ -890,10 +903,22 @@ app.post("/CompleteOrderByEmp", (req, res) => {
     }
 })
 
+//total deny
+app.post("/totaldenyNow", (req, res) => {
+    try {
+        getThisOrder.updateOne({ _id: req.body.id }, {
+            status: req.body.status,
+            employee: req.body.employee
+        }).then(() => { res.send({ data: "succeed" }) }).catch((err) => { console.log(err); })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
 app.get("/GetAllOrderActive", async (req, res) => {
     const filter = { status: -1, datetime: -1 }
     try {
-        const getOrder = await getThisOrder.find({ status: { $in: [1, 2] } }).sort(filter)
+        const getOrder = await getThisOrder.find({ status: { $in: [1, 2, 4] } }).sort(filter)
         const page = parseInt(req.query.page)
         const limit = parseInt(req.query.limit)
 
@@ -1004,7 +1029,7 @@ app.post("/CancelByMag", (req, res) => {
     try {
         getThisOrder.updateOne({ _id: req.query.id }, {
             denyreason: "Canceled by manager.",
-            status: 4
+            status: 6
         }).then(() => {
             res.send({ data: "Updated" })
         }).catch((err) => {

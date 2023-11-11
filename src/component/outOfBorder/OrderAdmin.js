@@ -7,6 +7,7 @@ import Modal from 'react-modal';
 import Swal from "sweetalert2";
 import Cookies from "universal-cookie";
 import CancelByMag from "../admin/CancelByMag";
+import CancelRequest from "../admin/CancelRequest";
 
 function OrderAdmin({ Data }) {
     const cookies = new Cookies()
@@ -19,6 +20,7 @@ function OrderAdmin({ Data }) {
 
     var [modalOpenDetail2, setModalOpenDetail2] = useState(false);
     const [modalOpenDetail3, setModalOpenDetail3] = useState(false);
+    const [modalOpenDetail4, setModalOpenDetail4] = useState(false);
     useEffect(() => {
         if (modalOpenDetail2 === false) {
             setAccept(false)
@@ -206,11 +208,8 @@ function OrderAdmin({ Data }) {
                 } else if (i.status === 2) {
                     statusCheck = "Accept"
                 }
-                else if (i.status === 3) {
-                    statusCheck = "Deny"
-                }
                 else if (i.status === 4) {
-                    statusCheck = "Cancel"
+                    statusCheck = "🕒 Pending cancel"
                 }
                 return (
                     <Fragment key={i._id}>
@@ -400,6 +399,17 @@ function OrderAdmin({ Data }) {
                         </>
                     ) : null}
                 </div>
+                {ModalData.status === 4 ? (
+                    <>
+                        <div className="d-flex justify-content-between">
+                            <p>🕒 Order is waiting to <b>Cancel</b></p>
+                            {decode.userRole === 3 ? (
+                                <button onClick={() => setModalOpenDetail4(true)} className="btn btn-danger">Cancel</button>
+                            ) : null}
+                        </div>
+                        <p>Reason : {ModalData.denyreason}</p>
+                    </>
+                ) : null}
                 {Accept ? (
                     <div className="pt-3">
                         <p>Reason why deny : </p>
@@ -425,6 +435,7 @@ function OrderAdmin({ Data }) {
                 <button className='closeModal' onClick={() => setModalOpenDetail2(false)}>x</button>
             </Modal >
             <CancelByMag fulltotal={fulltotal} ModalData={ModalData} modal={modalOpenDetail3} setmodal={setModalOpenDetail3} />
+            <CancelRequest fulltotal={fulltotal} ModalData={ModalData} modal={modalOpenDetail4} setmodal={setModalOpenDetail4} />
         </>
     )
 }
