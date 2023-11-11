@@ -21,6 +21,7 @@ function OrderComplete() {
         var hour = type3.substring(8, 10)
         var minute = type3.substring(10, 12)
         var second = type3.substring(12, 14)
+        var sendDate = new Date(year, month - 1, day, hour, minute, second)
         var dow = new Date(year, month - 1, day, hour, minute, second).toLocaleDateString()
         var tim = new Date(year, month - 1, day, hour, minute, second).toLocaleTimeString()
         date = dow + " - " + tim
@@ -60,6 +61,18 @@ function OrderComplete() {
         }
         if (type === '99') {
             kakao = "Other errors."
+        }
+
+        if(type4){
+            const configuration = {
+                method: "post",
+                url: "http://localhost:3000/ChangeVnpayDate",
+                data: {
+                    id: type4,
+                    date: sendDate
+                }
+            }
+            axios(configuration).then(() => { }).catch((err) => { console.log(err); })
         }
 
         if (type === "24" || type === "09" || type === "10" || type === "11" || type === "12" || type === "13" || type === "51" || type === "65" || type === "75" || type === "79" || type === "99") {

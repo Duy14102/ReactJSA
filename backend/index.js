@@ -28,6 +28,7 @@ const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
 const User = require("./model/Users");
 const moment = require('moment')
+const request = require('request')
 const getUserD = mongoose.model("Users");
 const TableHistory = require("./model/TableHistory");
 const GetTableHistory = mongoose.model("TableHistory");
@@ -840,7 +841,7 @@ app.get("/SearchAllOrder", async (req, res) => {
 app.get("/GetAllOrderHistory", async (req, res) => {
     const filter = { datetime: -1 }
     try {
-        const getOrder = await getThisOrder.find({ status: { $in: [2, 3, 4] } }).sort(filter)
+        const getOrder = await getThisOrder.find({ status: { $in: [3, 4, 5] } }).sort(filter)
         const page = parseInt(req.query.page)
         const limit = parseInt(req.query.limit)
 
@@ -869,10 +870,30 @@ app.get("/GetAllOrderHistory", async (req, res) => {
     }
 })
 
-app.get("/GetAllOrderActive", async (req, res) => {
-    const filter = { datetime: -1 }
+//Complete Order
+app.post("/CompleteOrderByEmp", (req, res) => {
     try {
-        const getOrder = await getThisOrder.find({ status: 1 }).sort(filter)
+        if (req.body.type === 1) {
+            getThisOrder.updateOne({ _id: req.body.id }, {
+                completeAt: req.body.date,
+                status: req.body.status,
+            }).then(() => { res.send({ data: "succeed" }) }).catch((err) => { console.log(err); })
+        } else if (req.body.type === 2) {
+            getThisOrder.updateOne({ _id: req.body.id }, {
+                completeAt: req.body.date,
+                status: req.body.status,
+                "paymentmethod.status": 2
+            }).then(() => { res.send({ data: "succeed" }) }).catch((err) => { console.log(err); })
+        }
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+app.get("/GetAllOrderActive", async (req, res) => {
+    const filter = { status: -1, datetime: -1 }
+    try {
+        const getOrder = await getThisOrder.find({ status: { $in: [1, 2] } }).sort(filter)
         const page = parseInt(req.query.page)
         const limit = parseInt(req.query.limit)
 
@@ -2570,6 +2591,16 @@ app.get("/GetIncomeYear", async (req, res) => {
     }
 })
 
+app.post("/ChangeVnpayDate", (req, res) => {
+    try {
+        getThisOrder.updateOne({ _id: req.body.id }, {
+            createdAt: req.body.date
+        }, { timestamps: { createdAt: true } }).then(() => res.send({ data: "succeed" })).catch((err) => { console.log(err); })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
 function sortObject(obj) {
     let sorted = {};
     let str = [];
@@ -2634,4 +2665,71 @@ app.post('/VnpayCheckout', function (req, res, next) {
     vnpUrl += '?' + querystring.stringify(vnp_Params, { encode: false });
 
     res.send(vnpUrl)
+});
+
+//Vnpay Refund
+app.post('/VnpayRefund', function (req, res, next) {
+    let date = new Date();
+
+    let crypto = require("crypto");
+
+    let vnp_TmnCode = 'RRRERL87';
+    let secretKey = 'MCBPYCKVGLDVYBBLNKLNFAHKGGHVGIOR';
+    let vnp_Api = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
+
+    let vnp_TxnRef = req.body.orderId;
+    let kakaoDate = moment(req.body.transDate).format('YYYYMMDDHHmmss');
+    let vnp_TransactionDate = kakaoDate;
+    let vnp_Amount = req.body.amount * 100;
+    let vnp_TransactionType = req.body.transType;
+    let vnp_CreateBy = req.body.user;
+
+    let vnp_RequestId = moment(date).format('HHmmss');
+    let vnp_Version = '2.1.0';
+    let vnp_Command = 'refund';
+    let vnp_OrderInfo = req.body.reason;
+
+    let vnp_IpAddr = req.headers['x-forwarded-for'] ||
+        req.connection.remoteAddress ||
+        req.socket.remoteAddress ||
+        req.connection.socket.remoteAddress;
+
+
+    let vnp_CreateDate = moment(date).format('YYYYMMDDHHmmss');
+
+    let vnp_TransactionNo = '0';
+
+    let data = vnp_RequestId + "|" + vnp_Version + "|" + vnp_Command + "|" + vnp_TmnCode + "|" + vnp_TransactionType + "|" + vnp_TxnRef + "|" + vnp_Amount + "|" + vnp_TransactionNo + "|" + vnp_TransactionDate + "|" + vnp_CreateBy + "|" + vnp_CreateDate + "|" + vnp_IpAddr + "|" + vnp_OrderInfo;
+    let hmac = crypto.createHmac("sha512", secretKey);
+    let vnp_SecureHash = hmac.update(new Buffer.from(data, 'utf-8')).digest("hex");
+
+    let dataObj = {
+        'vnp_RequestId': vnp_RequestId,
+        'vnp_Version': vnp_Version,
+        'vnp_Command': vnp_Command,
+        'vnp_TmnCode': vnp_TmnCode,
+        'vnp_TransactionType': vnp_TransactionType,
+        'vnp_TxnRef': vnp_TxnRef,
+        'vnp_Amount': vnp_Amount,
+        'vnp_TransactionNo': vnp_TransactionNo,
+        'vnp_CreateBy': vnp_CreateBy,
+        'vnp_OrderInfo': vnp_OrderInfo,
+        'vnp_TransactionDate': vnp_TransactionDate,
+        'vnp_CreateDate': vnp_CreateDate,
+        'vnp_IpAddr': vnp_IpAddr,
+        'vnp_SecureHash': vnp_SecureHash
+    };
+
+    try {
+        request({
+            url: vnp_Api,
+            method: "POST",
+            json: true,
+            body: dataObj
+        }, function (error, response, body) {
+            res.send(response)
+        });
+    } catch (err) {
+        console.log(err);
+    }
 });

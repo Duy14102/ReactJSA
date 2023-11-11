@@ -4,8 +4,13 @@ import GetHistoryTable from "./GetHistoryTable";
 import Modal from 'react-modal';
 import axios from "axios";
 import Swal from "sweetalert2";
+import Cookies from "universal-cookie";
+import jwtDecode from "jwt-decode";
 
 function MainTable() {
+    const cookies = new Cookies()
+    const token = cookies.get("TOKEN")
+    const decode = jwtDecode(token)
     const [modalOpenDetail, setModalOpenDetail] = useState(false);
     const [tablename, setTablename] = useState()
     useEffect(() => {
@@ -61,7 +66,9 @@ function MainTable() {
                     <button id="defaultOpen3" className="MBbutton3 active3" onClick={(e) => openCity3(e, 'tbactive')}><p >Table Active</p></button>
                     <button className="MBbutton3" onClick={(e) => openCity3(e, 'tbhistory')}><p>Table History</p></button>
                 </div>
-                <button onClick={() => setModalOpenDetail(true)} className="btn btn-primary">➕ Table</button>
+                {decode.userRole === 3 ? (
+                    <button onClick={() => setModalOpenDetail(true)} className="btn btn-primary">➕ Table</button>
+                ) : null}
             </div>
             <div id="tbactive" className="tabcontent3">
                 <div className="pt-4">

@@ -6,6 +6,7 @@ import { useState } from "react";
 import Modal from 'react-modal';
 import Swal from "sweetalert2";
 import Cookies from "universal-cookie";
+import CancelByMag from "../admin/CancelByMag";
 
 function OrderAdmin({ Data }) {
     const cookies = new Cookies()
@@ -17,6 +18,7 @@ function OrderAdmin({ Data }) {
     const [ModalData, setModalData] = useState([])
 
     var [modalOpenDetail2, setModalOpenDetail2] = useState(false);
+    const [modalOpenDetail3, setModalOpenDetail3] = useState(false);
     useEffect(() => {
         if (modalOpenDetail2 === false) {
             setAccept(false)
@@ -55,6 +57,52 @@ function OrderAdmin({ Data }) {
             })
     }
 
+    var statusCheck = ""
+    var paymentCheck = ""
+    var kakaCheck = ""
+    var total2 = 0
+    var fulltotal = 0
+    if (ModalData.paymentmethod?.status === 1) {
+        kakaCheck = "( Unpaid )"
+    } else if (ModalData.paymentmethod?.status === 2) {
+        kakaCheck = "( Paid )"
+    }
+    const date = new Date(ModalData.createdAt).toLocaleDateString()
+    const time = new Date(ModalData.createdAt).toLocaleTimeString()
+    const datemodal = date + " - " + time
+
+    const denyOrderKun = (id) => {
+        const configuration = {
+            method: "post",
+            url: "http://localhost:3000/VnpayRefund",
+            data: {
+                orderId: id,
+                transDate: ModalData.createdAt,
+                amount: fulltotal,
+                transType: "03",
+                user: "Manager",
+                reason: DenyReason
+            }
+        }
+        axios(configuration).then(() => {
+            Swal.fire(
+                'Denied successfully!',
+                '',
+                'success'
+            ).then(function () {
+                window.location.reload();
+            })
+        }).catch((err) => {
+            Swal.fire(
+                'Denied fail!',
+                '',
+                'error'
+            ).then(function () {
+                console.log(err);
+            })
+        })
+    }
+
     const denyOrder = (e, id) => {
         e.preventDefault();
         const configuration = {
@@ -87,19 +135,61 @@ function OrderAdmin({ Data }) {
             })
     }
 
+    const denyOrderPaid = (e, id) => {
+        e.preventDefault();
+        const configuration = {
+            method: "post",
+            url: "http://localhost:3000/DenyOrder",
+            params: {
+                id: id,
+                reason: DenyReason,
+                employee: deliverEmployee,
+                status: 3,
+            }
+        }
+        axios(configuration)
+            .then(() => {
+                denyOrderKun(id)
+            }).catch((e) => {
+                console.log(e);
+            })
+    }
+
+    const completeOrder = (type) => {
+        const configuration = {
+            method: "post",
+            url: "http://localhost:3000/CompleteOrderByEmp",
+            data: {
+                id: ModalData._id,
+                date: Date.now(),
+                status: 5,
+                type: type
+            }
+        }
+        axios(configuration)
+            .then(() => {
+                Swal.fire(
+                    'Complete successfully!',
+                    '',
+                    'success'
+                ).then(function () {
+                    window.location.reload();
+                })
+            }).catch((err) => {
+                Swal.fire(
+                    'Complete fail!',
+                    '',
+                    'error'
+                ).then(function () {
+                    console.log(err);
+                })
+            })
+    }
+
     const VND = new Intl.NumberFormat('vi-VN', {
         style: 'currency',
         currency: 'VND',
     });
-
-    var statusCheck = ""
-    var paymentCheck = ""
-    var kakaCheck = ""
-    var total2 = 0
-    var fulltotal = 0
-    const date = new Date(ModalData.createdAt).toLocaleDateString()
-    const time = new Date(ModalData.createdAt).toLocaleTimeString()
-    const datemodal = date + " - " + time
     return (
         <>
             {Data.map(i => {
@@ -110,11 +200,6 @@ function OrderAdmin({ Data }) {
                     paymentCheck = "ATM"
                 } else if (i.paymentmethod.method === 2) {
                     paymentCheck = "COD"
-                }
-                if (i.paymentmethod.status === 1) {
-                    kakaCheck = "( Unpaid )"
-                } else if (i.paymentmethod.status === 2) {
-                    kakaCheck = "( Paid )"
                 }
                 if (i.status === 1) {
                     statusCheck = "Pending"
@@ -129,8 +214,28 @@ function OrderAdmin({ Data }) {
                 }
                 return (
                     <Fragment key={i._id}>
-                        {i.status === 1 ? (
-                            <>
+                        {i.employee?.map((a) => {
+                            if (a.id === decode.userId) {
+                                return (
+                                    i.status === 2 ? (
+                                        <tr style={{ verticalAlign: "middle", background: "#2C343A", color: "lightgray" }}>
+                                            {i.user.map((z) => {
+                                                return (
+                                                    <td key={z}>{z.fullname}</td>
+                                                )
+                                            })}
+                                            <td className="thhuhu">{i.phonenumber}</td>
+                                            <td className="thhuhu">{datetime}</td>
+                                            <td>{statusCheck}</td>
+                                            <td onClick={setModalOpenDetail2}><button onClick={() => setModalData(i)} className='btn btn-success'>Detail</button></td>
+                                        </tr>
+                                    ) : null
+                                )
+                            }
+                            return null
+                        })}
+                        {decode.userRole === 2 ? (
+                            i.status === 1 ? (
                                 <tr style={{ verticalAlign: "middle", background: "#2C343A", color: "lightgray" }}>
                                     {i.user.map((z) => {
                                         return (
@@ -142,8 +247,19 @@ function OrderAdmin({ Data }) {
                                     <td>{statusCheck}</td>
                                     <td onClick={setModalOpenDetail2}><button onClick={() => setModalData(i)} className='btn btn-success'>Detail</button></td>
                                 </tr>
-
-                            </>
+                            ) : null
+                        ) : decode.userRole === 3 ? (
+                            <tr style={{ verticalAlign: "middle", background: "#2C343A", color: "lightgray" }}>
+                                {i.user.map((z) => {
+                                    return (
+                                        <td key={z}>{z.fullname}</td>
+                                    )
+                                })}
+                                <td className="thhuhu">{i.phonenumber}</td>
+                                <td className="thhuhu">{datetime}</td>
+                                <td>{statusCheck}</td>
+                                <td onClick={setModalOpenDetail2}><button onClick={() => setModalData(i)} className='btn btn-success'>Detail</button></td>
+                            </tr>
                         ) : null}
                     </Fragment >
                 )
@@ -178,13 +294,22 @@ function OrderAdmin({ Data }) {
                     {ModalData.user?.map((t) => {
                         var textSp = "( visisting guests )"
                         return (
-                            <Fragment key={t}>
+                            <div className="coverNOut" key={t}>
                                 {t.id === "none" ? (
                                     <p><b>Fullname</b> : {t.fullname} {textSp}</p>
                                 ) : (
                                     <p><b>Fullname</b> : {t.fullname}</p>
                                 )}
-                            </Fragment>
+                                {ModalData.employee?.map((o) => {
+                                    return (
+                                        <>
+                                            {ModalData.status !== 1 ? (
+                                                <p><b>Employee</b> : {o.email}</p>
+                                            ) : null}
+                                        </>
+                                    )
+                                })}
+                            </div>
                         )
                     })}
                     <p><b>Phone number</b> : {ModalData.phonenumber}</p>
@@ -237,28 +362,69 @@ function OrderAdmin({ Data }) {
                 </table>
                 <h5 className="text-center pt-2">Order Processing</h5>
                 <hr />
+                {ModalData.status === 2 ? (
+                    <>
+                        <div className="d-flex justify-content-between">
+                            <p>✅ Order has been <b>Accepted</b></p>
+                            {decode.userRole === 3 ? (
+                                <button onClick={() => setModalOpenDetail3(true)} className="btn btn-danger">Cancel</button>
+                            ) : null}
+                            {ModalData.employee?.map((i) => {
+                                if (i.id === decode.userId) {
+                                    return (
+                                        <>
+                                            {ModalData.paymentmethod.status === 1 ? (
+                                                <button onClick={() => completeOrder(2)} className="btn btn-primary">Complete Order</button>
+                                            ) : (
+                                                <button onClick={() => completeOrder(1)} className="btn btn-primary">Complete Order</button>
+                                            )}
+                                        </>
+                                    )
+                                }
+                                return null
+                            })}
+                        </div>
+                    </>
+                ) : null}
                 <div className="d-flex justify-content-around">
-                    {Accept ? (
-                        <button style={{ pointerEvents: "none", opacity: 0.4 }} className="btn btn-success">Accept</button>
-                    ) : (
-                        <button onClick={() => appoveOrder(ModalData._id, ModalData.orderitems)} className="btn btn-success">Accept</button>
-                    )}
-                    <button onClick={() => setAccept(true)} className="btn btn-danger">Deny</button>
+                    {ModalData.status === 1 ? (
+                        <>
+                            {Accept ? (
+                                <button style={{ pointerEvents: "none", opacity: 0.4 }} className="btn btn-success">Accept</button>
+                            ) : (
+                                <button onClick={() => appoveOrder(ModalData._id, ModalData.orderitems)} className="btn btn-success">Accept</button>
+                            )}
+                            {decode.userRole === 3 ? (
+                                <button onClick={() => setAccept(true)} className="btn btn-danger">Deny</button>
+                            ) : null}
+                        </>
+                    ) : null}
                 </div>
                 {Accept ? (
                     <div className="pt-3">
                         <p>Reason why deny : </p>
-                        <form onSubmit={(e) => denyOrder(e, ModalData._id)}>
-                            <textarea value={DenyReason} onChange={(e) => setDenyReason(e.target.value)} className="textDeny" required />
-                            <div style={{ gap: 1 + "%" }} className="d-flex mt-2">
-                                <button type="submit" className="btn btn-primary ">Comfirm</button>
-                                <button onClick={() => setAccept(false)} className="btn btn-secondary ">Cancel</button>
-                            </div>
-                        </form>
+                        {ModalData.paymentmethod.method === 1 && ModalData.paymentmethod.status === 2 ? (
+                            <form onSubmit={(e) => denyOrderPaid(e, ModalData._id)}>
+                                <textarea value={DenyReason} onChange={(e) => setDenyReason(e.target.value)} className="textDeny" required />
+                                <div style={{ gap: 1 + "%" }} className="d-flex mt-2">
+                                    <button type="submit" className="btn btn-primary ">Comfirm</button>
+                                    <button onClick={() => setAccept(false)} className="btn btn-secondary ">Cancel</button>
+                                </div>
+                            </form>
+                        ) : (
+                            <form onSubmit={(e) => denyOrder(e, ModalData._id)}>
+                                <textarea value={DenyReason} onChange={(e) => setDenyReason(e.target.value)} className="textDeny" required />
+                                <div style={{ gap: 1 + "%" }} className="d-flex mt-2">
+                                    <button type="submit" className="btn btn-primary ">Comfirm</button>
+                                    <button onClick={() => setAccept(false)} className="btn btn-secondary ">Cancel</button>
+                                </div>
+                            </form>
+                        )}
                     </div>
                 ) : null}
                 <button className='closeModal' onClick={() => setModalOpenDetail2(false)}>x</button>
-            </Modal>
+            </Modal >
+            <CancelByMag fulltotal={fulltotal} ModalData={ModalData} modal={modalOpenDetail3} setmodal={setModalOpenDetail3} />
         </>
     )
 }

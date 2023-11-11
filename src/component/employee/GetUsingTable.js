@@ -378,7 +378,7 @@ function GetUsingTable() {
                     ) : (
                         <p className="d-flex align-items-center" style={{ gap: 1 + "%" }}>
                             <span><b>Table name</b> : {ModalData.tablename}</span>
-                            {ModalData.tablestatus === 1 ? (
+                            {ModalData.tablestatus === 1 && decode.userRole === 3 ? (
                                 <button onClick={() => setopenTBname(true)} className="editTableName"><i className="fi fi-sr-file-edit"></i></button>
                             ) : null}
                         </p>

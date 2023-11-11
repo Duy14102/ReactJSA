@@ -47,7 +47,17 @@ const OrderSchema = new mongoose.Schema({
     orderitems: {
         require: true,
         type: Array
+    },
+
+    createdAt: {
+        default: Date.now(),
+        type: Date
+    },
+    
+    completeAt: {
+        default: null,
+        type: Date
     }
-}, { timestamps: { createdAt: true, updatedAt: false } })
+})
 
 module.exports = mongoose.model.Orders || mongoose.model("Orders", OrderSchema);

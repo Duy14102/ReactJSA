@@ -1,18 +1,12 @@
 import axios from "axios";
-import jwtDecode from "jwt-decode";
 import { useEffect, useState, Fragment, useRef } from "react";
 import Modal from 'react-modal';
 import ReactPaginate from "react-paginate";
-import Cookies from "universal-cookie";
 
 function GetOrderHistory() {
-    const cookies = new Cookies()
-    const token = cookies.get("TOKEN")
-    const decode = jwtDecode(token)
     const [Order, setOrder] = useState([])
     const [ModalData, setModalData] = useState([])
     const [modalOpenDetail, setModalOpenDetail] = useState(false);
-    const [modalOpenDetail2, setModalOpenDetail2] = useState(false);
     const [pageCount, setPageCount] = useState(6);
     const currentPage = useRef();
     const limit = 9
@@ -46,27 +40,6 @@ function GetOrderHistory() {
             });
     }
 
-    const cancelIt = () => {
-        const configuration = {
-            method: "post",
-            url: "http://localhost:3000/CancelByMag",
-            params: {
-                id: ModalData._id
-            }
-        };
-        axios(configuration)
-            .then(() => {
-                window.location.reload()
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    }
-
-    const VND = new Intl.NumberFormat('vi-VN', {
-        style: 'currency',
-        currency: 'VND',
-    });
     var statusCheck = ""
     var paymentCheck = ""
     var kakaCheck = ""
@@ -75,6 +48,14 @@ function GetOrderHistory() {
     const date = new Date(ModalData.createdAt).toLocaleDateString()
     const time = new Date(ModalData.createdAt).toLocaleTimeString()
     const datemodal = date + " - " + time
+    const date2 = new Date(ModalData.completeAt).toLocaleDateString()
+    const time2 = new Date(ModalData.completeAt).toLocaleTimeString()
+    const datemodal2 = date2 + " - " + time2
+
+    const VND = new Intl.NumberFormat('vi-VN', {
+        style: 'currency',
+        currency: 'VND',
+    });
     return (
         <>
             <table className='table table-bordered text-center solotable'>
@@ -102,13 +83,14 @@ function GetOrderHistory() {
                         } else if (i.paymentmethod.status === 2) {
                             kakaCheck = "( Paid )"
                         }
-                        if (i.status === 2) {
-                            statusCheck = "Accept"
-                        } else if (i.status === 3) {
+                        if (i.status === 3) {
                             statusCheck = "Deny"
                         }
                         else if (i.status === 4) {
                             statusCheck = "Cancel"
+                        }
+                        else if (i.status === 5) {
+                            statusCheck = "Complete"
                         }
                         return (
                             <Fragment key={i._id}>
@@ -181,23 +163,22 @@ function GetOrderHistory() {
                     {ModalData.user?.map((t) => {
                         var textSp = "( visisting guests )"
                         return (
-                            <Fragment key={t}>
+                            <div className="coverNOut" key={t}>
+                                {t.id === "none" ? (
+                                    <p><b>Fullname</b> : {t.fullname} {textSp}</p>
+                                ) : (
+                                    <p><b>Fullname</b> : {t.fullname}</p>
+                                )}
                                 {ModalData.employee?.map((o) => {
                                     return (
-                                        t.id === "none" ? (
-                                            <div className="coverNOut">
-                                                <p><b>Fullname</b> : {t.fullname} {textSp}</p>
+                                        <>
+                                            {ModalData.status !== 1 ? (
                                                 <p><b>Employee</b> : {o.email}</p>
-                                            </div>
-                                        ) : (
-                                            <div className="coverNOut">
-                                                <p><b>Fullname</b> : {t.fullname}</p>
-                                                <p><b>Employee</b> : {o.email}</p>
-                                            </div>
-                                        )
+                                            ) : null}
+                                        </>
                                     )
                                 })}
-                            </Fragment>
+                            </div>
                         )
                     })}
                     <p><b>Phone number</b> : {ModalData.phonenumber}</p>
@@ -250,14 +231,7 @@ function GetOrderHistory() {
                 </table>
                 <h5 className="text-center pt-2">Order Processing</h5>
                 <hr />
-                {ModalData.status === 2 ? (
-                    <div className="d-flex justify-content-between">
-                        <p>✅ Order has been <b>Accepted</b></p>
-                        {decode.userRole === 3 ? (
-                            <button onClick={() => setModalOpenDetail2(true)} className="btn btn-danger">Cancel</button>
-                        ) : null}
-                    </div>
-                ) : ModalData.status === 3 ? (
+                {ModalData.status === 3 ? (
                     <>
                         <p>❌ Order has been <b>Denied</b></p>
                         <p>Reason : {ModalData.denyreason}</p>
@@ -267,36 +241,10 @@ function GetOrderHistory() {
                         <p>❌ Order has been <b>Canceled</b></p>
                         <p>Reason : {ModalData.denyreason}</p>
                     </>
+                ) : ModalData.status === 5 ? (
+                    <p>⭐ Order has been <b>Completed</b> at {datemodal2}</p>
                 ) : null}
                 <button className='closeModal' onClick={() => setModalOpenDetail(false)}>x</button>
-            </Modal>
-            <Modal isOpen={modalOpenDetail2} onRequestClose={() => setModalOpenDetail2(false)} ariaHideApp={false}
-                style={{
-                    overlay: {
-                        position: 'fixed',
-                        zIndex: 998,
-                        backgroundColor: 'rgb(33 33 33 / 75%)'
-                    },
-                    content: {
-                        top: "50%",
-                        left: "50%",
-                        right: "auto",
-                        bottom: "auto",
-                        marginRight: "-50%",
-                        transform: "translate(-50%, -50%)",
-                        backgroundColor: "white",
-                        width: "20vw",
-                        height: "20vh",
-                        zIndex: 999
-                    },
-                }}>
-                <div className="p-3 text-center">
-                    <h5>Are you sure ?</h5>
-                    <div className="d-flex justify-content-evenly pt-4">
-                        <button onClick={() => cancelIt()} className="btn btn-primary">Yes</button>
-                        <button onClick={() => setModalOpenDetail2(false)} className="btn btn-secondary">No</button>
-                    </div>
-                </div>
             </Modal>
         </>
     )
