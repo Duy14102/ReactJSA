@@ -272,7 +272,7 @@ function UserDataPanel({ Data, toke }) {
                             })}
                             <p><b>Phone number</b> : {ModalData.phonenumber}</p>
                             <p><b>Address</b> : {ModalData.address}</p>
-                            <p><b>Payment method</b> : {paymentCheck2} {kakaCheck}</p>
+                            <p><b>Payment method</b> : {ModalData.paymentmethod?.type} {kakaCheck}</p>
                             <p><b>Status</b> : {statusCheck2}</p>
                         </div>
                         <table className='table table-bordered solotable'>
@@ -318,7 +318,7 @@ function UserDataPanel({ Data, toke }) {
                                 </tr>
                             </tbody>
                         </table>
-                        {ModalData.status === 1 ? (
+                        {ModalData.status === 1 && ModalData.paymentmethod?.type !== "Paypal" ? (
                             <>
                                 <div className="text-center">
                                     <button onClick={() => setAccept(true)} className="btn btn-danger">Cancel</button>

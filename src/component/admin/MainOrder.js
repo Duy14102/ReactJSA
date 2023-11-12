@@ -14,8 +14,6 @@ function MainOrder() {
     const token = cookies.get("TOKEN")
     const decode = jwtDecode(token)
     const deliverEmployee = { id: decode.userId, email: decode.userEmail }
-    const takeEmployee = []
-    takeEmployee.push(deliverEmployee)
     const [modalOpenAdmin, setModalOpenAdmin] = useState(false);
     const [modalOpenAdmin2, setModalOpenAdmin2] = useState(false);
     const [modalOpenDetail3, setModalOpenDetail3] = useState(false);
@@ -83,7 +81,7 @@ function MainOrder() {
             data: {
                 id: e,
                 status: 2,
-                employee: takeEmployee,
+                employee: deliverEmployee,
                 orderitems: yolo
             }
         }
@@ -115,7 +113,7 @@ function MainOrder() {
             params: {
                 id: id,
                 reason: DenyReason,
-                employee: takeEmployee,
+                employee: deliverEmployee,
                 status: 3,
             }
         }
@@ -176,7 +174,6 @@ function MainOrder() {
     });
 
     var statusCheck = ""
-    var paymentCheck = ""
     var kakaCheck = ""
     var total2 = 0
     var fulltotal = 0
@@ -251,11 +248,6 @@ function MainOrder() {
                                         const date = new Date(i.createdAt).toLocaleDateString()
                                         const time = new Date(i.createdAt).toLocaleTimeString()
                                         const datetime = date + " - " + time
-                                        if (i.paymentmethod.method === 1) {
-                                            paymentCheck = "ATM"
-                                        } else if (i.paymentmethod.method === 2) {
-                                            paymentCheck = "COD"
-                                        }
                                         if (i.status === 1) {
                                             statusCheck = "Pending"
                                         } else if (i.status === 2) {
@@ -399,7 +391,7 @@ function MainOrder() {
                     })}
                     <p><b>Phone number</b> : {ModalData.phonenumber}</p>
                     <p><b>Address</b> : {ModalData.address}</p>
-                    <p><b>Payment method</b> : {paymentCheck} {kakaCheck}</p>
+                    <p><b>Payment method</b> : {ModalData.paymentmethod?.type} {kakaCheck}</p>
                     <p><b>Status</b> : {statusCheck}</p>
                 </div>
                 <table className='table table-bordered solotable'>
@@ -455,7 +447,7 @@ function MainOrder() {
                             ) : (
                                 <button onClick={() => appoveOrder(ModalData._id, ModalData.orderitems)} className="btn btn-success">Accept</button>
                             )}
-                            {decode.userRole === 3 ? (
+                            {decode.userRole === 3 && (ModalData.paymentmethod.type === "Vnpay" || ModalData.paymentmethod.type === "COD") ? (
                                 <button onClick={() => setAccept(true)} className="btn btn-danger">Deny</button>
                             ) : null}
                         </div>
@@ -478,7 +470,7 @@ function MainOrder() {
                             <>
                                 <div className="d-flex justify-content-between">
                                     <p>✅ Order has been <b>Accepted</b></p>
-                                    {decode.userRole === 3 ? (
+                                    {decode.userRole === 3 && ModalData.paymentmethod?.type === "Vnpay" ? (
                                         <button onClick={() => setModalOpenDetail3(true)} className="btn btn-danger">Cancel</button>
                                     ) : null}
                                     {ModalData.employee?.map((i) => {
@@ -514,7 +506,9 @@ function MainOrder() {
                 )}
                 <button className='closeModal' onClick={() => { setModalOpenAdmin2(false); setModalOpenAdmin(true) }}>x</button>
             </Modal>
-            <CancelByMag ModalData={ModalData} fulltotal={fulltotal} modal={modalOpenDetail3} setmodal={setModalOpenDetail3} />
+            {ModalData.paymentmethod?.type === "Vnpay" ? (
+                <CancelByMag ModalData={ModalData} fulltotal={fulltotal} modal={modalOpenDetail3} setmodal={setModalOpenDetail3} />
+            ) : null}
             <div id="cartactive" className="tabcontent2">
                 <div className="pt-4">
                     <GetOrder />

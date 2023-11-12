@@ -60,10 +60,10 @@ function Testimonial() {
                                 return (
                                     <div key={i._id} className="testimonial-item bg-transparent border rounded p-4">
                                         <div className="d-flex align-items-center" style={{ gap: 2 + "%" }}>
-                                            <i style={{ fontSize: "x-large" }} className="fi fi-br-quote-right text-primary mb-3"></i>
+                                            <i style={{ fontSize: "x-large", height: 24 + "px" }} className="fi fi-br-quote-right text-primary mb-3"></i>
                                             <p>{i.title}</p>
                                         </div>
-                                        <p>{i.message}</p>
+                                        <p className="Kowkiu">{i.message}</p>
                                         <div className="d-flex align-items-center">
                                             <img loading="lazy" className="img-fluid flex-shrink-0 rounded-circle" alt="" src="https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg" style={{ width: 50 + "px", height: 50 + "px" }} />
                                             <div className="ps-3">

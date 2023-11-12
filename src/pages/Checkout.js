@@ -6,6 +6,7 @@ import axios from "axios";
 import Cookies from "universal-cookie";
 import jwtDecode from "jwt-decode";
 import Layout from "../Layout";
+import { PayPalButton } from "react-paypal-button-v2";
 
 function Checkout() {
     var paymentmethod = 0
@@ -16,6 +17,9 @@ function Checkout() {
     const [Card, setCard] = useState(false)
     const [SaveAddress, setSaveAddress] = useState(false)
     const [AccountAddress, setAccountAddress] = useState(false)
+    const [paypalState, setPaypalState] = useState()
+    const [vnpay, setVnpay] = useState(false)
+    const [paypal, setPaypal] = useState(false)
     const [Firstname, setFirstname] = useState("")
     const [Lastname, setLastname] = useState("")
     const [phonenumber, setPhonenumber] = useState("")
@@ -70,6 +74,51 @@ function Checkout() {
         setFullnameToken(pro)
         setPhonenumber(pre)
     }, [LoadAddress])
+
+    useEffect(() => {
+        if (paypalState === "COMPLETED") {
+            const configuration = {
+                method: "post",
+                url: "http://localhost:3000/UploadOrder",
+                data: {
+                    user,
+                    phonenumber,
+                    address,
+                    paymentmethod,
+                    shippingfee,
+                    orderitems
+                }
+            }
+            axios(configuration)
+                .then((result) => {
+                    if (SaveAddress) {
+                        const decode = jwtDecode(token);
+                        const configuration = {
+                            method: "post",
+                            url: "http://localhost:3000/AddAddressUser",
+                            data: {
+                                id: decode.userId,
+                                address: havePhone
+                            }
+                        }
+                        axios(configuration)
+                            .then(() => {
+                                console.log("success");
+                            }).catch((e) => {
+                                console.log(e);
+                            })
+                    }
+                    const data = result.data.message
+                    window.history.replaceState({}, document.title)
+                    localStorage.clear()
+                    paypalCheckout(data)
+                })
+                .catch((e) => {
+                    console.log(e);
+                });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [paypalState])
 
     if (token) {
         const decode3 = jwtDecode(token)
@@ -142,6 +191,14 @@ function Checkout() {
             .catch((err) => console.log(err))
     }
 
+    const paypalCheckout = (data) => {
+        localStorage.setItem("complete", data)
+        if (paypalState) {
+            window.location.href = `/OrderComplete?status=${paypalState}`;
+        }
+    }
+
+
     if (Card) {
         paymentmethod = 1
     } else {
@@ -184,7 +241,7 @@ function Checkout() {
                 const data = result.data.message
                 window.history.replaceState({}, document.title)
                 localStorage.clear()
-                if (Card) {
+                if (vnpay) {
                     VnpayCheckout(data)
                 } else {
                     localStorage.setItem("complete", data)
@@ -211,7 +268,6 @@ function Checkout() {
             setSaveAddress(false)
         }
     }
-
     return (
         <Layout>
             <div className="bg-white">
@@ -221,6 +277,31 @@ function Checkout() {
                     </div>
 
                     <div className="flexAble2">
+                        <div className="takeSecondUI">
+                            <h4 className="d-flex justify-content-between align-items-center mb-3">
+                                <span className="text-muted">Your cart</span>
+                                <span className="badge badge-secondary badge-pill">3</span>
+                            </h4>
+                            <ul className="list-group mb-3">
+                                {locationMap.map((i) => {
+                                    return (
+                                        mero(i)
+                                    )
+                                })}
+                                <li className="list-group-item d-flex justify-content-between">
+                                    <span>Total</span>
+                                    <span className="text-muted">{VND.format(total2)}</span>
+                                </li>
+                                <li className="list-group-item d-flex justify-content-between">
+                                    <span>Shipping</span>
+                                    <span className="text-muted">{VND.format(shippingfee)}</span>
+                                </li>
+                                <li className="list-group-item d-flex justify-content-between">
+                                    <span>Fulltotal</span>
+                                    <strong>{VND.format(fulltotal)}</strong>
+                                </li>
+                            </ul>
+                        </div>
                         <div className="takeFirstUI">
                             <h4 className="mb-3">Address</h4>
                             <form onSubmit={(e) => handleSubmit(e)} className="needs-validation">
@@ -323,74 +404,69 @@ function Checkout() {
                                 </div>
                                 {Card ? (
                                     <>
-                                        <select onChange={(e) => setBankCode(e.target.value)} name="bankcode" id="bankcode" class="form-control bg-white" required>
-                                            <option value="">Không chọn </option>
-                                            <option value="MBAPP">Ung dung MobileBanking</option>
-                                            <option value="VNPAYQR">VNPAYQR</option>
-                                            <option value="VNBANK">LOCAL BANK</option>
-                                            <option value="IB">INTERNET BANKING</option>
-                                            <option value="ATM">ATM CARD</option>
-                                            <option value="INTCARD">INTERNATIONAL CARD</option>
-                                            <option value="VISA">VISA</option>
-                                            <option value="MASTERCARD"> MASTERCARD</option>
-                                            <option value="JCB">JCB</option>
-                                            <option value="UPI">UPI</option>
-                                            <option value="VIB">VIB</option>
-                                            <option value="VIETCAPITALBANK">VIETCAPITALBANK</option>
-                                            <option value="SCB">Ngan hang SCB</option>
-                                            <option value="NCB">Ngan hang NCB</option>
-                                            <option value="SACOMBANK">Ngan hang SacomBank  </option>
-                                            <option value="EXIMBANK">Ngan hang EximBank </option>
-                                            <option value="MSBANK">Ngan hang MSBANK </option>
-                                            <option value="NAMABANK">Ngan hang NamABank </option>
-                                            <option value="VNMART"> Vi dien tu VnMart</option>
-                                            <option value="VIETINBANK">Ngan hang Vietinbank  </option>
-                                            <option value="VIETCOMBANK">Ngan hang VCB </option>
-                                            <option value="HDBANK">Ngan hang HDBank</option>
-                                            <option value="DONGABANK">Ngan hang Dong A</option>
-                                            <option value="TPBANK">Ngân hàng TPBank </option>
-                                            <option value="OJB">Ngân hàng OceanBank</option>
-                                            <option value="BIDV">Ngân hàng BIDV </option>
-                                            <option value="TECHCOMBANK">Ngân hàng Techcombank </option>
-                                            <option value="VPBANK">Ngan hang VPBank </option>
-                                            <option value="AGRIBANK">Ngan hang Agribank </option>
-                                            <option value="MBBANK">Ngan hang MBBank </option>
-                                            <option value="ACB">Ngan hang ACB </option>
-                                            <option value="OCB">Ngan hang OCB </option>
-                                            <option value="IVB">Ngan hang IVB </option>
-                                            <option value="SHB">Ngan hang SHB </option>
-                                            <option value="APPLEPAY">Apple Pay </option>
-                                        </select>
+                                        <div className="d-flex" style={{ gap: 15 + "px" }}>
+                                            <button className="buttonAtm" type="button" onClick={() => { setVnpay(true); setPaypal(false) }}><img alt="" height={30} width={90} src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-VNPAY-QR-1.png" /></button>
+                                            <button className="buttonAtm" type="button" onClick={() => { setVnpay(false); setPaypal(true) }}><img alt="" height={30} width={90} src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/PayPal_logo.svg/2560px-PayPal_logo.svg.png" /></button>
+                                        </div>
+                                        {vnpay ? (
+                                            <select onChange={(e) => setBankCode(e.target.value)} name="bankcode" id="bankcode" className="form-control bg-white mt-4" required>
+                                                <option value="">Không chọn </option>
+                                                <option value="MBAPP">Ung dung MobileBanking</option>
+                                                <option value="VNPAYQR">VNPAYQR</option>
+                                                <option value="VNBANK">LOCAL BANK</option>
+                                                <option value="IB">INTERNET BANKING</option>
+                                                <option value="ATM">ATM CARD</option>
+                                                <option value="INTCARD">INTERNATIONAL CARD</option>
+                                                <option value="VISA">VISA</option>
+                                                <option value="MASTERCARD"> MASTERCARD</option>
+                                                <option value="JCB">JCB</option>
+                                                <option value="UPI">UPI</option>
+                                                <option value="VIB">VIB</option>
+                                                <option value="VIETCAPITALBANK">VIETCAPITALBANK</option>
+                                                <option value="SCB">Ngan hang SCB</option>
+                                                <option value="NCB">Ngan hang NCB</option>
+                                                <option value="SACOMBANK">Ngan hang SacomBank  </option>
+                                                <option value="EXIMBANK">Ngan hang EximBank </option>
+                                                <option value="MSBANK">Ngan hang MSBANK </option>
+                                                <option value="NAMABANK">Ngan hang NamABank </option>
+                                                <option value="VNMART"> Vi dien tu VnMart</option>
+                                                <option value="VIETINBANK">Ngan hang Vietinbank  </option>
+                                                <option value="VIETCOMBANK">Ngan hang VCB </option>
+                                                <option value="HDBANK">Ngan hang HDBank</option>
+                                                <option value="DONGABANK">Ngan hang Dong A</option>
+                                                <option value="TPBANK">Ngân hàng TPBank </option>
+                                                <option value="OJB">Ngân hàng OceanBank</option>
+                                                <option value="BIDV">Ngân hàng BIDV </option>
+                                                <option value="TECHCOMBANK">Ngân hàng Techcombank </option>
+                                                <option value="VPBANK">Ngan hang VPBank </option>
+                                                <option value="AGRIBANK">Ngan hang Agribank </option>
+                                                <option value="MBBANK">Ngan hang MBBank </option>
+                                                <option value="ACB">Ngan hang ACB </option>
+                                                <option value="OCB">Ngan hang OCB </option>
+                                                <option value="IVB">Ngan hang IVB </option>
+                                                <option value="SHB">Ngan hang SHB </option>
+                                                <option value="APPLEPAY">Apple Pay </option>
+                                            </select>
+                                        ) : null}
+                                        {paypal ? (
+                                            <div className="mt-4">
+                                                <PayPalButton
+                                                    amount={fulltotal / 25000}
+                                                    // shippingPreference="NO_SHIPPING" // default is "GET_FROM_FILE"
+                                                    onSuccess={(details) => {
+                                                        setPaypalState(details.status)
+                                                    }}
+                                                    onError={(err) => {
+                                                        console.log(err);
+                                                    }}
+                                                />
+                                            </div>
+                                        ) : null}
                                     </>
                                 ) : null}
                                 <button className="btn btn-primary my-4" type="submit">Confirm</button>
                                 <hr className="mb-4" />
                             </form>
-                        </div>
-                        <div className="takeSecondUI">
-                            <h4 className="d-flex justify-content-between align-items-center mb-3">
-                                <span className="text-muted">Your cart</span>
-                                <span className="badge badge-secondary badge-pill">3</span>
-                            </h4>
-                            <ul className="list-group mb-3">
-                                {locationMap.map((i) => {
-                                    return (
-                                        mero(i)
-                                    )
-                                })}
-                                <li className="list-group-item d-flex justify-content-between">
-                                    <span>Total</span>
-                                    <span className="text-muted">{VND.format(total2)}</span>
-                                </li>
-                                <li className="list-group-item d-flex justify-content-between">
-                                    <span>Shipping</span>
-                                    <span className="text-muted">{VND.format(shippingfee)}</span>
-                                </li>
-                                <li className="list-group-item d-flex justify-content-between">
-                                    <span>Fulltotal</span>
-                                    <strong>{VND.format(fulltotal)}</strong>
-                                </li>
-                            </ul>
                         </div>
                     </div>
                 </div>

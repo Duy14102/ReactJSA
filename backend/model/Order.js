@@ -27,6 +27,9 @@ const OrderSchema = new mongoose.Schema({
         },
         status: {
             type: Number
+        },
+        type: {
+            type: String
         }
     },
 
@@ -50,10 +53,10 @@ const OrderSchema = new mongoose.Schema({
     },
 
     createdAt: {
-        default: Date.now(),
+        default: null,
         type: Date
     },
-    
+
     completeAt: {
         default: null,
         type: Date

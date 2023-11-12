@@ -754,7 +754,8 @@ app.post("/UploadOrder", (req, res) => {
             shippingfee: req.body.shippingfee,
             fulltotal: req.body.fulltotal,
             status: 1,
-            orderitems: hype
+            orderitems: hype,
+            createdAt: Date.now()
         })
 
         order.save()
@@ -998,7 +999,8 @@ app.post("/CancelVnpayPayment", (req, res) => {
     try {
         getThisOrder.updateOne({ _id: req.query.id }, {
             denyreason: req.query.reason,
-            status: 4
+            status: 4,
+            "paymentmethod.type": "Vnpay"
         }).then(() => {
             res.send({ data: "Updated" })
         }).catch((err) => {
@@ -1013,7 +1015,39 @@ app.post("/CancelVnpayPayment", (req, res) => {
 app.post("/PaidVnpayPayment", (req, res) => {
     try {
         getThisOrder.updateOne({ _id: req.query.id }, {
-            "paymentmethod.status": 2
+            "paymentmethod.status": 2,
+            "paymentmethod.type": "Vnpay"
+        }).then(() => {
+            res.send({ data: "Updated" })
+        }).catch((err) => {
+            console.log(err);
+        })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Paid Paypal
+app.post("/PaidPaypalPayment", (req, res) => {
+    try {
+        getThisOrder.updateOne({ _id: req.query.id }, {
+            "paymentmethod.status": 2,
+            "paymentmethod.type": "Paypal"
+        }).then(() => {
+            res.send({ data: "Updated" })
+        }).catch((err) => {
+            console.log(err);
+        })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Paid Cod
+app.post("/PaidCodPayment", (req, res) => {
+    try {
+        getThisOrder.updateOne({ _id: req.query.id }, {
+            "paymentmethod.type": "COD"
         }).then(() => {
             res.send({ data: "Updated" })
         }).catch((err) => {
@@ -2002,7 +2036,7 @@ app.get("/GetData4Employee", async (req, res) => {
 //Get Income by Day
 app.get("/GetIncomeDay", async (req, res) => {
     try {
-        const getta = await getThisOrder.find({ status: 2 })
+        const getta = await getThisOrder.find({ status: 5 })
         const atteg = await GetTableHistory.find({})
         const date = new Date()
         var percent8 = 0, percent9 = 0, percent10 = 0, percent11 = 0, percent12 = 0, percent13 = 0, percent14 = 0, percent15 = 0, percent16 = 0, percent17 = 0, percent18 = 0, percent19 = 0, percent20 = 0, percent21 = 0, percent22 = 0
@@ -2219,7 +2253,7 @@ app.get("/GetIncomeDay", async (req, res) => {
 //Get Income by Month
 app.get("/GetIncomeMonth", async (req, res) => {
     try {
-        const getIt = await getThisOrder.find({ status: 2 })
+        const getIt = await getThisOrder.find({ status: 5 })
         const atteg = await GetTableHistory.find({})
         const date = new Date()
         var percent1 = 0, percent2 = 0, percent3 = 0, percent4 = 0, percent5 = 0, percent6 = 0, percent7 = 0, percent8 = 0, percent9 = 0, percent10 = 0
@@ -2415,7 +2449,7 @@ app.get("/GetIncomeMonth", async (req, res) => {
 //Get Income by Year
 app.get("/GetIncomeYear", async (req, res) => {
     try {
-        const getIt = await getThisOrder.find({ status: 2 })
+        const getIt = await getThisOrder.find({ status: 5 })
         const atteg = await GetTableHistory.find({})
         const date = new Date()
         var percent1 = 0, percent2 = 0, percent3 = 0, percent4 = 0, percent5 = 0, percent6 = 0, percent7 = 0, percent8 = 0, percent9 = 0, percent10 = 0, percent11 = 0, percent12 = 0

@@ -46,6 +46,18 @@
     }
 }
 
+.buttonAtm {
+    padding: 10px;
+    box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+
+.buttonAtm:hover,
+.buttonAtm:active {
+    transition: all 0.2s;
+    background-color: #eeeeee;
+}
+
 .croui {
     box-shadow: 0 8px 20px 0 rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.1);
     border-radius: 10px;
@@ -372,6 +384,10 @@
 }
 
 @media (max-width: 991.98px) {
+    .testimonial-item .Kowkiu {
+        font-size: 1.3vw;
+    }
+
     .navbar-dark {
         background: #0F172B !important;
     }
@@ -718,6 +734,10 @@
 }
 
 @media (max-width:575px) {
+    .testimonial-item .Kowkiu {
+        font-size: 3.3vw !important;
+    }
+
     .croui {
         width: 70% !important;
     }

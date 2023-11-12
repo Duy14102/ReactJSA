@@ -1,9 +1,14 @@
 import axios from "axios";
+import jwtDecode from "jwt-decode";
 import { useEffect, useState, Fragment, useRef } from "react";
 import Modal from 'react-modal';
 import ReactPaginate from "react-paginate";
+import Cookies from "universal-cookie";
 
 function GetOrderHistory() {
+    const cookies = new Cookies()
+    const token = cookies.get("TOKEN")
+    const decode = jwtDecode(token)
     const [Order, setOrder] = useState([])
     const [ModalData, setModalData] = useState([])
     const [modalOpenDetail, setModalOpenDetail] = useState(false);
@@ -41,10 +46,14 @@ function GetOrderHistory() {
     }
 
     var statusCheck = ""
-    var paymentCheck = ""
     var kakaCheck = ""
     var total2 = 0
     var fulltotal = 0
+    if (ModalData.paymentmethod?.status === 1) {
+        kakaCheck = "( Unpaid )"
+    } else if (ModalData.paymentmethod?.status === 2) {
+        kakaCheck = "( Paid )"
+    }
     const date = new Date(ModalData.createdAt).toLocaleDateString()
     const time = new Date(ModalData.createdAt).toLocaleTimeString()
     const datemodal = date + " - " + time
@@ -73,16 +82,6 @@ function GetOrderHistory() {
                         const date = new Date(i.createdAt).toLocaleDateString()
                         const time = new Date(i.createdAt).toLocaleTimeString()
                         const datetime = date + " - " + time
-                        if (i.paymentmethod.method === 1) {
-                            paymentCheck = "ATM"
-                        } else if (i.paymentmethod.method === 2) {
-                            paymentCheck = "COD"
-                        }
-                        if (i.paymentmethod.status === 1) {
-                            kakaCheck = "( Unpaid )"
-                        } else if (i.paymentmethod.status === 2) {
-                            kakaCheck = "( Paid )"
-                        }
                         if (i.status === 3) {
                             statusCheck = "Deny"
                         }
@@ -94,21 +93,37 @@ function GetOrderHistory() {
                         }
                         return (
                             <Fragment key={i._id}>
-                                {i.status === 1 ? null : (
-                                    <>
-                                        <tr style={{ background: "#2C343A", color: "lightgray", verticalAlign: "middle" }}>
-                                            {i.user.map((z) => {
-                                                return (
-                                                    <td key={z}>{z.fullname}</td>
-                                                )
-                                            })}
-                                            <td className="thhuhu">{i.phonenumber}</td>
-                                            <td className="thhuhu">{datetime}</td>
-                                            <td>{statusCheck}</td>
-                                            <td onClick={setModalOpenDetail}><button onClick={() => setModalData(i)} className='btn btn-success'>Detail</button></td>
-                                        </tr>
-                                    </>
-                                )}
+                                {i.employee?.map((a) => {
+                                    if (a.id === decode.userId && decode.userRole === 2) {
+                                        return (
+                                            <tr style={{ background: "#2C343A", color: "lightgray", verticalAlign: "middle" }}>
+                                                {i.user.map((z) => {
+                                                    return (
+                                                        <td key={z}>{z.fullname}</td>
+                                                    )
+                                                })}
+                                                <td className="thhuhu">{i.phonenumber}</td>
+                                                <td className="thhuhu">{datetime}</td>
+                                                <td>{statusCheck}</td>
+                                                <td onClick={setModalOpenDetail}><button onClick={() => setModalData(i)} className='btn btn-success'>Detail</button></td>
+                                            </tr>
+                                        )
+                                    }
+                                    return null
+                                })}
+                                {decode.userRole === 3 ? (
+                                    <tr style={{ background: "#2C343A", color: "lightgray", verticalAlign: "middle" }}>
+                                        {i.user.map((z) => {
+                                            return (
+                                                <td key={z}>{z.fullname}</td>
+                                            )
+                                        })}
+                                        <td className="thhuhu">{i.phonenumber}</td>
+                                        <td className="thhuhu">{datetime}</td>
+                                        <td>{statusCheck}</td>
+                                        <td onClick={setModalOpenDetail}><button onClick={() => setModalData(i)} className='btn btn-success'>Detail</button></td>
+                                    </tr>
+                                ) : null}
                             </Fragment>
                         )
                     })}
@@ -183,7 +198,7 @@ function GetOrderHistory() {
                     })}
                     <p><b>Phone number</b> : {ModalData.phonenumber}</p>
                     <p><b>Address</b> : {ModalData.address}</p>
-                    <p><b>Payment method</b> : {paymentCheck} {kakaCheck}</p>
+                    <p><b>Payment method</b> : {ModalData.paymentmethod?.type} {kakaCheck}</p>
                     <p><b>Status</b> : {statusCheck}</p>
                 </div>
                 <table className='table table-bordered solotable'>

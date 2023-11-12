@@ -40,9 +40,9 @@ function Footer() {
                         <p className="mb-2"><i className="fi fi-sr-phone-call me-3"></i>{phone}</p>
                         <p className="mb-2"><i className="fi fi-sr-envelope me-3"></i>{email}</p>
                         <div className="d-flex pt-2">
-                            <NavLink to="/" className="btn btn-outline-light btn-social" ><i className="fi fi-brands-twitter-alt"></i></NavLink>
-                            <NavLink to="/" className="btn btn-outline-light btn-social" ><i className="fi fi-brands-facebook"></i></NavLink>
-                            <NavLink to="/" className="btn btn-outline-light btn-social" ><i className="fi fi-brands-instagram"></i></NavLink>
+                            <NavLink to="/" className="btn btn-outline-light btn-social" ><i style={{ height: 16 + "px" }} className="fi fi-brands-twitter-alt"></i></NavLink>
+                            <NavLink to="/" className="btn btn-outline-light btn-social" ><i style={{ height: 16 + "px" }} className="fi fi-brands-facebook"></i></NavLink>
+                            <NavLink to="/" className="btn btn-outline-light btn-social" ><i style={{ height: 16 + "px" }} className="fi fi-brands-instagram"></i></NavLink>
                         </div>
                     </div>
                     <div className="col-lg-3 col-md-6">

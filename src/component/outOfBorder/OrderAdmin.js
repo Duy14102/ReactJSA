@@ -60,7 +60,6 @@ function OrderAdmin({ Data }) {
     }
 
     var statusCheck = ""
-    var paymentCheck = ""
     var kakaCheck = ""
     var total2 = 0
     var fulltotal = 0
@@ -198,11 +197,6 @@ function OrderAdmin({ Data }) {
                 const date = new Date(i.createdAt).toLocaleDateString()
                 const time = new Date(i.createdAt).toLocaleTimeString()
                 const datetime = date + " - " + time
-                if (i.paymentmethod.method === 1) {
-                    paymentCheck = "ATM"
-                } else if (i.paymentmethod.method === 2) {
-                    paymentCheck = "COD"
-                }
                 if (i.status === 1) {
                     statusCheck = "Pending"
                 } else if (i.status === 2) {
@@ -214,40 +208,37 @@ function OrderAdmin({ Data }) {
                 return (
                     <Fragment key={i._id}>
                         {i.employee?.map((a) => {
-                            if (a.id === decode.userId) {
+                            if (decode.userRole === 2 && a.id === decode.userId && i.status === 2) {
                                 return (
-                                    i.status === 2 ? (
-                                        <tr style={{ verticalAlign: "middle", background: "#2C343A", color: "lightgray" }}>
-                                            {i.user.map((z) => {
-                                                return (
-                                                    <td key={z}>{z.fullname}</td>
-                                                )
-                                            })}
-                                            <td className="thhuhu">{i.phonenumber}</td>
-                                            <td className="thhuhu">{datetime}</td>
-                                            <td>{statusCheck}</td>
-                                            <td onClick={setModalOpenDetail2}><button onClick={() => setModalData(i)} className='btn btn-success'>Detail</button></td>
-                                        </tr>
-                                    ) : null
+                                    <tr style={{ verticalAlign: "middle", background: "#2C343A", color: "lightgray" }}>
+                                        {i.user.map((z) => {
+                                            return (
+                                                <td key={z}>{z.fullname}</td>
+                                            )
+                                        })}
+                                        <td className="thhuhu">{i.phonenumber}</td>
+                                        <td className="thhuhu">{datetime}</td>
+                                        <td>{statusCheck}</td>
+                                        <td onClick={setModalOpenDetail2}><button onClick={() => setModalData(i)} className='btn btn-success'>Detail</button></td>
+                                    </tr>
                                 )
                             }
                             return null
                         })}
-                        {decode.userRole === 2 ? (
-                            i.status === 1 ? (
-                                <tr style={{ verticalAlign: "middle", background: "#2C343A", color: "lightgray" }}>
-                                    {i.user.map((z) => {
-                                        return (
-                                            <td key={z}>{z.fullname}</td>
-                                        )
-                                    })}
-                                    <td className="thhuhu">{i.phonenumber}</td>
-                                    <td className="thhuhu">{datetime}</td>
-                                    <td>{statusCheck}</td>
-                                    <td onClick={setModalOpenDetail2}><button onClick={() => setModalData(i)} className='btn btn-success'>Detail</button></td>
-                                </tr>
-                            ) : null
-                        ) : decode.userRole === 3 ? (
+                        {decode.userRole === 2 && i.status === 1 ? (
+                            <tr style={{ verticalAlign: "middle", background: "#2C343A", color: "lightgray" }}>
+                                {i.user.map((z) => {
+                                    return (
+                                        <td key={z}>{z.fullname}</td>
+                                    )
+                                })}
+                                <td className="thhuhu">{i.phonenumber}</td>
+                                <td className="thhuhu">{datetime}</td>
+                                <td>{statusCheck}</td>
+                                <td onClick={setModalOpenDetail2}><button onClick={() => setModalData(i)} className='btn btn-success'>Detail</button></td>
+                            </tr>
+                        ) : null}
+                        {decode.userRole === 3 ? (
                             <tr style={{ verticalAlign: "middle", background: "#2C343A", color: "lightgray" }}>
                                 {i.user.map((z) => {
                                     return (
@@ -313,7 +304,7 @@ function OrderAdmin({ Data }) {
                     })}
                     <p><b>Phone number</b> : {ModalData.phonenumber}</p>
                     <p><b>Address</b> : {ModalData.address}</p>
-                    <p><b>Payment method</b> : {paymentCheck} {kakaCheck}</p>
+                    <p><b>Payment method</b> : {ModalData.paymentmethod?.type} {kakaCheck}</p>
                     <p><b>Status</b> : {statusCheck}</p>
                 </div>
                 <table className='table table-bordered solotable'>
@@ -365,7 +356,7 @@ function OrderAdmin({ Data }) {
                     <>
                         <div className="d-flex justify-content-between">
                             <p>✅ Order has been <b>Accepted</b></p>
-                            {decode.userRole === 3 ? (
+                            {decode.userRole === 3 && ModalData.paymentmethod?.type === "Vnpay" ? (
                                 <button onClick={() => setModalOpenDetail3(true)} className="btn btn-danger">Cancel</button>
                             ) : null}
                             {ModalData.employee?.map((i) => {
@@ -393,7 +384,7 @@ function OrderAdmin({ Data }) {
                             ) : (
                                 <button onClick={() => appoveOrder(ModalData._id, ModalData.orderitems)} className="btn btn-success">Accept</button>
                             )}
-                            {decode.userRole === 3 ? (
+                            {decode.userRole === 3 && (ModalData.paymentmethod.type === "Vnpay" || ModalData.paymentmethod.type === "COD") ? (
                                 <button onClick={() => setAccept(true)} className="btn btn-danger">Deny</button>
                             ) : null}
                         </>
@@ -403,7 +394,7 @@ function OrderAdmin({ Data }) {
                     <>
                         <div className="d-flex justify-content-between">
                             <p>🕒 Order is waiting to <b>Cancel</b></p>
-                            {decode.userRole === 3 ? (
+                            {decode.userRole === 3 && ModalData.paymentmethod?.type === "Vnpay" ? (
                                 <button onClick={() => setModalOpenDetail4(true)} className="btn btn-danger">Cancel</button>
                             ) : null}
                         </div>
@@ -413,7 +404,7 @@ function OrderAdmin({ Data }) {
                 {Accept ? (
                     <div className="pt-3">
                         <p>Reason why deny : </p>
-                        {ModalData.paymentmethod.method === 1 && ModalData.paymentmethod.status === 2 ? (
+                        {ModalData.paymentmethod.status === 2 && ModalData.paymentmethod.type === "Vnpay" ? (
                             <form onSubmit={(e) => denyOrderPaid(e, ModalData._id)}>
                                 <textarea value={DenyReason} onChange={(e) => setDenyReason(e.target.value)} className="textDeny" required />
                                 <div style={{ gap: 1 + "%" }} className="d-flex mt-2">
@@ -434,8 +425,12 @@ function OrderAdmin({ Data }) {
                 ) : null}
                 <button className='closeModal' onClick={() => setModalOpenDetail2(false)}>x</button>
             </Modal >
-            <CancelByMag fulltotal={fulltotal} ModalData={ModalData} modal={modalOpenDetail3} setmodal={setModalOpenDetail3} />
-            <CancelRequest fulltotal={fulltotal} ModalData={ModalData} modal={modalOpenDetail4} setmodal={setModalOpenDetail4} />
+            {ModalData.paymentmethod?.type === "Vnpay" ? (
+                <>
+                    <CancelByMag fulltotal={fulltotal} ModalData={ModalData} modal={modalOpenDetail3} setmodal={setModalOpenDetail3} />
+                    <CancelRequest fulltotal={fulltotal} ModalData={ModalData} modal={modalOpenDetail4} setmodal={setModalOpenDetail4} />
+                </>
+            ) : null}
         </>
     )
 }

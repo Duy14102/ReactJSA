@@ -9,6 +9,7 @@
 }
 
 .flexAble2 {
+    flex-direction: row-reverse;
     display: flex;
     width: 100%;
     gap: 2%;
@@ -258,7 +259,7 @@
     }
 
     .flexAble2 {
-        flex-direction: column-reverse;
+        flex-direction: column;
     }
 
     .Numberone,
