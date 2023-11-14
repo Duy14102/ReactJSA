@@ -1231,7 +1231,32 @@ app.get("/GetDetailMenu", async (req, res) => {
 app.get("/GetSearch", async (req, res) => {
     try {
         const regex = new RegExp(req.query.foodSearch, 'i')
-        const getSearch = await getThisMenu.find({ foodname: regex })
+        var getSearch = null
+        switch (req.query.filter) {
+            case "nto":
+                const sort = { _id: -1 }
+                getSearch = await getThisMenu.find({ foodname: regex }).sort(sort);
+                break;
+            case "otn":
+                const sort2 = { _id: 1 }
+                getSearch = await getThisMenu.find({ foodname: regex }).sort(sort2);
+                break;
+            case "hpf":
+                const sort3 = { foodprice: -1 }
+                getSearch = await getThisMenu.find({ foodname: regex }).sort(sort3);
+                break;
+            case "lpf":
+                const sort4 = { foodprice: 1 }
+                getSearch = await getThisMenu.find({ foodname: regex }).sort(sort4);
+                break;
+            case "atz":
+                const sort5 = { foodname: 1 }
+                getSearch = await getThisMenu.find({ foodname: regex }).sort(sort5);
+                break;
+            default:
+                getSearch = await getThisMenu.find({ foodname: regex }).sort(sort);
+                break;
+        }
         const page = parseInt(req.query.page)
         const limit = parseInt(req.query.limit)
 
@@ -1277,7 +1302,32 @@ app.get("/GetSearchAutoComplete", async (req, res) => {
 //Get Category Menu
 app.get("/GetCategoryMenu", async (req, res) => {
     try {
-        const getIt = await getThisMenu.find({ foodcategory: req.query.category });
+        var getIta = null
+        switch (req.query.filter) {
+            case "nto":
+                const sort = { _id: -1 }
+                getIta = await getThisMenu.find({ foodcategory: req.query.category }).sort(sort);
+                break;
+            case "otn":
+                const sort2 = { _id: 1 }
+                getIta = await getThisMenu.find({ foodcategory: req.query.category }).sort(sort2);
+                break;
+            case "hpf":
+                const sort3 = { foodprice: -1 }
+                getIta = await getThisMenu.find({ foodcategory: req.query.category }).sort(sort3);
+                break;
+            case "lpf":
+                const sort4 = { foodprice: 1 }
+                getIta = await getThisMenu.find({ foodcategory: req.query.category }).sort(sort4);
+                break;
+            case "atz":
+                const sort5 = { foodname: 1 }
+                getIta = await getThisMenu.find({ foodcategory: req.query.category }).sort(sort5);
+                break;
+            default:
+                getIta = await getThisMenu.find({ foodcategory: req.query.category }).sort(sort);
+                break;
+        }
 
         const page = parseInt(req.query.page)
         const limit = parseInt(req.query.limit)
@@ -1286,10 +1336,10 @@ app.get("/GetCategoryMenu", async (req, res) => {
         const end = page * limit
 
         const results = {}
-        results.total = getIt.length
-        results.pageCount = Math.ceil(getIt.length / limit)
+        results.total = getIta.length
+        results.pageCount = Math.ceil(getIta.length / limit)
 
-        if (end < getIt.length) {
+        if (end < getIta.length) {
             results.next = {
                 page: page + 1
             }
@@ -1300,7 +1350,7 @@ app.get("/GetCategoryMenu", async (req, res) => {
             }
         }
 
-        results.result = getIt.slice(start, end)
+        results.result = getIta.slice(start, end)
         res.send({ results });
     } catch (e) {
         console.log(e);
@@ -1670,7 +1720,9 @@ app.get("/GetAllTableActive", async (req, res) => {
 app.post("/QrCodeTableActive", (req, res) => {
     try {
         GetTable.updateOne({ _id: req.body.id }, {
-            tablestatus: 2
+            customerid: req.body.cusid,
+            tablestatus: 2,
+            tabledate: Date.now()
         }).then(() => {
             res.send({ data: "succeed" })
         }).catch((err) => {
@@ -1875,7 +1927,10 @@ app.post("/AddItemToTable", async (req, res) => {
             GetTable.updateOne({ _id: req.body.tableid, "tableitems.item.foodname": req.body.foodname },
                 {
                     $inc: {
-                        "tableitems.$.quantity": parseInt(req.body.quantity)
+                        "tableitems.$.quantity": req.body.quantity,
+                    },
+                    $set: {
+                        "tableitems.$.status": 1
                     }
                 }).then(() => {
                     if (req.body.statusCheck === 1) {
@@ -1883,12 +1938,12 @@ app.post("/AddItemToTable", async (req, res) => {
                             tabledate: dddda,
                             tablestatus: 2
                         }).then(() => {
-                            res.send({ data: "succeed" })
+                            res.send({ data: { foodname: req.body.foodname, quantity: req.body.quantity } })
                         }).catch((e) => {
                             console.log(e);
                         })
                     } else {
-                        res.send({ data: "succeed" })
+                        res.send({ data: { foodname: req.body.foodname, quantity: req.body.quantity } })
                     }
                 }).catch((er) => {
                     console.log(er);
@@ -1905,17 +1960,56 @@ app.post("/AddItemToTable", async (req, res) => {
                             tabledate: dddda,
                             tablestatus: 2
                         }).then(() => {
-                            res.send({ data: "succeed" })
+                            res.send({ data: { foodname: req.body.foodname, quantity: req.body.quantity } })
                         }).catch((e) => {
                             console.log(e);
                         })
                     } else {
-                        res.send({ data: "succeed" })
+                        res.send({ data: { foodname: req.body.foodname, quantity: req.body.quantity } })
                     }
                 }).catch((er) => {
                     console.log(er);
                 })
         }
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//update status item
+app.post("/UpdateItemQrStatus", (req, res) => {
+    try {
+        GetTable.updateOne({ _id: req.body.tableid, "tableitems.item.foodname": req.body.foodname }, {
+            "tableitems.$.status": req.body.status
+        }).then(() => { res.send({ data: "succeed" }) }).catch((err) => { console.log(err); })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//delete item Qr 
+app.post("/DeleteQritem", async (req, res) => {
+    try {
+        const getIt = await GetTable.findOne({ _id: req.body.tableid, "tableitems.item.foodname": req.body.foodname }).then((resa) => { return resa })
+        for (var i = 0; i < getIt.tableitems?.length; i++) {
+            var item = getIt.tableitems[i]
+            if (req.body.quantity >= item.quantity) {
+                GetTable.updateOne({ _id: req.body.tableid, "tableitems.item.foodname": req.body.foodname }, {
+                    $pull: {
+                        tableitems: {
+                            item: req.body.item.item
+                        }
+                    }
+                }).exec()
+            } else {
+                GetTable.updateOne({ _id: req.body.tableid, "tableitems.item.foodname": req.body.foodname }, {
+                    $inc: {
+                        "tableitems.$.quantity": -parseInt(req.body.quantity),
+                    },
+                }).exec()
+            }
+        }
+        res.send({ data: "succeed" })
     } catch (e) {
         console.log(e);
     }
@@ -1935,6 +2029,7 @@ app.post("/Checkout4Booking", (req, res) => {
                 tablename: req.body.TbnameHistory,
                 tableitems: hype,
                 tabledate: req.body.TbDateHistory,
+                datefinish: Date.now(),
                 employee: req.body.employee
             })
             tbhistory.save().then(() => {
@@ -1977,6 +2072,7 @@ app.post("/Checkout4Normal", async (req, res) => {
             tablename: req.body.TbnameHistory,
             tableitems: hype,
             tabledate: req.body.TbDateHistory,
+            datefinish: Date.now(),
             employee: req.body.employee
         })
         historytb.save().then(() => {

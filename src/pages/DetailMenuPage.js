@@ -157,14 +157,6 @@ function DetailMenuPage() {
         }
     }
 
-    useEffect(() => {
-        if (callAlert) {
-            setTimeout(() => {
-                setCallAlert(false)
-            }, 3000)
-        }
-    }, [callAlert])
-
     const date = Date.now()
     const hashdate = new Date(date).toLocaleDateString()
     const hashtime = new Date(date).toLocaleTimeString()
@@ -285,7 +277,7 @@ function DetailMenuPage() {
     return (
         <Layout>
             {callAlert ? (
-                <Alert type={"Green"} />
+                <Alert call={callAlert} setCall={setCallAlert} type={"Green"} />
             ) : null}
             <div className='bg-white'>
                 {Object.values(detail).map(i => {

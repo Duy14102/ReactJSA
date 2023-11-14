@@ -16,7 +16,6 @@ function MainAnnounce() {
     const [ModalData, setModalData] = useState([])
     const [title, setTitle] = useState()
     const [message, setMessage] = useState()
-    const editor = useRef(null)
 
     const [pageCount, setPageCount] = useState(6);
     const currentPage = useRef();
@@ -274,7 +273,6 @@ function MainAnnounce() {
                     <label className="pt-4" htmlFor="">Message</label>
                     <JoditEditor
                         required
-                        ref={editor}
                         value={ModalData.message}
                         onChange={(e) => setMessage(e)}
                     />

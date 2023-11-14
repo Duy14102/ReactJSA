@@ -18,6 +18,10 @@ const TableHistorySchema = new mongoose.Schema({
         type: Date
     },
 
+    datefinish: {
+        type: Date
+    },
+
     employee: {
         default: null,
         type: Array

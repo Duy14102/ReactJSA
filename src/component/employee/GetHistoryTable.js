@@ -45,6 +45,9 @@ function GetHistoryTable() {
     const date = new Date(ModalData.tabledate).toLocaleDateString()
     const time = new Date(ModalData.tabledate).toLocaleTimeString()
     const datetime = date + " - " + time
+    const date2 = new Date(ModalData.datefinish).toLocaleDateString()
+    const time2 = new Date(ModalData.datefinish).toLocaleTimeString()
+    const datetime2 = date2 + " - " + time2
 
     const VND = new Intl.NumberFormat('vi-VN', {
         style: 'currency',
@@ -134,12 +137,15 @@ function GetHistoryTable() {
                     <p><b>Table name</b> : {ModalData.tablename}</p>
                     {ModalData.employee?.map((u) => {
                         return (
-                            <p><b>Employee</b> : {u.email}</p>
+                            <p key={u.email}><b>Employee</b> : {u.email}</p>
                         )
                     })}
                 </div>
+                <div className="coverNOut">
+                    <p><b>Date created</b> : {datetime}</p>
+                    <p><b>Date finished</b> : {datetime2}</p>
+                </div>
                 <div className="hugeImpace">
-                    <p><b>Date</b> : {datetime}</p>
                     <p><b>Items</b> : </p>
                 </div>
                 <table className="table table-bordered solotable">

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, Fragment } from "react"
+import { useState, useEffect, useRef, Fragment, useCallback } from "react"
 import { NavLink, useParams } from "react-router-dom"
 import Modal from 'react-modal';
 import NotFound from "../component/outOfBorder/NotFound";
@@ -7,14 +7,22 @@ import axios from "axios";
 import $ from 'jquery'
 import Swal from "sweetalert2";
 import Layout from "../Layout";
+import Cookies from "universal-cookie";
+import jwtDecode from "jwt-decode";
 
 function QrCodeTable() {
     let appler = useParams()
+    const cookies = new Cookies()
+    const token = cookies.get("TOKEN")
     const [Category, setCategory] = useState([]);
+    var Cunt = null
+    var Kunt = null
     const [Count, setCount] = useState([]);
     const [Table, GetTable] = useState([])
+    const [detect, setDetect] = useState(null)
     const [modalOpenDetail, setModalOpenDetail] = useState(false);
-    var [QuantityAdd, setQuantityAdd] = useState()
+    const [sidebar, setSidebar] = useState(false);
+    const [QuantityAdd, setQuantityAdd] = useState(1)
     const getQr = localStorage.getItem("QrCode")
 
     const [pageCount, setPageCount] = useState(6);
@@ -29,37 +37,10 @@ function QrCodeTable() {
         }
         currentPage.current = 1;
         getPagination();
-        getTable4()
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
-    /*      Pagination     */
-    function handlePageClick(e) {
-        currentPage.current = e.selected + 1
-        getPagination();
-    }
 
-    function getPagination() {
-        const configuration = {
-            method: "get",
-            url: "http://localhost:3000/GetCategoryMenu",
-            params: {
-                category: appler.cate,
-                page: currentPage.current,
-                limit: limit
-            }
-        };
-        axios(configuration)
-            .then((result) => {
-                setCategory(result.data.results.result);
-                setCount(result.data.results.total)
-                setPageCount(result.data.results.pageCount)
-            })
-            .catch((error) => {
-                console.log(error);
-            });
-    }
-
-    function getTable4() {
+    const getTable4 = useCallback(() => {
         const configuration = {
             method: "get",
             url: "http://localhost:3000/QrCodeItemTB",
@@ -74,28 +55,40 @@ function QrCodeTable() {
             .catch((error) => {
                 console.log(error);
             });
+    }, [appler.id])
+
+    useEffect(() => {
+        getTable4()
+        setDetect(null)
+    }, [getTable4, detect])
+
+    /*      Pagination     */
+    function handlePageClick(e) {
+        currentPage.current = e.selected + 1
+        getPagination();
     }
 
-
-    switch (appler.fil) {
-        case "nto":
-            Category.sort((a, b) => a._id - b._id).reverse()
-            break;
-        case "otn":
-            Category.sort((a, b) => a._id - b._id)
-            break;
-        case "hpf":
-            Category.sort((a, b) => a.foodprice - b.foodprice).reverse()
-            break;
-        case "lpf":
-            Category.sort((a, b) => a.foodprice - b.foodprice)
-            break;
-        case "atz":
-            Category.sort((a, b) => a.foodname > b.foodname ? 1 : -1,)
-            break;
-        default:
-            Category.sort((a, b) => a._id - b._id).reverse()
-            break;
+    function getPagination() {
+        const configuration = {
+            method: "get",
+            url: "http://localhost:3000/GetCategoryMenu",
+            params: {
+                category: appler.cate,
+                page: currentPage.current,
+                limit: limit,
+                filter: appler.fil
+            }
+        };
+        axios(configuration)
+            .then((result) => {
+                console.log(result);
+                setCategory(result.data.results.result);
+                setCount(result.data.results.total)
+                setPageCount(result.data.results.pageCount)
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     }
 
     const Filter = (e) => {
@@ -123,11 +116,17 @@ function QrCodeTable() {
     }
 
     function setQrType() {
+        var kock = null
+        if (token) {
+            const decode = jwtDecode(token)
+            kock = decode.userId
+        }
         const configuration = {
             method: "post",
             url: "http://localhost:3000/QrCodeTableActive",
             data: {
-                id: appler.id
+                id: appler.id,
+                cusid: kock
             }
         };
         axios(configuration)
@@ -141,12 +140,8 @@ function QrCodeTable() {
             })
     }
 
-    if (!QuantityAdd) {
-        QuantityAdd = 1
-    }
-
     const takeitNow = (e, k) => {
-        const item = { item: k, quantity: QuantityAdd }
+        const item = { item: k, quantity: QuantityAdd, status: 1 }
         var foodname = ""
         if (k) {
             foodname = k.foodname
@@ -163,12 +158,59 @@ function QrCodeTable() {
             }
         };
         axios(configuration)
-            .then(() => {
-                window.location.reload()
+            .then((res) => {
+                setDetect(res.data.data)
+                setTimeout(() => {
+                    const configuration2 = {
+                        method: "post",
+                        url: "http://localhost:3000/UpdateItemQrStatus",
+                        data: {
+                            tableid: appler.id,
+                            foodname: res.data.data.foodname,
+                            status: 2
+                        }
+                    }
+                    axios(configuration2)
+                        .then(() => {
+                            setDetect(res.data.data)
+                        }).catch((err) => { console.log(err); })
+                }, 15000)
             })
             .catch((err) => {
                 Swal.fire(
                     'Added Fail!',
+                    '',
+                    'error'
+                ).then(() => {
+                    console.log(err);
+                })
+            });
+    }
+
+    const deleteItem = (name, item) => {
+        const configuration = {
+            method: "post",
+            url: "http://localhost:3000/DeleteQritem",
+            data: {
+                tableid: appler.id,
+                quantity: QuantityAdd,
+                foodname: name,
+                item: item
+            }
+        };
+        axios(configuration)
+            .then(() => {
+                Swal.fire(
+                    'Delete Successfully!',
+                    '',
+                    'success'
+                ).then(() => {
+                    window.location.reload()
+                })
+            })
+            .catch((err) => {
+                Swal.fire(
+                    'Delete Fail!',
                     '',
                     'error'
                 ).then(() => {
@@ -182,7 +224,7 @@ function QrCodeTable() {
             method: "post",
             url: "http://localhost:3000/Checkout4QrYeah",
             params: {
-                id: e
+                id: e._id
             }
         };
         axios(configuration)
@@ -218,6 +260,10 @@ function QrCodeTable() {
     });
 
     var fulltotal = 0
+
+    function refreshButton() {
+        window.location.reload()
+    }
     return (
         <>
             {Table.data ? (
@@ -227,7 +273,7 @@ function QrCodeTable() {
                             overlay: {
                                 position: 'fixed',
                                 zIndex: 998,
-                                backgroundColor: 'rgb(33 33 33 / 75%)'
+                                backgroundColor: 'rgb(33 33 33 / 100%)'
                             },
                             content: {
                                 top: "50%",
@@ -253,16 +299,118 @@ function QrCodeTable() {
                             <h6>3. Enjoy the meal</h6>
                             <hr />
                             <div className="text-center">
-                                <h3>Would you like to use this table ?</h3>
-                            </div>
-                            <div className="d-flex justify-content-evenly align-items-center pt-4">
-                                <button onClick={() => setQrType()} className="btn btn-primary">Yes I will use it</button>
-                                <NavLink reloadDocument to="/" className="btn btn-secondary">No I don't use it</NavLink>
+                                {Table.data.tablestatus !== 1 ? (
+                                    <>
+                                        <div style={{ gap: 1 + "%" }} className="d-flex align-items-center justify-content-center mb-2">
+                                            <h3 className="m-0">This table is in process of payment</h3>
+                                            <div className="rotateYUI">
+                                                <i className="fi fi-br-refresh"></i>
+                                            </div>
+                                        </div>
+                                        <button onClick={() => refreshButton()} className="btn btn-primary">Refresh</button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <h3>Would you like to use this table ?</h3>
+                                        <div className="typicalR pt-4">
+                                            <button onClick={() => setQrType()} className="btn btn-primary">Yes I will use it</button>
+                                            <NavLink reloadDocument to="/" className="btn btn-secondary">No I don't use it</NavLink>
+
+                                        </div>
+                                    </>
+                                )}
                             </div>
                         </div>
-                        <button className='closeModal' onClick={() => setModalOpenDetail(false)}>x</button>
                     </Modal>
                     <Layout>
+                        {sidebar ? (
+                            <>
+                                <button onClick={() => setSidebar(false)} className="sideTick">
+                                    <i className="fi fi-br-menu-burger manaZone"></i>
+                                </button>
+                                <div className="sidebarCutton">
+                                    <h6 className="text-center">Your Cart</h6>
+                                    {Object.values(Table).map((a) => {
+                                        if (a.tableitems.length === 0) {
+                                            return (
+                                                <p className="text-center" key={a._id}>Your cart empty!</p>
+                                            )
+                                        } else {
+                                            return (
+                                                <Fragment key={a._id}>
+                                                    <table className="table table-bordered solotable">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Name</th>
+                                                                <th>Quantity</th>
+                                                                <th>Price</th>
+                                                                {a.tableitems?.map((z) => {
+                                                                    if (z.status === 1) {
+                                                                        Kunt = "Yes"
+                                                                        return null
+                                                                    }
+                                                                    return null
+                                                                })}
+                                                                {Kunt ? (
+                                                                    <th></th>
+                                                                ) : null}
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {a.tableitems?.map((z) => {
+                                                                var total = z.quantity * z.item.foodprice
+                                                                fulltotal += total
+                                                                return (
+                                                                    <tr key={z.item._id}>
+                                                                        <td className="text-nowrap">{z.item.foodname}</td>
+                                                                        <td>{z.quantity}</td>
+                                                                        <td>{VND.format(z.item.foodprice)}</td>
+                                                                        {z.status === 1 ? (
+                                                                            <td><button onClick={() => deleteItem(z.item.foodname, z)} className="btn btn-danger">x</button></td>
+                                                                        ) : null}
+                                                                    </tr>
+                                                                )
+                                                            })}
+                                                            <tr>
+                                                                <th colSpan={2}>Fulltotal</th>
+                                                                {a.tableitems?.map((z) => {
+                                                                    if (z.status === 1) {
+                                                                        Cunt = "No"
+                                                                        return null
+                                                                    } else {
+                                                                        Cunt = "Yes"
+                                                                        return null
+                                                                    }
+                                                                })}
+                                                                {Cunt === "Yes" ? (
+                                                                    <th>{VND.format(fulltotal)}</th>
+                                                                ) : Cunt === "No" ? (
+                                                                    <th colSpan={2}>{VND.format(fulltotal)}</th>
+                                                                ) : null}
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </Fragment>
+                                            )
+                                        }
+                                    })}
+                                    <div className="text-center">
+                                        {Object.values(Table).map((t) => {
+                                            if (t.tableitems.length > 0) {
+                                                return (
+                                                    <button key={t._id} onClick={() => CheckOutQr(t)} className="btn btn-primary">Checkout</button>
+                                                )
+                                            }
+                                            return null
+                                        })}
+                                    </div>
+                                </div>
+                            </>
+                        ) : (
+                            <button onClick={() => setSidebar(true)} className="sideTick">
+                                <i className="fi fi-br-menu-burger manaZone"></i>
+                            </button>
+                        )}
                         <div className="bg-white">
                             <div className='container'>
                                 <div className='pt-3'>
@@ -280,43 +428,78 @@ function QrCodeTable() {
                                         </div>
                                         <div className="nOthing">
                                             <h6 className="text-center">Your Cart</h6>
-                                            <table className="table table-bordered solotable">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Name</th>
-                                                        <th>Quantity</th>
-                                                        <th>Price</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    {Object.values(Table).map((a) => {
-                                                        return (
-                                                            <Fragment key={a._id}>
-                                                                {a.tableitems?.map((z) => {
-                                                                    var total = z.quantity * z.item.foodprice
-                                                                    fulltotal += total
-                                                                    return (
-                                                                        <tr key={z.item._id}>
-                                                                            <td>{z.item.foodname}</td>
-                                                                            <td>{z.quantity}</td>
-                                                                            <td>{VND.format(z.item.foodprice)}</td>
-                                                                        </tr>
-                                                                    )
-                                                                })}
-                                                            </Fragment>
-                                                        )
-                                                    })}
-                                                    <tr>
-                                                        <th colSpan={2}>Fulltotal</th>
-                                                        <th>{VND.format(fulltotal)}</th>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
+                                            {Object.values(Table).map((a) => {
+                                                if (a.tableitems.length === 0) {
+                                                    return (
+                                                        <p className="text-center" key={a._id}>Your cart empty!</p>
+                                                    )
+                                                } else {
+                                                    return (
+                                                        <Fragment key={a._id}>
+                                                            <table className="table table-bordered solotable">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Name</th>
+                                                                        <th>Quantity</th>
+                                                                        <th>Price</th>
+                                                                        {a.tableitems?.map((z) => {
+                                                                            if (z.status === 1) {
+                                                                                Kunt = "Yes"
+                                                                                return null
+                                                                            }
+                                                                            return null
+                                                                        })}
+                                                                        {Kunt ? (
+                                                                            <th></th>
+                                                                        ) : null}
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    {a.tableitems?.map((z) => {
+                                                                        var total = z.quantity * z.item.foodprice
+                                                                        fulltotal += total
+                                                                        return (
+                                                                            <tr key={z.item._id}>
+                                                                                <td className="text-nowrap">{z.item.foodname}</td>
+                                                                                <td>{z.quantity}</td>
+                                                                                <td>{VND.format(z.item.foodprice)}</td>
+                                                                                {z.status === 1 ? (
+                                                                                    <td><button onClick={() => deleteItem(z.item.foodname, z)} className="btn btn-danger">x</button></td>
+                                                                                ) : null}
+                                                                            </tr>
+                                                                        )
+                                                                    })}
+                                                                    <tr>
+                                                                        <th colSpan={2}>Fulltotal</th>
+                                                                        {a.tableitems?.map((z) => {
+                                                                            if (z.status === 1) {
+                                                                                Cunt = "No"
+                                                                                return null
+                                                                            } else {
+                                                                                Cunt = "Yes"
+                                                                                return null
+                                                                            }
+                                                                        })}
+                                                                        {Cunt === "Yes" ? (
+                                                                            <th>{VND.format(fulltotal)}</th>
+                                                                        ) : Cunt === "No" ? (
+                                                                            <th colSpan={2}>{VND.format(fulltotal)}</th>
+                                                                        ) : null}
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </Fragment>
+                                                    )
+                                                }
+                                            })}
                                             <div className="text-center">
                                                 {Object.values(Table).map((t) => {
-                                                    return (
-                                                        <button key={t._id} onClick={() => CheckOutQr(t._id)} className="btn btn-primary">Checkout</button>
-                                                    )
+                                                    if (t.tableitems.length > 0) {
+                                                        return (
+                                                            <button key={t._id} onClick={() => CheckOutQr(t)} className="btn btn-primary">Checkout</button>
+                                                        )
+                                                    }
+                                                    return null
                                                 })}
                                             </div>
                                         </div>
@@ -341,6 +524,7 @@ function QrCodeTable() {
                                                 </select>
                                             </div>
                                         </div>
+                                        <p className="text-muted"><b>Note</b> : items will automatically confirm after 15s</p>
                                         <table className="table solotable text-center" style={{ verticalAlign: "middle" }}>
                                             <thead>
                                                 <tr>
@@ -357,8 +541,8 @@ function QrCodeTable() {
                                                             <td><img alt="" src={i.foodimage} loading="lazy" height={60} width={70} /></td>
                                                             <td>{i.foodname}</td>
                                                             <td>{VND.format(i.foodprice)}</td>
-                                                            <td><input onChange={(e) => setQuantityAdd(e.target.value)} min={1} max={i.foodquantity} defaultValue={1} className="textDeny" /></td>
-                                                            <td><button onClick={(e) => takeitNow(e, i)} className="btn btn-success">Add to cart</button></td>
+                                                            <td><input type="number" onChange={(e) => setQuantityAdd(e.target.value)} min={1} max={i.foodquantity} defaultValue={1} className="textDeny" /></td>
+                                                            <td><button className="addIQr" onClick={(e) => takeitNow(e, i)}><i className="fi fi-ss-shopping-cart"></i></button></td>
                                                         </tr>
                                                     )
                                                 })}
@@ -391,7 +575,8 @@ function QrCodeTable() {
                 </>
             ) : (
                 <NotFound />
-            )}
+            )
+            }
         </>
     )
 }

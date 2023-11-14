@@ -1,4 +1,14 @@
-function Alert({ type }) {
+import { useEffect } from "react"
+
+function Alert({ type, call, setCall }) {
+    useEffect(() => {
+        if (call) {
+            setTimeout(() => {
+                setCall(false)
+            }, 3000)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [setCall])
     return (
         <>
             {type === "Green" ? (

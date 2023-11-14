@@ -299,7 +299,12 @@ function MainMenu() {
                                     </div>
                                     <div className="insideHereB">
                                         <label>Category</label>
-                                        <input className='textDeny' type='text' name='updatecategory' value={foodcategory} onChange={(e) => setFoodcategory(e.target.value)} required></input>
+                                        <select className='textDeny' onChange={(e) => setFoodcategory(e.target.value)} required>
+                                            <option value="">Click me</option>
+                                            <option value="Meat">Meat</option>
+                                            <option value="Drink">Drink</option>
+                                            <option value="Vegetables">Vegetables</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div className="overHereB">

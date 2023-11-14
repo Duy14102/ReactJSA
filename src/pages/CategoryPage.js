@@ -5,12 +5,14 @@ import axios from 'axios';
 import $ from 'jquery'
 import ReactPaginate from 'react-paginate';
 import Layout from '../Layout';
+import Alert from '../component/outOfBorder/Alert';
 
 function CategoryPage() {
     let appler = useParams()
     const [Category, setCategory] = useState([]);
     const [Count, setCount] = useState([]);
     const [pageCount, setPageCount] = useState(6);
+    const [callAlert, setCallAlert] = useState(false)
     const currentPage = useRef();
     const limit = 9
     //Get Detail
@@ -33,7 +35,8 @@ function CategoryPage() {
             params: {
                 category: appler.id,
                 page: currentPage.current,
-                limit: limit
+                limit: limit,
+                filter: appler.fil
             }
         };
         axios(configuration)
@@ -45,27 +48,6 @@ function CategoryPage() {
             .catch((error) => {
                 console.log(error);
             });
-    }
-
-    switch (appler.fil) {
-        case "nto":
-            Category.sort((a, b) => a._id - b._id).reverse()
-            break;
-        case "otn":
-            Category.sort((a, b) => a._id - b._id)
-            break;
-        case "hpf":
-            Category.sort((a, b) => a.foodprice - b.foodprice).reverse()
-            break;
-        case "lpf":
-            Category.sort((a, b) => a.foodprice - b.foodprice)
-            break;
-        case "atz":
-            Category.sort((a, b) => a.foodname > b.foodname ? 1 : -1,)
-            break;
-        default:
-            Category.sort((a, b) => a._id - b._id).reverse()
-            break;
     }
 
     const Filter = (e) => {
@@ -103,20 +85,20 @@ function CategoryPage() {
             var student1 = { name: name, quantity: quantity };
             students.push(student1);
             localStorage.setItem("cart", JSON.stringify(students));
-            window.location.reload()
+            setCallAlert(true)
         } else {
             var sameItem = JSON.parse(localStorage.getItem("cart")) || [];
             for (var i = 0; i < sameItem.length; i++) {
                 if (name === sameItem[i].name) {
                     sameItem[i].quantity += quantity;
                     localStorage.setItem('cart', JSON.stringify(sameItem))
-                    window.location.reload()
+                    setCallAlert(true)
                 } else if (i === sameItem.length - 1) {
                     var stored2 = JSON.parse(localStorage.getItem("cart"));
                     var student2 = { name: name, quantity: quantity };
                     stored2.push(student2);
                     localStorage.setItem("cart", JSON.stringify(stored2));
-                    window.location.reload()
+                    setCallAlert(true)
                 }
             }
         }
@@ -137,6 +119,9 @@ function CategoryPage() {
     }
     return (
         <Layout>
+            {callAlert ? (
+                <Alert call={callAlert} setCall={setCallAlert} type={"Green"} />
+            ) : null}
             <div className='bg-white'>
                 <div className='container'>
                     <div className='pt-3'>
@@ -188,7 +173,7 @@ function CategoryPage() {
                                                 <div className="product-item-category">
                                                     {i.foodcategory}
                                                 </div>
-                                                <NavLink reloadDocument to={`/DetailMenuPage/${i.foodname}/${i.foodcategory}`} className="product-item-title">{i.foodname} </NavLink>
+                                                <NavLink reloadDocument to={`/DetailMenuPage/${i.foodname}/${i.foodcategory}`} className="product-item-title text-nowrap">{i.foodname} </NavLink>
                                                 <div className="product-item-price">
                                                     {VND.format(i.foodprice)}
                                                 </div>

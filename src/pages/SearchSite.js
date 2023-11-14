@@ -5,12 +5,14 @@ import $ from 'jquery';
 import axios from "axios";
 import ReactPaginate from 'react-paginate';
 import Layout from '../Layout';
+import Alert from "../component/outOfBorder/Alert";
 
 function SearchSite() {
     let appler = useParams()
     const [Count, setCount] = useState([]);
     const [searchdata, setSearchData] = useState([]);
     const [pageCount, setPageCount] = useState(6);
+    const [callAlert, setCallAlert] = useState(false)
     const currentPage = useRef();
     const limit = 9
     // Get Search Data
@@ -33,7 +35,8 @@ function SearchSite() {
             params: {
                 foodSearch: appler.id,
                 page: currentPage.current,
-                limit: limit
+                limit: limit,
+                filter: appler.fil
             }
         };
         axios(configuration)
@@ -45,27 +48,6 @@ function SearchSite() {
             .catch((error) => {
                 console.log(error);
             });
-    }
-
-    switch (appler.fil) {
-        case "nto":
-            searchdata.sort((a, b) => a._id - b._id).reverse()
-            break;
-        case "otn":
-            searchdata.sort((a, b) => a._id - b._id)
-            break;
-        case "hpf":
-            searchdata.sort((a, b) => a.foodprice - b.foodprice).reverse()
-            break;
-        case "lpf":
-            searchdata.sort((a, b) => a.foodprice - b.foodprice)
-            break;
-        case "atz":
-            searchdata.sort((a, b) => a.foodname > b.foodname ? 1 : -1,)
-            break;
-        default:
-            searchdata.sort((a, b) => a._id - b._id).reverse()
-            break;
     }
 
     const Filter = (e) => {
@@ -89,20 +71,20 @@ function SearchSite() {
             var student1 = { name: name, quantity: quantity };
             students.push(student1);
             localStorage.setItem("cart", JSON.stringify(students));
-            window.location.reload()
+            setCallAlert(true)
         } else {
             var sameItem = JSON.parse(localStorage.getItem("cart")) || [];
             for (var i = 0; i < sameItem.length; i++) {
                 if (name === sameItem[i].name) {
                     sameItem[i].quantity += quantity;
                     localStorage.setItem('cart', JSON.stringify(sameItem))
-                    window.location.reload()
+                    setCallAlert(true)
                 } else if (i === sameItem.length - 1) {
                     var stored2 = JSON.parse(localStorage.getItem("cart"));
                     var student2 = { name: name, quantity: quantity };
                     stored2.push(student2);
                     localStorage.setItem("cart", JSON.stringify(stored2));
-                    window.location.reload()
+                    setCallAlert(true)
                 }
             }
         }
@@ -122,6 +104,9 @@ function SearchSite() {
     }
     return (
         <Layout>
+            {callAlert ? (
+                <Alert call={callAlert} setCall={setCallAlert} type={"Green"} />
+            ) : null}
             <div className='bg-white'>
                 <div className='container'>
                     <div className='ruler pt-3'>
@@ -164,7 +149,7 @@ function SearchSite() {
                                                 <div className="product-item-category">
                                                     {i.foodcategory}
                                                 </div>
-                                                <NavLink reloadDocument to={`/DetailMenuPage/${i.foodname}/${i.foodcategory}`} className="product-item-title">{i.foodname}</NavLink>
+                                                <NavLink reloadDocument to={`/DetailMenuPage/${i.foodname}/${i.foodcategory}`} className="product-item-title text-nowrap">{i.foodname}</NavLink>
                                                 <div className="product-item-price">
                                                     {VND.format(i.foodprice)}
                                                 </div>

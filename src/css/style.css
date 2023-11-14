@@ -383,7 +383,59 @@
     display: none;
 }
 
+.sideTick {
+    display: none;
+}
+
+.foodquit {
+    font-size: x-large;
+    height: 24px;
+}
+
 @media (max-width: 991.98px) {
+    .sideTick {
+        display: block;
+        position: fixed;
+        top: 30%;
+        left: 1%;
+        border-radius: 5px;
+        padding: 9px 9px 1px 9px;
+        background-color: rgb(235, 235, 235);
+    }
+
+    .sideTick:hover,
+    .sideTick:active {
+        transition: all 0.2s;
+        background-color: rgb(218, 218, 218);
+    }
+
+    .sideTick .manaZone {
+        font-size: 1.5rem;
+    }
+
+    .sidebarCutton {
+        padding: 1rem;
+        display: block;
+        position: fixed;
+        top: 36%;
+        left: 0;
+        opacity: 0;
+        border-radius: 5px;
+        width: 370px;
+        max-height: 400px;
+        background-color: #fff;
+        box-shadow: 0 8px 20px 0 rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+        animation: detach-appear 0.3s ease forwards;
+        overflow-y: scroll;
+    }
+
+    @keyframes detach-appear {
+        to {
+            left: 1%;
+            opacity: 1;
+        }
+    }
+
     .testimonial-item .Kowkiu {
         font-size: 1.3vw;
     }
@@ -638,13 +690,14 @@
 }
 
 .alertNow {
+    top: 10%;
     padding: 1.2%;
     color: black;
     text-wrap: nowrap;
     gap: 5%;
     display: flex;
     align-items: center;
-    position: absolute;
+    position: fixed;
     background-color: #d6f5d6;
 }
 
@@ -733,7 +786,38 @@
     display: none;
 }
 
+.addIQr {
+    padding: 7px 7px 4px 7px;
+}
+
+.addIQr:hover {
+    border-radius: 50%;
+    transition: all 0.2s;
+    background-color: rgb(238, 238, 238);
+    color: #FEA116;
+}
+
+.typicalR {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
 @media (max-width:575px) {
+    .product-item .product-item-title {
+        font-size: 0.8rem !important;
+    }
+
+    .typicalR {
+        gap: 5px;
+        flex-direction: column;
+    }
+
+    .typicalR button,
+    .typicalR a {
+        width: 100%;
+    }
+
     .testimonial-item .Kowkiu {
         font-size: 3.3vw !important;
     }
@@ -1071,6 +1155,15 @@
 
 .hero-header img {
     animation: imgRotate 50s linear infinite;
+}
+
+.rotateYUI {
+    animation: imgRotate 3s linear infinite;
+}
+
+.rotateYUI i {
+    display: block;
+    height: 16px !important;
 }
 
 @keyframes imgRotate {

@@ -22,6 +22,8 @@ function GetUsingTable() {
     const [openTBname, setopenTBname] = useState(false)
     const [pageCount, setPageCount] = useState(6);
     const [TBnamechange, setTBnamechange] = useState()
+    var detect1 = null
+    var detect2 = null
     const currentPage = useRef();
     const limit = 9
     const cookies = new Cookies()
@@ -399,35 +401,80 @@ function GetUsingTable() {
                         </div>
                     </div>
                 </div>
-                <table className="table table-bordered">
+                <table className="table table-bordered solotable">
                     <thead>
                         <tr>
                             <th>Name</th>
                             <th className="thhuhu">Category</th>
                             <th>Quantity</th>
+                            <th>Status</th>
                             <th>Price</th>
+                            {ModalData.tableitems?.map((z) => {
+                                if (z.status === 1) {
+                                    detect2 = "Yes"
+                                }
+                                return null
+                            })}
+                            {detect2 ? (
+                                <th></th>
+                            ) : null}
                         </tr>
                     </thead>
                     <tbody>
                         {ModalData.tableitems?.map((a) => {
                             total = a.item.foodprice * a.quantity
                             fulltotal += total
+                            var stag = ""
+                            if (a.status === 1) {
+                                stag = "Comfirm pending"
+                            }
+                            else if (a.status === 2) {
+                                stag = "Confirmed"
+                            }
                             return (
                                 <tr key={a.item._id}>
                                     <td>{a.item.foodname}</td>
                                     <td className="thhuhu">{a.item.foodcategory}</td>
                                     <td>{a.quantity}</td>
+                                    <td>{stag}</td>
                                     <td>{VND.format(a.item.foodprice)}</td>
+                                    {a.status === 1 ? (
+                                        <td style={{ width: 5 + "%" }} className="text-center"><button className="btn btn-danger">x</button></td>
+                                    ) : null}
                                 </tr>
                             )
                         })}
                         <tr className="thhuhu">
-                            <th colSpan={3}>Fulltotal</th>
-                            <th>{VND.format(fulltotal)}</th>
+                            <th colSpan={4}>Fulltotal</th>
+                            {ModalData.tableitems?.map((z) => {
+                                if (z.status === 1) {
+                                    detect1 = "Yes"
+                                } else {
+                                    detect1 = "No"
+                                }
+                                return null
+                            })}
+                            {detect1 === "Yes" ? (
+                                <th colSpan={3}>{VND.format(fulltotal)}</th>
+                            ) : detect1 === "No" ? (
+                                <th>{VND.format(fulltotal)}</th>
+                            ) : null}
                         </tr>
                         <tr className="jackass">
-                            <th colSpan={2}>Fulltotal</th>
-                            <th>{VND.format(fulltotal)}</th>
+                            <th colSpan={3}>Fulltotal</th>
+                            {ModalData.tableitems?.map((z) => {
+                                if (z.status === 1) {
+                                    detect1 = "Yes"
+                                } else {
+                                    detect1 = "No"
+                                }
+                                return null
+                            })}
+                            {detect1 === "Yes" ? (
+                                <th colSpan={2}>{VND.format(fulltotal)}</th>
+                            ) : detect1 === "No" ? (
+                                <th>{VND.format(fulltotal)}</th>
+                            ) : null}
                         </tr>
                     </tbody>
                 </table>
@@ -440,14 +487,14 @@ function GetUsingTable() {
                 ) : null}
                 {ModalData.tablestatus !== 1 && ModalData.tableitems?.length > 0 ? (
                     ModalData.customerid ? (
-                        <div className="ladyPurge ohooo">
+                        <div className="ladyPurge ohooo py-3">
                             {Object.values(TableData).map((q) => {
                                 return (
                                     <Fragment key={q}>
                                         {changetable ? (
                                             <button style={{ pointerEvents: "none", opacity: 0.5 }} className="btn btn-success">Checkout</button>
                                         ) : (
-                                            <button onClick={() => checkOut(q._id)} className="btn btn-success">Checkout</button>
+                                            <button onClick={() => checkOut(ModalData.customerid)} className="btn btn-success">Checkout</button>
                                         )}
                                     </Fragment>
                                 )
@@ -457,7 +504,7 @@ function GetUsingTable() {
                             ) : null}
                         </div>
                     ) : (
-                        <div className="ladyPurge ohooo">
+                        <div className="ladyPurge ohooo py-3">
                             {changetable ? (
                                 <button style={{ pointerEvents: "none", opacity: 0.5 }} className="btn btn-success">Checkout</button>
                             ) : (

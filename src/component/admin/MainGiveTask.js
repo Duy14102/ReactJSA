@@ -4,8 +4,7 @@ import Modal from 'react-modal';
 import ReactPaginate from 'react-paginate';
 import Swal from 'sweetalert2';
 
-function MainGiveTask() {
-    const [modalOpenAdmin, setModalOpenAdmin] = useState(false);
+function MainGiveTask({ modalOpenAdmin, setModalOpenAdmin }) {
     const [modalOpenAdmin2, setModalOpenAdmin2] = useState(false);
     const [modalOpenAdmin3, setModalOpenAdmin3] = useState(false);
     const [openGiveTask, setOpenGiveTask] = useState(false)
@@ -83,7 +82,6 @@ function MainGiveTask() {
     }
     return (
         <>
-            <button onClick={() => setModalOpenAdmin(true)} className='text-white'>See all ˃˃</button>
             <Modal
                 isOpen={modalOpenAdmin} onRequestClose={() => setModalOpenAdmin(false)} ariaHideApp={false}
                 style={{

@@ -1,14 +1,17 @@
 import axios from "axios"
-import { Suspense, lazy, useEffect, useState } from "react"
-import Spinner from '../Spinner'
-const Givetask = lazy(() => import("../admin/MainGiveTask"))
-const RevenueDay = lazy(() => import("./RevenueDay"))
-const RevenueMonth = lazy(() => import("./RevenueMonth"))
-const RevenueYear = lazy(() => import("./RevenueYear"))
-const GetContact = lazy(() => import("../admin/GetContact"))
+import { useEffect, useState } from "react"
+import Givetask from "../admin/MainGiveTask"
+import GetContact from "../admin/GetContact"
+import RevenueDay from "../outOfBorder/RevenueDay"
+import RevenueMonth from "../outOfBorder/RevenueMonth"
+import RevenueYear from "../outOfBorder/RevenueYear"
 
 function ManagerDashboard() {
+    const [modalOpenAdmin, setModalOpenAdmin] = useState(false);
     const [CountData, setCountData] = useState()
+    const [load1, setLoad1] = useState(false)
+    const [load2, setLoad2] = useState(false)
+    const [load3, setLoad3] = useState(false)
     useEffect(() => {
         document.getElementById("defaultMe").click();
 
@@ -37,6 +40,15 @@ function ManagerDashboard() {
         }
         document.getElementById(cityName).style.display = "block";
         evt.currentTarget.className += " activeMe";
+        if (document.getElementById("IncomeDay").style.display === "block") {
+            setLoad1(true)
+        }
+        if (document.getElementById("IncomeMonth").style.display === "block") {
+            setLoad2(true)
+        }
+        if (document.getElementById("IncomeYear").style.display === "block") {
+            setLoad3(true)
+        }
     }
     return (
         <>
@@ -50,9 +62,10 @@ function ManagerDashboard() {
                         <hr />
                         <div className='d-flex justify-content-between'>
                             <p className='m-0 text-white'>1% increase</p>
-                            <Suspense fallback={<Spinner />}>
-                                <Givetask />
-                            </Suspense>
+                            <button onClick={() => setModalOpenAdmin(true)} className='text-white'>See all ˃˃</button>
+                            {modalOpenAdmin ? (
+                                <Givetask modalOpenAdmin={modalOpenAdmin} setModalOpenAdmin={setModalOpenAdmin} />
+                            ) : null}
                         </div>
                     </div>
                 </div>
@@ -114,26 +127,24 @@ function ManagerDashboard() {
                         </div>
                     </div>
                     <div id="IncomeDay" className="contentMe">
-                        <Suspense fallback={<Spinner />}>
+                        {load1 ? (
                             <RevenueDay />
-                        </Suspense>
+                        ) : null}
                     </div>
                     <div id="IncomeMonth" className="contentMe">
-                        <Suspense fallback={<Spinner />}>
+                        {load2 ? (
                             <RevenueMonth />
-                        </Suspense>
+                        ) : null}
                     </div>
                     <div id="IncomeYear" className="contentMe">
-                        <Suspense fallback={<Spinner />}>
+                        {load3 ? (
                             <RevenueYear />
-                        </Suspense>
+                        ) : null}
                     </div>
                 </div>
                 <div className="bestie">
                     <h4 className='text-center text-white'>Contact</h4>
-                    <Suspense fallback={<Spinner />}>
-                        <GetContact />
-                    </Suspense>
+                    <GetContact />
                 </div>
             </div>
         </>

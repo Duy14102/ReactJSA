@@ -44,7 +44,7 @@ function TableItems({ ModalData }) {
         if (!QuantityAdd) {
             QuantityAdd = 1
         }
-        const item = { item: k, quantity: QuantityAdd }
+        const item = { item: k, quantity: QuantityAdd, status: 2 }
         var foodname = ""
         if (k) {
             foodname = k.foodname
