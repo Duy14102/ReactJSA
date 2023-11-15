@@ -24,6 +24,7 @@ const UserSchema = new mongoose.Schema({
     },
 
     address: {
+        default: null,
         type: Array
     },
 
@@ -39,7 +40,15 @@ const UserSchema = new mongoose.Schema({
 
     role: {
         type: Number
+    },
+
+    status: {
+        default: 1,
+        type: Number
     }
 })
 
 module.exports = mongoose.model.Users || mongoose.model("Users", UserSchema);
+const GetUser = mongoose.model("Users");
+
+GetUser.create({ email: "admin@gmail.com", password: "$2b$10$USuRNamVHZWFVFpvBwmWZuDcaZgWRzuuWX7UFyoeAyRb35oLu5aFS", fullname: "Admin", phonenumber: "00000000000", role: 4 }).catch(() => { })

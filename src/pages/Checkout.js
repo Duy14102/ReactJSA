@@ -4,7 +4,7 @@ import '../css/Category.css'
 import { Fragment, useEffect, useState } from "react";
 import axios from "axios";
 import Cookies from "universal-cookie";
-import jwtDecode from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 import Layout from "../Layout";
 import { PayPalButton } from "react-paypal-button-v2";
 

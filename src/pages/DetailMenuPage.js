@@ -5,7 +5,7 @@ import axios from 'axios';
 import jQuery from "jquery";
 import "../lib/owlcarousel/assets/owl.carousel.min.css";
 import Swal from 'sweetalert2';
-import jwtDecode from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 import Cookies from "universal-cookie";
 import ReactPaginate from 'react-paginate';
 import Alert from '../component/outOfBorder/Alert';

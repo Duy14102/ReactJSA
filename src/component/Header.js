@@ -4,7 +4,7 @@ import Cookies from "universal-cookie";
 import Modal from 'react-modal'
 import { Fragment, useEffect, useState } from "react";
 import axios from "axios";
-import jwtDecode from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 
 function Header({ type }) {
     const val = JSON.parse(localStorage.getItem('cart'))

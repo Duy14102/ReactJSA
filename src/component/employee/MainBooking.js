@@ -6,7 +6,7 @@ import axios from "axios";
 import ReactPaginate from "react-paginate";
 import $ from 'jquery'
 import Cookies from "universal-cookie";
-import jwtDecode from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 import Swal from "sweetalert2";
 
 function MainBooking() {

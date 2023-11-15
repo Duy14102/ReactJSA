@@ -4,7 +4,7 @@ import ReactPaginate from "react-paginate";
 import Modal from 'react-modal';
 import Swal from "sweetalert2";
 import Cookies from "universal-cookie";
-import jwtDecode from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 import TableItems from "./TableItems";
 import QRcode from 'qrcode.react'
 

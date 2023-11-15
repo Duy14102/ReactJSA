@@ -1,7 +1,7 @@
 import $ from 'jquery';
 import { Fragment, useEffect, useState } from 'react';
 import Cookies from 'universal-cookie';
-import jwtDecode from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import MainBooking from '../../component/employee/MainBooking';

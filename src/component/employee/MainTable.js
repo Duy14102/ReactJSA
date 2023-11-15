@@ -5,7 +5,7 @@ import Modal from 'react-modal';
 import axios from "axios";
 import Swal from "sweetalert2";
 import Cookies from "universal-cookie";
-import jwtDecode from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 
 function MainTable() {
     const cookies = new Cookies()

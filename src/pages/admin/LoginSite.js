@@ -135,14 +135,12 @@ function LoginSite() {
                     }
                 })
             })
-            .catch(() => {
+            .catch((err) => {
                 Swal.fire(
                     'Login Fail!',
-                    '',
+                    `${err.response.data.message}`,
                     'error'
-                ).then(function () {
-                    location.reload();
-                })
+                )
             });
     }
 

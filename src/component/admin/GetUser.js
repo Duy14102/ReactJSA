@@ -2,11 +2,13 @@ import { useEffect, useState, useRef } from "react";
 import Modal from 'react-modal';
 import axios from "axios";
 import ReactPaginate from 'react-paginate';
+import Swal from "sweetalert2";
 
-function GetUser({ type }) {
+function GetUser({ type, status }) {
     const [data, setData] = useState([]);
     const [ModalData, setModalData] = useState([])
     const [modalOpenDetail, setModalOpenDetail] = useState(false);
+    const [modalOpenDetail2, setModalOpenDetail2] = useState(false);
 
     const [pageCount, setPageCount] = useState(6);
     const currentPage = useRef();
@@ -29,6 +31,7 @@ function GetUser({ type }) {
             url: "http://localhost:3000/GetAllUser2",
             params: {
                 type: type,
+                status: status,
                 page: currentPage.current,
                 limit: limit
             }
@@ -40,6 +43,36 @@ function GetUser({ type }) {
             })
             .catch((error) => {
                 console.log(error);
+            });
+    }
+
+    function bannedAc(e) {
+        const configuration = {
+            method: "post",
+            url: "http://localhost:3000/BannedByAdmin",
+            data: {
+                id: ModalData._id,
+                status: e
+            }
+        };
+        axios(configuration)
+            .then(() => {
+                Swal.fire(
+                    'Progress Successfully!',
+                    '',
+                    'success'
+                ).then(function () {
+                    window.location.reload();
+                })
+            })
+            .catch((error) => {
+                Swal.fire(
+                    'Progress Fail!',
+                    '',
+                    'error'
+                ).then(function () {
+                    console.log(error);
+                })
             });
     }
 
@@ -112,7 +145,7 @@ function GetUser({ type }) {
                 <div className='p-3' key={ModalData._id}>
                     <h3 className="text-center">User Detail</h3>
                     <hr />
-                    <form className="login100-form validate-form">
+                    <form className="login100-form validate-form" style={{ pointerEvents: "none" }}>
                         <div className="overHereB">
                             <div className="insideHereB">
                                 <label>Email</label>
@@ -133,10 +166,48 @@ function GetUser({ type }) {
                                 <input className='textDeny' defaultValue={ModalData.phonenumber} type='number' name='updatephone' />
                             </div>
                         </div>
-                        <hr />
                     </form>
+                    <hr />
+                    {ModalData.status === 1 ? (
+                        <button onClick={() => setModalOpenDetail2(true)} className="btn btn-danger">Banned</button>
+                    ) : null}
+                    {ModalData.status === 2 ? (
+                        <button onClick={() => setModalOpenDetail2(true)} className="btn btn-danger">Unbanned</button>
+                    ) : null}
                 </div >
                 <button className='closeModal' onClick={() => setModalOpenDetail(false)}>x</button>
+            </Modal>
+            <Modal isOpen={modalOpenDetail2} onRequestClose={() => setModalOpenDetail2(false)} ariaHideApp={false}
+                style={{
+                    overlay: {
+                        position: 'fixed',
+                        zIndex: 998,
+                        backgroundColor: 'rgb(33 33 33 / 75%)'
+                    },
+                    content: {
+                        top: "50%",
+                        left: "50%",
+                        right: "auto",
+                        bottom: "auto",
+                        marginRight: "-50%",
+                        transform: "translate(-50%, -50%)",
+                        backgroundColor: "white",
+                        width: "20vw",
+                        height: "20vh",
+                        zIndex: 999
+                    },
+                }}>
+                <div className="p-3 text-center">
+                    <h5>Are you sure ?</h5>
+                    <div className="d-flex justify-content-evenly pt-4">
+                        {ModalData.status === 1 ? (
+                            <button onClick={() => bannedAc(2)} className="btn btn-primary">Yes</button>
+                        ) : ModalData.status === 2 ? (
+                            <button onClick={() => bannedAc(1)} className="btn btn-primary">Yes</button>
+                        ) : null}
+                        <button onClick={() => setModalOpenDetail2(false)} className="btn btn-secondary">No</button>
+                    </div>
+                </div>
             </Modal>
         </>
     );

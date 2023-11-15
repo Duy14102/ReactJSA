@@ -121,6 +121,7 @@ function MainUser() {
                 <div style={{ gap: 5 + "%" }} id="myDIV4" className="d-flex align-items-center">
                     <button id="defaultOpen4" className="MBbutton4 active4" onClick={(e) => openCity4(e, 'Userse')}><p >User account</p></button>
                     <button className="MBbutton4" onClick={(e) => openCity4(e, 'Other')}><p>Other account</p></button>
+                    <button className="MBbutton4" onClick={(e) => openCity4(e, 'OtherBlock')}><p>Banned account</p></button>
                 </div>
                 <div className='laughtale'>
                     <button onClick={() => setModalOpenAdmin2(true)} className="btn btn-primary">🔎 Account</button>
@@ -129,13 +130,19 @@ function MainUser() {
             </div>
             <div id="Userse" className="tabcontent4">
                 <div className="pt-4">
-                    <GetUser type={1} />
+                    <GetUser type={1} status={1} />
                 </div>
             </div>
 
             <div id="Other" className="tabcontent4">
                 <div className="pt-4">
                     <GetOtherUser type={2} pipe={3} hype={4} />
+                </div>
+            </div>
+
+            <div id="OtherBlock" className="tabcontent4">
+                <div className="pt-4">
+                    <GetUser type={1} status={2} />
                 </div>
             </div>
             <Modal

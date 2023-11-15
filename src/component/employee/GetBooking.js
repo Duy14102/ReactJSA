@@ -5,7 +5,7 @@ import ReactPaginate from "react-paginate";
 import Modal from 'react-modal';
 import Swal from "sweetalert2";
 import Cookies from "universal-cookie";
-import jwtDecode from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 
 function GetTable() {
     const [booking, setBooking] = useState([])

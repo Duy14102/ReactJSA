@@ -100,17 +100,11 @@ function UserDataPanel({ Data, toke }) {
     var fulltotal = 0
     var statusCheck = ""
     var statusCheck2 = ""
-    var paymentCheck2 = ""
     var kakaCheck = ""
     if (ModalData.paymentmethod?.status === 1) {
         kakaCheck = "( Unpaid )"
     } else if (ModalData.paymentmethod?.status === 2) {
         kakaCheck = "( Paid )"
-    }
-    if (ModalData.paymentmethod?.method === 1) {
-        paymentCheck2 = "ATM"
-    } else if (ModalData.paymentmethod?.method === 2) {
-        paymentCheck2 = "COD"
     }
     if (ModalData.status === 1) {
         statusCheck2 = "Pending"

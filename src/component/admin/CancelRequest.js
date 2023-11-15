@@ -1,5 +1,5 @@
 import axios from "axios";
-import jwtDecode from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 import Modal from 'react-modal';
 import Swal from "sweetalert2";
 import Cookies from "universal-cookie";

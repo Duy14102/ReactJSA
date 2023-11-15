@@ -2,7 +2,7 @@ import $ from 'jquery';
 import { useEffect, useState } from 'react';
 import Cookies from 'universal-cookie';
 import MainUser from '../../component/admin/MainUser';
-import jwtDecode from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import NotFound from '../../component/outOfBorder/NotFound'

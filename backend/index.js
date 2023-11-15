@@ -1,10 +1,7 @@
 // Connect to MongoDB
 const mongoose = require('mongoose');
-mongoose.connect('mongodb://127.0.0.1:27017/MongoReact', {
-    // mongodb+srv://vtca123:vtca123@vtcareact.h9qlu1s.mongodb.net/?retryWrites=true&w=majority    --> Change this with connect string to access MongoDB Atlas
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-},).then(() => console.log('Connected To MongoDB')).catch((err) => { console.error(err); });
+// mongodb+srv://vtca123:vtca123@vtcareact.h9qlu1s.mongodb.net/?retryWrites=true&w=majority    --> Change this with connect string to access MongoDB Atlas
+mongoose.connect('mongodb://127.0.0.1:27017/MongoReact').then(() => console.log('Connected To MongoDB')).catch((err) => { console.error(err); });
 
 // Backed and express
 const express = require('express');
@@ -418,8 +415,12 @@ app.post("/Login", (request, response) => {
                     // check if password matches
                     if (!passwordCheck) {
                         return response.status(400).send({
-                            message: "Passwords does not match",
-                            error,
+                            message: "Passwords does not match"
+                        });
+                    }
+                    if (user.status !== 1) {
+                        return response.status(400).send({
+                            message: "Your account banned"
                         });
                     }
 
@@ -562,9 +563,8 @@ app.get("/GetAllUser", async (req, res) => {
 
 //Get User Data
 app.get("/GetAllUser2", async (req, res) => {
-    const sort = { role: -1 }
     try {
-        const getuser = await getUserD.find({ role: req.query.type }).sort(sort);
+        const getuser = await getUserD.find({ role: req.query.type, status: req.query.status })
         const page = parseInt(req.query.page)
         const limit = parseInt(req.query.limit)
 
@@ -588,6 +588,17 @@ app.get("/GetAllUser2", async (req, res) => {
 
         results.result = getuser.slice(start, end)
         res.send({ results });
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+//Banned account
+app.post("/BannedByAdmin", (req, res) => {
+    try {
+        getUserD.updateOne({ _id: req.body.id }, {
+            status: req.body.status
+        }).then(() => { res.send("succeed") }).catch((err) => { console.log(err); })
     } catch (e) {
         console.log(e);
     }

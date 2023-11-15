@@ -8,7 +8,7 @@ import Swal from "sweetalert2";
 import UserAddressControl from "../../component/admin/UserAddressControl";
 import UserBookingPanel from "../../component/admin/UserBookingPanel";
 import Cookies from "universal-cookie";
-import jwtDecode from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 import Layout from "../../Layout";
 
 function UserPanel() {

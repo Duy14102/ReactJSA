@@ -1,5 +1,5 @@
 import axios from "axios";
-import jwtDecode from "jwt-decode";
+import {jwtDecode} from "jwt-decode";
 import { useEffect, useState, Fragment, useRef } from "react";
 import Modal from 'react-modal';
 import ReactPaginate from "react-paginate";
