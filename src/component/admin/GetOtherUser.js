@@ -107,7 +107,7 @@ function GetOtherUser({ type, pipe, hype }) {
                                 ) : i.role === 3 ? (
                                     <td className="thhuhu">Manager</td>
                                 ) : null}
-                                <td onClick={setModalOpenDetail}><button onClick={() => setModalData(i)} className="btn btn-success">Detail</button></td>
+                                <td><button onClick={() => { setModalData(i); setModalOpenDetail(true) }} className="btn btn-success">Detail</button></td>
                             </tr>
                         </tbody>
                     )

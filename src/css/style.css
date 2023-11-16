@@ -46,6 +46,54 @@
     }
 }
 
+.owl-stage .center .quoteTesti {
+    fill: #fff;
+}
+
+.quoteTesti {
+    font-size: xx-large;
+    fill: #FEA116;
+}
+
+.topButtonSvg {
+    fill: #fff;
+}
+
+.back-to-top .btn:hover .topButtonSvg,
+.back-to-top .btn:focus .topButtonSvg {
+    transition: all 0.2s;
+    fill: #0F172B;
+}
+
+.twit:hover .brandtwit,
+.faceb:hover .brandfaceb,
+.instag:hover .brandinstag {
+    transition: all 0.2s;
+    fill: #FEA116;
+}
+
+.svgSearch {
+    fill: #fff;
+}
+
+.FatherSvgSearch:hover .svgSearch {
+    transition: all 0.4s;
+    fill: #FEA116;
+}
+
+.svgCart1 {
+    fill: #fff;
+}
+
+.fatherSvgCart1 .nav-link:hover .svgCart1 {
+    transition: all 0.4s;
+    fill: #FEA116;
+}
+
+.fatherSvgCart1 .active .svgCart1 {
+    fill: #FEA116 !important;
+}
+
 .buttonAtm {
     padding: 10px;
     box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.1);
@@ -90,10 +138,6 @@
     cursor: pointer;
 }
 
-.greenW {
-    color: #36D744;
-}
-
 .connectNow h4:hover,
 .connectNow h4:active {
     background-color: #d4d6db;
@@ -101,6 +145,15 @@
 
 .fw-semi-bold {
     font-weight: 700 !important;
+}
+
+.btn-show-pass svg {
+    fill: #777;
+}
+
+.btn-show-pass:hover svg {
+    transition: all 0.2s;
+    fill: #4b4b4b;
 }
 
 .searchNaN {
@@ -136,6 +189,14 @@
 .SpecialHeader {
     background-color: #0F172B !important;
     position: relative !important;
+}
+
+.svgSidebar {
+    width: 50px;
+    height: 50px;
+    padding: 10px;
+    opacity: 0.8;
+    fill: #fff;
 }
 
 .cutOut {
@@ -393,6 +454,37 @@
 }
 
 @media (max-width: 991.98px) {
+    .gear {
+        font-size: large !important;
+    }
+
+    .sizeBgHero {
+        height: 200px !important;
+    }
+
+    .sizeCHero {
+        height: 200px !important;
+    }
+
+    .joincoon {
+        align-items: center;
+        flex-direction: column;
+        gap: 30px;
+    }
+
+    .sonOfcoon {
+        width: 100%;
+    }
+
+    .wordTomcat,
+    .wordFT {
+        width: 100% !important;
+    }
+
+    .wordTomcat .junlen {
+        width: 100% !important;
+    }
+
     .sideTick {
         display: block;
         position: fixed;
@@ -735,12 +827,101 @@
     background-size: cover;
 }
 
+.sizeMenu {
+    height: 390px;
+    width: 250px;
+}
+
+.editTableName {
+    padding: 0.3%;
+    border: 1px solid lightgray;
+    background: #fff;
+    border-radius: 4px;
+    width: 49%;
+}
+
+.editTableName2 {
+    padding: 0.3%;
+    border: 1px solid lightgray;
+    background: #fff;
+    border-radius: 4px;
+    width: 100%;
+}
+
+.gear {
+    position: absolute;
+    transition: .3s ease;
+    right: 10px;
+    top: 10px;
+    color: white;
+    background-color: gray;
+    border-radius: 50%;
+    font-size: x-large;
+    opacity: 0;
+    padding: 3px 6px 3px 6px;
+}
+
+.gear svg {
+    fill: #fff;
+}
+
+.gear:hover svg {
+    transition: all 0.2s;
+    opacity: 0.7;
+}
+
+.sizeBgHero {
+    width: 80%;
+    height: 300px;
+}
+
+.sizeCHero {
+    width: 55%;
+    height: 300px;
+}
+
+.titleIMG {
+    padding-top: 8px;
+    margin-bottom: 0px;
+}
+
 .cacoon {
     display: flex;
     align-items: center;
     flex-direction: column;
     box-shadow: 0px 17px 10px -10px rgba(0, 0, 0, 0.4);
     border: 1px solid gray;
+    border-radius: 5px;
+    background-color: #333b42;
+    position: relative;
+}
+
+.cacoon:hover .gear {
+    opacity: 1;
+    transition: all 0.2s;
+}
+
+.slideInLeft p {
+    margin: 0;
+}
+
+.joincoon label {
+    display: flex;
+    justify-content: center;
+}
+
+.wordTomcat {
+    display: flex;
+    gap: 5px;
+    flex-direction: column;
+    width: 350px;
+}
+
+.wordFT {
+    display: flex;
+    gap: 5px;
+    flex-direction: column;
+    width: 300px;
 }
 
 .cacoon:nth-child(1) {
@@ -754,10 +935,9 @@
 }
 
 .joincoon {
-    gap: 15px;
-    width: 50%;
+    justify-content: space-around;
+    width: 100%;
     display: flex;
-    flex-direction: column;
 }
 
 .ImHere4You {
@@ -803,7 +983,16 @@
     justify-content: space-evenly;
 }
 
+.junlen {
+    padding: 7px;
+    height: 150px;
+}
+
 @media (max-width:575px) {
+    .gear {
+        opacity: 1 !important;
+    }
+
     .product-item .product-item-title {
         font-size: 0.8rem !important;
     }

@@ -96,7 +96,7 @@ function Tracking() {
                                                 <td className='thhuhu'>{i.phonenumber}</td>
                                                 <td className='thhuhu'>{datetime}</td>
                                                 <td>{statusCheck}</td>
-                                                <td><button onClick={setModalOpenDetail} className='btn btn-success'>Detail</button></td>
+                                                <td><button onClick={() => setModalOpenDetail(true)} className='btn btn-success'>Detail</button></td>
                                             </tr>
                                             <Modal isOpen={modalOpenDetail} onRequestClose={() => setModalOpenDetail(false)} ariaHideApp={false}
                                                 style={{

@@ -1,9 +1,10 @@
 import { useNavigate } from 'react-router-dom';
-import '../../css/NotFound.css'
+import LayoutManager from '../../pages/admin/LayoutManager';
+
 function NotFound() {
     const navigate = useNavigate();
     return (
-        <>
+        <LayoutManager>
             <section className="page_404">
                 <div className="container-fluid">
                     <div className="onNoff text-center d-flex justify-content-center">
@@ -26,7 +27,7 @@ function NotFound() {
                     </div>
                 </div>
             </section>
-        </>
+        </LayoutManager>
     );
 }
 export default NotFound;

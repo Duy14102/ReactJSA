@@ -84,7 +84,7 @@ function BookingHistory() {
                                 <td className="thhuhu">{i.customer.phonenumber}</td>
                                 <td className="thhuhu">{datetime}</td>
                                 <td>{stau}</td>
-                                <td onClick={setModalOpenDetail}><button onClick={() => setModalData(i)} className='btn btn-success'>Detail</button></td>
+                                <td><button onClick={() => { setModalData(i); setModalOpenDetail(true) }} className='btn btn-success'>Detail</button></td>
                             </tr>
                         </tbody>
                     )

@@ -1,5 +1,5 @@
 import axios from "axios";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import PropTypes from "prop-types";
 import { Fragment, useEffect } from "react";
 import { useState } from "react";
@@ -219,7 +219,7 @@ function OrderAdmin({ Data }) {
                                         <td className="thhuhu">{i.phonenumber}</td>
                                         <td className="thhuhu">{datetime}</td>
                                         <td>{statusCheck}</td>
-                                        <td onClick={setModalOpenDetail2}><button onClick={() => setModalData(i)} className='btn btn-success'>Detail</button></td>
+                                        <td><button onClick={() => { setModalData(i); setModalOpenDetail2(true) }} className='btn btn-success'>Detail</button></td>
                                     </tr>
                                 )
                             }
@@ -235,7 +235,7 @@ function OrderAdmin({ Data }) {
                                 <td className="thhuhu">{i.phonenumber}</td>
                                 <td className="thhuhu">{datetime}</td>
                                 <td>{statusCheck}</td>
-                                <td onClick={setModalOpenDetail2}><button onClick={() => setModalData(i)} className='btn btn-success'>Detail</button></td>
+                                <td><button onClick={() => { setModalData(i); setModalOpenDetail2(true) }} className='btn btn-success'>Detail</button></td>
                             </tr>
                         ) : null}
                         {decode.userRole === 3 ? (
@@ -248,7 +248,7 @@ function OrderAdmin({ Data }) {
                                 <td className="thhuhu">{i.phonenumber}</td>
                                 <td className="thhuhu">{datetime}</td>
                                 <td>{statusCheck}</td>
-                                <td onClick={setModalOpenDetail2}><button onClick={() => setModalData(i)} className='btn btn-success'>Detail</button></td>
+                                <td><button onClick={() => { setModalData(i); setModalOpenDetail2(true) }} className='btn btn-success'>Detail</button></td>
                             </tr>
                         ) : null}
                     </Fragment >

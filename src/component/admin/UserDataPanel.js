@@ -176,7 +176,7 @@ function UserDataPanel({ Data, toke }) {
                                                         <td className='thhuhu'>{i.phonenumber}</td>
                                                         <td className='thhuhu'>{datetime}</td>
                                                         <td>{statusCheck}</td>
-                                                        <td onClick={setModalOpenDetail}><button onClick={() => setModalData(i)} className='btn btn-success'>Detail</button></td>
+                                                        <td><button onClick={() => { setModalData(i); setModalOpenDetail(true) }} className='btn btn-success'>Detail</button></td>
                                                     </>
                                                 </tr>
                                             ) : null
@@ -209,7 +209,7 @@ function UserDataPanel({ Data, toke }) {
                                                         <td className='thhuhu'>{i.phonenumber}</td>
                                                         <td className='thhuhu'>{datetime}</td>
                                                         <td>{statusCheck}</td>
-                                                        <td onClick={setModalOpenDetail}><button onClick={() => setModalData(i)} className='btn btn-success'>Detail</button></td>
+                                                        <td><button onClick={() => { setModalData(i); setModalOpenDetail(true) }} className='btn btn-success'>Detail</button></td>
                                                     </>
                                                 </tr>
                                             ) : null

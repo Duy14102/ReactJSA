@@ -5,7 +5,7 @@ import ReactPaginate from "react-paginate";
 import Modal from 'react-modal';
 import Swal from "sweetalert2";
 import Cookies from "universal-cookie";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 function GetTable() {
     const [booking, setBooking] = useState([])
@@ -176,7 +176,7 @@ function GetTable() {
                                 <td className="thhuhu">{i.customer.phonenumber}</td>
                                 <td className="thhuhu">{datetime}</td>
                                 <td>{stau}</td>
-                                <td onClick={setModalOpenDetail}><button onClick={() => setModalData(i)} className='btn btn-success'>Detail</button></td>
+                                <td><button onClick={() => { setModalData(i); setModalOpenDetail(true) }} className='btn btn-success'>Detail</button></td>
                             </tr>
                         </tbody>
                     )

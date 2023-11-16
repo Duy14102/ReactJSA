@@ -96,7 +96,7 @@ function GetContact() {
                                         <td>{i.name}</td>
                                         <td className="thhuhu">{i.email}</td>
                                         <td>{datetime}</td>
-                                        <td onClick={setModalOpenDetail2}><button onClick={() => setModalData(i)} className='btn btn-success'>Detail</button></td>
+                                        <td><button onClick={() => { setModalData(i); setModalOpenDetail2(true) }} className='btn btn-success'>Detail</button></td>
                                     </tr>
                                 )
                             })}

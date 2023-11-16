@@ -4,7 +4,7 @@ import Cookies from "universal-cookie";
 import Modal from 'react-modal'
 import { Fragment, useEffect, useState } from "react";
 import axios from "axios";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 function Header({ type }) {
     const val = JSON.parse(localStorage.getItem('cart'))
@@ -136,15 +136,15 @@ function Header({ type }) {
         <>
             <nav className="navbar navbar-expand-lg GroundW navbar-dark px-4 px-lg-5 py-3 py-lg-0">
                 <a href="/" className="navbar-brand p-0">
-                    <h1 className="text-primary m-0"><i className="fi fi-ss-utensils me-3"></i>EatCom</h1>
+                    <h1 className="text-primary thisTextH1 m-0"><svg style={{ fill: "#FEA116" }} className="me-3" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><path d="M416 0C400 0 288 32 288 176V288c0 35.3 28.7 64 64 64h32V480c0 17.7 14.3 32 32 32s32-14.3 32-32V352 240 32c0-17.7-14.3-32-32-32zM64 16C64 7.8 57.9 1 49.7 .1S34.2 4.6 32.4 12.5L2.1 148.8C.7 155.1 0 161.5 0 167.9c0 45.9 35.1 83.6 80 87.7V480c0 17.7 14.3 32 32 32s32-14.3 32-32V255.6c44.9-4.1 80-41.8 80-87.7c0-6.4-.7-12.8-2.1-19.1L191.6 12.5c-1.8-8-9.3-13.3-17.4-12.4S160 7.8 160 16V150.2c0 5.4-4.4 9.8-9.8 9.8c-5.1 0-9.3-3.9-9.8-9L127.9 14.6C127.2 6.3 120.3 0 112 0s-15.2 6.3-15.9 14.6L83.7 151c-.5 5.1-4.7 9-9.8 9c-5.4 0-9.8-4.4-9.8-9.8V16zm48.3 152l-.3 0-.3 0 .3-.7 .3 .7z" /></svg>EatCom</h1>
                 </a>
-                <div className="d-flex">
+                <div className="d-flex fatherSvgCart1">
                     <NavLink reloadDocument to="/Cart" className="nav-item nav-link responFormSearch">
-                        <i className="fi fi-ss-shopping-cart"></i>
+                        <svg className="svgCart1" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512"><path d="M0 24C0 10.7 10.7 0 24 0H69.5c22 0 41.5 12.8 50.6 32h411c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3H170.7l5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5H488c13.3 0 24 10.7 24 24s-10.7 24-24 24H199.7c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5H24C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z" /></svg>
                         <span className='badge' id='lblCartCount'> {countVal} </span>
                     </NavLink>
                     <button id="buttonCollapse" className="navbar-toggler" type="button">
-                        <i className="fi fi-br-menu-burger"></i>
+                        <svg style={{ fill: "#777" }} xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z" /></svg>
                     </button>
                 </div>
                 <div className="collapse navbar-collapse" id="navbarCollapse">
@@ -155,10 +155,10 @@ function Header({ type }) {
                                     <input className="inputSearch" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search something..." required />
                                     <input type="submit" style={{ display: "none" }}></input>
                                 </div>
-                                <button className="SearchSubmit" type="submit"><i className="fi fi-br-search"></i></button>
+                                <button className="SearchSubmit" type="submit"><svg style={{ fill: "#fff" }} xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" /></svg></button>
                             </div>
                         </form>
-                        <button onClick={setLogout} className="nav-item nav-link Wrinked nav-link-button responSearch" to="/"><i className="fi fi-br-search"></i></button>
+                        <button onClick={() => setLogout(true)} className="nav-item nav-link Wrinked nav-link-button responSearch FatherSvgSearch" to="/"><svg className="svgSearch" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" /></svg></button>
                         <NavLink reloadDocument to="/" activeclassname="active" className="nav-item nav-link Wrinked">Home</NavLink>
                         <div id="headups1" className="nav-item dropdown responSearch">
                             <a href="# " className="nav-link dropdown-toggle">Menu</a>
@@ -180,10 +180,12 @@ function Header({ type }) {
                         <NavLink reloadDocument to="/TrackOrder" className="nav-item nav-link Wrinked">Track Order</NavLink>
                         <NavLink reloadDocument to="/BookingSite" className="nav-item nav-link Wrinked">Booking</NavLink>
                         <NavLink reloadDocument to="/ContactSite" className="nav-item nav-link Wrinked">Contact</NavLink>
-                        <NavLink reloadDocument to="/Cart" className="nav-item nav-link Wrinked responSearch">
-                            <i className="fi fi-ss-shopping-cart"></i>
-                            <span className='badge' id='lblCartCount'> {countVal} </span>
-                        </NavLink>
+                        <div className="fatherSvgCart1">
+                            <NavLink reloadDocument to="/Cart" className="nav-item nav-link Wrinked responSearch">
+                                <svg className="svgCart1" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512"><path d="M0 24C0 10.7 10.7 0 24 0H69.5c22 0 41.5 12.8 50.6 32h411c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3H170.7l5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5H488c13.3 0 24 10.7 24 24s-10.7 24-24 24H199.7c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5H24C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z" /></svg>
+                                <span className='badge' id='lblCartCount'> {countVal} </span>
+                            </NavLink>
+                        </div>
                     </div>
                     <div id="headups" className="nav-item dropdown mulHead Wrinked responSearch">
                         {token ? (
@@ -203,7 +205,7 @@ function Header({ type }) {
                                                 ) : decode.userRole === 4 ? (
                                                     <NavLink reloadDocument to={"/AdminPanel"} className="dropdown-item">Admin Panel</NavLink>
                                                 ) : null}
-                                                <button onClick={() => logoutThis()} className="dropdown-item"><i className="fi fi-br-sign-out-alt"></i> Logout</button>
+                                                <button onClick={() => logoutThis()} className="dropdown-item"><svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z" /></svg> Logout</button>
                                             </div>
                                         </div>
                                     )
@@ -217,22 +219,22 @@ function Header({ type }) {
                                                 {decode.userRole === 1 ? (
                                                     <>
                                                         <NavLink reloadDocument to={`/UserPanel/${i._id}`} className="dropdown-item">Account</NavLink>
-                                                        <button onClick={() => logoutThis()} className="dropdown-item"><i className="fi fi-br-sign-out-alt"></i> Logout</button>
+                                                        <button onClick={() => logoutThis()} className="dropdown-item"><svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z" /></svg> Logout</button>
                                                     </>
                                                 ) : decode.userRole === 2 ? (
                                                     <>
                                                         <NavLink reloadDocument to={"/EmployeePanel"} className="dropdown-item">Employee Panel</NavLink>
-                                                        <button onClick={() => logoutThat()} className="dropdown-item"><i className="fi fi-br-sign-out-alt"></i> Logout</button>
+                                                        <button onClick={() => logoutThat()} className="dropdown-item"><svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z" /></svg> Logout</button>
                                                     </>
                                                 ) : decode.userRole === 3 ? (
                                                     <>
                                                         <NavLink reloadDocument to={"/ManagerPanel"} className="dropdown-item">Manager Panel</NavLink>
-                                                        <button onClick={() => logoutThat()} className="dropdown-item"><i className="fi fi-br-sign-out-alt"></i> Logout</button>
+                                                        <button onClick={() => logoutThat()} className="dropdown-item"><svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z" /></svg> Logout</button>
                                                     </>
                                                 ) : decode.userRole === 4 ? (
                                                     <>
                                                         <NavLink reloadDocument to={"/AdminPanel"} className="dropdown-item">Admin Panel</NavLink>
-                                                        <button onClick={() => logoutThat()} className="dropdown-item"><i className="fi fi-br-sign-out-alt"></i> Logout</button>
+                                                        <button onClick={() => logoutThat()} className="dropdown-item"><svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z" /></svg> Logout</button>
                                                     </>
                                                 ) : null}
                                             </div>
@@ -256,7 +258,7 @@ function Header({ type }) {
                                     <Fragment key={i._id}>
                                         <div className="navbar-nav ms-auto py-0">
                                             <NavLink reloadDocument to={`/UserPanel/${i._id}`} className="nav-item nav-link Wrinked">Account</NavLink>
-                                            <button onClick={() => logoutThis()} className="nav-item nav-link Wrinked"><i className="fi fi-br-sign-out-alt"></i>Logout</button>
+                                            <button onClick={() => logoutThis()} className="nav-item nav-link Wrinked"><svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z" /></svg>Logout</button>
                                         </div>
                                     </Fragment>
                                 )
@@ -295,7 +297,7 @@ function Header({ type }) {
                         <input className="inputSearch" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search something..." required />
                         <input type="submit" style={{ display: "none" }}></input>
                     </form>
-                    <button className="SearchSubmit" onClick={(e) => SearchType(e)} type="submit"><i className="fi fi-br-search"></i></button>
+                    <button className="SearchSubmit" onClick={(e) => SearchType(e)} type="submit"><svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" /></svg></button>
                 </div>
             </Modal>
         </>
