@@ -93,7 +93,7 @@ function UserPanel() {
                 }, 3000);
             }
         }
-    });
+    }, { passive: true });
 
     function convertToBase64(e) {
         var reader = new FileReader();

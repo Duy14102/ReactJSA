@@ -54,7 +54,7 @@ function HeroBanner() {
                         <NavLink reloadDocument to="/BookingSite" className="btn btn-primary py-sm-3 px-sm-5 me-3 animated slideInLeft">Book A Table</NavLink>
                     </div>
                     <div className="col-lg-6 text-center text-lg-end overflow-hidden">
-                        <img loading="lazy" className="img-fluid" src={styleA} alt="" />
+                        <img className="img-fluid" width="100%" height="100%" src={styleA} alt="" />
                     </div>
                 </div>
             </div>

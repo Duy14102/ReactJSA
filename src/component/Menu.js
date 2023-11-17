@@ -157,7 +157,7 @@ function Menu() {
                                 <div className="front" style={kakadu}>
                                 </div>
                                 <div className="back p-5" style={spacekaka}>
-                                    <h4 className='text-center'>Foreword</h4>
+                                    <h4 className='text-center mt-3'>Foreword</h4>
                                     <div className='text-start'>
                                         {Object.values(menu).map((i) => {
                                             return (
@@ -174,13 +174,13 @@ function Menu() {
 
                             <section className="paged d-none">
                                 <div className="front p-5" style={spacekaka}>
-                                    <h4 className='text-center'>Meat</h4>
+                                    <h4 className='text-center mt-3'>Meat</h4>
                                     {Load1 ? (
                                         <ItemMenuComponent Name='Meat' start={0} end={4} />
                                     ) : null}
                                 </div>
                                 <div className="back p-5" style={spacekaka}>
-                                    <h4 className='text-center'>Meat</h4>
+                                    <h4 className='text-center mt-3'>Meat</h4>
                                     {Load1 ? (
                                         <ItemMenuComponent Name='Meat' start={4} end={8} />
                                     ) : null}
@@ -192,13 +192,13 @@ function Menu() {
 
                             <section className="paged d-none">
                                 <div className="front p-5" style={spacekaka}>
-                                    <h4 className='text-center'>Vegetables</h4>
+                                    <h4 className='text-center mt-3'>Vegetables</h4>
                                     {Load2 ? (
                                         <ItemMenuComponent Name='Vegetables' start={0} end={4} />
                                     ) : null}
                                 </div>
                                 <div className="back p-5" style={spacekaka}>
-                                    <h4 className='text-center'>Vegetables</h4>
+                                    <h4 className='text-center mt-3'>Vegetables</h4>
                                     {Load2 ? (
                                         <ItemMenuComponent Name='Vegetables' start={4} end={8} />
                                     ) : null}
@@ -210,13 +210,13 @@ function Menu() {
 
                             <section className="paged d-none">
                                 <div className="front p-5" style={spacekaka}>
-                                    <h4 className='text-center'>Drink</h4>
+                                    <h4 className='text-center mt-3'>Drink</h4>
                                     {Load3 ? (
                                         <ItemMenuComponent Name='Drink' start={0} end={4} />
                                     ) : null}
                                 </div>
                                 <div className="back p-5" style={spacekaka}>
-                                    <h4 className='text-center'>Drink</h4>
+                                    <h4 className='text-center mt-3'>Drink</h4>
                                     {Load3 ? (
                                         <ItemMenuComponent Name='Drink' start={4} end={8} />
                                     ) : null}

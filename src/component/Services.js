@@ -1,6 +1,6 @@
 function Services() {
     return (
-        <div className="container-fluid bg-white py-5">
+        <div className="bg-white py-5">
             <div className="container">
                 <div className="row g-4">
                     <div className="col-lg-3 col-sm-6 wow fadeInUp" data-wow-delay="0.1s">

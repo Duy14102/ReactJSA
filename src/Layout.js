@@ -20,12 +20,12 @@ function Layout({ children }) {
     window.addEventListener('offline', e => {
         setOnline(false)
         setOffline(true)
-    })
+    }, { passive: true })
 
     window.addEventListener('online', e => {
         setOffline(false)
         setOnline(true)
-    })
+    }, { passive: true })
 
     useEffect(() => {
         if (online) {

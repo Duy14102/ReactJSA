@@ -41,22 +41,22 @@ function About() {
                                     <Fragment key={i.name}>
                                         {i.name === "image1" ? (
                                             <div key={i.name} className="col-6 text-start">
-                                                <img loading="lazy" className="img-fluid rounded w-100 wow zoomIn" data-wow-delay="0.1s" src={i.url} alt="about1" />
+                                                <img className="img-fluid rounded w-100 wow zoomIn" width="100%" height="100%" data-wow-delay="0.1s" src={i.url} alt="about1" />
                                             </div>
                                         ) : null}
                                         {i.name === "image2" ? (
                                             <div key={i.name} className="col-6 text-start" style={{ position: "relative" }}>
-                                                <img loading="lazy" className="img-fluid rounded w-75 wow zoomIn" data-wow-delay="0.3s" src={i.url} alt="about2" style={{ position: "absolute", bottom: 0 }} />
+                                                <img className="img-fluid rounded w-75 wow zoomIn" width="100%" height="100%" data-wow-delay="0.3s" src={i.url} alt="about2" style={{ position: "absolute", bottom: 0 }} />
                                             </div>
                                         ) : null}
                                         {i.name === "image3" ? (
                                             <div key={i.name} className="col-6 text-end">
-                                                <img loading="lazy" className="img-fluid rounded w-75 wow zoomIn" data-wow-delay="0.5s" src={i.url} alt="about3" />
+                                                <img className="img-fluid rounded w-75 wow zoomIn" width="100%" height="100%" data-wow-delay="0.5s" src={i.url} alt="about3" />
                                             </div>
                                         ) : null}
                                         {i.name === "image4" ? (
                                             <div key={i.name} className="col-6 text-end">
-                                                <img loading="lazy" className="img-fluid rounded w-100 wow zoomIn" data-wow-delay="0.7s" src={i.url} alt="about4" />
+                                                <img className="img-fluid rounded w-100 wow zoomIn" width="100%" height="100%" data-wow-delay="0.7s" src={i.url} alt="about4" />
                                             </div>
                                         ) : null}
                                     </Fragment>

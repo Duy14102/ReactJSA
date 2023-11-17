@@ -117,7 +117,7 @@ function AdminPanel() {
                 }, 3000);
             }
         }
-    });
+    }, { passive: true });
 
     const changeImage = (e, id) => {
         e.preventDefault()
