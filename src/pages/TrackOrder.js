@@ -1,7 +1,6 @@
 import { NavLink } from "react-router-dom";
 import Tracking from "../component/Tracking";
 import Layout from "../Layout";
-import "../css/style.css";
 
 function TrackOrder() {
     document.title = "EatCom - Contact";

@@ -4,6 +4,7 @@ import axios from "axios";
 import TransactionUI from "../component/outOfBorder/TransactionUI";
 import { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
+import "../css/Cart.css";
 
 function OrderComplete() {
     const [data, setData] = useState(false)

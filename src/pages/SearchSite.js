@@ -6,6 +6,7 @@ import axios from "axios";
 import ReactPaginate from 'react-paginate';
 import Layout from '../Layout';
 import Alert from "../component/outOfBorder/Alert";
+import "../css/Category.css";
 
 function SearchSite() {
     let appler = useParams()

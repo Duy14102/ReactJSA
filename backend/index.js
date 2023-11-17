@@ -1265,7 +1265,8 @@ app.get("/GetSearch", async (req, res) => {
                 getSearch = await getThisMenu.find({ foodname: regex }).sort(sort5);
                 break;
             default:
-                getSearch = await getThisMenu.find({ foodname: regex }).sort(sort);
+                const sort6 = { _id: -1 }
+                getSearch = await getThisMenu.find({ foodname: regex }).sort(sort6);
                 break;
         }
         const page = parseInt(req.query.page)

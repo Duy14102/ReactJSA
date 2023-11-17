@@ -4,9 +4,10 @@ import '../css/Category.css'
 import { Fragment, useEffect, useState } from "react";
 import axios from "axios";
 import Cookies from "universal-cookie";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import Layout from "../Layout";
 import { PayPalButton } from "react-paypal-button-v2";
+import "../css/Cart.css";
 
 function Checkout() {
     var paymentmethod = 0
@@ -193,7 +194,7 @@ function Checkout() {
 
     const paypalCheckout = (data) => {
         localStorage.setItem("complete", data)
-        if (paypalState) {
+        if (Card && paypalState) {
             window.location.href = `/OrderComplete?status=${paypalState}`;
         }
     }
@@ -241,7 +242,7 @@ function Checkout() {
                 const data = result.data.message
                 window.history.replaceState({}, document.title)
                 localStorage.clear()
-                if (vnpay) {
+                if (Card && vnpay) {
                     VnpayCheckout(data)
                 } else {
                     localStorage.setItem("complete", data)

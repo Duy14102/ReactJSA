@@ -8,7 +8,8 @@ import $ from 'jquery'
 import Swal from "sweetalert2";
 import Layout from "../Layout";
 import Cookies from "universal-cookie";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
+import "../css/Category.css";
 
 function QrCodeTable() {
     let appler = useParams()

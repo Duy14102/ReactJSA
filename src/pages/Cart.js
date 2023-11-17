@@ -1,6 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Layout from "../Layout";
+import "../css/Cart.css";
 
 function Cart() {
     const val = JSON.parse(localStorage.getItem('cart'))
@@ -154,15 +155,15 @@ function Cart() {
                                 <tbody>
                                     <tr>
                                         <td>Total</td>
-                                        <td className="text-right">{VND.format(total2)}</td>
+                                        <td className="text-end">{VND.format(total2)}</td>
                                     </tr>
                                     <tr>
                                         <td>Shipping</td>
-                                        <td className="text-right">{VND.format(shippingFee)}</td>
+                                        <td className="text-end">{VND.format(shippingFee)}</td>
                                     </tr>
                                     <tr>
-                                        <td>Full Total</td>
-                                        <td className="text-right">{VND.format(fulltotal)}</td>
+                                        <td><b>Full Total</b></td>
+                                        <td className="text-end">{VND.format(fulltotal)}</td>
                                     </tr>
                                     <tr>
                                         <td colSpan={2}>

@@ -131,7 +131,13 @@
     flex-wrap: wrap;
 }
 
-.FirstRow .nOthing .active {
+.FirstRow .nOthing a {
+    transition: all 0.2s;
+    color: rgb(81, 81, 81);
+}
+
+.FirstRow .nOthing .active,
+.FirstRow .nOthing a:hover {
     color: #FEA116;
 }
 

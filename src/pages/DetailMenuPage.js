@@ -5,11 +5,12 @@ import axios from 'axios';
 import jQuery from "jquery";
 import "../lib/owlcarousel/assets/owl.carousel.min.css";
 import Swal from 'sweetalert2';
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import Cookies from "universal-cookie";
 import ReactPaginate from 'react-paginate';
 import Alert from '../component/outOfBorder/Alert';
 import Layout from '../Layout';
+import "../css/DetailMenuPage.css";
 window.jQuery = jQuery
 require('owl.carousel')
 
@@ -301,27 +302,29 @@ function DetailMenuPage() {
 
                                             <p>{i.review.length} review from customer</p>
 
-                                            <div className="product-count">
-                                                <label>Quantity</label>
+                                            <div className="product-count gotThisFlex">
+                                                <div>
+                                                    <label>Quantity</label>
+                                                    {i.foodquantity > 0 ? (
+                                                        <div className='d-flex'>
+                                                            <button onClick={() => handleDecrement()} className="btn btn-secondary">-</button>
+                                                            <input type="number" min={1} max={i.foodquantity} value={quantity} className='qty mx-1' readOnly />
+                                                            <button onClick={() => handleIncrement(i.foodquantity)} className="btn btn-secondary">+</button>
+                                                        </div>
+                                                    ) : (
+                                                        <div style={{ pointerEvents: "none", opacity: 0.5 }} className='d-flex'>
+                                                            <button className="btn btn-secondary">-</button>
+                                                            <input type="number" value={0} className='qty mx-1' />
+                                                            <button className="btn btn-secondary">+</button>
+                                                        </div>
+                                                    )}
+                                                </div>
                                                 {i.foodquantity > 0 ? (
-                                                    <div className='d-flex'>
-                                                        <button onClick={() => handleDecrement()} className="btn btn-secondary">-</button>
-                                                        <input type="number" min={1} max={i.foodquantity} value={quantity} className='qty mx-1' readOnly />
-                                                        <button onClick={() => handleIncrement(i.foodquantity)} className="btn btn-secondary">+</button>
-                                                    </div>
+                                                    <button onClick={() => addToCart(i.foodname, quantity)} className="round-black-btn">Add to Cart</button>
                                                 ) : (
-                                                    <div style={{ pointerEvents: "none", opacity: 0.5 }} className='d-flex'>
-                                                        <button className="btn btn-secondary">-</button>
-                                                        <input type="number" value={0} className='qty mx-1' />
-                                                        <button className="btn btn-secondary">+</button>
-                                                    </div>
+                                                    <button style={{ pointerEvents: "none", opacity: 0.5 }} className="round-black-btn">Out of stock</button>
                                                 )}
                                             </div>
-                                            {i.foodquantity > 0 ? (
-                                                <button onClick={() => addToCart(i.foodname, quantity)} className="round-black-btn">Add to Cart</button>
-                                            ) : (
-                                                <button style={{ pointerEvents: "none", opacity: 0.5 }} className="round-black-btn">Out of stock</button>
-                                            )}
                                         </div>
                                     </div>
                                 </div>
