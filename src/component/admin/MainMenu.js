@@ -11,6 +11,7 @@ function MainMenu() {
     const [modalOpen2, setModalOpen2] = useState(false);
     const [modalOpen3, setModalOpen3] = useState(false);
     const [openTable, setOpenTable] = useState(false)
+    const [spinner, setSpinner] = useState(false)
     const [dataafter, setDataAfter] = useState([])
     const [ModalData, setModalData] = useState([])
     const [nameInput, setNameInput] = useState("")
@@ -59,8 +60,10 @@ function MainMenu() {
                 base64: foodimage,
             },
         };
+        setSpinner(true)
         axios(configuration)
             .then(() => {
+                setSpinner(false)
                 Swal.fire(
                     'Added Successfully!',
                     '',
@@ -276,6 +279,13 @@ function MainMenu() {
                     },
                 }}>
                 <div className='juh'>
+                    {spinner ? (
+                        <div style={{ background: "rgba(255, 255, 255, 0.6)" }} id="spinner" className="show position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+                            <div className="spinner-border text-primary" style={{ width: 3 + "rem", height: 3 + "rem" }} role="status">
+                                <span className="sr-only"></span>
+                            </div>
+                        </div>
+                    ) : null}
                     <h3 className="text-center">Add Menu</h3>
                     <hr />
                     <form onSubmit={(e) => handleSubmit(e)} className="login100-form validate-form">

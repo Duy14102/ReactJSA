@@ -149,7 +149,7 @@ function MenuChange({ data }) {
                             <div className="Brivo">
                                 {i.image?.map((a) => {
                                     return (
-                                        a.name === "menucover" ? (
+                                        a.name === "lsneuszzbne2v2iyecaj" ? (
                                             <div key={a.name} className="cacoon">
                                                 <img className="sizeMenu" alt="" src={a.url} />
                                                 <h5 className="text-white titleIMG">Menu Cover</h5>
@@ -160,7 +160,7 @@ function MenuChange({ data }) {
                                 })}
                                 {i.image?.map((a) => {
                                     return (
-                                        a.name === "menupage" ? (
+                                        a.name === "lwur9bwvniiygtyu6daf" ? (
                                             <div key={a.name} className="cacoon">
                                                 <img className="sizeMenu" alt="" src={a.url} />
                                                 <h5 className="text-white titleIMG">Menu Page</h5>

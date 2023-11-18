@@ -1324,6 +1324,14 @@ iframe {
     width: 49%;
 }
 
+.editTableName4 {
+    padding: 0.3%;
+    border: 1px solid lightgray;
+    background: #fff;
+    border-radius: 4px;
+    width: 28px;
+}
+
 .editTableName2 {
     padding: 0.3%;
     border: 1px solid lightgray;

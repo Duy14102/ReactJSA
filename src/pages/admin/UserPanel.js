@@ -25,6 +25,7 @@ function UserPanel() {
     const [Edit, setEdit] = useState(false)
     const [GetUser, setGetUser] = useState([])
     const [GetOrder, setGetOrder] = useState([])
+    const [spinner, setSpinner] = useState(false)
 
     useEffect(() => {
         fetch(`http://localhost:3000/GetDetailUser?userid=${appler.id}`, {
@@ -120,8 +121,10 @@ function UserPanel() {
                 base64: updateimage
             },
         };
+        setSpinner(true)
         axios(configuration)
             .then(() => {
+                setSpinner(false)
                 Swal.fire(
                     'Update Successfully!',
                     '',
@@ -171,6 +174,13 @@ function UserPanel() {
                                 )}
                             </div>
                             <div className="BossLvMax pt-3">
+                                {spinner ? (
+                                    <div style={{ background: "rgba(255, 255, 255, 0.6)" }} id="spinner" className="show position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+                                        <div className="spinner-border text-primary" style={{ width: 3 + "rem", height: 3 + "rem" }} role="status">
+                                            <span className="sr-only"></span>
+                                        </div>
+                                    </div>
+                                ) : null}
                                 {Object.values(GetUser).map((i) => {
                                     return (
                                         <Fragment key={i._id}>
@@ -272,7 +282,7 @@ function UserPanel() {
                                                 )}
                                                 <div className="emailInsideSecond py-3">
                                                     <label htmlFor="address">Address</label>
-                                                    <UserAddressControl address={i.address} edit={Edit} userid={appler.id} />
+                                                    <UserAddressControl address={i.address} edit={Edit} userid={appler.id} user={GetUser} />
                                                 </div>
                                             </div>
                                         </Fragment>

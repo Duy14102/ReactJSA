@@ -6,6 +6,12 @@ mongoose.connect('mongodb://127.0.0.1:27017/MongoReact').then(() => console.log(
 // Backed and express
 const express = require('express');
 const app = express();
+const cloudinary = require('cloudinary').v2
+cloudinary.config({
+    cloud_name: 'dlev2viy9',
+    api_key: '882342624247245',
+    api_secret: 'zUFGtditaUGqmhgK-YfSCNjI86I'
+});
 const cors = require('cors');
 const bodyParser = require('body-parser');
 console.log("App listen at port 3000");
@@ -45,11 +51,15 @@ const UI = require("./model/UI");
 const GetUI = mongoose.model("UI");
 
 //Change Hero Image
-app.post("/ChangeHeroImage", (req, res) => {
+app.post("/ChangeHeroImage", async (req, res) => {
     try {
-        GetUI.updateOne({ title: req.body.title, "image.name": req.body.name }, {
-            "image.$.url": req.body.image
-        }).then(() => { res.send({ data: "succeed" }) }).catch((err) => { console.log(err); })
+        await cloudinary.uploader.destroy(`UI/${req.body.name}`).then(() => {
+            cloudinary.uploader.upload(req.body.image, {
+                public_id: req.body.name, folder: "UI"
+            }).then((result) => {
+                GetUI.updateOne({ title: req.body.title, "image.name": req.body.name }, { "image.$.url": result.url }).then(() => { res.send({ data: "succeed" }) }).catch((eei) => { res.status(500).send(eei) })
+            }).catch((er) => { res.status(500).send(er) })
+        }).catch((err) => { res.status(500).send(err) })
     } catch (e) {
         console.log(e);
     }
@@ -698,23 +708,29 @@ app.get("/GetDetailUser", async (req, res) => {
 })
 
 //Change image admin
-app.post("/ChangeImageAdmin", (req, res) => {
+app.post("/ChangeImageAdmin", async (req, res) => {
     const { base64 } = req.body
     try {
-        getUserD.updateOne({ _id: req.body.id }, {
-            userimage: base64
-        }).then(() => {
-            getThisMenu.updateOne({ "review.id": req.body.id }, {
-                $set: {
-                    "review.$.image": base64
-                }
-            }).then(() => {
-                res.send({ data: "succeed" })
-            }).catch((er) => {
-                console.log(er);
-            })
-        }).catch((err) => {
-            console.log(err);
+        await cloudinary.uploader.destroy(`Avatar/${req.body.id}`).then(() => {
+            cloudinary.uploader.upload(base64, {
+                public_id: req.body.id, folder: "Avatar"
+            }).then((result) => {
+                getUserD.updateOne({ _id: req.body.id }, {
+                    userimage: result.url
+                }).then(() => {
+                    getThisMenu.updateOne({ "review.id": req.body.id }, {
+                        $set: {
+                            "review.$.image": result.url
+                        }
+                    }).then(() => {
+                        res.send({ data: "succeed" })
+                    }).catch((er) => {
+                        res.status(500).send(er)
+                    })
+                }).catch((err) => {
+                    res.status(500).send(err)
+                })
+            }).catch((erry) => { res.status(500).send(erry) })
         })
     } catch (e) {
         console.log(e);
@@ -722,34 +738,23 @@ app.post("/ChangeImageAdmin", (req, res) => {
 })
 
 // Add Menu
-app.post("/UploadMenu", (request, response) => {
+app.post("/UploadMenu", async (request, response) => {
     const { base64 } = request.body;
-    // create a new user instance and collect the data
-    const menu = new Menu({
-        foodname: request.body.foodname,
-        foodprice: request.body.foodprice,
-        foodquantity: request.body.foodquantity,
-        foodcategory: request.body.foodcategory,
-        fooddescription: request.body.fooddescription,
-        foodimage: base64
-    });
-
-    // save the new user
-    menu
-        .save()
-        // return success if the new user is added to the database successfully
-        .then((result) => {
-            response.status(201).send({
-                message: "User Created Successfully",
-            });
-        })
-        // catch error if the new user wasn't added successfully to the database
-        .catch((error) => {
-            response.status(500).send({
-                message: "Error creating user",
-                error,
-            });
+    const objectid = new mongoose.mongo.ObjectId()
+    cloudinary.uploader.upload(base64, {
+        public_id: objectid, folder: "Menu"
+    }).then((result) => {
+        const menu = new Menu({
+            _id: objectid,
+            foodname: request.body.foodname,
+            foodprice: request.body.foodprice,
+            foodquantity: request.body.foodquantity,
+            foodcategory: request.body.foodcategory,
+            fooddescription: request.body.fooddescription,
+            foodimage: result.url
         });
+        menu.save().then((result) => { response.status(201).send({ message: "Menu Created Successfully", }); }).catch(() => { response.status(500).send({ message: "Error creating menu", }); });
+    })
 });
 
 // Add Order
@@ -1101,27 +1106,47 @@ app.post("/UpdateUser", async (req, res) => {
             } else {
                 hashed = user.password
             }
-            getUserD.updateOne({ _id: req.body.updateid },
-                {
-                    email: req.body.updateemail,
-                    password: hashed,
-                    fullname: req.body.updatefullname,
-                    phonenumber: req.body.updatephone,
-                    userimage: base64
-                }
-            ).then(() => {
-                getThisMenu.updateOne({ "review.id": req.body.updateid }, {
-                    $set: {
-                        "review.$.image": base64
+            if (base64) {
+                await cloudinary.uploader.destroy(`Avatar/${req.body.updateid}`).then(() => {
+                    cloudinary.uploader.upload(base64,
+                        { public_id: req.body.updateid, folder: "Avatar" }).then((result) => {
+                            getUserD.updateOne({ _id: req.body.updateid },
+                                {
+                                    email: req.body.updateemail,
+                                    password: hashed,
+                                    fullname: req.body.updatefullname,
+                                    phonenumber: req.body.updatephone,
+                                    userimage: result.url
+                                }
+                            ).then(() => {
+                                getThisMenu.updateOne({ "review.id": req.body.updateid }, {
+                                    $set: {
+                                        "review.$.image": result.url
+                                    }
+                                }).then(() => {
+                                    res.send({ data: "succeed" })
+                                }).catch((er) => {
+                                    res.status(500).send(er)
+                                })
+                            }).catch((err) => {
+                                res.status(500).send(err)
+                            })
+                        }).catch((erro) => { res.status(500).send(erro) });
+                }).catch((erri) => { res.status(500).send(erri) })
+            } else {
+                getUserD.updateOne({ _id: req.body.updateid },
+                    {
+                        email: req.body.updateemail,
+                        password: hashed,
+                        fullname: req.body.updatefullname,
+                        phonenumber: req.body.updatephone,
                     }
-                }).then(() => {
+                ).then(() => {
                     res.send({ data: "succeed" })
-                }).catch((er) => {
-                    console.log(er);
+                }).catch((err) => {
+                    res.status(500).send(err)
                 })
-            }).catch((err) => {
-                res.send({ data: err })
-            })
+            }
         })
     } catch (e) {
         console.log(e);
@@ -1422,10 +1447,12 @@ app.get("/GetAllReviewPagination", async (req, res) => {
 //Delete Menu
 app.post("/DeleteMenu", async (req, res) => {
     try {
-        getThisMenu.deleteOne({ _id: req.query.deleteid }).then(() => {
-            res.send({ data: "Deleted" })
-        }).catch((err) => {
-            res.send({ data: err })
+        await cloudinary.uploader.destroy(`Menu/${req.query.deleteid}`).then(() => {
+            getThisMenu.deleteOne({ _id: req.query.deleteid }).then(() => {
+                res.send({ data: "Deleted" })
+            }).catch((err) => {
+                res.send({ data: err })
+            })
         })
     } catch (e) {
         console.log(e);
@@ -1436,20 +1463,38 @@ app.post("/DeleteMenu", async (req, res) => {
 app.post("/UpdateMenu", async (req, res) => {
     const { base64 } = req.body;
     try {
-        getThisMenu.updateOne({ _id: req.body.updateid },
-            {
-                foodname: req.body.updatename,
-                foodprice: req.body.updateprice,
-                foodquantity: req.body.updatequantity,
-                foodcategory: req.body.updatecategory,
-                fooddescription: req.body.updatedescription,
-                foodimage: base64
-            }
-        ).then(() => {
-            res.send({ data: "Updated" })
-        }).catch((err) => {
-            res.send({ data: err })
-        })
+        if (base64) {
+            await cloudinary.uploader.destroy(`Menu/${req.body.updateid}`).then(() => {
+                cloudinary.uploader.upload(base64, {
+                    public_id: req.body.updateid, folder: "Menu"
+                }).then((result) => {
+                    getThisMenu.updateOne({ _id: req.body.updateid },
+                        {
+                            foodname: req.body.updatename,
+                            foodprice: req.body.updateprice,
+                            foodquantity: req.body.updatequantity,
+                            foodcategory: req.body.updatecategory,
+                            fooddescription: req.body.updatedescription,
+                            foodimage: result.url
+                        }
+                    ).then(() => {
+                        res.send({ data: "Updated" })
+                    }).catch((err) => { res.status(500).send(err) })
+                }).catch((erri) => { res.status(500).send(erri) })
+            }).catch((er) => { res.status(500).send(er) })
+        } else {
+            getThisMenu.updateOne({ _id: req.body.updateid },
+                {
+                    foodname: req.body.updatename,
+                    foodprice: req.body.updateprice,
+                    foodquantity: req.body.updatequantity,
+                    foodcategory: req.body.updatecategory,
+                    fooddescription: req.body.updatedescription,
+                }
+            ).then(() => {
+                res.send({ data: "Updated" })
+            }).catch((err) => { res.status(500).send(err) })
+        }
     } catch (e) {
         console.log(e);
     }

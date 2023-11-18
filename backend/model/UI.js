@@ -38,14 +38,14 @@ const GetUI = mongoose.model("UI");
 const array = []
 const array2 = []
 const array3 = []
-const arrayimage = { name: "bghero", url: base64BgHero }
-const arrayimage2 = { name: "herocircle", url: base64HeroCircle }
-const aboutImage1 = { name: "image1", url: base64Image1 }
-const aboutImage2 = { name: "image2", url: base64Image2 }
-const aboutImage3 = { name: "image3", url: base64Image3 }
-const aboutImage4 = { name: "image4", url: base64Image4 }
-const MenuImage = { name: "menucover", url: base64MenuCover }
-const MenuImage2 = { name: "menupage", url: base64MenuPage }
+const arrayimage = { name: "e4onxrx7hmgzmrbel9jk", url: "https://res.cloudinary.com/dlev2viy9/image/upload/v1700307517/UI/e4onxrx7hmgzmrbel9jk.webp" }
+const arrayimage2 = { name: "oh2rwdomomeno4sgguhf", url: "https://res.cloudinary.com/dlev2viy9/image/upload/v1700307518/UI/oh2rwdomomeno4sgguhf.png" }
+const aboutImage1 = { name: "k9axej6qza2mzsp8lwvj", url: "https://res.cloudinary.com/dlev2viy9/image/upload/v1700307518/UI/k9axej6qza2mzsp8lwvj.webp" }
+const aboutImage2 = { name: "ixdn78iskyewdqszx4rf", url: "https://res.cloudinary.com/dlev2viy9/image/upload/v1700307518/UI/ixdn78iskyewdqszx4rf.webp" }
+const aboutImage3 = { name: "ucvurntwkq3pgbvq8scl", url: "https://res.cloudinary.com/dlev2viy9/image/upload/v1700307517/UI/ucvurntwkq3pgbvq8scl.webp" }
+const aboutImage4 = { name: "irnkhvizbt88rhedgys2", url: "https://res.cloudinary.com/dlev2viy9/image/upload/v1700307517/UI/irnkhvizbt88rhedgys2.webp" }
+const MenuImage = { name: "lsneuszzbne2v2iyecaj", url: "https://res.cloudinary.com/dlev2viy9/image/upload/v1700307517/UI/lsneuszzbne2v2iyecaj.webp" }
+const MenuImage2 = { name: "lwur9bwvniiygtyu6daf", url: "https://res.cloudinary.com/dlev2viy9/image/upload/v1700307517/UI/lwur9bwvniiygtyu6daf.webp" }
 array.push(arrayimage, arrayimage2)
 array2.push(aboutImage1, aboutImage2, aboutImage3, aboutImage4)
 array3.push(MenuImage, MenuImage2)

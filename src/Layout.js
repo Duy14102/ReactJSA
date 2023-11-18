@@ -46,7 +46,7 @@ function Layout({ children }) {
             method: "get",
             url: "http://localhost:3000/GetHeroUI",
             params: {
-                name: "bghero"
+                name: "e4onxrx7hmgzmrbel9jk"
             }
         }
         axios(configuration)

@@ -28,7 +28,7 @@ function Menu() {
     useEffect(() => {
         Object.values(menu).map((i) => {
             i.image?.map((a) => {
-                if (a.name === "menucover") {
+                if (a.name === "lsneuszzbne2v2iyecaj") {
                     setKakadu({
                         "background": `url(${a.url})`,
                         "backgroundSize": "100% 100%",
@@ -36,7 +36,7 @@ function Menu() {
                         "backgroundPosition": "center center"
                     })
                 }
-                if (a.name === "menupage") {
+                if (a.name === "lwur9bwvniiygtyu6daf") {
                     setSpacekaka({
                         "background": `url(${a.url})`,
                         "backgroundSize": "100% 100%",

@@ -150,7 +150,7 @@ function HeroChange({ data }) {
                             <div className="Brivo">
                                 {i.image?.map((a) => {
                                     return (
-                                        a.name === "bghero" ? (
+                                        a.name === "e4onxrx7hmgzmrbel9jk" ? (
                                             <div key={a.name} className="cacoon">
                                                 <img className="sizeBgHero" alt="" src={a.url} />
                                                 <h5 className="text-white titleIMG">Background Hero</h5>
@@ -161,7 +161,7 @@ function HeroChange({ data }) {
                                 })}
                                 {i.image?.map((a) => {
                                     return (
-                                        a.name === "herocircle" ? (
+                                        a.name === "oh2rwdomomeno4sgguhf" ? (
                                             <div key={a.name} className="cacoon">
                                                 <img className="sizeCHero" alt="" src={a.url} />
                                                 <h5 className="text-white titleIMG">Hero Circle</h5>

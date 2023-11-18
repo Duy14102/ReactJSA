@@ -14,7 +14,7 @@ function HeroBanner() {
             method: "get",
             url: "http://localhost:3000/GetHeroUI",
             params: {
-                name: "herocircle"
+                name: "oh2rwdomomeno4sgguhf"
             }
         }
         axios(configuration)

@@ -150,7 +150,7 @@ function AboutChange({ data }) {
                             <div className="AnotherBrivo">
                                 {i.image?.map((a) => {
                                     return (
-                                        a.name === "image1" ? (
+                                        a.name === "k9axej6qza2mzsp8lwvj" ? (
                                             <div key={a.name} className="cacoon">
 
                                                 <img height={250} width={250} alt="" src={a.url} />
@@ -162,7 +162,7 @@ function AboutChange({ data }) {
                                 })}
                                 {i.image?.map((a) => {
                                     return (
-                                        a.name === "image2" ? (
+                                        a.name === "ixdn78iskyewdqszx4rf" ? (
                                             <div key={a.name} className="cacoon">
                                                 <img height={250} width={250} alt="" src={a.url} />
                                                 <h5 className="text-white titleIMG">Image 2</h5>
@@ -175,7 +175,7 @@ function AboutChange({ data }) {
                             <div className="AnotherBrivo" style={{ paddingTop: 5 + "%" }}>
                                 {i.image?.map((a) => {
                                     return (
-                                        a.name === "image3" ? (
+                                        a.name === "ucvurntwkq3pgbvq8scl" ? (
                                             <div key={a.name} className="cacoon">
                                                 <img height={250} width={250} alt="" src={a.url} />
                                                 <h5 className="text-white titleIMG">Image 3</h5>
@@ -186,7 +186,7 @@ function AboutChange({ data }) {
                                 })}
                                 {i.image?.map((a) => {
                                     return (
-                                        a.name === "image4" ? (
+                                        a.name === "irnkhvizbt88rhedgys2" ? (
                                             <div key={a.name} className="cacoon">
                                                 <img height={250} width={250} alt="" src={a.url} />
                                                 <h5 className="text-white titleIMG">Image 4</h5>

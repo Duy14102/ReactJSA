@@ -15,6 +15,7 @@ function GetMenu({ cate }) {
     const [updatecategory, setFoodcategory] = useState();
     const [updatedescription, setFooddescription] = useState();
     const [updateimage, setFoodimage] = useState();
+    const [spinner, setSpinner] = useState(false)
 
     const [pageCount, setPageCount] = useState(6);
     const currentPage = useRef();
@@ -61,8 +62,10 @@ function GetMenu({ cate }) {
                 deleteid: id
             }
         };
+        setSpinner(true)
         axios(configuration)
             .then(() => {
+                setSpinner(false)
                 Swal.fire(
                     'Delete Successfully!',
                     '',
@@ -110,8 +113,10 @@ function GetMenu({ cate }) {
                 base64: updateimage
             },
         };
+        setSpinner(true)
         axios(configuration)
-            .then((res) => {
+            .then(() => {
+                setSpinner(false)
                 Swal.fire(
                     'Update Successfully!',
                     '',
@@ -201,6 +206,13 @@ function GetMenu({ cate }) {
                     },
                 }}>
                 <div className='juh' key={ModalData._id}>
+                    {spinner ? (
+                        <div style={{ background: "rgba(255, 255, 255, 0.6)" }} id="spinner" className="show position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+                            <div className="spinner-border text-primary" style={{ width: 3 + "rem", height: 3 + "rem" }} role="status">
+                                <span className="sr-only"></span>
+                            </div>
+                        </div>
+                    ) : null}
                     <h3 className="text-center">Menu Detail</h3>
                     <hr />
                     <form onSubmit={(e) => handleSubmit(e, ModalData._id)} className="login100-form validate-form">

@@ -14,6 +14,7 @@ function AdminPanel() {
     const name = jwtDecode(token)
     const [GetUser, setGetUser] = useState([])
     const [UserImage, setImage] = useState()
+    const [spinner, setSpinner] = useState(false)
 
     useEffect(() => {
         fetch(`http://localhost:3000/GetDetailUser?userid=${name.userId}`, {
@@ -129,8 +130,10 @@ function AdminPanel() {
                 base64: UserImage
             }
         }
+        setSpinner(true)
         axios(configuration)
             .then(() => {
+                setSpinner(false)
                 Swal.fire(
                     'Upload image success!',
                     '',
@@ -161,6 +164,13 @@ function AdminPanel() {
     return (
         <LayoutManager>
             <div className="subOver">
+                {spinner ? (
+                    <div style={{ background: "rgba(255, 255, 255, 0.6)" }} id="spinner" className="show position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+                        <div className="spinner-border text-primary" style={{ width: 3 + "rem", height: 3 + "rem" }} role="status">
+                            <span className="sr-only"></span>
+                        </div>
+                    </div>
+                ) : null}
                 <div className="drawer pt-4">
                     {Object.values(GetUser).map((a) => {
                         return (

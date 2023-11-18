@@ -3,7 +3,7 @@ import { useState, useEffect, Fragment } from 'react';
 import Modal from 'react-modal';
 import Swal from 'sweetalert2';
 
-function UserAddressControl({ address, edit, userid }) {
+function UserAddressControl({ address, edit, userid, user }) {
     const [modalOpenDetail, setModalOpenDetail] = useState(false);
     const [Identity, setIdentity] = useState(false)
     const [CheckNull, setCheckNull] = useState(false)
@@ -28,12 +28,8 @@ function UserAddressControl({ address, edit, userid }) {
     }
 
     useEffect(() => {
-        fetch(`http://localhost:3000/GetDetailUser?userid=${userid}`, {
-            method: "get",
-        }).then((res) => res.json()).then((data) => {
-            setGetAddress(data);
-        })
-    }, [userid])
+        setGetAddress(user)
+    }, [user])
 
     const deleteAddress = (e) => {
         const configuration = {

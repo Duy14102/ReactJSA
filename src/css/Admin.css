@@ -211,7 +211,11 @@
 }
 
 .editTableName:hover,
-.editTableName:active {
+.editTableName:active,
+.editTableNam2:hover,
+.editTableName2:active,
+.editTableName4:hover,
+.editTableName4:active {
     transition: all 0.2s;
     background-color: lightgray;
 }
