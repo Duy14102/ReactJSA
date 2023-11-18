@@ -1,6 +1,6 @@
 // Backed and express
 const express = require('express');
-const env = require('dotenv').config()
+const env = require('dotenv').config({path:"../.env"})
 // Connect to MongoDB
 const mongoose = require('mongoose');
 // mongodb+srv://vtca123:vtca123@vtcareact.h9qlu1s.mongodb.net/?retryWrites=true&w=majority    --> Change this with connect string to access MongoDB Atlas

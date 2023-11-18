@@ -1,12 +1,4 @@
 const mongoose = require("mongoose");
-const base64BgHero = require('../assets/base64BgHero')
-const base64HeroCircle = require('../assets/base64HeroCircle')
-const base64Image1 = require('../assets/base64Image1')
-const base64Image2 = require('../assets/base64Image2')
-const base64Image3 = require('../assets/base64Image3')
-const base64Image4 = require('../assets/base64Image4')
-const base64MenuCover = require('../assets/base64MenuCover')
-const base64MenuPage = require('../assets/base64MenuPage')
 
 const UISchema = new mongoose.Schema({
     title: {
