@@ -1,16 +1,16 @@
+// Backed and express
+const express = require('express');
+const env = require('dotenv').config()
 // Connect to MongoDB
 const mongoose = require('mongoose');
 // mongodb+srv://vtca123:vtca123@vtcareact.h9qlu1s.mongodb.net/?retryWrites=true&w=majority    --> Change this with connect string to access MongoDB Atlas
-mongoose.connect('mongodb://127.0.0.1:27017/MongoReact').then(() => console.log('Connected To MongoDB')).catch((err) => { console.error(err); });
-
-// Backed and express
-const express = require('express');
+mongoose.connect(env.parsed.mongostring).then(() => console.log('Connected To MongoDB')).catch((err) => { console.error(err); });
 const app = express();
 const cloudinary = require('cloudinary').v2
 cloudinary.config({
-    cloud_name: 'dlev2viy9',
-    api_key: '882342624247245',
-    api_secret: 'zUFGtditaUGqmhgK-YfSCNjI86I'
+    cloud_name: env.parsed.cloud_name,
+    api_key: env.parsed.api_key,
+    api_secret: env.parsed.api_secret
 });
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -2839,8 +2839,8 @@ app.post('/VnpayCheckout', function (req, res, next) {
         req.socket.remoteAddress ||
         req.connection.socket.remoteAddress;
 
-    let tmnCode = 'RRRERL87';
-    let secretKey = 'MCBPYCKVGLDVYBBLNKLNFAHKGGHVGIOR';
+    let tmnCode = env.parsed.vnpaytmnCode;
+    let secretKey = env.parsed.vnpaysecretKey;
     let vnpUrl = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html';
     let returnUrl = 'http://localhost:3001/OrderComplete';
     let orderId = req.body.orderId;
@@ -2885,8 +2885,8 @@ app.post('/VnpayRefund', function (req, res, next) {
 
     let crypto = require("crypto");
 
-    let vnp_TmnCode = 'RRRERL87';
-    let secretKey = 'MCBPYCKVGLDVYBBLNKLNFAHKGGHVGIOR';
+    let vnp_TmnCode = env.parsed.vnpaytmnCode;
+    let secretKey = env.parsed.vnpaysecretKey;
     let vnp_Api = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
 
     let vnp_TxnRef = req.body.orderId;
