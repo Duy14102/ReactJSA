@@ -7,6 +7,8 @@ Installation:
 
 * npm i in vtca-app
 
+For dotenv file, please contact me
+
 If warning onSetupMiddleware :
 * Go to vtca-app/node_modules/react-scripts/config/webpackDevServer.config.js
 
