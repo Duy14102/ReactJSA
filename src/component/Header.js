@@ -5,10 +5,12 @@ import Modal from 'react-modal'
 import { Fragment, useEffect, useState } from "react";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import { googleLogout } from '@react-oauth/google';
 
 function Header({ type }) {
     const val = JSON.parse(localStorage.getItem('cart'))
     const [GetUser, setGetUser] = useState([])
+    var candecode = null
     var countVal = 0
     if (val) {
         countVal = val.length
@@ -17,13 +19,16 @@ function Header({ type }) {
     }
     const cookies = new Cookies();
     const token = cookies.get("TOKEN");
+    if (token) {
+        candecode = jwtDecode(token);
+    }
     const [logout, setLogout] = useState(false);
     const [search, setSearch] = useState()
 
     useEffect(() => {
-        const getDetailUser = () => {
-            if (token) {
-                const decoded = jwtDecode(token);
+        if (token) {
+            const decoded = jwtDecode(token);
+            if (decoded.userRole !== 1.5) {
                 const configuration = {
                     method: "get",
                     url: "http://localhost:3000/GetDetailUser",
@@ -40,7 +45,6 @@ function Header({ type }) {
                     });
             }
         }
-        getDetailUser()
         var items = document.getElementById("buttonCollapse")
         var collapse = document.getElementById("navbarCollapse")
         var dropdownToggle1 = document.getElementById("headups1")
@@ -123,14 +127,20 @@ function Header({ type }) {
     }
 
     const logoutThis = () => {
-        window.location.href = "/"
         cookies.remove("TOKEN", { path: '/' });
+        window.location.href = "/"
+    }
+
+    const googleLogoutNow = () => {
+        googleLogout()
+        cookies.remove("TOKEN", { path: '/' });
+        window.location.href = "/"
     }
 
     const logoutThat = () => {
-        window.location.href = "/"
         localStorage.removeItem('tabs');
         cookies.remove("TOKEN", { path: '/' });
+        window.location.href = "/"
     }
     return (
         <>
@@ -189,59 +199,69 @@ function Header({ type }) {
                     </div>
                     <div id="headups" className="nav-item dropdown mulHead Wrinked responSearch">
                         {token ? (
-                            Object.values(GetUser).map((i) => {
-                                const decode = jwtDecode(token)
-                                if (i.userimage) {
-                                    return (
-                                        <div key={i._id} className="Move1">
-                                            <img className="nav-link dropdown-toggle imgUser Move2" src={i.userimage} width={75} height={50} alt="" />
-                                            <div className="dropdown-menu m-0 text-center Move3">
-                                                {decode.userRole === 1 ? (
-                                                    <NavLink reloadDocument to={`/UserPanel/${i._id}`} className="dropdown-item">Account</NavLink>
-                                                ) : decode.userRole === 2 ? (
-                                                    <NavLink reloadDocument to={"/EmployeePanel"} className="dropdown-item">Employee Panel</NavLink>
-                                                ) : decode.userRole === 3 ? (
-                                                    <NavLink reloadDocument to={"/ManagerPanel"} className="dropdown-item">Manager Panel</NavLink>
-                                                ) : decode.userRole === 4 ? (
-                                                    <NavLink reloadDocument to={"/AdminPanel"} className="dropdown-item">Admin Panel</NavLink>
-                                                ) : null}
-                                                <button onClick={() => logoutThis()} className="dropdown-item"><svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z" /></svg> Logout</button>
-                                            </div>
-                                        </div>
-                                    )
-
-                                }
-                                else {
-                                    return (
-                                        <div key={i._id} className="Move1">
-                                            <img className="nav-link dropdown-toggle Move2 imgUser" src="https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg" width={70} height={55} alt="" />
-                                            <div className="dropdown-menu m-0 text-center Move3">
-                                                {decode.userRole === 1 ? (
-                                                    <>
+                            candecode.userRole !== 1.5 ? (
+                                Object.values(GetUser).map((i) => {
+                                    const decode = jwtDecode(token)
+                                    if (i.userimage) {
+                                        return (
+                                            <div key={i._id} className="Move1">
+                                                <img className="nav-link dropdown-toggle imgUser Move2" src={i.userimage} width={75} height={50} alt="" />
+                                                <div className="dropdown-menu m-0 text-center Move3">
+                                                    {decode.userRole === 1 ? (
                                                         <NavLink reloadDocument to={`/UserPanel/${i._id}`} className="dropdown-item">Account</NavLink>
-                                                        <button onClick={() => logoutThis()} className="dropdown-item"><svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z" /></svg> Logout</button>
-                                                    </>
-                                                ) : decode.userRole === 2 ? (
-                                                    <>
+                                                    ) : decode.userRole === 2 ? (
                                                         <NavLink reloadDocument to={"/EmployeePanel"} className="dropdown-item">Employee Panel</NavLink>
-                                                        <button onClick={() => logoutThat()} className="dropdown-item"><svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z" /></svg> Logout</button>
-                                                    </>
-                                                ) : decode.userRole === 3 ? (
-                                                    <>
+                                                    ) : decode.userRole === 3 ? (
                                                         <NavLink reloadDocument to={"/ManagerPanel"} className="dropdown-item">Manager Panel</NavLink>
-                                                        <button onClick={() => logoutThat()} className="dropdown-item"><svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z" /></svg> Logout</button>
-                                                    </>
-                                                ) : decode.userRole === 4 ? (
-                                                    <>
+                                                    ) : decode.userRole === 4 ? (
                                                         <NavLink reloadDocument to={"/AdminPanel"} className="dropdown-item">Admin Panel</NavLink>
-                                                        <button onClick={() => logoutThat()} className="dropdown-item"><svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z" /></svg> Logout</button>
-                                                    </>
-                                                ) : null}
+                                                    ) : null}
+                                                    <button onClick={() => logoutThis()} className="dropdown-item"><svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z" /></svg> Logout</button>
+                                                </div>
                                             </div>
-                                        </div>
-                                    )
-                                }
-                            })
+                                        )
+
+                                    }
+                                    else {
+                                        return (
+                                            <div key={i._id} className="Move1">
+                                                <img className="nav-link dropdown-toggle Move2 imgUser" src="https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg" width={70} height={55} alt="" />
+                                                <div className="dropdown-menu m-0 text-center Move3">
+                                                    {decode.userRole === 1 ? (
+                                                        <>
+                                                            <NavLink reloadDocument to={`/UserPanel/${i._id}`} className="dropdown-item">Account</NavLink>
+                                                            <button onClick={() => logoutThis()} className="dropdown-item"><svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z" /></svg> Logout</button>
+                                                        </>
+                                                    ) : decode.userRole === 2 ? (
+                                                        <>
+                                                            <NavLink reloadDocument to={"/EmployeePanel"} className="dropdown-item">Employee Panel</NavLink>
+                                                            <button onClick={() => logoutThat()} className="dropdown-item"><svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z" /></svg> Logout</button>
+                                                        </>
+                                                    ) : decode.userRole === 3 ? (
+                                                        <>
+                                                            <NavLink reloadDocument to={"/ManagerPanel"} className="dropdown-item">Manager Panel</NavLink>
+                                                            <button onClick={() => logoutThat()} className="dropdown-item"><svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z" /></svg> Logout</button>
+                                                        </>
+                                                    ) : decode.userRole === 4 ? (
+                                                        <>
+                                                            <NavLink reloadDocument to={"/AdminPanel"} className="dropdown-item">Admin Panel</NavLink>
+                                                            <button onClick={() => logoutThat()} className="dropdown-item"><svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z" /></svg> Logout</button>
+                                                        </>
+                                                    ) : null}
+                                                </div>
+                                            </div>
+                                        )
+                                    }
+                                })
+                            ) : candecode.userRole === 1.5 ? (
+                                <div className="Move1">
+                                    <img className="nav-link dropdown-toggle imgUser Move2" src={candecode.userImage} width={75} height={50} alt="" />
+                                    <div className="dropdown-menu m-0 text-center Move3">
+                                        <NavLink reloadDocument to={`/UserPanel/${candecode.userId}`} className="dropdown-item">Account</NavLink>
+                                        <button onClick={() => googleLogoutNow()} className="dropdown-item"><svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z" /></svg> Logout</button>
+                                    </div>
+                                </div>
+                            ) : null
                         ) : (
                             <>
                                 <div className="me-3">

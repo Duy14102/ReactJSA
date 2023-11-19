@@ -1,8 +1,9 @@
 import axios from "axios";
+import { useState } from "react";
 import Modal from 'react-modal';
 
 function CancelByMag({ ModalData, fulltotal, modal, setmodal }) {
-
+    const [spinner, setSpinner] = useState(false)
     const denyOrderKin = () => {
         const configuration = {
             method: "post",
@@ -16,7 +17,9 @@ function CancelByMag({ ModalData, fulltotal, modal, setmodal }) {
                 reason: "Canceled by Manager"
             }
         }
+        setSpinner(true)
         axios(configuration).then(() => {
+            setSpinner(false)
             window.location.reload();
         }).catch((err) => {
             console.log(err);
@@ -31,8 +34,10 @@ function CancelByMag({ ModalData, fulltotal, modal, setmodal }) {
                 id: ModalData._id
             }
         };
+        setSpinner(true)
         axios(configuration)
             .then(() => {
+                setSpinner(false)
                 window.location.reload()
             })
             .catch((error) => {
@@ -78,6 +83,13 @@ function CancelByMag({ ModalData, fulltotal, modal, setmodal }) {
                         zIndex: 999
                     },
                 }}>
+                {spinner ? (
+                    <div style={{ background: "rgba(255, 255, 255, 0.6)" }} id="spinner" className="show position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+                        <div className="spinner-border text-primary" style={{ width: 3 + "rem", height: 3 + "rem" }} role="status">
+                            <span className="sr-only"></span>
+                        </div>
+                    </div>
+                ) : null}
                 <div className="p-3 text-center">
                     <h5>Are you sure ?</h5>
                     <div className="d-flex justify-content-evenly pt-4">

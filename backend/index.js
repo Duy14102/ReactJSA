@@ -1,16 +1,16 @@
 // Backed and express
 const express = require('express');
-const env = require('dotenv').config({path:"../.env"})
 // Connect to MongoDB
 const mongoose = require('mongoose');
+require('dotenv').config({ path: "../.env" })
 // mongodb+srv://vtca123:vtca123@vtcareact.h9qlu1s.mongodb.net/?retryWrites=true&w=majority    --> Change this with connect string to access MongoDB Atlas
-mongoose.connect(env.parsed.mongostring).then(() => console.log('Connected To MongoDB')).catch((err) => { console.error(err); });
+mongoose.connect(process.env.REACT_APP_mongoCompassString).then(() => console.log('Connected To MongoDB')).catch((err) => { console.error(err); });
 const app = express();
 const cloudinary = require('cloudinary').v2
 cloudinary.config({
-    cloud_name: env.parsed.cloud_name,
-    api_key: env.parsed.api_key,
-    api_secret: env.parsed.api_secret
+    cloud_name: process.env.REACT_APP_cloud_name,
+    api_key: process.env.REACT_APP_api_key,
+    api_secret: process.env.REACT_APP_api_secret
 });
 const cors = require('cors');
 const bodyParser = require('body-parser');
@@ -441,6 +441,7 @@ app.post("/Login", (request, response) => {
                             userName: user.fullname,
                             userEmail: user.email,
                             userRole: user.role,
+                            userImage: user.userimage,
                         },
                         "RANDOM-TOKEN",
                         { expiresIn: "24h" }
@@ -470,6 +471,26 @@ app.post("/Login", (request, response) => {
             });
         });
 });
+
+//Login with Google
+app.get("/LoginWithGoogle", (req, res) => {
+    try {
+        const token = jwt.sign(
+            {
+                userId: req.query.id,
+                userName: req.query.name,
+                userEmail: req.query.email,
+                userRole: 1.5,
+                userImage: req.query.picture,
+            },
+            "RANDOM-TOKEN",
+            { expiresIn: "24h" }
+        );
+        res.send({ token })
+    } catch (e) {
+        console.log(e);
+    }
+})
 
 //Find user inside adminPanel
 app.get("/Find4User", async (req, res) => {
@@ -2839,8 +2860,8 @@ app.post('/VnpayCheckout', function (req, res, next) {
         req.socket.remoteAddress ||
         req.connection.socket.remoteAddress;
 
-    let tmnCode = env.parsed.vnpaytmnCode;
-    let secretKey = env.parsed.vnpaysecretKey;
+    let tmnCode = process.env.REACT_APP_vnpaytmnCode;
+    let secretKey = process.env.REACT_APP_vnpaysecretKey;
     let vnpUrl = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html';
     let returnUrl = 'http://localhost:3001/OrderComplete';
     let orderId = req.body.orderId;
@@ -2885,8 +2906,8 @@ app.post('/VnpayRefund', function (req, res, next) {
 
     let crypto = require("crypto");
 
-    let vnp_TmnCode = env.parsed.vnpaytmnCode;
-    let secretKey = env.parsed.vnpaysecretKey;
+    let vnp_TmnCode = process.env.REACT_APP_vnpaytmnCode;
+    let secretKey = process.env.REACT_APP_vnpaysecretKey;
     let vnp_Api = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
 
     let vnp_TxnRef = req.body.orderId;

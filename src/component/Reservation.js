@@ -1,13 +1,17 @@
 import axios from "axios";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import { Fragment } from "react";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import Cookies from "universal-cookie";
 
 function Reservation() {
+    var candecode = null
     const cookies = new Cookies()
     const token = cookies.get("TOKEN");
+    if (token) {
+        candecode = jwtDecode(token)
+    }
     const [name, setName] = useState()
     const [tokeId, setTokeId] = useState("None")
     const [phone, setPhone] = useState()
@@ -25,11 +29,13 @@ function Reservation() {
     useEffect(() => {
         if (token) {
             const decode = jwtDecode(token)
-            fetch(`http://localhost:3000/GetDetailUser?userid=${decode.userId}`, {
-                method: "get",
-            }).then((res) => res.json()).then((data) => {
-                setGetUser(data)
-            })
+            if (decode.userRole !== 1.5) {
+                fetch(`http://localhost:3000/GetDetailUser?userid=${decode.userId}`, {
+                    method: "get",
+                }).then((res) => res.json()).then((data) => {
+                    setGetUser(data)
+                })
+            }
 
             fetch(`http://localhost:3000/GetTokenBooking?id=${decode.userId}`, {
                 method: "get",
@@ -46,13 +52,18 @@ function Reservation() {
             setCheckDate(true)
         }
 
-        Object.values(getUser).map((i) => {
-            setName(i.fullname)
-            setPhone(i.phonenumber)
-            setTokeId(i._id)
-            return null
-        })
-    }, [date2, datetime, getUser])
+        if (candecode.userRole !== 1.5) {
+            Object.values(getUser).map((i) => {
+                setName(i.fullname)
+                setPhone(i.phonenumber)
+                setTokeId(i._id)
+                return null
+            })
+        } else if (candecode.userRole === 1.5) {
+            setName(candecode.userName)
+            setTokeId(candecode.userId)
+        }
+    }, [date2, datetime, candecode.userRole, getUser, candecode.userName, candecode.userId])
 
     const AddNewTable = (e) => {
         e.preventDefault()
@@ -206,6 +217,12 @@ function Reservation() {
                                                     </div>
                                                 </>
                                             )}
+                                            {candecode.userRole === 1.5 ? (
+                                                <div className="col-md-6">
+                                                    <label htmlFor="phone" >Your Phone Number</label>
+                                                    <input value={phone} onChange={(e) => setPhone(e.target.value)} type="number" className="cutOut" id="phone" placeholder="Your Phone Number" required />
+                                                </div>
+                                            ) : null}
                                             <div className="col-md-6">
                                                 <label htmlFor="datetime" >Date & Time</label>
                                                 <input value={date} onChange={(e) => setDate(e.target.value)} type="datetime-local" className="cutOut datetimepicker-input" id="datetime" placeholder="Date & Time" required />

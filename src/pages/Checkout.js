@@ -31,7 +31,11 @@ function Checkout() {
     var fullname = ""
     let location = useLocation()
     const cookies = new Cookies();
+    var candecode = null
     const token = cookies.get("TOKEN");
+    if (token) {
+        candecode = jwtDecode(token)
+    }
     havePhone.push(address)
 
     useEffect(() => {
@@ -56,25 +60,23 @@ function Checkout() {
         if (AccountAddress) {
             getDetailUser()
         }
-        if (token) {
+        if (token && candecode.userRole !== 1.5) {
             getDetailUser()
         }
-    }, [AccountAddress, token])
+    }, [AccountAddress, token, candecode.userRole])
 
 
     useEffect(() => {
-        let pro = ""
         let pre = ""
         Object.values(LoadAddress).map((k) => {
-            pro = k.fullname
             pre = k.phonenumber
             return (
                 null
             )
         })
-        setFullnameToken(pro)
+        setFullnameToken(candecode.userName)
         setPhonenumber(pre)
-    }, [LoadAddress])
+    }, [LoadAddress, candecode.userName])
 
     useEffect(() => {
         if (paypalState === "COMPLETED") {
@@ -335,6 +337,16 @@ function Checkout() {
                                     </>
                                 )}
 
+                                {candecode.userRole === 1.5 ? (
+                                    <div className="mb-3 inputC">
+                                        <label htmlFor="email">Phone Number</label>
+                                        <input type="number" name="phonenumber" value={phonenumber} onChange={(e) => setPhonenumber(e.target.value)} className="form-control" id="email" placeholder="0123456789" />
+                                        <div className="invalid-feedback">
+                                            Please enter a valid email address for shipping updates.
+                                        </div>
+                                    </div>
+                                ) : null}
+
                                 {AccountAddress ? (
                                     <div className="mb-3">
                                         <label htmlFor="address">Address</label><br />
@@ -365,7 +377,7 @@ function Checkout() {
                                     </div>
                                 )}
 
-                                {token ? (
+                                {token && candecode.userRole !== 1.5 ? (
                                     <>
                                         {SaveAddress ? (
                                             <div style={{ pointerEvents: "none", opacity: 0.4 }} className="custom-control custom-checkbox">

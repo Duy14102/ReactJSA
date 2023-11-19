@@ -19,6 +19,7 @@ function OrderAdmin({ Data }) {
     const [ModalData, setModalData] = useState([])
 
     var [modalOpenDetail2, setModalOpenDetail2] = useState(false);
+    const [spinner, setSpinner] = useState(false)
     const [modalOpenDetail3, setModalOpenDetail3] = useState(false);
     const [modalOpenDetail4, setModalOpenDetail4] = useState(false);
     useEffect(() => {
@@ -85,7 +86,9 @@ function OrderAdmin({ Data }) {
                 reason: DenyReason
             }
         }
+        setSpinner(true)
         axios(configuration).then(() => {
+            setSpinner(false)
             Swal.fire(
                 'Denied successfully!',
                 '',
@@ -274,6 +277,13 @@ function OrderAdmin({ Data }) {
                         zIndex: 999
                     },
                 }}>
+                {spinner ? (
+                    <div style={{ background: "rgba(255, 255, 255, 0.6)" }} id="spinner" className="show position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+                        <div className="spinner-border text-primary" style={{ width: 3 + "rem", height: 3 + "rem" }} role="status">
+                            <span className="sr-only"></span>
+                        </div>
+                    </div>
+                ) : null}
                 <h2 className='text-center'>Order Detail</h2>
                 <div className="coverNOut">
                     <p className="m-0"><b>Id</b> : {ModalData._id}</p>

@@ -6,6 +6,7 @@ import Swal from 'sweetalert2';
 import Cookies from "universal-cookie";
 import NotFound from '../../component/outOfBorder/NotFound';
 import Layout from '../../Layout';
+import { useGoogleLogin } from '@react-oauth/google';
 
 function LoginSite() {
     const cookies = new Cookies();
@@ -16,6 +17,8 @@ function LoginSite() {
     const [role] = useState("");
     const [fullname] = useState("");
     document.title = "EatCom - Login";
+
+    const [user, setUser] = useState(null)
     $(function () {
         // [Focus input] * /
         $('.input100').each(function () {
@@ -134,12 +137,51 @@ function LoginSite() {
             });
     }
 
+    const login = useGoogleLogin({
+        onSuccess: (codeResponse) => setUser(codeResponse),
+        onError: (error) => console.log('Login Failed:', error)
+    });
+
+    useEffect(() => {
+        if (user) {
+            axios.get(`https://www.googleapis.com/oauth2/v1/userinfo?access_token=${user.access_token}`, {
+                headers: {
+                    Authorization: `Bearer ${user.access_token}`,
+                    Accept: 'application/json'
+                }
+            }).then((res) => {
+                const configuration9 = {
+                    method: "get",
+                    url: "http://localhost:3000/LoginWithGoogle",
+                    params: {
+                        id: res.data.id,
+                        name: res.data.name,
+                        email: res.data.email,
+                        picture: res.data.picture
+                    }
+                }
+                axios(configuration9).then((result) => {
+                    cookies.set("TOKEN", result.data.token, {
+                        path: "/",
+                    });
+                    Swal.fire(
+                        'Login Successfully!',
+                        'Hello ' + res.data.name,
+                        'success'
+                    ).then(() => {
+                        window.location.href = "/"
+                    })
+                })
+            }).catch((err) => console.log(err));
+        }
+    }, [user]);
+
     if (token) {
         return NotFound()
     }
+
     return (
         <Layout>
-
             <div className="limiter">
                 <div className="container-login100">
                     <div className="wrap-login100">
@@ -175,8 +217,14 @@ function LoginSite() {
                                     </button>
                                 </div>
                             </div>
-
-                            <div className="text-center p-t-50">
+                            <div className='orLogin mt-3'>
+                                <span>Or login with</span>
+                            </div>
+                            <div className='d-flex justify-content-around mt-3'>
+                                <button type='button' onClick={() => login()}><img alt='' height={50} width={50} src='https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/640px-Google_%22G%22_Logo.svg.png' /></button>
+                                <button type='button' ><img alt='' height={50} width={50} src='https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/1200px-Facebook_Logo_%282019%29.png' /></button>
+                            </div>
+                            <div className="text-center pt-3">
                                 <span className="txt1">
                                     Don't have an account?
                                 </span>

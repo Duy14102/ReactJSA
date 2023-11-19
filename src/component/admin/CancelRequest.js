@@ -1,10 +1,12 @@
 import axios from "axios";
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
+import { useState } from "react";
 import Modal from 'react-modal';
 import Swal from "sweetalert2";
 import Cookies from "universal-cookie";
 
 function CancelRequest({ ModalData, fulltotal, modal, setmodal }) {
+    const [spinner, setSpinner] = useState(false)
     const cookies = new Cookies()
     const token = cookies.get("TOKEN")
     const decode = jwtDecode(token)
@@ -22,7 +24,9 @@ function CancelRequest({ ModalData, fulltotal, modal, setmodal }) {
                 reason: "Canceled by Manager"
             }
         }
+        setSpinner(true)
         axios(configuration).then(() => {
+            setSpinner(false)
             Swal.fire(
                 'Canceled successfully!',
                 '',
@@ -45,8 +49,10 @@ function CancelRequest({ ModalData, fulltotal, modal, setmodal }) {
                 status: 6,
             }
         }
+        setSpinner(true)
         axios(configuration)
             .then(() => {
+                setSpinner(false)
                 Swal.fire(
                     'Canceled successfully!',
                     '',
@@ -110,6 +116,13 @@ function CancelRequest({ ModalData, fulltotal, modal, setmodal }) {
                         zIndex: 999
                     },
                 }}>
+                {spinner ? (
+                    <div style={{ background: "rgba(255, 255, 255, 0.6)" }} id="spinner" className="show position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+                        <div className="spinner-border text-primary" style={{ width: 3 + "rem", height: 3 + "rem" }} role="status">
+                            <span className="sr-only"></span>
+                        </div>
+                    </div>
+                ) : null}
                 <div className="p-3 text-center">
                     <h5>Are you sure ?</h5>
                     <div className="d-flex justify-content-evenly pt-4">
