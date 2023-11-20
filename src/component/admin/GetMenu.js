@@ -7,7 +7,9 @@ import ReactPaginate from 'react-paginate';
 function GetMenu({ cate }) {
     const [menu, setMenu] = useState([]);
     const [ModalData, setModalData] = useState([])
+    const [reviewData, setReviewData] = useState([])
     const [modalOpenDetail, setModalOpenDetail] = useState(false);
+    const [modalOpenDetail2, setModalOpenDetail2] = useState(false);
     // UpdateMenu
     const [updatename, setFoodname] = useState();
     const [updateprice, setFoodprice] = useState();
@@ -134,10 +136,39 @@ function GetMenu({ cate }) {
             });
     }
 
+    const deleteReview = () => {
+        const configuration = {
+            method: "post",
+            url: "http://localhost:3000/DeleteReviewByMag",
+            data: {
+                itemid: ModalData._id,
+                reviewid: reviewData.id
+            }
+        }
+        axios(configuration)
+            .then(() => {
+                Swal.fire(
+                    'Delete Review Successfully!',
+                    '',
+                    'success'
+                ).then(function () {
+                    window.location.reload();
+                })
+            }).catch(() => {
+                Swal.fire(
+                    'Delete Review Fail!',
+                    '',
+                    'error'
+                )
+            })
+    }
+
     const VND = new Intl.NumberFormat('vi-VN', {
         style: 'currency',
         currency: 'VND',
     });
+
+    const rating = stars => '★★★★★☆☆☆☆☆'.slice(5 - stars, 10 - stars);
 
     return (
         <>
@@ -184,8 +215,7 @@ function GetMenu({ cate }) {
                 activeClassName="active"
                 forcePage={currentPage.current - 1}
             />
-            <Modal
-                isOpen={modalOpenDetail} onRequestClose={() => setModalOpenDetail(false)} ariaHideApp={false}
+            <Modal isOpen={modalOpenDetail} onRequestClose={() => setModalOpenDetail(false)} ariaHideApp={false}
                 style={{
                     overlay: {
                         position: 'fixed',
@@ -231,26 +261,55 @@ function GetMenu({ cate }) {
                             <div className="reftson2">
                                 <div className="overHereB">
                                     <div className="insideHereB">
-                                        <label>Name</label>
+                                        <label><b>Name</b></label>
                                         <input className='textDeny' type='text' name='updatename' defaultValue={ModalData.foodname} onChange={(e) => setFoodname(e.target.value)}></input>
                                     </div>
                                     <div className="insideHereB">
-                                        <label>Category</label>
+                                        <label><b>Category</b></label>
                                         <input className='textDeny' type='text' name='updatecategory' defaultValue={ModalData.foodcategory} onChange={(e) => setFoodcategory(e.target.value)} ></input>
                                     </div>
                                 </div>
                                 <div className="overHereB">
                                     <div className="insideHereB">
-                                        <label>Price</label>
+                                        <label><b>Price</b></label>
                                         <input className='textDeny' type='number' name='updateprice' defaultValue={ModalData.foodprice} onChange={(e) => setFoodprice(e.target.value)} ></input>
                                     </div>
                                     <div className="insideHereB">
-                                        <label>Quantity</label>
+                                        <label><b>Quantity</b></label>
                                         <input className='textDeny' type='number' name='updatequantity' defaultValue={ModalData.foodquantity} onChange={(e) => setFoodquantity(e.target.value)} ></input>
                                     </div>
                                 </div>
-                                <label>Description</label>
+                                <label className="pt-3"><b>Description</b></label>
                                 <textarea className='textDeny' type='text' name='updatedescription' defaultValue={ModalData.fooddescription} onChange={(e) => setFooddescription(e.target.value)}></textarea>
+                                {ModalData.review?.length > 0 ? (
+                                    <div className="pt-3">
+                                        <b>Review</b> : {ModalData.review?.length}
+                                        <table className="table table-bordered solotable text-center">
+                                            <thead>
+                                                <tr>
+                                                    <th>Name</th>
+                                                    <th>Star</th>
+                                                    <th>Date</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {ModalData.review?.map((e) => {
+                                                    return (
+                                                        <tr key={e.id}>
+                                                            <td>{e.name}</td>
+                                                            <td>{rating(e.star)}</td>
+                                                            <td>{e.date}</td>
+                                                            <td><button onClick={() => { setReviewData(e); setModalOpenDetail(false); setModalOpenDetail2(true) }} className="btn btn-success">Detail</button></td>
+                                                        </tr>
+                                                    )
+                                                })}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                ) : (
+                                    <><b>Review</b> : 0</>
+                                )}
                             </div>
                         </div>
                         <hr />
@@ -261,6 +320,45 @@ function GetMenu({ cate }) {
                     </form>
                 </div >
                 <button className='closeModal' onClick={() => setModalOpenDetail(false)}>x</button>
+            </Modal>
+            <Modal isOpen={modalOpenDetail2} onRequestClose={() => setModalOpenDetail2(false)} ariaHideApp={false}
+                style={{
+                    overlay: {
+                        position: 'fixed',
+                        zIndex: 998,
+                        backgroundColor: 'rgb(33 33 33 / 75%)'
+                    },
+                    content: {
+                        top: "50%",
+                        left: "50%",
+                        right: "auto",
+                        bottom: "auto",
+                        marginRight: "-50%",
+                        transform: "translate(-50%, -50%)",
+                        backgroundColor: "white",
+                        width: "70vw",
+                        height: "45vh",
+                        zIndex: 999
+                    },
+                }}>
+                <div className="p-3">
+                    <h3 className="text-center">Review Detail</h3>
+                    <div className="coverNOut">
+                        <p className="m-0"><b>Name</b>: {reviewData.name}</p>
+                        <p className="m-0"><b>Date</b>: {reviewData.date}</p>
+                    </div>
+                    <hr />
+                    <div className="hugeImpace">
+                        <p><b>Star</b>: {rating(reviewData.star)}</p>
+                        <p><b>Message</b> :</p>
+                        <textarea className="w-100 textDeny" style={{ pointerEvents: "none" }} defaultValue={reviewData.message} />
+                    </div>
+                    <hr />
+                    <div className="text-center">
+                        <button onClick={() => deleteReview()} className="btn btn-danger">Delete</button>
+                    </div>
+                </div>
+                <button className='closeModal' onClick={() => { setModalOpenDetail2(false); setModalOpenDetail(true) }}>x</button>
             </Modal>
         </>
     );

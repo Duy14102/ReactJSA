@@ -60,10 +60,10 @@ function Checkout() {
         if (AccountAddress) {
             getDetailUser()
         }
-        if (token && candecode.userRole !== 1.5) {
+        if (token && candecode?.userRole !== 1.5) {
             getDetailUser()
         }
-    }, [AccountAddress, token, candecode.userRole])
+    }, [AccountAddress, token, candecode?.userRole])
 
 
     useEffect(() => {
@@ -74,9 +74,9 @@ function Checkout() {
                 null
             )
         })
-        setFullnameToken(candecode.userName)
+        setFullnameToken(candecode?.userName)
         setPhonenumber(pre)
-    }, [LoadAddress, candecode.userName])
+    }, [LoadAddress, candecode?.userName])
 
     useEffect(() => {
         if (paypalState === "COMPLETED") {
@@ -274,8 +274,8 @@ function Checkout() {
     return (
         <Layout>
             <div className="bg-white">
-                <div className="container">
-                    <div className="py-5 text-center businessWay">
+                <div className="container py-5">
+                    <div className="pb-5 text-center businessWay">
                         <NavLink className="joiboy" to="/Cart"> Shopping Cart</NavLink> <span className='slash'>˃</span> <NavLink className="joiboy" to="/Checkout" >Checkout Details</NavLink> <span className='slash'>˃</span> {ahoe ? (<NavLink className="joiboy" to="/">Order Complete</NavLink>) : (<NavLink className="joiboy" style={{ pointerEvents: "none" }} to="/">Order Complete</NavLink>)}
                     </div>
 
@@ -304,10 +304,27 @@ function Checkout() {
                                     <strong>{VND.format(fulltotal)}</strong>
                                 </li>
                             </ul>
+                            {paypal ? null : (
+                                <button form="checkoutForm" className="btn btn-primary w-100 p-2" type="submit">Confirm</button>
+                            )}
+                            {paypal ? (
+                                <div className="mt-4">
+                                    <PayPalButton
+                                        amount={fulltotal / 25000}
+                                        // shippingPreference="NO_SHIPPING" // default is "GET_FROM_FILE"
+                                        onSuccess={(details) => {
+                                            setPaypalState(details.status)
+                                        }}
+                                        onError={(err) => {
+                                            console.log(err);
+                                        }}
+                                    />
+                                </div>
+                            ) : null}
                         </div>
                         <div className="takeFirstUI">
                             <h4 className="mb-3">Address</h4>
-                            <form onSubmit={(e) => handleSubmit(e)} className="needs-validation">
+                            <form onSubmit={(e) => handleSubmit(e)} className="needs-validation" id="checkoutForm">
                                 {token ? null : (
                                     <>
                                         <div className="row">
@@ -337,7 +354,7 @@ function Checkout() {
                                     </>
                                 )}
 
-                                {candecode.userRole === 1.5 ? (
+                                {candecode?.userRole === 1.5 ? (
                                     <div className="mb-3 inputC">
                                         <label htmlFor="email">Phone Number</label>
                                         <input type="number" name="phonenumber" value={phonenumber} onChange={(e) => setPhonenumber(e.target.value)} className="form-control" id="email" placeholder="0123456789" />
@@ -377,7 +394,7 @@ function Checkout() {
                                     </div>
                                 )}
 
-                                {token && candecode.userRole !== 1.5 ? (
+                                {token && candecode?.userRole !== 1.5 ? (
                                     <>
                                         {SaveAddress ? (
                                             <div style={{ pointerEvents: "none", opacity: 0.4 }} className="custom-control custom-checkbox">
@@ -423,7 +440,7 @@ function Checkout() {
                                         </div>
                                         {vnpay ? (
                                             <select onChange={(e) => setBankCode(e.target.value)} name="bankcode" id="bankcode" className="form-control bg-white mt-4" required>
-                                                <option value="">Không chọn </option>
+                                                <option value="">Không chọn</option>
                                                 <option value="MBAPP">Ung dung MobileBanking</option>
                                                 <option value="VNPAYQR">VNPAYQR</option>
                                                 <option value="VNBANK">LOCAL BANK</option>
@@ -461,24 +478,8 @@ function Checkout() {
                                                 <option value="APPLEPAY">Apple Pay </option>
                                             </select>
                                         ) : null}
-                                        {paypal ? (
-                                            <div className="mt-4">
-                                                <PayPalButton
-                                                    amount={fulltotal / 25000}
-                                                    // shippingPreference="NO_SHIPPING" // default is "GET_FROM_FILE"
-                                                    onSuccess={(details) => {
-                                                        setPaypalState(details.status)
-                                                    }}
-                                                    onError={(err) => {
-                                                        console.log(err);
-                                                    }}
-                                                />
-                                            </div>
-                                        ) : null}
                                     </>
                                 ) : null}
-                                <button className="btn btn-primary my-4" type="submit">Confirm</button>
-                                <hr className="mb-4" />
                             </form>
                         </div>
                     </div>

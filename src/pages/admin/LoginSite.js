@@ -217,12 +217,11 @@ function LoginSite() {
                                     </button>
                                 </div>
                             </div>
-                            <div className='orLogin mt-3'>
+                            <div className='orLogin mt-4'>
                                 <span>Or login with</span>
                             </div>
-                            <div className='d-flex justify-content-around mt-3'>
+                            <div className='d-flex justify-content-center mt-4'>
                                 <button type='button' onClick={() => login()}><img alt='' height={50} width={50} src='https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/640px-Google_%22G%22_Logo.svg.png' /></button>
-                                <button type='button' ><img alt='' height={50} width={50} src='https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/1200px-Facebook_Logo_%282019%29.png' /></button>
                             </div>
                             <div className="text-center pt-3">
                                 <span className="txt1">

@@ -15,8 +15,12 @@ window.jQuery = jQuery
 require('owl.carousel')
 
 function DetailMenuPage() {
+    var candecode = null
     const cookies = new Cookies();
     const token = cookies.get("TOKEN");
+    if (token) {
+        candecode = jwtDecode(token)
+    }
     let appler = useParams()
     const [detail, setDetail] = useState([]);
     const [menu, setMenu] = useState([]);
@@ -41,9 +45,11 @@ function DetailMenuPage() {
         let timerOpacity;
         $(".testimonial-carousel2").owlCarousel({
             smartSpeed: 1000,
+            autoplay: true,
             center: true,
             margin: 15,
             loop: true,
+            dots: false,
             nav: true,
             responsive: {
                 0: {
@@ -109,7 +115,7 @@ function DetailMenuPage() {
 
     //Get Bonus
     useEffect(() => {
-        if (token) {
+        if (token && candecode.userRole !== 1.5) {
             const decode = jwtDecode(token)
             fetch(`http://localhost:3000/GetDetailUser?userid=${decode.userId}`, {
                 method: "get",
@@ -196,12 +202,20 @@ function DetailMenuPage() {
             outshin(i)
             return null
         })
+        if (token) {
+            if (candecode.userRole !== 1.5) {
+                Object.values(getUserW).map((h) => {
+                    setImgF(h.userimage)
+                    return null
+                })
+            }
 
-        Object.values(getUserW).map((h) => {
-            setImgF(h.userimage)
-            return null
-        })
-    }, [detail, getUserW])
+            if (candecode.userRole === 1.5) {
+                setImgF(candecode.userImage)
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [detail, getUserW, token])
 
 
     const addreview = (e, ids) => {

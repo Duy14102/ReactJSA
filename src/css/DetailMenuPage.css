@@ -360,29 +360,31 @@
 
 /*  carousel   */
 .owl-prev {
-    background: url(../assets/image/left-arrow_rlxamy.png) left center no-repeat;
-    height: 54px;
     position: absolute;
     top: 50%;
-    width: 27px;
     z-index: 1000;
     left: 2%;
     cursor: pointer;
-    color: transparent;
-    margin-top: -27px;
+    margin-top: -80px;
+}
+
+.owl-prev span {
+    font-size: 70px;
+    color: #fff;
 }
 
 .owl-next {
-    background: url(../assets/image/right-arrow_zwe9sf.png) right center no-repeat;
-    height: 54px;
+    margin-top: -80px;
     position: absolute;
     top: 50%;
-    width: 27px;
     z-index: 1000;
-    right: 2%;
     cursor: pointer;
-    color: transparent;
-    margin-top: -27px;
+    right: 2%;
+}
+
+.owl-next span {
+    font-size: 70px;
+    color: #fff;
 }
 
 .owl-prev:hover,

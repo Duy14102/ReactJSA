@@ -1432,6 +1432,23 @@ app.post("/AddReview", (req, res) => {
     }
 })
 
+//DeleteReviewByMag
+app.post("/DeleteReviewByMag", (req, res) => {
+    try {
+        getThisMenu.updateOne({ _id: req.body.itemid }, {
+            $pull: {
+                review: { id: req.body.reviewid }
+            }
+        }).then(() => {
+            res.send({ data: "succeed" })
+        }).catch((err) => {
+            console.log(err);
+        })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
 //Get All Review With Pagination
 app.get("/GetAllReviewPagination", async (req, res) => {
     try {
