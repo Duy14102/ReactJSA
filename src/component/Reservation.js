@@ -52,18 +52,18 @@ function Reservation() {
             setCheckDate(true)
         }
 
-        if (candecode.userRole !== 1.5) {
+        if (candecode?.userRole !== 1.5) {
             Object.values(getUser).map((i) => {
                 setName(i.fullname)
                 setPhone(i.phonenumber)
                 setTokeId(i._id)
                 return null
             })
-        } else if (candecode.userRole === 1.5) {
-            setName(candecode.userName)
-            setTokeId(candecode.userId)
+        } else if (candecode?.userRole === 1.5) {
+            setName(candecode?.userName)
+            setTokeId(candecode?.userId)
         }
-    }, [date2, datetime, candecode.userRole, getUser, candecode.userName, candecode.userId])
+    }, [date2, datetime, candecode?.userRole, getUser, candecode?.userName, candecode?.userId])
 
     const AddNewTable = (e) => {
         e.preventDefault()
@@ -217,7 +217,7 @@ function Reservation() {
                                                     </div>
                                                 </>
                                             )}
-                                            {candecode.userRole === 1.5 ? (
+                                            {candecode?.userRole === 1.5 ? (
                                                 <div className="col-md-6">
                                                     <label htmlFor="phone" >Your Phone Number</label>
                                                     <input value={phone} onChange={(e) => setPhone(e.target.value)} type="number" className="cutOut" id="phone" placeholder="Your Phone Number" required />

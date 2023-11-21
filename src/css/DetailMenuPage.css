@@ -370,7 +370,7 @@
 
 .owl-prev span {
     font-size: 70px;
-    color: #fff;
+    color: #d8d6d6;
 }
 
 .owl-next {
@@ -384,12 +384,12 @@
 
 .owl-next span {
     font-size: 70px;
-    color: #fff;
+    color: #d8d6d6;
 }
 
-.owl-prev:hover,
-.owl-next:hover {
-    opacity: 0.5;
+.owl-prev:hover span,
+.owl-next:hover span {
+    color: #c9c7c7;
 }
 
 
