@@ -221,7 +221,7 @@ function LoginSite() {
                                 <span>Or login with</span>
                             </div>
                             <div className='d-flex justify-content-center mt-4'>
-                                <button type='button' onClick={() => login()}><img alt='' height={50} width={50} src='https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/640px-Google_%22G%22_Logo.svg.png' /></button>
+                                <button type='button' onClick={() => login()}><img alt='' height={50} width={50} src='https://companieslogo.com/img/orig/GOOG-0ed88f7c.png?t=1633218227' /></button>
                             </div>
                             <div className="text-center pt-3">
                                 <span className="txt1">

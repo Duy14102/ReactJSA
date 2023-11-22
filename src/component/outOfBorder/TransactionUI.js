@@ -9,6 +9,9 @@ function TransactionUI({ responseCode, ahoe, amount, date }) {
     if (responseCode === '24') {
         kakao = "Customer cancels transaction"
     }
+    if (responseCode === '15') {
+        kakao = "Customer did not make the transaction"
+    }
     if (responseCode === '09') {
         kakao = "Customer's card/account has not registered for InternetBanking service at the bank."
     }
@@ -41,7 +44,7 @@ function TransactionUI({ responseCode, ahoe, amount, date }) {
     }
     return (
         <>
-            {responseCode === '24' || responseCode === '09' || responseCode === '10' || responseCode === '11' || responseCode === '12' || responseCode === '13' || responseCode === '51' || responseCode === '65' || responseCode === '75' || responseCode === '79' || responseCode === '99' ? (
+            {responseCode === '24' || responseCode === '09' || responseCode === '10' || responseCode === '11' || responseCode === '12' || responseCode === '13' || responseCode === '51' || responseCode === '65' || responseCode === '75' || responseCode === '79' || responseCode === '99' || responseCode === '15' ? (
                 <div className="py-5">
                     <h2 className="mb-3">Transaction Failed!</h2>
                     <div className="croui mb-4 hugeImpace">

@@ -442,7 +442,7 @@ iframe {
 /*------------------------------------------------------------------
 [ Responsive ]*/
 
-@media (max-width: 576px) {
+@media (max-width: 575px) {
     .wrap-login100 {
         padding: 77px 15px 33px 15px;
     }
@@ -963,9 +963,21 @@ iframe {
     display: none;
 }
 
+.resCheckoutB2 {
+    display: none !important;
+}
+
 @media (max-width: 991.98px) {
     .gear {
         font-size: large !important;
+    }
+
+    .resCheckoutB2 {
+        display: inline-block !important;
+    }
+
+    .resCheckoutB {
+        display: none !important;
     }
 
     .sizeBgHero {
@@ -1553,6 +1565,22 @@ iframe {
 }
 
 @media (max-width:575px) {
+
+
+    .makeItDoe {
+        justify-content: center;
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .makeItDoe .emailInsideSecond {
+        width: 100% !important;
+    }
+
+    .emailInsideSecond .inputInsideSecond {
+        width: 100%;
+    }
+
     .gear {
         opacity: 1 !important;
     }
@@ -1709,7 +1737,13 @@ iframe {
         padding: 40px 10px !important;
     }
 
+    #myDIV6 {
+        margin-top: 10px;
+        padding: 10px;
+    }
+
     #myDIV3,
+    #myDIV4,
     #myDIV5,
     #myDIV4,
     #myDIV,
@@ -1718,6 +1752,18 @@ iframe {
         padding: 3%;
         width: 100%;
         justify-content: space-between;
+    }
+
+    #myDIV4 {
+        flex-wrap: wrap;
+        font-size: 3vw;
+        padding: 3%;
+        width: 100%;
+        justify-content: center;
+    }
+
+    #myDIV4 .thirdClassMb {
+        margin-top: 10px;
     }
 
     #myDIV9 {

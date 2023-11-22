@@ -243,7 +243,7 @@ function Checkout() {
                 }
                 const data = result.data.message
                 window.history.replaceState({}, document.title)
-                localStorage.clear()
+                localStorage.removeItem("cart")
                 if (Card && vnpay) {
                     VnpayCheckout(data)
                 } else {
@@ -305,10 +305,10 @@ function Checkout() {
                                 </li>
                             </ul>
                             {paypal ? null : (
-                                <button form="checkoutForm" className="btn btn-primary w-100 p-2" type="submit">Confirm</button>
+                                <button form="checkoutForm" className="btn btn-primary w-100 p-2 resCheckoutB" type="submit">Confirm</button>
                             )}
                             {paypal ? (
-                                <div className="mt-4">
+                                <div className="mt-4 resCheckoutB">
                                     <PayPalButton
                                         amount={fulltotal / 25000}
                                         // shippingPreference="NO_SHIPPING" // default is "GET_FROM_FILE"
@@ -346,7 +346,7 @@ function Checkout() {
 
                                         <div className="mb-3 inputC">
                                             <label htmlFor="email">Phone Number</label>
-                                            <input type="number" name="phonenumber" value={phonenumber} onChange={(e) => setPhonenumber(e.target.value)} className="form-control" id="email" placeholder="0123456789" />
+                                            <input type="number" name="phonenumber" value={phonenumber} onChange={(e) => setPhonenumber(e.target.value)} className="form-control" id="email" placeholder="0123456789" required />
                                             <div className="invalid-feedback">
                                                 Please enter a valid email address for shipping updates.
                                             </div>
@@ -357,7 +357,7 @@ function Checkout() {
                                 {candecode?.userRole === 1.5 ? (
                                     <div className="mb-3 inputC">
                                         <label htmlFor="email">Phone Number</label>
-                                        <input type="number" name="phonenumber" value={phonenumber} onChange={(e) => setPhonenumber(e.target.value)} className="form-control" id="email" placeholder="0123456789" />
+                                        <input type="number" name="phonenumber" value={phonenumber} onChange={(e) => setPhonenumber(e.target.value)} className="form-control" id="email" placeholder="0123456789" required />
                                         <div className="invalid-feedback">
                                             Please enter a valid email address for shipping updates.
                                         </div>
@@ -479,6 +479,24 @@ function Checkout() {
                                             </select>
                                         ) : null}
                                     </>
+                                ) : null}
+                                {paypal ? null : (
+                                    <button form="checkoutForm" className="btn btn-primary w-100 p-2 resCheckoutB2 mt-4" type="submit">Confirm</button>
+                                )}
+                                {paypal ? (
+                                    <div className="mt-4 resCheckoutB2 w-100">
+                                        <PayPalButton
+                                        ty
+                                            amount={fulltotal / 25000}
+                                            // shippingPreference="NO_SHIPPING" // default is "GET_FROM_FILE"
+                                            onSuccess={(details) => {
+                                                setPaypalState(details.status)
+                                            }}
+                                            onError={(err) => {
+                                                console.log(err);
+                                            }}
+                                        />
+                                    </div>
                                 ) : null}
                             </form>
                         </div>

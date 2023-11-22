@@ -14,7 +14,6 @@ function OrderComplete() {
     var amount = null
     var date = null
     if (queryParameters.size > 1) {
-        localStorage.clear()
         const type = queryParameters.get("vnp_ResponseCode")
         const type2 = queryParameters.get("vnp_Amount")
         const type3 = queryParameters.get("vnp_PayDate")
@@ -35,6 +34,9 @@ function OrderComplete() {
         var kakao = null
         if (type === '24') {
             kakao = "Customer cancels transaction"
+        }
+        if (type === '15') {
+            kakao = "Customer did not make the transaction"
         }
         if (type === '09') {
             kakao = "Customer's card/account has not registered for InternetBanking service at the bank."
@@ -79,7 +81,7 @@ function OrderComplete() {
             axios(configuration).then(() => { }).catch((err) => { console.log(err); })
         }
 
-        if (type === "24" || type === "09" || type === "10" || type === "11" || type === "12" || type === "13" || type === "51" || type === "65" || type === "75" || type === "79" || type === "99") {
+        if (type === "24" || type === "09" || type === "10" || type === "11" || type === "12" || type === "13" || type === "51" || type === "65" || type === "75" || type === "79" || type === "99" || type === "15") {
             const configuration = {
                 method: "post",
                 url: "http://localhost:3000/CancelVnpayPayment",
