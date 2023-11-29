@@ -3,7 +3,6 @@ const express = require('express');
 // Connect to MongoDB
 const mongoose = require('mongoose');
 require('dotenv').config({ path: "../.env" })
-// mongodb+srv://vtca123:vtca123@vtcareact.h9qlu1s.mongodb.net/?retryWrites=true&w=majority    --> Change this with connect string to access MongoDB Atlas
 mongoose.connect(process.env.REACT_APP_mongoCompassString).then(() => console.log('Connected To MongoDB')).catch((err) => { console.error(err); });
 const app = express();
 const cloudinary = require('cloudinary').v2
