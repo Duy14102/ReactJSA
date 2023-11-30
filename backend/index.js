@@ -25,7 +25,7 @@ cloudinary.config({
 });
 const cors = require('cors');
 const bodyParser = require('body-parser');
-console.log("App listen at port 3000");
+console.log("App listen at port 5000");
 app.use(bodyParser.json({ limit: '50mb', extended: true }));
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 }));
 app.use(bodyParser.text({ limit: '200mb' }));
