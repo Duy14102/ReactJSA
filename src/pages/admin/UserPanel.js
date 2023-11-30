@@ -27,6 +27,8 @@ function UserPanel() {
     const [GetUser, setGetUser] = useState([])
     const [GetOrder, setGetOrder] = useState([])
     const [spinner, setSpinner] = useState(false)
+    const [alertCheck, setAlertCheck] = useState(false)
+    const checkPhone = /((09|03|07|08|05)+([0-9]{8})\b)/g
     useEffect(() => {
         if (name.userRole !== 1.5) {
             fetch(`http://localhost:3000/GetDetailUser?userid=${appler.id}`, {
@@ -122,6 +124,11 @@ function UserPanel() {
             },
         };
         setSpinner(true)
+        if (!checkPhone.test(updatephone)) {
+            setSpinner(false)
+            setAlertCheck(true)
+            return false
+        }
         axios(configuration)
             .then(() => {
                 setSpinner(false)
@@ -168,7 +175,7 @@ function UserPanel() {
                                     {Edit ? (
                                         <div style={{ gap: 5 + "%" }} className="d-flex justify-content-center">
                                             <button type="submit" className="button4Edit" >Comfirm</button>
-                                            <button type="button" className="button4Edit" onClick={() => setEdit(false)}>Cancel</button>
+                                            <button type="button" className="button4Edit" onClick={() => { setEdit(false); setAlertCheck(false) }}>Cancel</button>
                                         </div>
                                     ) : (
                                         <button type="button" className="button4Edit" onClick={() => setEdit(true)}>Edit</button>
@@ -243,6 +250,9 @@ function UserPanel() {
                                                                 <div className="emailInsideSecond">
                                                                     <label htmlFor="phonenumber">Phone Number</label>
                                                                     <input name="updatephone" defaultValue={i.phonenumber} value={updatephone} onChange={(e) => setPhonenumber(e.target.value)} type="number" className="inputInsideSecond" id="phonenumber" />
+                                                                    {alertCheck ? (
+                                                                        <p className="m-0 text-danger">Phone number invalid!</p>
+                                                                    ) : null}
                                                                 </div>
                                                             </div>
                                                         </div>

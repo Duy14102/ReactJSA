@@ -23,8 +23,10 @@ function Reservation() {
     const [bookingBook, setBookingBook] = useState(null)
     const [checkDate, setCheckDate] = useState(false)
     const [openOOO, setOpenOOO] = useState(false)
+    const [alertCheck, setAlertCheck] = useState(false)
     const datetime = new Date().getTime()
     const date2 = new Date(date).getTime()
+    const checkPhone = /((09|03|07|08|05)+([0-9]{8})\b)/g
 
     useEffect(() => {
         if (token) {
@@ -77,6 +79,10 @@ function Reservation() {
                 people,
                 message
             }
+        }
+        if (!checkPhone.test(phone)) {
+            setAlertCheck(true)
+            return false
         }
         if (date2 >= datetime) {
             setCheckDate(false)
@@ -214,6 +220,9 @@ function Reservation() {
                                                     <div className="col-md-6">
                                                         <label htmlFor="phone" >Your Phone Number</label>
                                                         <input value={phone} onChange={(e) => setPhone(e.target.value)} type="number" className="cutOut" id="phone" placeholder="Your Phone Number" required />
+                                                        {alertCheck ? (
+                                                            <p className="m-0 pt-1 text-danger">Phone number invalid!</p>
+                                                        ) : null}
                                                     </div>
                                                 </>
                                             )}
@@ -221,6 +230,9 @@ function Reservation() {
                                                 <div className="col-md-6">
                                                     <label htmlFor="phone" >Your Phone Number</label>
                                                     <input value={phone} onChange={(e) => setPhone(e.target.value)} type="number" className="cutOut" id="phone" placeholder="Your Phone Number" required />
+                                                    {alertCheck ? (
+                                                        <p className="m-0 pt-1 text-danger">Phone number invalid!</p>
+                                                    ) : null}
                                                 </div>
                                             ) : null}
                                             <div className="col-md-6">

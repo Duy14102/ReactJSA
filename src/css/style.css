@@ -904,6 +904,24 @@ iframe {
     animation: 10s rotate linear infinite;
 }
 
+.footerTel {
+    display: inline-block;
+    color: #F1F8FF;
+}
+
+.footerTel2 {
+    display: inline-block;
+    color: #666565;
+}
+
+.footerTel:hover,
+.footerTel:active,
+.footerTel2:hover,
+.footerTel2:active {
+    color: #FEA116;
+    transition: all 0.2s;
+}
+
 .inputSearch:focus-visible {
     outline: none;
 }

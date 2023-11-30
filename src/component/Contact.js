@@ -1,4 +1,5 @@
 import axios from "axios";
+import HTMLReactParser from "html-react-parser";
 import { jwtDecode } from "jwt-decode";
 import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
@@ -11,6 +12,9 @@ function Contact() {
     const [email, setEmail] = useState()
     const [title, setTitle] = useState()
     const [message, setMessage] = useState()
+    const [address, setAddress] = useState()
+    const [phone, setPhone] = useState()
+    const [email2, setEmail2] = useState()
 
     useEffect(() => {
         if (token) {
@@ -19,6 +23,21 @@ function Contact() {
             setEmail(decode.userEmail)
         }
     }, [token])
+
+    useEffect(() => {
+        const configuration = {
+            method: "get",
+            url: "http://localhost:3000/GetTheFooter"
+        }
+        axios(configuration)
+            .then((res) => {
+                setAddress(res.data.data.word.up)
+                setPhone(res.data.data.word.middle)
+                setEmail2(res.data.data.word.down)
+            }).catch((err) => {
+                console.log(err);
+            })
+    }, [])
 
     const addcontact = (e) => {
         e.preventDefault()
@@ -51,6 +70,7 @@ function Contact() {
                 })
             })
     }
+    const dataTel = `tel:${HTMLReactParser(`${phone}`)}`
     return (
         <div className="container-xxl py-5">
             <div className="container">
@@ -63,17 +83,17 @@ function Contact() {
                         <div className="row gy-4">
                             <div className="col-md-4">
                                 <h5 className="section-title ff-secondary fw-normal text-start text-primary">Address</h5>
-                                <p><svg style={{ fill: "#FEA116" }} className="me-2" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 384 512"><path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z" /></svg>18 Tam Trinh, Ha Noi, Viet Nam</p>
+                                <p><svg style={{ fill: "#FEA116" }} className="me-2" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 384 512"><path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z" /></svg>{HTMLReactParser(`${address}`)}</p>
                             </div>
                             <div className="col-md-4">
-                                <div>
+                                <div className="w-100">
                                     <h5 className="section-title ff-secondary fw-normal text-start text-primary">Phone Number</h5>
-                                    <p><svg style={{ fill: "#FEA116" }} className="me-2" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M280 0C408.1 0 512 103.9 512 232c0 13.3-10.7 24-24 24s-24-10.7-24-24c0-101.6-82.4-184-184-184c-13.3 0-24-10.7-24-24s10.7-24 24-24zm8 192a32 32 0 1 1 0 64 32 32 0 1 1 0-64zm-32-72c0-13.3 10.7-24 24-24c75.1 0 136 60.9 136 136c0 13.3-10.7 24-24 24s-24-10.7-24-24c0-48.6-39.4-88-88-88c-13.3 0-24-10.7-24-24zM117.5 1.4c19.4-5.3 39.7 4.6 47.4 23.2l40 96c6.8 16.3 2.1 35.2-11.6 46.3L144 207.3c33.3 70.4 90.3 127.4 160.7 160.7L345 318.7c11.2-13.7 30-18.4 46.3-11.6l96 40c18.6 7.7 28.5 28 23.2 47.4l-24 88C481.8 499.9 466 512 448 512C200.6 512 0 311.4 0 64C0 46 12.1 30.2 29.5 25.4l88-24z" /></svg>+012 345 67890</p>
                                 </div>
+                                <a className="footerTel2" href={dataTel}><p><svg style={{ fill: "#FEA116" }} className="me-2" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M280 0C408.1 0 512 103.9 512 232c0 13.3-10.7 24-24 24s-24-10.7-24-24c0-101.6-82.4-184-184-184c-13.3 0-24-10.7-24-24s10.7-24 24-24zm8 192a32 32 0 1 1 0 64 32 32 0 1 1 0-64zm-32-72c0-13.3 10.7-24 24-24c75.1 0 136 60.9 136 136c0 13.3-10.7 24-24 24s-24-10.7-24-24c0-48.6-39.4-88-88-88c-13.3 0-24-10.7-24-24zM117.5 1.4c19.4-5.3 39.7 4.6 47.4 23.2l40 96c6.8 16.3 2.1 35.2-11.6 46.3L144 207.3c33.3 70.4 90.3 127.4 160.7 160.7L345 318.7c11.2-13.7 30-18.4 46.3-11.6l96 40c18.6 7.7 28.5 28 23.2 47.4l-24 88C481.8 499.9 466 512 448 512C200.6 512 0 311.4 0 64C0 46 12.1 30.2 29.5 25.4l88-24z" /></svg>{HTMLReactParser(`${phone}`)}</p></a>
                             </div>
                             <div className="col-md-4">
                                 <h5 className="section-title ff-secondary fw-normal text-start text-primary">Email</h5>
-                                <p><svg style={{ fill: "#FEA116" }} className="me-2" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48H48zM0 176V384c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V176L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z" /></svg>FreeFire@SDTHT.com</p>
+                                <p><svg style={{ fill: "#FEA116" }} className="me-2" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48H48zM0 176V384c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V176L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z" /></svg>{HTMLReactParser(`${email2}`)}</p>
                             </div>
                         </div>
                     </div>
