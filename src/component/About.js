@@ -40,23 +40,23 @@ function About() {
                                 return (
                                     <Fragment key={i.name}>
                                         {i.name === "k9axej6qza2mzsp8lwvj" ? (
-                                            <div key={i.name} className="col-6 text-start">
-                                                <img className="img-fluid rounded w-100 wow zoomIn" width="100%" height="100%" data-wow-delay="0.1s" src={i.url} alt="about1" />
+                                            <div className="col-6 text-start">
+                                                <img loading='lazy' className="img-fluid rounded w-100 wow zoomIn" width="100%" height="100%" data-wow-delay="0.1s" src={i.url} alt="about1" />
                                             </div>
                                         ) : null}
                                         {i.name === "ixdn78iskyewdqszx4rf" ? (
-                                            <div key={i.name} className="col-6 text-start" style={{ position: "relative" }}>
-                                                <img className="img-fluid rounded w-75 wow zoomIn" width="100%" height="100%" data-wow-delay="0.3s" src={i.url} alt="about2" style={{ position: "absolute", bottom: 0 }} />
+                                            <div className="col-6 text-start" style={{ position: "relative" }}>
+                                                <img loading='lazy' className="img-fluid rounded w-75 wow zoomIn" width="100%" height="100%" data-wow-delay="0.3s" src={i.url} alt="about2" style={{ position: "absolute", bottom: 0 }} />
                                             </div>
                                         ) : null}
                                         {i.name === "ucvurntwkq3pgbvq8scl" ? (
-                                            <div key={i.name} className="col-6 text-end">
-                                                <img className="img-fluid rounded w-75 wow zoomIn" width="100%" height="100%" data-wow-delay="0.5s" src={i.url} alt="about3" />
+                                            <div className="col-6 text-end">
+                                                <img loading='lazy' className="img-fluid rounded w-75 wow zoomIn" width="100%" height="100%" data-wow-delay="0.5s" src={i.url} alt="about3" />
                                             </div>
                                         ) : null}
                                         {i.name === "irnkhvizbt88rhedgys2" ? (
-                                            <div key={i.name} className="col-6 text-end">
-                                                <img className="img-fluid rounded w-100 wow zoomIn" width="100%" height="100%" data-wow-delay="0.7s" src={i.url} alt="about4" />
+                                            <div className="col-6 text-end">
+                                                <img loading='lazy' className="img-fluid rounded w-100 wow zoomIn" width="100%" height="100%" data-wow-delay="0.7s" src={i.url} alt="about4" />
                                             </div>
                                         ) : null}
                                     </Fragment>
