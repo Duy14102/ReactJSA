@@ -22,6 +22,7 @@ function OrderAdmin({ Data }) {
     const [spinner, setSpinner] = useState(false)
     const [modalOpenDetail3, setModalOpenDetail3] = useState(false);
     const [modalOpenDetail4, setModalOpenDetail4] = useState(false);
+    const [reject, setReject] = useState(false);
     useEffect(() => {
         if (modalOpenDetail2 === false) {
             setAccept(false)
@@ -131,6 +132,36 @@ function OrderAdmin({ Data }) {
             }).catch((e) => {
                 Swal.fire(
                     'Denied fail!',
+                    '',
+                    'error'
+                ).then(function () {
+                    console.log(e);
+                })
+            })
+    }
+
+    const denyOrderWait = (id) => {
+        const configuration = {
+            method: "post",
+            url: "http://localhost:3000/DenyOrderWaiting",
+            params: {
+                id: id,
+                employee: deliverEmployee,
+                status: 6,
+            }
+        }
+        axios(configuration)
+            .then(() => {
+                Swal.fire(
+                    'Canceled successfully!',
+                    '',
+                    'success'
+                ).then(function () {
+                    window.location.reload();
+                })
+            }).catch((e) => {
+                Swal.fire(
+                    'Canceled fail!',
                     '',
                     'error'
                 ).then(function () {
@@ -407,6 +438,9 @@ function OrderAdmin({ Data }) {
                             {decode.userRole === 3 && ModalData.paymentmethod?.type === "Vnpay" ? (
                                 <button onClick={() => setModalOpenDetail4(true)} className="btn btn-danger">Cancel</button>
                             ) : null}
+                            {decode.userRole === 3 && ModalData.paymentmethod?.type === "COD" ? (
+                                <button onClick={() => setReject(true)} className="btn btn-danger">Cancel</button>
+                            ) : null}
                         </div>
                         <p>Reason : {ModalData.denyreason}</p>
                     </>
@@ -431,6 +465,15 @@ function OrderAdmin({ Data }) {
                                 </div>
                             </form>
                         )}
+                    </div>
+                ) : null}
+                {reject ? (
+                    <div className="pt-3">
+                        <p>Reason why deny : </p>
+                        <div className="d-flex justify-content-evenly align-items-center">
+                            <button className="btn btn-primary" onClick={() => denyOrderWait(ModalData._id)}>Yes</button>
+                            <button className="btn btn-secondary" onClick={() => setReject(false)}>No</button>
+                        </div>
                     </div>
                 ) : null}
                 <button className='closeModal' onClick={() => setModalOpenDetail2(false)}>x</button>

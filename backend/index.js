@@ -1042,6 +1042,25 @@ app.post("/DenyOrder", (req, res) => {
     }
 })
 
+//Deny Order status
+app.post("/DenyOrderWaiting", (req, res) => {
+    try {
+        getThisOrder.updateOne({ _id: req.query.id }, {
+            $push: {
+                employee: req.query.employee
+            },
+            status: req.query.status
+        }).then(() => {
+            res.send({ data: "Updated" })
+        }).catch((err) => {
+            console.log(err);
+        })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+
 //Cancel Vnpay payment
 app.post("/CancelVnpayPayment", (req, res) => {
     try {
