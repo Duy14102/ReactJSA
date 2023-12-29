@@ -414,7 +414,7 @@ function DetailMenuPage() {
                                                                                     <img alt='' height={50} width={50} src="https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg" />
                                                                                 )}
                                                                                 <div>
-                                                                                    <div>{rating(r.star)}</div>
+                                                                                    <div style={{ color: "#FEA116" }}>{rating(r.star)}</div>
                                                                                     <p className='m-0'><b>{r.name}</b> - {r.date}</p>
                                                                                     <p className='m-0'>{r.message}</p>
                                                                                 </div>
@@ -429,7 +429,7 @@ function DetailMenuPage() {
                                                                     onPageChange={(e) => handlePageClick(e.selected, i)}
                                                                     pageRangeDisplayed={5}
                                                                     pageCount={pageCount}
-                                                                    previousLabel="< Previous"
+                                                                    previousLabel="< Prev"
                                                                     renderOnZeroPageCount={null}
                                                                     marginPagesDisplayed={2}
                                                                     containerClassName="pagination justify-content-center"
@@ -457,7 +457,7 @@ function DetailMenuPage() {
                                                                                 <img alt='' height={50} width={50} src="https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg" />
                                                                             )}
                                                                             <div>
-                                                                                <div>{rating(gotReview.star)}</div>
+                                                                                <div style={{ color: "#FEA116" }}>{rating(gotReview.star)}</div>
                                                                                 <p className='m-0'><b>{gotReview.name}</b> - {gotReview.date}</p>
                                                                                 <p className='m-0'>{gotReview.message}</p>
                                                                             </div>
@@ -532,18 +532,16 @@ function DetailMenuPage() {
                                                     return (
                                                         <Fragment key={a._id}>
                                                             {a.foodcategory === i.foodcategory && a._id !== i._id ? (
-                                                                <>
-                                                                    <div className="testimonial-item bg-transparent">
-                                                                        <NavLink reloadDocument to={`/DetailMenuPage/${a.foodname}/${a.foodcategory}`}>
-                                                                            <img loading="lazy" alt='' height={200} src={a.foodimage} />
-                                                                        </NavLink>
-                                                                        <p style={{ margin: 0 }} className='text-center'>{a.foodcategory}</p>
-                                                                        <NavLink className="text-center" reloadDocument to={`/DetailMenuPage/${a._id}`}>
-                                                                            <p style={{ margin: 0, color: "#FEA116" }}><b>{a.foodname}</b></p>
-                                                                        </NavLink>
-                                                                        <h6 style={{ margin: 0 }} className='text-center'>{VND.format(a.foodprice)}</h6>
-                                                                    </div>
-                                                                </>
+                                                                <div className="testimonial-item bg-transparent">
+                                                                    <NavLink reloadDocument to={`/DetailMenuPage/${a.foodname}/${a.foodcategory}`}>
+                                                                        <img loading="lazy" alt='' height={200} src={a.foodimage} />
+                                                                    </NavLink>
+                                                                    <p style={{ margin: 0 }} className='text-center'>{a.foodcategory}</p>
+                                                                    <NavLink className="text-center" reloadDocument to={`/DetailMenuPage/${a._id}`}>
+                                                                        <p style={{ margin: 0, color: "#FEA116" }}><b>{a.foodname}</b></p>
+                                                                    </NavLink>
+                                                                    <h6 style={{ margin: 0 }} className='text-center'>{VND.format(a.foodprice)}</h6>
+                                                                </div>
                                                             ) : null}
                                                         </Fragment>
                                                     )
