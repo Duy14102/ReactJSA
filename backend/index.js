@@ -4,7 +4,7 @@ const app = express();
 // Connect to MongoDB
 const mongoose = require('mongoose');
 require('dotenv').config({ path: "../.env" })
-mongoose.connect(process.env.REACT_APP_mongoAtlasString).then(() => console.log('Connected To MongoDB')).catch((err) => { console.error(err); });
+mongoose.connect(process.env.REACT_APP_mongoCompassString).then(() => console.log('Connected To MongoDB')).catch((err) => { console.error(err); });
 app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader(
@@ -3013,3 +3013,30 @@ app.post('/VnpayRefund', function (req, res, next) {
         console.log(err);
     }
 });
+
+app.post("/DeleteAcountNative", (req, res) => {
+    try {
+        User.findOne({ _id: req.query.id }).then(async (user) => {
+            const compare = await bcrypt.compare(req.query.password, user.password)
+            if (compare) {
+                const checkOrder = await getThisOrder.find({ user: { $elemMatch: { id: req.query.id } }, status: { $in: [1, 2, 4] } }).exec()
+                const checkBooking = await GetBooking.find({ "customer.id": req.query.id, status: { $in: [1, 2] } }).exec()
+                if (checkOrder.length > 0 || checkBooking.length > 0) {
+                    res.status(500).send({ message: "You still have order & booking not complete!" })
+                }
+                else {
+                    getUserD.deleteOne({ _id: req.query.id }).then(() => {
+                        res.send({ data: "Succent" })
+                    }).catch(() => {
+                        res.status(501).send()
+                    })
+                }
+            } else {
+                res.status(502).send({ message: "Password invalid!" })
+            }
+        })
+    } catch (error) {
+        console.log(error);
+    }
+
+})

@@ -11,6 +11,7 @@ import Cookies from "universal-cookie";
 import { jwtDecode } from "jwt-decode";
 import Layout from "../../Layout";
 import '../../css/Admin.css'
+import Modal from 'react-modal';
 
 function UserPanel() {
     const cookies = new Cookies();
@@ -22,12 +23,15 @@ function UserPanel() {
     const [updatephone, setPhonenumber] = useState()
     const [updatefullname, setFullName] = useState()
     const [updateimage, setImage] = useState();
-    // const [Address, setAddress] = useState("")
+    const [deletePassword, setDeletePassword] = useState("")
     const [Edit, setEdit] = useState(false)
     const [GetUser, setGetUser] = useState([])
     const [GetOrder, setGetOrder] = useState([])
     const [spinner, setSpinner] = useState(false)
     const [alertCheck, setAlertCheck] = useState(false)
+    const [modalOpenDetail, setModalOpenDetail] = useState(false);
+    const [seePassword, setSeePassword] = useState(false)
+    const [checkDeletePassword, setCheckDeletePassword] = useState()
     const checkPhone = /((09|03|07|08|05)+([0-9]{8})\b)/g
     useEffect(() => {
         if (name.userRole !== 1.5) {
@@ -145,6 +149,38 @@ function UserPanel() {
             });
     }
 
+    function DeleteAcount(e) {
+        // prevent the form from refreshing the whole page
+        e.preventDefault();
+        const configuration = {
+            method: "post",
+            url: "http://localhost:3000/DeleteAcountNative",
+            params: {
+                id: appler.id,
+                password: deletePassword,
+            }
+        }
+        axios(configuration)
+            .then(() => {
+                Swal.fire(
+                    'Delete account successfully!',
+                    '',
+                    'success'
+                ).then(function () {
+                    cookies.remove("TOKEN", { path: '/' });
+                    window.location.href = "/"
+                })
+            }).catch((er) => {
+                Swal.fire(
+                    'Delete account fail!',
+                    '',
+                    'error'
+                ).then(function () {
+                    setCheckDeletePassword(er.response.data.message)
+                })
+            })
+    }
+
     function openCity3(evt, cityName) {
         var i, tabcontent, tablinks;
         tabcontent = document.getElementsByClassName("UPanelButton");
@@ -173,7 +209,8 @@ function UserPanel() {
                                 <div className="headOverview">
                                     <h5 style={{ whiteSpace: "nowrap" }} className="m-0">User Overview</h5>
                                     {Edit ? (
-                                        <div style={{ gap: 5 + "%" }} className="d-flex justify-content-center">
+                                        <div style={{ gap: 5 + "%", paddingRight: 15 }} className="d-flex justify-content-center">
+                                            <button type="button" style={{ fontSize: 13 }} className="btn btn-danger text-nowrap" onClick={() => setModalOpenDetail(true)}>Delete account</button>
                                             <button type="submit" className="button4Edit" >Comfirm</button>
                                             <button type="button" className="button4Edit" onClick={() => { setEdit(false); setAlertCheck(false) }}>Cancel</button>
                                         </div>
@@ -230,57 +267,32 @@ function UserPanel() {
                                                     </div>
                                                 )}
                                                 <div className="okImSecond pt-3">
-                                                    {Edit ? (
-                                                        <div>
-                                                            <div className="makeItDoe">
-                                                                <div className="emailInsideSecond">
-                                                                    <label htmlFor="email">Email</label>
-                                                                    <input name="updateemail" defaultValue={i.email} value={updateemail} onChange={(e) => setEmail(e.target.value)} type="email" className="inputInsideSecond" id="email" />
-                                                                </div>
-                                                                <div className="emailInsideSecond">
-                                                                    <label htmlFor="password">Password</label>
-                                                                    <input name="updatepassword" value={updatepassword} onChange={(e) => setPassword(e.target.value)} type="password" className="inputInsideSecond" id="password" placeholder="●●●●●●●●●●" />
-                                                                </div>
+                                                    <div style={{ pointerEvents: Edit ? "auto" : "none" }}>
+                                                        <div className="makeItDoe">
+                                                            <div className="emailInsideSecond">
+                                                                <label htmlFor="email">Email</label>
+                                                                <input name="updateemail" defaultValue={i.email} value={updateemail} onChange={(e) => setEmail(e.target.value)} type="email" className="inputInsideSecond" id="email" />
                                                             </div>
-                                                            <div className="makeItDoe pt-3">
-                                                                <div className="emailInsideSecond">
-                                                                    <label htmlFor="fullname">Name</label>
-                                                                    <input name="uppdatefullname" defaultValue={i.fullname} value={updatefullname} onChange={(e) => setFullName(e.target.value)} type="text" className="inputInsideSecond" id="fullname" />
-                                                                </div>
-                                                                <div className="emailInsideSecond">
-                                                                    <label htmlFor="phonenumber">Phone Number</label>
-                                                                    <input name="updatephone" defaultValue={i.phonenumber} value={updatephone} onChange={(e) => setPhonenumber(e.target.value)} type="number" className="inputInsideSecond" id="phonenumber" />
-                                                                    {alertCheck ? (
-                                                                        <p className="m-0 text-danger">Phone number invalid!</p>
-                                                                    ) : null}
-                                                                </div>
+                                                            <div className="emailInsideSecond">
+                                                                <label htmlFor="password">Password</label>
+                                                                <input name="updatepassword" value={updatepassword} onChange={(e) => setPassword(e.target.value)} type="password" className="inputInsideSecond" id="password" placeholder="●●●●●●●●●●" />
                                                             </div>
                                                         </div>
-                                                    ) : (
-                                                        <div style={{ pointerEvents: "none" }}>
-                                                            <div className="makeItDoe">
-                                                                <div className="emailInsideSecond">
-                                                                    <label htmlFor="email">Email</label>
-                                                                    <input name="updatemail" defaultValue={i.email} type="email" className="inputInsideSecond" id="email" />
-                                                                </div>
-                                                                <div className="emailInsideSecond">
-                                                                    <label htmlFor="password">Password</label>
-                                                                    <input name="updatepassword" type="password" className="inputInsideSecond" id="password" placeholder="●●●●●●●●●●" />
-                                                                </div>
+                                                        <div className="makeItDoe pt-3">
+                                                            <div className="emailInsideSecond">
+                                                                <label htmlFor="fullname">Name</label>
+                                                                <input name="uppdatefullname" defaultValue={i.fullname} value={updatefullname} onChange={(e) => setFullName(e.target.value)} type="text" className="inputInsideSecond" id="fullname" />
                                                             </div>
-                                                            <div className="makeItDoe pt-3">
-                                                                <div className="emailInsideSecond">
-                                                                    <label htmlFor="fullname">Name</label>
-                                                                    <input name="uppdatefullname" defaultValue={i.fullname} type="text" className="inputInsideSecond" id="fullname" />
-                                                                </div>
-                                                                <div className="emailInsideSecond">
-                                                                    <label htmlFor="phonenumber">Phone Number</label>
-                                                                    <input name="updatephone" defaultValue={i.phonenumber} type="number" className="inputInsideSecond" id="phonenumber" />
-                                                                </div>
+                                                            <div className="emailInsideSecond">
+                                                                <label htmlFor="phonenumber">Phone Number</label>
+                                                                <input name="updatephone" defaultValue={i.phonenumber} value={updatephone} onChange={(e) => setPhonenumber(e.target.value)} type="number" className="inputInsideSecond" id="phonenumber" />
+                                                                {alertCheck ? (
+                                                                    <p className="m-0 text-danger">Phone number invalid!</p>
+                                                                ) : null}
                                                             </div>
                                                         </div>
-                                                    )}
-                                                    <div className="emailInsideSecond py-3">
+                                                    </div>
+                                                    <div className="emailInsideSecond pt-3">
                                                         <label htmlFor="address">Address</label>
                                                         <UserAddressControl address={i.address} edit={Edit} userid={appler.id} user={GetUser} />
                                                     </div>
@@ -330,7 +342,54 @@ function UserPanel() {
                             <UserBookingPanel id={appler.id} />
                         </div>
                     </div>
-                </div >
+                </div>
+                <Modal
+                    isOpen={modalOpenDetail} onRequestClose={() => setModalOpenDetail(false)} ariaHideApp={false}
+                    style={{
+                        overlay: {
+                            position: 'fixed',
+                            zIndex: 998,
+                            backgroundColor: 'rgb(33 33 33 / 75%)'
+                        },
+                        content: {
+                            top: "50%",
+                            left: "50%",
+                            right: "auto",
+                            bottom: "auto",
+                            marginRight: "-50%",
+                            transform: "translate(-50%, -50%)",
+                            backgroundColor: "white",
+                            width: "70vw",
+                            height: "45vh",
+                            zIndex: 999
+                        },
+                    }}>
+                    <form onSubmit={(e) => DeleteAcount(e)} className="p-3" style={{ display: "flex", flexDirection: "column", gap: 30 }}>
+                        <h4 className="text-center">Input your password to delete this account</h4>
+                        <div className="d-flex justify-content-center flex-column align-items-center">
+                            <div className="deleteAccountInputField">
+                                <input onChange={(e) => setDeletePassword(e.target.value)} style={{ width: "90%", fontSize: 25, border: "none", padding: 5 }} type={seePassword ? "text" : "password"} required />
+                                {seePassword ? (
+                                    <button className="EyeInDeleteAccountField" type="button" style={{ width: "10%", textAlign: "center" }} onClick={() => setSeePassword(false)}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" height="20" width="40" viewBox="0 0 576 512"><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c8.4-19.3 10.6-41.4 4.8-63.3c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zM373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5L373 389.9z" /></svg>
+                                    </button>
+                                ) : (
+                                    <button className="EyeInDeleteAccountField" type="button" style={{ width: "10%", textAlign: "center" }} onClick={() => setSeePassword(true)}>
+                                        <svg xmlns="http://www.w3.org/2000/svg" height="20" width="40" viewBox="0 0 576 512"><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM144 256a144 144 0 1 1 288 0 144 144 0 1 1 -288 0zm144-64c0 35.3-28.7 64-64 64c-7.1 0-13.9-1.2-20.3-3.3c-5.5-1.8-11.9 1.6-11.7 7.4c.3 6.9 1.3 13.8 3.2 20.7c13.7 51.2 66.4 81.6 117.6 67.9s81.6-66.4 67.9-117.6c-11.1-41.5-47.8-69.4-88.6-71.1c-5.8-.2-9.2 6.1-7.4 11.7c2.1 6.4 3.3 13.2 3.3 20.3z" /></svg>
+                                    </button>
+                                )}
+                            </div>
+                            {checkDeletePassword ? (
+                                <p style={{ color: "red", paddingTop: 10 + "px" }}>{checkDeletePassword}</p>
+                            ) : null}
+                        </div>
+                        <div className="d-flex align-items-center justify-content-evenly">
+                            <button type="submit" className="btn btn-primary">Confirm</button>
+                            <button type="button" className="btn btn-secondary" onClick={() => setModalOpenDetail(false)}>Cancel</button>
+                        </div>
+                    </form>
+                    <button className='closeModal' onClick={() => setModalOpenDetail(false)}>x</button>
+                </Modal>
             </div>
         </Layout>
     )

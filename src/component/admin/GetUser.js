@@ -174,7 +174,7 @@ function GetUser({ type, status }) {
                     {ModalData.status === 2 ? (
                         <button onClick={() => setModalOpenDetail2(true)} className="btn btn-danger">Unbanned</button>
                     ) : null}
-                </div >
+                </div>
                 <button className='closeModal' onClick={() => setModalOpenDetail(false)}>x</button>
             </Modal>
             <Modal isOpen={modalOpenDetail2} onRequestClose={() => setModalOpenDetail2(false)} ariaHideApp={false}

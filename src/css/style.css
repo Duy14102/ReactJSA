@@ -1575,6 +1575,29 @@ iframe {
     height: 150px;
 }
 
+.deleteAccountInputField {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60%;
+    border-radius: 6px;
+    padding: 5px;
+    border: 1px solid gray;
+}
+
+.deleteAccountInputField input:focus {
+    outline: none;
+}
+
+.deleteAccountInputField .EyeInDeleteAccountField:hover {
+    opacity: 0.5;
+    transition: all 0.2s;
+}
+
+.deleteAccountInputField .EyeInDeleteAccountField:active {
+    transform: scale(0.8);
+}
+
 .noPlusElf {
     padding: 0.7%;
     background: rgba(236, 236, 236, 0.5);
