@@ -1616,8 +1616,20 @@ iframe {
     background: rgba(196, 195, 195, 0.5);
 }
 
-@media (max-width:575px) {
+.encot {
+    text-align: center;
+}
 
+@media (max-width:575px) {
+    .ruler {
+        justify-content: center !important;
+    }
+
+    .ThirdRow {
+        flex-direction: column;
+        text-align: center;
+        gap: 5px;
+    }
 
     .makeItDoe {
         justify-content: center;
@@ -1948,7 +1960,7 @@ iframe {
     }
 
     .product-name {
-        font-size: 30px !important;
+        font-size: 21px !important;
     }
 
     .sonbuhhuh {

@@ -112,8 +112,8 @@ function SearchSite() {
                 <div className='container'>
                     <div className='ruler pt-3'>
                         <p style={{ margin: 0 }}><NavLink className="textNavlink" to="/">Home</NavLink> / <b>Search result for : "{appler.id}"</b></p>
-                        <div className='d-flex justify-content-between align-items-center ThirdRow'>
-                            <p style={{ margin: 0, width: 100 + "%" }}>Display all {Count} results</p>
+                        <div className='ThirdRow'>
+                            <p style={{ margin: 0, width: 100 + "%", marginBottom: 5 }}>Display all {Count} results</p>
                             <select id='select2' onChange={(e) => Filter(e.target.value)} className='FilterDrop'>
                                 <option value={"nto"}>New to old</option>
                                 <option value={"otn"}>Old to new</option>
