@@ -27,7 +27,7 @@ function Contact() {
     useEffect(() => {
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/GetTheFooter"
+            url: "https://eatcom.onrender.com/GetTheFooter"
         }
         axios(configuration)
             .then((res) => {
@@ -43,7 +43,7 @@ function Contact() {
         e.preventDefault()
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/AddContact",
+            url: "https://eatcom.onrender.com/AddContact",
             data: {
                 name,
                 email,

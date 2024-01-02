@@ -26,7 +26,7 @@ function UserDataPanel({ Data, toke }) {
         e.preventDefault();
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/DenyOrder",
+            url: "https://eatcom.onrender.com/DenyOrder",
             params: {
                 id: id,
                 reason: DenyReason,
@@ -56,7 +56,7 @@ function UserDataPanel({ Data, toke }) {
     const CancelRequest = () => {
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/CancelRequestFour",
+            url: "https://eatcom.onrender.com/CancelRequestFour",
             data: {
                 id: ModalData._id,
                 status: 1

@@ -23,7 +23,7 @@ function GetOrder() {
     function getPagination() {
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/GetAllOrderActive",
+            url: "https://eatcom.onrender.com/GetAllOrderActive",
             params: {
                 page: currentPage.current,
                 limit: limit

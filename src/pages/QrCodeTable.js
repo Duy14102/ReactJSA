@@ -44,7 +44,7 @@ function QrCodeTable() {
     const getTable4 = useCallback(() => {
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/QrCodeItemTB",
+            url: "https://eatcom.onrender.com/QrCodeItemTB",
             params: {
                 id: appler.id
             }
@@ -72,7 +72,7 @@ function QrCodeTable() {
     function getPagination() {
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/GetCategoryMenu",
+            url: "https://eatcom.onrender.com/GetCategoryMenu",
             params: {
                 category: appler.cate,
                 page: currentPage.current,
@@ -124,7 +124,7 @@ function QrCodeTable() {
         }
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/QrCodeTableActive",
+            url: "https://eatcom.onrender.com/QrCodeTableActive",
             data: {
                 id: appler.id,
                 cusid: kock
@@ -150,7 +150,7 @@ function QrCodeTable() {
         e.preventDefault()
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/AddItemToTable",
+            url: "https://eatcom.onrender.com/AddItemToTable",
             data: {
                 tableid: appler.id,
                 item: item,
@@ -164,7 +164,7 @@ function QrCodeTable() {
                 setTimeout(() => {
                     const configuration2 = {
                         method: "post",
-                        url: "http://localhost:3000/UpdateItemQrStatus",
+                        url: "https://eatcom.onrender.com/UpdateItemQrStatus",
                         data: {
                             tableid: appler.id,
                             foodname: res.data.data.foodname,
@@ -191,7 +191,7 @@ function QrCodeTable() {
     const deleteItem = (name, item) => {
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/DeleteQritem",
+            url: "https://eatcom.onrender.com/DeleteQritem",
             data: {
                 tableid: appler.id,
                 quantity: QuantityAdd,
@@ -223,7 +223,7 @@ function QrCodeTable() {
     const CheckOutQr = (e) => {
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/Checkout4QrYeah",
+            url: "https://eatcom.onrender.com/Checkout4QrYeah",
             params: {
                 id: e._id
             }

@@ -35,13 +35,13 @@ function UserPanel() {
     const checkPhone = /((09|03|07|08|05)+([0-9]{8})\b)/g
     useEffect(() => {
         if (name.userRole !== 1.5) {
-            fetch(`http://localhost:3000/GetDetailUser?userid=${appler.id}`, {
+            fetch(`https://eatcom.onrender.com/GetDetailUser?userid=${appler.id}`, {
                 method: "get",
             }).then((res) => res.json()).then((data) => {
                 setGetUser(data);
             })
         }
-        fetch(`http://localhost:3000/GetOrderUserPanel?id=${appler.id}`, {
+        fetch(`https://eatcom.onrender.com/GetOrderUserPanel?id=${appler.id}`, {
             method: "get",
         }).then((res) => res.json()).then((data) => {
             setGetOrder(data.data)
@@ -117,7 +117,7 @@ function UserPanel() {
         e.preventDefault();
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/UpdateUser",
+            url: "https://eatcom.onrender.com/UpdateUser",
             data: {
                 updateid: id,
                 updateemail,
@@ -154,7 +154,7 @@ function UserPanel() {
         e.preventDefault();
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/DeleteAcountNative",
+            url: "https://eatcom.onrender.com/DeleteAcountNative",
             params: {
                 id: appler.id,
                 password: deletePassword,

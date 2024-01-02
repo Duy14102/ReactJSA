@@ -35,7 +35,7 @@ function MainTable() {
         e.preventDefault()
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/AddTableByHand",
+            url: "https://eatcom.onrender.com/AddTableByHand",
             data: {
                 tablename: tablename
             }

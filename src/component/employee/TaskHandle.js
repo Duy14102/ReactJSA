@@ -16,7 +16,7 @@ function TaskHandle({ id, name }) {
     const finishTask = () => {
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/FinishTaskEmployee",
+            url: "https://eatcom.onrender.com/FinishTaskEmployee",
             data: {
                 taskid: id.id,
                 userid: name._id

@@ -29,7 +29,7 @@ function GetOrderHistory() {
     function getPagination() {
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/GetAllOrderHistory",
+            url: "https://eatcom.onrender.com/GetAllOrderHistory",
             params: {
                 page: currentPage.current,
                 limit: limit

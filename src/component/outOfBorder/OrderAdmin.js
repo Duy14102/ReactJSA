@@ -33,7 +33,7 @@ function OrderAdmin({ Data }) {
     const appoveOrder = (e, yolo) => {
         const configuration = {
             method: 'post',
-            url: 'http://localhost:3000/UpdateStatusOrder',
+            url: 'https://eatcom.onrender.com/UpdateStatusOrder',
             data: {
                 id: e,
                 status: 2,
@@ -77,7 +77,7 @@ function OrderAdmin({ Data }) {
     const denyOrderKun = (id) => {
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/VnpayRefund",
+            url: "https://eatcom.onrender.com/VnpayRefund",
             data: {
                 orderId: id,
                 transDate: ModalData.createdAt,
@@ -112,7 +112,7 @@ function OrderAdmin({ Data }) {
         e.preventDefault();
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/DenyOrder",
+            url: "https://eatcom.onrender.com/DenyOrder",
             params: {
                 id: id,
                 reason: DenyReason,
@@ -143,7 +143,7 @@ function OrderAdmin({ Data }) {
     const denyOrderWait = (id) => {
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/DenyOrderWaiting",
+            url: "https://eatcom.onrender.com/DenyOrderWaiting",
             params: {
                 id: id,
                 employee: deliverEmployee,
@@ -174,7 +174,7 @@ function OrderAdmin({ Data }) {
         e.preventDefault();
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/DenyOrder",
+            url: "https://eatcom.onrender.com/DenyOrder",
             params: {
                 id: id,
                 reason: DenyReason,
@@ -193,7 +193,7 @@ function OrderAdmin({ Data }) {
     const completeOrder = (type) => {
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/CompleteOrderByEmp",
+            url: "https://eatcom.onrender.com/CompleteOrderByEmp",
             data: {
                 id: ModalData._id,
                 date: Date.now(),

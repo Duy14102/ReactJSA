@@ -24,7 +24,7 @@ function TableItems({ ModalData }) {
     function getAdminMenu() {
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/GetItemCanTable",
+            url: "https://eatcom.onrender.com/GetItemCanTable",
             params: {
                 page: currentPage.current,
                 limit: limit
@@ -52,7 +52,7 @@ function TableItems({ ModalData }) {
         e.preventDefault()
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/AddItemToTable",
+            url: "https://eatcom.onrender.com/AddItemToTable",
             data: {
                 tableid: ModalData._id,
                 statusCheck: ModalData.tablestatus,

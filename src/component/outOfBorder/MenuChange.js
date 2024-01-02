@@ -33,7 +33,7 @@ function MenuChange({ data }) {
         e.preventDefault()
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/ChangeHeroImage",
+            url: "https://eatcom.onrender.com/ChangeHeroImage",
             data: {
                 title: "Menu",
                 name: name,
@@ -62,7 +62,7 @@ function MenuChange({ data }) {
         e.preventDefault()
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/ChangeWordUp",
+            url: "https://eatcom.onrender.com/ChangeWordUp",
             data: {
                 title: "Menu",
                 wordup: wordup
@@ -90,7 +90,7 @@ function MenuChange({ data }) {
         e.preventDefault()
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/ChangeWordMiddle",
+            url: "https://eatcom.onrender.com/ChangeWordMiddle",
             data: {
                 title: "Menu",
                 wordmiddle: wordmiddle
@@ -118,7 +118,7 @@ function MenuChange({ data }) {
         e.preventDefault()
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/ChangeWordDown",
+            url: "https://eatcom.onrender.com/ChangeWordDown",
             data: {
                 title: "Menu",
                 worddown: worddown

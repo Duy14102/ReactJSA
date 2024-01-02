@@ -43,7 +43,7 @@ function GetTable() {
     function getPagination() {
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/GetBookingByStatus",
+            url: "https://eatcom.onrender.com/GetBookingByStatus",
             params: {
                 page: currentPage.current,
                 limit: limit
@@ -62,7 +62,7 @@ function GetTable() {
     function getTableActive() {
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/GetAllTableActive",
+            url: "https://eatcom.onrender.com/GetAllTableActive",
         }
         axios(configuration)
             .then((res) => {
@@ -79,7 +79,7 @@ function GetTable() {
         if (TableId) {
             const configuration = {
                 method: "post",
-                url: "http://localhost:3000/AddTableCustomer",
+                url: "https://eatcom.onrender.com/AddTableCustomer",
                 data: {
                     tableid: TableId,
                     tablename: selText,
@@ -113,7 +113,7 @@ function GetTable() {
         e.preventDefault()
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/DenyBookingCustomer",
+            url: "https://eatcom.onrender.com/DenyBookingCustomer",
             data: {
                 id: id,
                 status: 4,

@@ -117,20 +117,20 @@ function DetailMenuPage() {
     useEffect(() => {
         if (token && candecode.userRole !== 1.5) {
             const decode = jwtDecode(token)
-            fetch(`http://localhost:3000/GetDetailUser?userid=${decode.userId}`, {
+            fetch(`https://eatcom.onrender.com/GetDetailUser?userid=${decode.userId}`, {
                 method: "get",
             }).then((res) => res.json()).then((menu) => {
                 setGetUserW(menu);
             })
         }
 
-        fetch(`http://localhost:3000/GetSimilarP?Name=${appler.cate}`, {
+        fetch(`https://eatcom.onrender.com/GetSimilarP?Name=${appler.cate}`, {
             method: "get",
         }).then((res) => res.json()).then((menu) => {
             setMenu(menu.data);
         })
 
-        fetch(`http://localhost:3000/GetDetailMenu?foodid=${appler.id}`, {
+        fetch(`https://eatcom.onrender.com/GetDetailMenu?foodid=${appler.id}`, {
             method: "get",
         }).then((res) => res.json()).then((data) => {
             setDetail(data);
@@ -229,7 +229,7 @@ function DetailMenuPage() {
         e.preventDefault()
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/AddReview",
+            url: "https://eatcom.onrender.com/AddReview",
             data: {
                 id: ids,
                 review: takeReview

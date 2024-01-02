@@ -46,7 +46,7 @@ function MainAnnounce() {
         e?.preventDefault()
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/SearchAllAnnounce",
+            url: "https://eatcom.onrender.com/SearchAllAnnounce",
             params: {
                 date: DateInput,
                 page: currentPage.current,
@@ -68,7 +68,7 @@ function MainAnnounce() {
         e.preventDefault()
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/UpdateNews",
+            url: "https://eatcom.onrender.com/UpdateNews",
             data: {
                 id: ModalData._id,
                 title: title,
@@ -96,7 +96,7 @@ function MainAnnounce() {
     const deleteAnn = () => {
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/DeleteNews",
+            url: "https://eatcom.onrender.com/DeleteNews",
             data: {
                 id: ModalData._id
             }
@@ -122,7 +122,7 @@ function MainAnnounce() {
     const changeStatus = () => {
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/ChangeNewsStatus",
+            url: "https://eatcom.onrender.com/ChangeNewsStatus",
             data: {
                 id: ModalData._id,
                 status: ModalData.status

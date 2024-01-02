@@ -18,7 +18,7 @@ function FooterChange({ data }) {
         e.preventDefault()
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/ChangeWordUp",
+            url: "https://eatcom.onrender.com/ChangeWordUp",
             data: {
                 title: "Footer",
                 wordup: wordup
@@ -46,7 +46,7 @@ function FooterChange({ data }) {
         e.preventDefault()
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/ChangeWordMiddle",
+            url: "https://eatcom.onrender.com/ChangeWordMiddle",
             data: {
                 title: "Footer",
                 wordmiddle: wordmiddle
@@ -74,7 +74,7 @@ function FooterChange({ data }) {
         e.preventDefault()
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/ChangeWordDown",
+            url: "https://eatcom.onrender.com/ChangeWordDown",
             data: {
                 title: "Footer",
                 worddown: worddown
@@ -102,7 +102,7 @@ function FooterChange({ data }) {
         e.preventDefault()
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/ChangeWordTime",
+            url: "https://eatcom.onrender.com/ChangeWordTime",
             data: {
                 title: "Footer",
                 wordtime: wordtime

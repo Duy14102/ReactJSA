@@ -12,7 +12,7 @@ function MainUiux() {
         document.getElementById("defaultOpen9").click();
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/GetHeroManager",
+            url: "https://eatcom.onrender.com/GetHeroManager",
         }
         axios(configuration)
             .then((res) => {

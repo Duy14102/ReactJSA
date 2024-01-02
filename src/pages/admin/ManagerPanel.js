@@ -32,7 +32,7 @@ function ManagerPanel() {
     useEffect(() => {
         const configuration2 = {
             method: "get",
-            url: 'http://localhost:3000/GetDetailUser',
+            url: 'https://eatcom.onrender.com/GetDetailUser',
             params: {
                 userid: name.userId
             }
@@ -197,7 +197,7 @@ function ManagerPanel() {
         e.preventDefault()
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/ChangeImageAdmin",
+            url: "https://eatcom.onrender.com/ChangeImageAdmin",
             data: {
                 id: id,
                 base64: UserImage

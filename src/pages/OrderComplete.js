@@ -72,7 +72,7 @@ function OrderComplete() {
         if (type4) {
             const configuration = {
                 method: "post",
-                url: "http://localhost:3000/ChangeVnpayDate",
+                url: "https://eatcom.onrender.com/ChangeVnpayDate",
                 data: {
                     id: type4,
                     date: sendDate
@@ -84,7 +84,7 @@ function OrderComplete() {
         if (type === "24" || type === "09" || type === "10" || type === "11" || type === "12" || type === "13" || type === "51" || type === "65" || type === "75" || type === "79" || type === "99" || type === "15") {
             const configuration = {
                 method: "post",
-                url: "http://localhost:3000/CancelVnpayPayment",
+                url: "https://eatcom.onrender.com/CancelVnpayPayment",
                 params: {
                     reason: kakao,
                     id: type4
@@ -94,7 +94,7 @@ function OrderComplete() {
         } else {
             const configuration = {
                 method: "post",
-                url: "http://localhost:3000/PaidVnpayPayment",
+                url: "https://eatcom.onrender.com/PaidVnpayPayment",
                 params: {
                     id: type4
                 }
@@ -113,7 +113,7 @@ function OrderComplete() {
                 setData(true)
                 const configuration = {
                     method: "post",
-                    url: "http://localhost:3000/PaidPaypalPayment",
+                    url: "https://eatcom.onrender.com/PaidPaypalPayment",
                     params: {
                         id: ahoe
                     }
@@ -128,7 +128,7 @@ function OrderComplete() {
             setData(true)
             const configuration = {
                 method: "post",
-                url: "http://localhost:3000/PaidCodPayment",
+                url: "https://eatcom.onrender.com/PaidCodPayment",
                 params: {
                     id: ahoe
                 }

@@ -32,14 +32,14 @@ function Reservation() {
         if (token) {
             const decode = jwtDecode(token)
             if (decode.userRole !== 1.5) {
-                fetch(`http://localhost:3000/GetDetailUser?userid=${decode.userId}`, {
+                fetch(`https://eatcom.onrender.com/GetDetailUser?userid=${decode.userId}`, {
                     method: "get",
                 }).then((res) => res.json()).then((data) => {
                     setGetUser(data)
                 })
             }
 
-            fetch(`http://localhost:3000/GetTokenBooking?id=${decode.userId}`, {
+            fetch(`https://eatcom.onrender.com/GetTokenBooking?id=${decode.userId}`, {
                 method: "get",
             }).then((res) => res.json()).then((data) => {
                 setBookingBook(data)
@@ -72,7 +72,7 @@ function Reservation() {
         const customer = { id: tokeId, fullname: name, phonenumber: phone }
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/AddNewBooking",
+            url: "https://eatcom.onrender.com/AddNewBooking",
             data: {
                 customer,
                 date,
@@ -113,7 +113,7 @@ function Reservation() {
         e.preventDefault()
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/CancelBooking",
+            url: "https://eatcom.onrender.com/CancelBooking",
             data: {
                 id: id,
                 reason: cancelReason

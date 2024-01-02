@@ -12,7 +12,7 @@ function HeroBanner() {
     useEffect(() => {
         const configuration = {
             method: "get",
-            url: "../../backend/index/GetHeroUI",
+            url: "https://eatcom.onrender.com/GetHeroUI",
             params: {
                 name: "oh2rwdomomeno4sgguhf"
             }
@@ -26,7 +26,7 @@ function HeroBanner() {
 
         const configuration2 = {
             method: "get",
-            url: "http://localhost:3000/GetHeroText",
+            url: "https://eatcom.onrender.com/GetHeroText",
         }
         axios(configuration2)
             .then((res) => {

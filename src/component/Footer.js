@@ -12,7 +12,7 @@ function Footer() {
     useEffect(() => {
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/GetTheFooter"
+            url: "https://eatcom.onrender.com/GetTheFooter"
         }
         axios(configuration)
             .then((res) => {

@@ -8,7 +8,7 @@ function AnnounceMe() {
     useEffect(() => {
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/GetNewsActive"
+            url: "https://eatcom.onrender.com/GetNewsActive"
         }
         axios(configuration)
             .then((res) => {

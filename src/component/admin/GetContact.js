@@ -25,7 +25,7 @@ function GetContact() {
     function getPagination() {
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/GetContact",
+            url: "https://eatcom.onrender.com/GetContact",
             params: {
                 page: currentPage.current,
                 limit: limit
@@ -44,7 +44,7 @@ function GetContact() {
     const DeleteContact = (e) => {
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/DeleteContact",
+            url: "https://eatcom.onrender.com/DeleteContact",
             data: {
                 id: e
             }

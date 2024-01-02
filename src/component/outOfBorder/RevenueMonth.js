@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 function RevenueMonth() {
     const [CountData, setCountData] = useState()
     useEffect(() => {
-        fetch("http://localhost:3000/GetIncomeMonth", {
+        fetch("https://eatcom.onrender.com/GetIncomeMonth", {
             method: "get",
         }).then((res) => res.json()).then((data) => {
             setCountData(data.data)

@@ -7,7 +7,7 @@ function CancelByMag({ ModalData, fulltotal, modal, setmodal }) {
     const denyOrderKin = () => {
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/VnpayRefund",
+            url: "https://eatcom.onrender.com/VnpayRefund",
             data: {
                 orderId: ModalData._id,
                 transDate: ModalData.createdAt,
@@ -29,7 +29,7 @@ function CancelByMag({ ModalData, fulltotal, modal, setmodal }) {
     const cancelIt = () => {
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/CancelByMag",
+            url: "https://eatcom.onrender.com/CancelByMag",
             params: {
                 id: ModalData._id
             }
@@ -48,7 +48,7 @@ function CancelByMag({ ModalData, fulltotal, modal, setmodal }) {
     const cancelItNow = () => {
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/CancelByMag",
+            url: "https://eatcom.onrender.com/CancelByMag",
             params: {
                 id: ModalData._id
             }

@@ -110,7 +110,7 @@ function LoginSite() {
         e.preventDefault();
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/Register",
+            url: "https://eatcom.onrender.com/Register",
             data: {
                 email,
                 password,

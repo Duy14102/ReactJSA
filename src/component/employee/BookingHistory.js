@@ -24,7 +24,7 @@ function BookingHistory() {
     function getPagination() {
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/GetBookingHistory",
+            url: "https://eatcom.onrender.com/GetBookingHistory",
             params: {
                 page: currentPage.current,
                 limit: limit

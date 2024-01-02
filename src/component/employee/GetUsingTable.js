@@ -49,7 +49,7 @@ function GetUsingTable() {
     function getPagination() {
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/GetTableUse",
+            url: "https://eatcom.onrender.com/GetTableUse",
             params: {
                 page: currentPage.current,
                 limit: limit
@@ -68,7 +68,7 @@ function GetUsingTable() {
     function getTableActive() {
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/GetAllTableActive",
+            url: "https://eatcom.onrender.com/GetAllTableActive",
         }
         axios(configuration)
             .then((res) => {
@@ -81,7 +81,7 @@ function GetUsingTable() {
     const getThatTable = (e) => {
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/GetTable4BookingHistory",
+            url: "https://eatcom.onrender.com/GetTable4BookingHistory",
             params: {
                 cusid: e
             }
@@ -98,7 +98,7 @@ function GetUsingTable() {
     const checkOut = (e) => {
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/Checkout4Booking",
+            url: "https://eatcom.onrender.com/Checkout4Booking",
             data: {
                 id: e,
                 fulltotal: fulltotal,
@@ -134,7 +134,7 @@ function GetUsingTable() {
     const checkOut4Normal = () => {
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/Checkout4Normal",
+            url: "https://eatcom.onrender.com/Checkout4Normal",
             data: {
                 id: ModalData._id,
                 employee: takeEmployee,
@@ -170,7 +170,7 @@ function GetUsingTable() {
         if (changeThis) {
             const configuration = {
                 method: "post",
-                url: "http://localhost:3000/ChangeTableNow",
+                url: "https://eatcom.onrender.com/ChangeTableNow",
                 data: {
                     oldid: ModalData._id,
                     newid: changeThis,
@@ -206,7 +206,7 @@ function GetUsingTable() {
     const deleteTable = () => {
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/DeleteTableNow",
+            url: "https://eatcom.onrender.com/DeleteTableNow",
             data: {
                 id: ModalData._id
             }
@@ -233,7 +233,7 @@ function GetUsingTable() {
         e.preventDefault()
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/ChangeTableNameQuick",
+            url: "https://eatcom.onrender.com/ChangeTableNameQuick",
             data: {
                 id: ModalData._id,
                 name: TBnamechange

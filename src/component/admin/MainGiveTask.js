@@ -35,7 +35,7 @@ function MainGiveTask({ modalOpenAdmin, setModalOpenAdmin }) {
     const getPagination = () => {
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/GetEmploy4Mana",
+            url: "https://eatcom.onrender.com/GetEmploy4Mana",
             params: {
                 page: currentPage.current,
                 limit: limit
@@ -55,7 +55,7 @@ function MainGiveTask({ modalOpenAdmin, setModalOpenAdmin }) {
         e.preventDefault()
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/GiveTaskEmployee",
+            url: "https://eatcom.onrender.com/GiveTaskEmployee",
             data: {
                 id: ModalData._id,
                 task: Both

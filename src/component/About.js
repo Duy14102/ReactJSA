@@ -10,7 +10,7 @@ function About() {
     useEffect(() => {
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/GetAllAbout"
+            url: "https://eatcom.onrender.com/GetAllAbout"
         }
         axios(configuration)
             .then((res) => {

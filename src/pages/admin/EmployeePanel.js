@@ -26,7 +26,7 @@ function EmployeePanel() {
     useEffect(() => {
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/GetData4Employee",
+            url: "https://eatcom.onrender.com/GetData4Employee",
         }
         axios(configuration)
             .then((res) => {
@@ -38,7 +38,7 @@ function EmployeePanel() {
 
         const configuration2 = {
             method: "get",
-            url: 'http://localhost:3000/GetDetailUser',
+            url: 'https://eatcom.onrender.com/GetDetailUser',
             params: {
                 userid: name.userId
             }
@@ -179,7 +179,7 @@ function EmployeePanel() {
         e.preventDefault()
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/ChangeImageAdmin",
+            url: "https://eatcom.onrender.com/ChangeImageAdmin",
             data: {
                 id: id,
                 base64: UserImage

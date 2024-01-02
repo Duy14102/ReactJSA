@@ -26,7 +26,7 @@ function GetHistoryTable() {
     function getPagination() {
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/GetHistoryTable",
+            url: "https://eatcom.onrender.com/GetHistoryTable",
             params: {
                 page: currentPage.current,
                 limit: limit

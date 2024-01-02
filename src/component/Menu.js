@@ -15,7 +15,7 @@ function Menu() {
     useEffect(() => {
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/GetTheMenuWow",
+            url: "https://eatcom.onrender.com/GetTheMenuWow",
         }
         axios(configuration)
             .then((res) => {

@@ -14,7 +14,7 @@ function CancelRequest({ ModalData, fulltotal, modal, setmodal }) {
     const denyOrderKin = () => {
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/VnpayRefund",
+            url: "https://eatcom.onrender.com/VnpayRefund",
             data: {
                 orderId: ModalData._id,
                 transDate: ModalData.createdAt,
@@ -42,7 +42,7 @@ function CancelRequest({ ModalData, fulltotal, modal, setmodal }) {
     const cancelIt = () => {
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/totaldenyNow",
+            url: "https://eatcom.onrender.com/totaldenyNow",
             data: {
                 id: ModalData._id,
                 employee: deliverEmployee,
@@ -74,7 +74,7 @@ function CancelRequest({ ModalData, fulltotal, modal, setmodal }) {
     const cancelItNow = () => {
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/totaldenyNow",
+            url: "https://eatcom.onrender.com/totaldenyNow",
             data: {
                 id: ModalData._id,
                 employee: deliverEmployee,

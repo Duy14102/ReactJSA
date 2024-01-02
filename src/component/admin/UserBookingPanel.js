@@ -22,7 +22,7 @@ function UserBookingPanel({ id }) {
         currentPage.current = 1;
         getPagination()
 
-        fetch(`http://localhost:3000/GetTokenBooking?id=${id}`, {
+        fetch(`https://eatcom.onrender.com/GetTokenBooking?id=${id}`, {
             method: "get",
         }).then((res) => res.json()).then((data) => {
             setBooking(data);
@@ -37,7 +37,7 @@ function UserBookingPanel({ id }) {
     function getPagination() {
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/GetBookingHistory",
+            url: "https://eatcom.onrender.com/GetBookingHistory",
             params: {
                 page: currentPage.current,
                 limit: limit
@@ -57,7 +57,7 @@ function UserBookingPanel({ id }) {
         e.preventDefault()
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/CancelBooking",
+            url: "https://eatcom.onrender.com/CancelBooking",
             data: {
                 id: id,
                 reason: cancelReason
