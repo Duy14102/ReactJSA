@@ -6,7 +6,7 @@ import WOW from 'wowjs';
 import Backtotop from "./component/outOfBorder/Backtotop";
 import "./css/style.css";
 import "./css/bootstrap.min.css";
-import "./lib/animate/animate.min.css";
+import "./lib/animate/animateAnimate.min.css";
 
 function Layout({ children }) {
     const [styleA, setStyleA] = useState()

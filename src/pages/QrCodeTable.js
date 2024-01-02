@@ -9,7 +9,7 @@ import Swal from "sweetalert2";
 import Layout from "../Layout";
 import Cookies from "universal-cookie";
 import { jwtDecode } from "jwt-decode";
-import "../css/Category.css";
+// import "../css/CategoryCss.css";
 
 function QrCodeTable() {
     let appler = useParams()

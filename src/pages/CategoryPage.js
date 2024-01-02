@@ -6,7 +6,7 @@ import $ from 'jquery'
 import ReactPaginate from 'react-paginate';
 import Layout from '../Layout';
 import Alert from '../component/outOfBorder/Alert';
-import "../css/Category.css";
+// import "../css/CategoryCss.css";
 
 function CategoryPage() {
     let appler = useParams()

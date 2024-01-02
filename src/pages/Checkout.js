@@ -1,6 +1,6 @@
 import { NavLink, useLocation } from "react-router-dom";
 import NotFound from "../component/outOfBorder/NotFound";
-import '../css/Category.css'
+// import '../css/CategoryCss.css'
 import { Fragment, useEffect, useState } from "react";
 import axios from "axios";
 import Cookies from "universal-cookie";
