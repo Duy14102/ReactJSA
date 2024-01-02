@@ -12,7 +12,7 @@ function HeroBanner() {
     useEffect(() => {
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/GetHeroUI",
+            url: "../../backend/index/GetHeroUI",
             params: {
                 name: "oh2rwdomomeno4sgguhf"
             }

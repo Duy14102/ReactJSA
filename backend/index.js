@@ -4,7 +4,7 @@ const app = express();
 // Connect to MongoDB
 const mongoose = require('mongoose');
 require('dotenv').config({ path: "../.env" })
-mongoose.connect(process.env.REACT_APP_mongoCompassString).then(() => console.log('Connected To MongoDB')).catch((err) => { console.error(err); });
+mongoose.connect(process.env.REACT_APP_mongoAtlasString).then(() => console.log('Connected To MongoDB')).catch((err) => { console.error(err); });
 app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader(
