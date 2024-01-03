@@ -710,7 +710,7 @@ app.get("/TakeEmployeeTask", async (req, res) => {
 //Finish Task Employee
 app.post("/FinishTaskEmployee", async (req, res) => {
     try {
-        const date2 = Date.now()
+        const date2 = new Date()
         const datenow = new Date(date2.toLocaleString('en-VI', { timeZone: "Asia/Ho_Chi_Minh" }))
         const date = new Date(datenow).toLocaleDateString()
         const time = new Date(datenow).toLocaleTimeString()
@@ -794,7 +794,7 @@ app.post("/UploadMenu", async (request, response) => {
 app.post("/UploadOrder", (req, res) => {
     try {
         var hype = req.body.orderitems
-        var dateX = Date.now()
+        var dateX = new Date()
         const datenow = new Date(dateX.toLocaleString('en-VI', { timeZone: "Asia/Ho_Chi_Minh" }))
         const order = new Order({
             user: req.body.user,
@@ -815,9 +815,10 @@ app.post("/UploadOrder", (req, res) => {
             })
             .catch((error) => {
                 res.status(500).send({
-                    message: "Error creating user",
+                    message: "Error creating order",
                     error,
                 });
+                console.log(error);
             })
     } catch (e) {
         console.log(e);
@@ -1847,7 +1848,7 @@ app.get("/GetAllTableActive", async (req, res) => {
 //QR Code Access Table
 app.post("/QrCodeTableActive", (req, res) => {
     try {
-        const dateX = Date.now()
+        const dateX = new Date()
         const datenow = new Date(dateX.toLocaleString('en-VI', { timeZone: "Asia/Ho_Chi_Minh" }))
         GetTable.updateOne({ _id: req.body.id }, {
             customerid: req.body.cusid,
@@ -1960,7 +1961,7 @@ app.post("/ChangeTableNow", (req, res) => {
 //Add Table when booking
 app.post("/AddTableCustomer", (req, res) => {
     try {
-        const dateX = Date.now()
+        const dateX = new Date()
         const datenow = new Date(dateX.toLocaleString('en-VI', { timeZone: "Asia/Ho_Chi_Minh" }))
         GetTable.updateOne({ _id: req.body.tableid }, {
             customerid: req.body.cusid,
@@ -2051,7 +2052,7 @@ app.get("/GetHistoryTable", async (req, res) => {
 app.post("/AddItemToTable", async (req, res) => {
     const findDup = await GetTable.findOne({ _id: req.body.tableid, tableitems: { $elemMatch: { "item.foodname": req.body.foodname } } })
     try {
-        const dddd = Date.now()
+        const dddd = new Date()
         const dddda = new Date(dddd.toLocaleString('en-VI', { timeZone: "Asia/Ho_Chi_Minh" }))
         if (findDup) {
             GetTable.updateOne({ _id: req.body.tableid, "tableitems.item.foodname": req.body.foodname },
@@ -2148,7 +2149,7 @@ app.post("/DeleteQritem", async (req, res) => {
 //Checkout for booking
 app.post("/Checkout4Booking", (req, res) => {
     try {
-        const dateX = Date.now()
+        const dateX = new Date()
         const datenow = new Date(dateX.toLocaleString('en-VI', { timeZone: "Asia/Ho_Chi_Minh" }))
         GetBooking.updateOne({ _id: req.body.id }, {
             status: 3,
@@ -2200,7 +2201,7 @@ app.post("/Checkout4Booking", (req, res) => {
 app.post("/Checkout4Normal", async (req, res) => {
     try {
         var hype = req.body.TbItemHistory
-        const dateX = Date.now()
+        const dateX = new Date()
         const datenow = new Date(dateX.toLocaleString('en-VI', { timeZone: "Asia/Ho_Chi_Minh" }))
         const historytb = new TableHistory({
             tablename: req.body.TbnameHistory,
@@ -2361,13 +2362,13 @@ app.get("/GetIncomeDay", async (req, res) => {
                         total = gettaDad[j].quantity * gettaDad[j].data.foodprice
                         total2 += total
                         fulltotal = total2 + getta[i].shippingfee
-                        elenth
+                        elenth += fulltotal
                     }
                     if (dateGetta.getHours() === 22) {
                         total = gettaDad[j].quantity * gettaDad[j].data.foodprice
                         total2 += total
                         fulltotal = total2 + getta[i].shippingfee
-                        twelth
+                        twelth += fulltotal
                     }
                 }
             }
