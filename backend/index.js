@@ -710,7 +710,8 @@ app.get("/TakeEmployeeTask", async (req, res) => {
 //Finish Task Employee
 app.post("/FinishTaskEmployee", async (req, res) => {
     try {
-        const datenow = Date.now('vi')
+        const date2 = Date.now()
+        const datenow = new Date(date2.toLocaleString('en-VI', { timeZone: "Asia/Ho_Chi_Minh" }))
         const date = new Date(datenow).toLocaleDateString()
         const time = new Date(datenow).toLocaleTimeString()
         const datetime = date + " - " + time
@@ -793,6 +794,8 @@ app.post("/UploadMenu", async (request, response) => {
 app.post("/UploadOrder", (req, res) => {
     try {
         var hype = req.body.orderitems
+        var dateX = Date.now()
+        const datenow = new Date(dateX.toLocaleString('en-VI', { timeZone: "Asia/Ho_Chi_Minh" }))
         const order = new Order({
             user: req.body.user,
             phonenumber: req.body.phonenumber,
@@ -803,7 +806,7 @@ app.post("/UploadOrder", (req, res) => {
             fulltotal: req.body.fulltotal,
             status: 1,
             orderitems: hype,
-            createdAt: Date.now('vi')
+            createdAt: datenow
         })
 
         order.save()
@@ -1844,10 +1847,12 @@ app.get("/GetAllTableActive", async (req, res) => {
 //QR Code Access Table
 app.post("/QrCodeTableActive", (req, res) => {
     try {
+        const dateX = Date.now()
+        const datenow = new Date(dateX.toLocaleString('en-VI', { timeZone: "Asia/Ho_Chi_Minh" }))
         GetTable.updateOne({ _id: req.body.id }, {
             customerid: req.body.cusid,
             tablestatus: 2,
-            tabledate: Date.now('vi')
+            tabledate: datenow
         }).then(() => {
             res.send({ data: "succeed" })
         }).catch((err) => {
@@ -1955,12 +1960,12 @@ app.post("/ChangeTableNow", (req, res) => {
 //Add Table when booking
 app.post("/AddTableCustomer", (req, res) => {
     try {
-        const dddd = Date.now('vi')
-        const dddda = new Date(dddd)
+        const dateX = Date.now()
+        const datenow = new Date(dateX.toLocaleString('en-VI', { timeZone: "Asia/Ho_Chi_Minh" }))
         GetTable.updateOne({ _id: req.body.tableid }, {
             customerid: req.body.cusid,
             tablestatus: 2,
-            tabledate: dddda
+            tabledate: datenow
         }).then(() => {
             GetBooking.updateOne({ _id: req.body.cusid }, {
                 table: req.body.tablename,
@@ -2046,8 +2051,8 @@ app.get("/GetHistoryTable", async (req, res) => {
 app.post("/AddItemToTable", async (req, res) => {
     const findDup = await GetTable.findOne({ _id: req.body.tableid, tableitems: { $elemMatch: { "item.foodname": req.body.foodname } } })
     try {
-        const dddd = Date.now('vi')
-        const dddda = new Date(dddd)
+        const dddd = Date.now()
+        const dddda = new Date(dddd.toLocaleString('en-VI', { timeZone: "Asia/Ho_Chi_Minh" }))
         if (findDup) {
             GetTable.updateOne({ _id: req.body.tableid, "tableitems.item.foodname": req.body.foodname },
                 {
@@ -2143,6 +2148,8 @@ app.post("/DeleteQritem", async (req, res) => {
 //Checkout for booking
 app.post("/Checkout4Booking", (req, res) => {
     try {
+        const dateX = Date.now()
+        const datenow = new Date(dateX.toLocaleString('en-VI', { timeZone: "Asia/Ho_Chi_Minh" }))
         GetBooking.updateOne({ _id: req.body.id }, {
             status: 3,
             fulltotal: req.body.fulltotal,
@@ -2154,7 +2161,7 @@ app.post("/Checkout4Booking", (req, res) => {
                 tablename: req.body.TbnameHistory,
                 tableitems: hype,
                 tabledate: req.body.TbDateHistory,
-                datefinish: Date.now('vi'),
+                datefinish: datenow,
                 employee: req.body.employee
             })
             tbhistory.save().then(() => {
@@ -2193,11 +2200,13 @@ app.post("/Checkout4Booking", (req, res) => {
 app.post("/Checkout4Normal", async (req, res) => {
     try {
         var hype = req.body.TbItemHistory
+        const dateX = Date.now()
+        const datenow = new Date(dateX.toLocaleString('en-VI', { timeZone: "Asia/Ho_Chi_Minh" }))
         const historytb = new TableHistory({
             tablename: req.body.TbnameHistory,
             tableitems: hype,
             tabledate: req.body.TbDateHistory,
-            datefinish: Date.now('vi'),
+            datefinish: datenow,
             employee: req.body.employee
         })
         historytb.save().then(() => {
@@ -2259,7 +2268,8 @@ app.get("/GetIncomeDay", async (req, res) => {
     try {
         const getta = await getThisOrder.find({ status: 5 })
         const atteg = await GetTableHistory.find({})
-        const date = new Date()
+        const kadate = new Date()
+        const date = new Date(kadate.toLocaleString('en-VI', { timeZone: "Asia/Ho_Chi_Minh" }))
         var percent8 = 0, percent9 = 0, percent10 = 0, percent11 = 0, percent12 = 0, percent13 = 0, percent14 = 0, percent15 = 0, percent16 = 0, percent17 = 0, percent18 = 0, percent19 = 0, percent20 = 0, percent21 = 0, percent22 = 0
         var eight = 0, nine = 0, ten = 0, elen = 0, twel = 0, third = 0, fourth = 0, fifth = 0, sixth = 0, seventh = 0, eighth = 0, nineth = 0, tenth = 0, elenth = 0, twelth = 0
         var eight2 = 0, nine2 = 0, ten2 = 0, elen2 = 0, twel2 = 0, third2 = 0, fourth2 = 0, fifth2 = 0, sixth2 = 0, seventh2 = 0, eighth2 = 0, nineth2 = 0, tenth2 = 0, elenth2 = 0, twelth2 = 0
@@ -2476,7 +2486,8 @@ app.get("/GetIncomeMonth", async (req, res) => {
     try {
         const getIt = await getThisOrder.find({ status: 5 })
         const atteg = await GetTableHistory.find({})
-        const date = new Date()
+        const kadate = new Date()
+        const date = new Date(kadate.toLocaleString('en-VI', { timeZone: "Asia/Ho_Chi_Minh" }))
         var percent1 = 0, percent2 = 0, percent3 = 0, percent4 = 0, percent5 = 0, percent6 = 0, percent7 = 0, percent8 = 0, percent9 = 0, percent10 = 0
         var one = 0, two = 0, three = 0, four = 0, five = 0, six = 0, seven = 0, eight = 0, nine = 0, ten = 0
         var one2 = 0, two2 = 0, three2 = 0, four2 = 0, five2 = 0, six2 = 0, seven2 = 0, eight2 = 0, nine2 = 0, ten2 = 0
@@ -2672,7 +2683,8 @@ app.get("/GetIncomeYear", async (req, res) => {
     try {
         const getIt = await getThisOrder.find({ status: 5 })
         const atteg = await GetTableHistory.find({})
-        const date = new Date()
+        const kadate = new Date()
+        const date = new Date(kadate.toLocaleString('en-VI', { timeZone: "Asia/Ho_Chi_Minh" }))
         var percent1 = 0, percent2 = 0, percent3 = 0, percent4 = 0, percent5 = 0, percent6 = 0, percent7 = 0, percent8 = 0, percent9 = 0, percent10 = 0, percent11 = 0, percent12 = 0
         var one = 0, two = 0, three = 0, four = 0, five = 0, six = 0, seven = 0, eight = 0, nine = 0, ten = 0, elen = 0, twel = 0
         var one2 = 0, two2 = 0, three2 = 0, four2 = 0, five2 = 0, six2 = 0, seven2 = 0, eight2 = 0, nine2 = 0, ten2 = 0, elen2 = 0, twel2 = 0

@@ -196,7 +196,7 @@ function OrderAdmin({ Data }) {
             url: "https://eatcom.onrender.com/CompleteOrderByEmp",
             data: {
                 id: ModalData._id,
-                date: Date.now(),
+                date: Date.now('vi'),
                 status: 5,
                 type: type
             }
