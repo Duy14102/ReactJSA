@@ -2910,7 +2910,7 @@ app.post('/VnpayCheckout', function (req, res, next) {
     let tmnCode = process.env.REACT_APP_vnpaytmnCode;
     let secretKey = process.env.REACT_APP_vnpaysecretKey;
     let vnpUrl = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html';
-    let returnUrl = 'https://eatcom.onrender.com/OrderComplete';
+    let returnUrl = 'https://eatcom.store/OrderComplete';
     let orderId = req.body.orderId;
     let amount = req.body.amount;
     let bankCode = req.body.bankCode;
