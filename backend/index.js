@@ -710,7 +710,7 @@ app.get("/TakeEmployeeTask", async (req, res) => {
 //Finish Task Employee
 app.post("/FinishTaskEmployee", async (req, res) => {
     try {
-        const datenow = Date.now()
+        const datenow = Date.now('vi')
         const date = new Date(datenow).toLocaleDateString()
         const time = new Date(datenow).toLocaleTimeString()
         const datetime = date + " - " + time
@@ -803,7 +803,7 @@ app.post("/UploadOrder", (req, res) => {
             fulltotal: req.body.fulltotal,
             status: 1,
             orderitems: hype,
-            createdAt: Date.now()
+            createdAt: Date.now('vi')
         })
 
         order.save()
@@ -1847,7 +1847,7 @@ app.post("/QrCodeTableActive", (req, res) => {
         GetTable.updateOne({ _id: req.body.id }, {
             customerid: req.body.cusid,
             tablestatus: 2,
-            tabledate: Date.now()
+            tabledate: Date.now('vi')
         }).then(() => {
             res.send({ data: "succeed" })
         }).catch((err) => {
@@ -1955,7 +1955,7 @@ app.post("/ChangeTableNow", (req, res) => {
 //Add Table when booking
 app.post("/AddTableCustomer", (req, res) => {
     try {
-        const dddd = Date.now()
+        const dddd = Date.now('vi')
         const dddda = new Date(dddd)
         GetTable.updateOne({ _id: req.body.tableid }, {
             customerid: req.body.cusid,
@@ -2046,7 +2046,7 @@ app.get("/GetHistoryTable", async (req, res) => {
 app.post("/AddItemToTable", async (req, res) => {
     const findDup = await GetTable.findOne({ _id: req.body.tableid, tableitems: { $elemMatch: { "item.foodname": req.body.foodname } } })
     try {
-        const dddd = Date.now()
+        const dddd = Date.now('vi')
         const dddda = new Date(dddd)
         if (findDup) {
             GetTable.updateOne({ _id: req.body.tableid, "tableitems.item.foodname": req.body.foodname },
@@ -2154,7 +2154,7 @@ app.post("/Checkout4Booking", (req, res) => {
                 tablename: req.body.TbnameHistory,
                 tableitems: hype,
                 tabledate: req.body.TbDateHistory,
-                datefinish: Date.now(),
+                datefinish: Date.now('vi'),
                 employee: req.body.employee
             })
             tbhistory.save().then(() => {
@@ -2197,7 +2197,7 @@ app.post("/Checkout4Normal", async (req, res) => {
             tablename: req.body.TbnameHistory,
             tableitems: hype,
             tabledate: req.body.TbDateHistory,
-            datefinish: Date.now(),
+            datefinish: Date.now('vi'),
             employee: req.body.employee
         })
         historytb.save().then(() => {
