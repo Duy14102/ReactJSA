@@ -160,7 +160,7 @@ function Header({ type }) {
                 <div className="collapse navbar-collapse" id="navbarCollapse">
                     <div className="navbar-nav ms-auto py-0 justUYI">
                         <form onSubmit={(e) => SearchType(e)} className="responFormSearch">
-                            <div className="d-flex justify-content-between">
+                            <div className="d-flex justify-content-between" style={{ height: 45 }}>
                                 <div className="SearchForm">
                                     <input className="inputSearch" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search something..." required />
                                     <input type="submit" style={{ display: "none" }}></input>

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 
 function RevenueYear() {
     const [CountData, setCountData] = useState()
+    const [total, setTotal] = useState()
     useEffect(() => {
         fetch("https://eatcom.onrender.com/GetIncomeYear", {
             method: "get",
@@ -13,6 +14,7 @@ function RevenueYear() {
     useEffect(() => {
         var tempData = null
         CountData?.map((i) => {
+            setTotal(i.percent1 + i.percent2 + i.percent3 + i.percent4 + i.percent5 + i.percent6 + i.percent7 + i.percent8 + i.percent9 + i.percent10 + i.percent11 + i.percent12);
             tempData = {
                 eight: i.percent1,
                 nine: i.percent2,
@@ -50,85 +52,86 @@ function RevenueYear() {
     return (
         <>
             <h4 className='text-center py-2 text-white'>This year : {datetime}</h4>
+            <h5 className='text-center py-2 text-white'>Total : {VND.format((total * 100000000) / 100) + ` (${total}%)`}</h5>
             <div className="graph3 text-center">
-                <div>
+                <div className='graphJunior'>
                     <div className="bar" data-day="eight">
                         <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>1</p>
                 </div>
-                <div>
+                <div className='graphJunior'>
                     <div className="bar" data-day="nine">
                         <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>2</p>
                 </div>
-                <div>
+                <div className='graphJunior'>
                     <div className="bar" data-day="ten">
                         <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>3</p>
                 </div>
-                <div>
+                <div className='graphJunior'>
                     <div className="bar" data-day="elen">
                         <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>4</p>
                 </div>
-                <div>
+                <div className='graphJunior'>
                     <div className="bar" data-day="twel">
                         <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>5</p>
                 </div>
-                <div>
+                <div className='graphJunior'>
                     <div className="bar" data-day="third">
                         <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>6</p>
                 </div>
-                <div>
+                <div className='graphJunior'>
                     <div className="bar" data-day="fourth">
                         <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>7</p>
                 </div>
-                <div>
+                <div className='graphJunior'>
                     <div className="bar" data-day="fifth">
                         <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>8</p>
                 </div>
-                <div>
+                <div className='graphJunior'>
                     <div className="bar" data-day="sixth">
                         <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>9</p>
                 </div>
-                <div>
+                <div className='graphJunior'>
                     <div className="bar" data-day="seventh">
                         <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>10</p>
                 </div>
-                <div>
+                <div className='graphJunior'>
                     <div className="bar" data-day="eighth">
                         <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>11</p>
                 </div>
-                <div>
+                <div className='graphJunior'>
                     <div className="bar" data-day="nineth">
                         <p className='highIm'></p>
                         <div className="bar-content"></div>

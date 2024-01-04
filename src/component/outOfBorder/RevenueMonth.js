@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 
 function RevenueMonth() {
     const [CountData, setCountData] = useState()
+    const [total, setTotal] = useState()
     useEffect(() => {
         fetch("https://eatcom.onrender.com/GetIncomeMonth", {
             method: "get",
@@ -14,6 +15,7 @@ function RevenueMonth() {
     useEffect(() => {
         var tempData = null
         CountData?.map((i) => {
+            setTotal(i.percent1 + i.percent2 + i.percent3 + i.percent4 + i.percent5 + i.percent6 + i.percent7 + i.percent8 + i.percent9 + i.percent10);
             tempData = {
                 eight: i.percent1,
                 nine: i.percent2,
@@ -49,71 +51,72 @@ function RevenueMonth() {
     return (
         <>
             <h4 className='text-center py-2 text-white'>This month : {datetime}</h4>
+            <h5 className='text-center py-2 text-white'>Total : {VND.format((total * 50000000) / 100) + ` (${total}%)`}</h5>
             <div className="graph2 text-center">
-                <div>
+                <div className='graphJunior'>
                     <div className="bar" data-day="eight">
                         <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>1-3</p>
                 </div>
-                <div>
+                <div className='graphJunior'>
                     <div className="bar" data-day="nine">
                         <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>4-6</p>
                 </div>
-                <div>
+                <div className='graphJunior'>
                     <div className="bar" data-day="ten">
                         <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>7-9</p>
                 </div>
-                <div>
+                <div className='graphJunior'>
                     <div className="bar" data-day="elen">
                         <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>10-12</p>
                 </div>
-                <div>
+                <div className='graphJunior'>
                     <div className="bar" data-day="twel">
                         <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>13-15</p>
                 </div>
-                <div>
+                <div className='graphJunior'>
                     <div className="bar" data-day="third">
                         <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>16-18</p>
                 </div>
-                <div>
+                <div className='graphJunior'>
                     <div className="bar" data-day="fourth">
                         <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>19-21</p>
                 </div>
-                <div>
+                <div className='graphJunior'>
                     <div className="bar" data-day="fifth">
                         <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>22-24</p>
                 </div>
-                <div>
+                <div className='graphJunior'>
                     <div className="bar" data-day="sixth">
                         <p className='highIm'></p>
                         <div className="bar-content"></div>
                     </div>
                     <p>25-27</p>
                 </div>
-                <div>
+                <div className='graphJunior'>
                     <div className="bar" data-day="seventh">
                         <p className='highIm'></p>
                         <div className="bar-content"></div>

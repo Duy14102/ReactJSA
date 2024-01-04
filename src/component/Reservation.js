@@ -45,6 +45,17 @@ function Reservation() {
                 setBookingBook(data)
             })
         }
+        if (navigator.userAgent.indexOf('Safari') !== -1 &&
+            navigator.userAgent.indexOf('Chrome') === -1) {
+            const adde = document.getElementById("datetime")
+            const adde2 = document.getElementById("select1")
+            if (adde) {
+                adde.classList.add("safari")
+            }
+            if(adde2){
+                adde2.classList.add("roundSafari")
+            }
+        }
     }, [token])
 
     useEffect(() => {
@@ -237,7 +248,7 @@ function Reservation() {
                                             ) : null}
                                             <div className="col-md-6">
                                                 <label htmlFor="datetime" >Date & Time</label>
-                                                <input value={date} onChange={(e) => setDate(e.target.value)} type="datetime-local" className="cutOut datetimepicker-input" id="datetime" placeholder="Date & Time" required />
+                                                <input value={date} onChange={(e) => setDate(e.target.value)} type="datetime-local" className="cutOut datetimepicker-input" id="datetime" placeholder="📅" required />
                                                 {checkDate ? (
                                                     <p className="m-0 pt-1 text-danger">Date can't smaller than today!</p>
                                                 ) : null}

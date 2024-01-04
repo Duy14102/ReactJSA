@@ -56,7 +56,7 @@ function Layout({ children }) {
                     "backgroundPosition": "center center",
                     "backgroundRepeat": "no-repeat",
                     "backgroundSize": "cover",
-                    "backgroundAttachment": "fixed"
+                    "backgroundAttachment": "fixed",
                 })
             }).catch((err) => {
                 console.log(err);

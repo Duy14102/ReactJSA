@@ -218,87 +218,77 @@ function MainOrder() {
                         zIndex: 999
                     },
                 }}>
-                <div className='p-3'>
-                    <h2 className='text-center'>Input order date</h2>
-                    <div className='overOutsider'>
-                        <div className='outsider'>
-                            <form onSubmit={(e) => findOrder(e)}>
-                                <input type='submit' style={{ display: "none" }} />
-                                <div className='d-flex justify-content-between w-100'>
+                <h2 className='text-center'>Input order date</h2>
+                <div className='overOutsider'>
+                    <div className='outsider'>
+                        <form onSubmit={(e) => findOrder(e)}>
+                            <input type='submit' style={{ display: "none" }} />
+                            <div className={navigator.userAgent.indexOf('Safari') !== -1 && navigator.userAgent.indexOf('Chrome') === -1 ? "d-flex w-100" : "d-flex w-100 justify-content-between"}>
+                                {navigator.userAgent.indexOf('Safari') !== -1 && navigator.userAgent.indexOf('Chrome') === -1 ? (
+                                    <input onInput={(e) => setDateInput(e.target.value)} className="safari2" type='date' placeholder="📅" required />
+                                ) : (
                                     <input onInput={(e) => setDateInput(e.target.value)} type='date' required />
-                                    <button style={{ width: 10 + "%" }} type="submit"><svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" /></svg></button>
-                                </div>
-                            </form>
-                        </div>
+                                )}
+                                <button style={{ width: 10 + "%" }} type="submit"><svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" /></svg></button>
+                            </div>
+                        </form>
                     </div>
-                    {openTable ? (
-                        <>
-                            <table className='table solotable mt-3 text-center'>
-                                <thead>
-                                    <tr>
-                                        <th>Fullname</th>
-                                        <th className='thhuhu'>Phone Number</th>
-                                        <th>Date</th>
-                                        <th>Status</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {Object.values(dataafter).map((i) => {
-                                        const date = new Date(i.createdAt).toLocaleDateString()
-                                        const time = new Date(i.createdAt).toLocaleTimeString()
-                                        const datetime = date + " - " + time
-                                        if (i.status === 1) {
-                                            statusCheck = "Pending"
-                                        } else if (i.status === 2) {
-                                            statusCheck = "Accept"
-                                        }
-                                        else if (i.status === 3) {
-                                            statusCheck = "Deny"
-                                        }
-                                        else if (i.status === 4) {
-                                            statusCheck = "Cancel"
-                                        }
-                                        else if (i.status === 5) {
-                                            statusCheck = "Complete"
-                                        }
-                                        return (
-                                            <Fragment key={i._id}>
-                                                {i.employee?.map((a) => {
-                                                    if (a.id === decode.userId) {
-                                                        return (
-                                                            i.status === 2 ? (
-                                                                <tr style={{ verticalAlign: "middle" }}>
-                                                                    {i.user.map((z) => {
-                                                                        return (
-                                                                            <td key={z}>{z.fullname}</td>
-                                                                        )
-                                                                    })}
-                                                                    <td className="thhuhu">{i.phonenumber}</td>
-                                                                    <td className="thhuhu">{datetime}</td>
-                                                                    <td>{statusCheck}</td>
-                                                                    <td><button onClick={() => { setModalOpenAdmin(false); setModalOpenAdmin2(true); setModalData(i) }} className='btn btn-success'>Detail</button></td>
-                                                                </tr>
-                                                            ) : null
-                                                        )
-                                                    }
-                                                    return null
-                                                })}
-                                                {decode.userRole === 2 ? (
-                                                    i.status === 1 ? (
-                                                        <tr style={{ verticalAlign: "middle" }}>
-                                                            {i.user.map((z) => {
-                                                                return (
-                                                                    <td key={z}>{z.fullname}</td>
-                                                                )
-                                                            })}
-                                                            <td className="thhuhu">{i.phonenumber}</td>
-                                                            <td className="thhuhu">{datetime}</td>
-                                                            <td>{statusCheck}</td>
-                                                            <td><button onClick={() => { setModalOpenAdmin(false); setModalOpenAdmin2(true); setModalData(i) }} className='btn btn-success'>Detail</button></td>
-                                                        </tr>
-                                                    ) : null
-                                                ) : decode.userRole === 3 ? (
+                </div>
+                {openTable ? (
+                    <>
+                        <table className='table solotable mt-3 text-center'>
+                            <thead>
+                                <tr>
+                                    <th>Fullname</th>
+                                    <th className='thhuhu'>Phone Number</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {Object.values(dataafter).map((i) => {
+                                    const date = new Date(i.createdAt).toLocaleDateString()
+                                    const time = new Date(i.createdAt).toLocaleTimeString()
+                                    const datetime = date + " - " + time
+                                    if (i.status === 1) {
+                                        statusCheck = "Pending"
+                                    } else if (i.status === 2) {
+                                        statusCheck = "Accept"
+                                    }
+                                    else if (i.status === 3) {
+                                        statusCheck = "Deny"
+                                    }
+                                    else if (i.status === 4) {
+                                        statusCheck = "Cancel"
+                                    }
+                                    else if (i.status === 5) {
+                                        statusCheck = "Complete"
+                                    }
+                                    return (
+                                        <Fragment key={i._id}>
+                                            {i.employee?.map((a) => {
+                                                if (a.id === decode.userId) {
+                                                    return (
+                                                        i.status === 2 ? (
+                                                            <tr style={{ verticalAlign: "middle" }}>
+                                                                {i.user.map((z) => {
+                                                                    return (
+                                                                        <td key={z}>{z.fullname}</td>
+                                                                    )
+                                                                })}
+                                                                <td className="thhuhu">{i.phonenumber}</td>
+                                                                <td className="thhuhu">{datetime}</td>
+                                                                <td>{statusCheck}</td>
+                                                                <td><button onClick={() => { setModalOpenAdmin(false); setModalOpenAdmin2(true); setModalData(i) }} className='btn btn-success'>Detail</button></td>
+                                                            </tr>
+                                                        ) : null
+                                                    )
+                                                }
+                                                return null
+                                            })}
+                                            {decode.userRole === 2 ? (
+                                                i.status === 1 ? (
                                                     <tr style={{ verticalAlign: "middle" }}>
                                                         {i.user.map((z) => {
                                                             return (
@@ -310,34 +300,46 @@ function MainOrder() {
                                                         <td>{statusCheck}</td>
                                                         <td><button onClick={() => { setModalOpenAdmin(false); setModalOpenAdmin2(true); setModalData(i) }} className='btn btn-success'>Detail</button></td>
                                                     </tr>
-                                                ) : null}
-                                            </Fragment >
-                                        )
-                                    })}
-                                </tbody>
-                            </table>
-                            <ReactPaginate
-                                breakLabel="..."
-                                nextLabel="next >"
-                                onPageChange={handlePageClick}
-                                pageRangeDisplayed={5}
-                                pageCount={pageCount}
-                                previousLabel="< previous"
-                                renderOnZeroPageCount={null}
-                                marginPagesDisplayed={2}
-                                containerClassName="pagination justify-content-center text-nowrap"
-                                pageClassName="page-item"
-                                pageLinkClassName="page-link"
-                                previousClassName="page-item"
-                                previousLinkClassName="page-link"
-                                nextClassName="page-item"
-                                nextLinkClassName="page-link"
-                                activeClassName="active"
-                                forcePage={currentPage.current - 1}
-                            />
-                        </>
-                    ) : null}
-                </div>
+                                                ) : null
+                                            ) : decode.userRole === 3 ? (
+                                                <tr style={{ verticalAlign: "middle" }}>
+                                                    {i.user.map((z) => {
+                                                        return (
+                                                            <td key={z}>{z.fullname}</td>
+                                                        )
+                                                    })}
+                                                    <td className="thhuhu">{i.phonenumber}</td>
+                                                    <td className="thhuhu">{datetime}</td>
+                                                    <td>{statusCheck}</td>
+                                                    <td><button onClick={() => { setModalOpenAdmin(false); setModalOpenAdmin2(true); setModalData(i) }} className='btn btn-success'>Detail</button></td>
+                                                </tr>
+                                            ) : null}
+                                        </Fragment >
+                                    )
+                                })}
+                            </tbody>
+                        </table>
+                        <ReactPaginate
+                            breakLabel="..."
+                            nextLabel="next >"
+                            onPageChange={handlePageClick}
+                            pageRangeDisplayed={5}
+                            pageCount={pageCount}
+                            previousLabel="< previous"
+                            renderOnZeroPageCount={null}
+                            marginPagesDisplayed={2}
+                            containerClassName="pagination justify-content-center text-nowrap"
+                            pageClassName="page-item"
+                            pageLinkClassName="page-link"
+                            previousClassName="page-item"
+                            previousLinkClassName="page-link"
+                            nextClassName="page-item"
+                            nextLinkClassName="page-link"
+                            activeClassName="active"
+                            forcePage={currentPage.current - 1}
+                        />
+                    </>
+                ) : null}
                 <button className='closeModal' onClick={() => { setModalOpenAdmin(false); setOpenTable(false) }}>x</button>
             </Modal>
             <Modal

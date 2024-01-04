@@ -682,7 +682,22 @@ iframe {
     border: 1px solid #ddd;
     width: 100%;
     color: gray;
+    background-color: #fff;
     padding: 2%;
+}
+
+.safari {
+    appearance: textfield;
+    width: 100%;
+    min-width: 95%;
+    vertical-align: middle;
+    height: 36px;
+}
+
+.safari::after {
+    color: #CCC;
+    content: attr(placeholder) !important;
+    font-size: 14px;
 }
 
 .cutOut option {
@@ -692,6 +707,15 @@ iframe {
 .cutOut:focus {
     outline: none;
     border: 1px solid #FEA116;
+}
+
+.roundSafari {
+    border-radius: 6px;
+    height: 40px;
+}
+
+.roundSafari::after {
+    color: red;
 }
 
 
@@ -875,8 +899,10 @@ iframe {
 
 .inputSearch {
     border: none;
+    border-radius: 0;
     padding: 2%;
     width: 100%;
+    height: 100%;
 }
 
 .imgUser {
@@ -940,11 +966,12 @@ iframe {
 }
 
 .SearchForm {
-    width: 90%;
+    width: 85%;
 }
 
 .SearchSubmit {
-    width: 10%;
+    width: 15%;
+    height: 100%;
 }
 
 .responFormSearch {
@@ -962,6 +989,10 @@ iframe {
 
 .humble {
     display: flex;
+}
+
+.anotherJackass2 {
+    display: none;
 }
 
 .anotherJackass {
@@ -1243,6 +1274,10 @@ iframe {
     align-items: center;
 }
 
+.jodit-workplace {
+    height: 300px !important;
+}
+
 .graph,
 .graph2,
 .graph3 {
@@ -1251,10 +1286,14 @@ iframe {
     justify-content: center;
     width: 100%;
     height: 100%;
-    gap: 4%;
+    gap: 20px;
     padding: 0;
     margin: 0;
     flex-wrap: wrap;
+}
+
+.graphJunior {
+    width: 45px;
 }
 
 .graph p,
@@ -1621,6 +1660,18 @@ iframe {
 }
 
 @media (max-width:575px) {
+    .deleteAccountInputField {
+        width: 90% !important;
+    }
+
+    .tabcclink {
+        padding: 2.5% !important;
+    }
+
+    #myDIV6 .MBbutton6 {
+        padding: 2.5% !important;
+    }
+
     .ruler {
         justify-content: center !important;
     }
@@ -1719,8 +1770,12 @@ iframe {
         height: 350px;
     }
 
-    .btn {
-        font-size: 2.5vw !important;
+    .btn-primary,
+    .btn-warning,
+    .btn-secondary,
+    .btn-success,
+    .btn-info {
+        font-size: 3vw !important;
         text-wrap: nowrap;
     }
 
@@ -1891,6 +1946,12 @@ iframe {
         display: block;
     }
 
+    .anotherJackass2 {
+        display: block !important;
+        margin-top: 40px !important;
+        height: 35px !important;
+    }
+
     .humble {
         justify-content: space-between;
     }
@@ -1907,6 +1968,7 @@ iframe {
 
     .headOverview .button4Edit {
         margin-top: 2%;
+        padding: 1vw 4vw 1vw 4vw !important;
     }
 
     .headOverview h5 {
@@ -2348,6 +2410,8 @@ iframe {
     padding: 1.5%;
     width: 100%;
     outline: none;
+    color: #0F172B;
+    border-radius: 5px;
 }
 
 .FilterDrop:focus {

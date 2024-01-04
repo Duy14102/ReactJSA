@@ -38,6 +38,8 @@ function AddAnnounce() {
             })
     }
 
+    
+
     var titles = "Title (optional)"
     return (
         <>

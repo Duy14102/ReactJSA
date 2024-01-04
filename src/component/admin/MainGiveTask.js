@@ -103,57 +103,55 @@ function MainGiveTask({ modalOpenAdmin, setModalOpenAdmin }) {
                         zIndex: 999
                     },
                 }}>
-                <div className='p-3'>
-                    <div className="text-center">
-                        <h3>All Employee</h3>
-                    </div>
-                    <hr />
-                    <table className='table table-bordered solotable text-center mt-4' style={{ wordBreak: "break-word" }}>
-                        <thead>
-                            <tr>
-                                <th>Email</th>
-                                <th className='thhuhu'>Fullname</th>
-                                <th className='thhuhu'>Role</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {data.map((i) => {
-                                var tookRole = ""
-                                if (i.role === 2) {
-                                    tookRole = "Employee"
-                                }
-                                return (
-                                    <tr key={i._id}>
-                                        <td>{i.email}</td>
-                                        <td className='thhuhu'>{i.fullname}</td>
-                                        <td className='thhuhu'>{tookRole}</td>
-                                        <td><button onClick={() => { setModalOpenAdmin(false); setModalOpenAdmin2(true); setModalData(i) }} className='btn btn-success'>Detail</button></td>
-                                    </tr>
-                                )
-                            })}
-                        </tbody>
-                    </table>
-                    <ReactPaginate
-                        breakLabel="..."
-                        nextLabel="next >"
-                        onPageChange={handlePageClick}
-                        pageRangeDisplayed={5}
-                        pageCount={pageCount}
-                        previousLabel="< previous"
-                        renderOnZeroPageCount={null}
-                        marginPagesDisplayed={2}
-                        containerClassName="pagination justify-content-center text-nowrap"
-                        pageClassName="page-item"
-                        pageLinkClassName="page-link"
-                        previousClassName="page-item"
-                        previousLinkClassName="page-link"
-                        nextClassName="page-item"
-                        nextLinkClassName="page-link"
-                        activeClassName="active"
-                        forcePage={currentPage.current - 1}
-                    />
+                <div className="text-center">
+                    <h3>All Employee</h3>
                 </div>
+                <hr />
+                <table className='table table-bordered solotable text-center mt-4' style={{ wordBreak: "break-word" }}>
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th className='thhuhu'>Fullname</th>
+                            <th className='thhuhu'>Role</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {data.map((i) => {
+                            var tookRole = ""
+                            if (i.role === 2) {
+                                tookRole = "Employee"
+                            }
+                            return (
+                                <tr key={i._id}>
+                                    <td>{i.email}</td>
+                                    <td className='thhuhu'>{i.fullname}</td>
+                                    <td className='thhuhu'>{tookRole}</td>
+                                    <td><button onClick={() => { setModalOpenAdmin(false); setModalOpenAdmin2(true); setModalData(i) }} className='btn btn-success'>Detail</button></td>
+                                </tr>
+                            )
+                        })}
+                    </tbody>
+                </table>
+                <ReactPaginate
+                    breakLabel="..."
+                    nextLabel="next >"
+                    onPageChange={handlePageClick}
+                    pageRangeDisplayed={5}
+                    pageCount={pageCount}
+                    previousLabel="< previous"
+                    renderOnZeroPageCount={null}
+                    marginPagesDisplayed={2}
+                    containerClassName="pagination justify-content-center text-nowrap"
+                    pageClassName="page-item"
+                    pageLinkClassName="page-link"
+                    previousClassName="page-item"
+                    previousLinkClassName="page-link"
+                    nextClassName="page-item"
+                    nextLinkClassName="page-link"
+                    activeClassName="active"
+                    forcePage={currentPage.current - 1}
+                />
                 <button className='closeModal' onClick={() => setModalOpenAdmin(false)}>x</button>
             </Modal>
             <Modal

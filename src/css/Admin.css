@@ -753,6 +753,30 @@
     }
 }
 
+.safari2 {
+    appearance: textfield;
+    width: 100%;
+    min-width: 77%;
+    vertical-align: middle;
+    color: #FEA116;
+    background-color: #fff;
+}
+
+.safari2::after {
+    content: attr(placeholder) !important;
+    font-size: 14px;
+}
+
+.cutSaf {
+    appearance: textfield;
+    width: 100%;
+    color: #0f172b;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    height: 37px;
+}
+
 /*          Modal           */
 .closeModal {
     position: absolute;
@@ -762,6 +786,7 @@
     font-weight: bold;
     transition: 0.2s all;
     line-height: 30px;
+    color: #0f172b;
 }
 
 .closeModal:hover {
@@ -817,7 +842,7 @@
 
 /*          User Panel          */
 .coverUser {
-    border: 1px solid gray;
+    box-shadow: 0px 0px 8px 0px rgba(0, 0, 0, 0.2);
 }
 
 .headOverview {
@@ -904,22 +929,15 @@
     width: 150px;
     height: 150px;
     overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     margin-bottom: 20px;
 }
 
 .pic-holder2 {
-    text-align: center;
     position: relative;
     border-radius: 50%;
     width: 60px;
     height: 60px;
     overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     margin-bottom: 20px;
 }
 
@@ -1026,16 +1044,17 @@
 }
 
 .button4Edit {
-    border: 1px solid rgb(39, 39, 39);
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
     background: transparent;
     transition: all 0.2s;
     padding: 0.3vw 1vw 0.3vw 1vw;
+    background-color: #fff;
+    color: #0f172b !important;
 }
 
 .button4Edit:hover,
 .button4Edit:active {
-    background: rgba(184, 184, 184, 0.5);
+    background: gray;
 }
 
 .dropdown-content p {

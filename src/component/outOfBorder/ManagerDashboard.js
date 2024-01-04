@@ -63,9 +63,7 @@ function ManagerDashboard() {
                         <div className='d-flex justify-content-between'>
                             <p className='m-0 text-white'>1% increase</p>
                             <button onClick={() => setModalOpenAdmin(true)} className='text-white'>See all ˃˃</button>
-                            {modalOpenAdmin ? (
-                                <Givetask modalOpenAdmin={modalOpenAdmin} setModalOpenAdmin={setModalOpenAdmin} />
-                            ) : null}
+                            <Givetask modalOpenAdmin={modalOpenAdmin} setModalOpenAdmin={setModalOpenAdmin} />
                         </div>
                     </div>
                 </div>

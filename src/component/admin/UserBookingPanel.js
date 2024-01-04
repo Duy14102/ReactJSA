@@ -116,8 +116,8 @@ function UserBookingPanel({ id }) {
                 <>
 
                     <div className="d-flex px-4 pb-3 Lunatic" style={{ gap: 1 + "%" }}>
-                        <button id="SickSidekick" onClick={(e) => openCity3(e, "Booking1")} className="noPlusElf magicB active">Active</button>
-                        <button onClick={(e) => openCity3(e, "Booking2")} className="noPlusElf magicB">History</button>
+                        <button id="SickSidekick" onClick={(e) => openCity3(e, "Booking1")} className="noPlusElf tabcclink active">Active</button>
+                        <button onClick={(e) => openCity3(e, "Booking2")} className="noPlusElf tabcclink">History</button>
                     </div>
                     <div className="sideKick" id="Booking1">
                         {Booking.data ? (

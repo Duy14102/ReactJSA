@@ -302,7 +302,7 @@ function MainUser() {
 
                             <div className='insideHereB'>
                                 <label>Role</label>
-                                <select className='textDeny' onChange={(e) => setRole(e.target.value)}>
+                                <select className={navigator.userAgent.indexOf('Safari') !== -1 && navigator.userAgent.indexOf('Chrome') === -1 ? "cutSaf" : "textDeny"} onChange={(e) => setRole(e.target.value)}>
                                     <option disabled hidden selected>Choose Role</option>
                                     <option value={3}>Manager</option>
                                     <option value={2}>Employee</option>
