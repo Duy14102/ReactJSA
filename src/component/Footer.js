@@ -1,18 +1,20 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { NavLink } from "react-router-dom";
 import axios from 'axios'
 import HTMLReactParser from "html-react-parser";
+import socketIOClient from "socket.io-client";
 
 function Footer() {
     const [address, setAddress] = useState()
     const [phone, setPhone] = useState()
     const [email, setEmail] = useState()
     const [time, setTime] = useState()
+    const socketRef = useRef();
 
-    useEffect(() => {
+    const called = () => {
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/GetTheFooter"
+            url: "http://localhost:3000/GetTheFooter"
         }
         axios(configuration)
             .then((res) => {
@@ -23,6 +25,40 @@ function Footer() {
             }).catch((err) => {
                 console.log(err);
             })
+    }
+    useEffect(() => {
+        called()
+
+        socketRef.current = socketIOClient.connect("http://localhost:3000")
+
+        socketRef.current.on('ChangeWordTimeSuccess', dataGot => {
+            if (dataGot.title === "Footer") {
+                called()
+            }
+        })
+
+        socketRef.current.on('ChangeWordUpSuccess', dataGot => {
+            if (dataGot.title === "Footer") {
+                called()
+            }
+        })
+
+        socketRef.current.on('ChangeWordMiddleSuccess', dataGot => {
+            if (dataGot.title === "Footer") {
+                called()
+            }
+        })
+
+        socketRef.current.on('ChangeWordDownSuccess', dataGot => {
+            if (dataGot.title === "Footer") {
+                called()
+            }
+        })
+
+        return () => {
+            socketRef.current.disconnect();
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const dataTel = `tel:${HTMLReactParser(`${phone}`)}`

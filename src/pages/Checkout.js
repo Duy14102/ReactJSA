@@ -43,7 +43,7 @@ function Checkout() {
             const decoded = jwtDecode(token);
             const configuration = {
                 method: "get",
-                url: "https://eatcom.onrender.com/GetDetailUser",
+                url: "http://localhost:3000/GetDetailUser",
                 params: {
                     userid: decoded.userId
                 }
@@ -82,7 +82,7 @@ function Checkout() {
         if (paypalState === "COMPLETED") {
             const configuration = {
                 method: "post",
-                url: "https://eatcom.onrender.com/UploadOrder",
+                url: "http://localhost:3000/UploadOrder",
                 data: {
                     user,
                     phonenumber,
@@ -98,7 +98,7 @@ function Checkout() {
                         const decode = jwtDecode(token);
                         const configuration = {
                             method: "post",
-                            url: "https://eatcom.onrender.com/AddAddressUser",
+                            url: "http://localhost:3000/AddAddressUser",
                             data: {
                                 id: decode.userId,
                                 address: havePhone
@@ -111,9 +111,14 @@ function Checkout() {
                                 console.log(e);
                             })
                     }
-                    const data = result.data.message
+                    var data = null
+                    if (candecode) {
+                        data = { orderid: result.data.message, userid: candecode.userId }
+                    } else {
+                        data = { orderid: result.data.message }
+                    }
                     window.history.replaceState({}, document.title)
-                    localStorage.clear()
+                    localStorage.removeItem("cart")
                     paypalCheckout(data)
                 })
                 .catch((e) => {
@@ -179,23 +184,23 @@ function Checkout() {
     const VnpayCheckout = (data) => {
         const configuration = {
             method: "post",
-            url: "https://eatcom.onrender.com/VnpayCheckout",
+            url: "http://localhost:3000/VnpayCheckout",
             data: {
                 amount: fulltotal,
                 bankCode: bankCode,
-                orderId: data
+                orderId: data.orderid
             }
         }
         axios(configuration)
             .then((res) => {
-                localStorage.setItem("complete", data)
+                localStorage.setItem("complete", JSON.stringify(data))
                 window.location.href = `${res.data}`
             })
             .catch((err) => console.log(err))
     }
 
     const paypalCheckout = (data) => {
-        localStorage.setItem("complete", data)
+        localStorage.setItem("complete", JSON.stringify(data))
         if (Card && paypalState) {
             window.location.href = `/OrderComplete?status=${paypalState}`;
         }
@@ -212,7 +217,7 @@ function Checkout() {
         e.preventDefault();
         const configuration = {
             method: "post",
-            url: "https://eatcom.onrender.com/UploadOrder",
+            url: "http://localhost:3000/UploadOrder",
             data: {
                 user,
                 phonenumber,
@@ -228,7 +233,7 @@ function Checkout() {
                     const decode = jwtDecode(token);
                     const configuration = {
                         method: "post",
-                        url: "https://eatcom.onrender.com/AddAddressUser",
+                        url: "http://localhost:3000/AddAddressUser",
                         data: {
                             id: decode.userId,
                             address: havePhone
@@ -241,13 +246,18 @@ function Checkout() {
                             console.log(e);
                         })
                 }
-                const data = result.data.message
+                var data = null
+                if (candecode) {
+                    data = { orderid: result.data.message, userid: candecode.userId }
+                } else {
+                    data = { orderid: result.data.message }
+                }
                 window.history.replaceState({}, document.title)
                 localStorage.removeItem("cart")
                 if (Card && vnpay) {
                     VnpayCheckout(data)
                 } else {
-                    localStorage.setItem("complete", data)
+                    localStorage.setItem("complete", JSON.stringify(data))
                     window.location.href = "/OrderComplete";
                 }
             })
@@ -486,7 +496,7 @@ function Checkout() {
                                 {paypal ? (
                                     <div className="mt-4 resCheckoutB2 w-100">
                                         <PayPalButton
-                                        ty
+                                            ty
                                             amount={fulltotal / 25000}
                                             // shippingPreference="NO_SHIPPING" // default is "GET_FROM_FILE"
                                             onSuccess={(details) => {

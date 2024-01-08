@@ -1,9 +1,9 @@
-import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { Fragment } from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Swal from "sweetalert2";
 import Cookies from "universal-cookie";
+import socketIOClient from "socket.io-client";
 
 function Reservation() {
     var candecode = null
@@ -12,6 +12,7 @@ function Reservation() {
     if (token) {
         candecode = jwtDecode(token)
     }
+    const socketRef = useRef();
     const [name, setName] = useState()
     const [tokeId, setTokeId] = useState("None")
     const [phone, setPhone] = useState()
@@ -28,22 +29,102 @@ function Reservation() {
     const date2 = new Date(date).getTime()
     const checkPhone = /((09|03|07|08|05)+([0-9]{8})\b)/g
 
+    function Success() {
+        Swal.fire(
+            'Successfully!',
+            '',
+            'success'
+        ).then(function () {
+            window.location.reload();
+        })
+    }
+
+    function Fail() {
+        Swal.fire(
+            'Fail!',
+            ``,
+            'error'
+        )
+    }
+
+    useEffect(() => {
+        socketRef.current = socketIOClient.connect("http://localhost:3000")
+
+        socketRef.current.on('AddNewBookingSuccess', dataGot => {
+            if (dataGot.check === localStorage.getItem("CheckBook")) {
+                localStorage.removeItem("CheckBook")
+                Success()
+            }
+        })
+
+        socketRef.current.on('AddNewBookingFail', dataGot => {
+            if (dataGot.check === localStorage.getItem("CheckBook")) {
+                localStorage.removeItem("CheckBook")
+                Fail()
+            }
+        })
+
+        socketRef.current.on('CancelBookingSuccess', dataGot => {
+            if (dataGot?.data === candecode?.userId) {
+                Success()
+            }
+        })
+
+        socketRef.current.on('CancelBookingFail', dataGot => {
+            if (dataGot?.data === candecode?.userId) {
+                Fail()
+            }
+        })
+
+        socketRef.current.on('DenyBookingSuccess', dataGot => {
+            if (candecode?.userId === dataGot?.data) {
+                called()
+            }
+        })
+
+        socketRef.current.on('AddTableCustomerSuccess', dataGot => {
+            if (candecode?.userId === dataGot?.data) {
+                called()
+            }
+        })
+
+        socketRef.current.on('ChangeTableSuccess', dataGot => {
+            if (candecode?.userId === dataGot?.data) {
+                called()
+            }
+        })
+
+        socketRef.current.on('CheckoutBookingSuccess', dataGot => {
+            if (dataGot?.data !== candecode?.userId) {
+                called()
+            }
+        })
+
+        return () => {
+            socketRef.current.disconnect();
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const called = () => {
+        fetch(`http://localhost:3000/GetTokenBooking?id=${candecode?.userId}`, {
+            method: "get",
+        }).then((res) => res.json()).then((data) => {
+            setBookingBook(data)
+        })
+    }
+
     useEffect(() => {
         if (token) {
             const decode = jwtDecode(token)
             if (decode.userRole !== 1.5) {
-                fetch(`https://eatcom.onrender.com/GetDetailUser?userid=${decode.userId}`, {
+                fetch(`http://localhost:3000/GetDetailUser?userid=${decode.userId}`, {
                     method: "get",
                 }).then((res) => res.json()).then((data) => {
                     setGetUser(data)
                 })
             }
-
-            fetch(`https://eatcom.onrender.com/GetTokenBooking?id=${decode.userId}`, {
-                method: "get",
-            }).then((res) => res.json()).then((data) => {
-                setBookingBook(data)
-            })
+            called()
         }
         if (navigator.userAgent.indexOf('Safari') !== -1 &&
             navigator.userAgent.indexOf('Chrome') === -1) {
@@ -52,10 +133,11 @@ function Reservation() {
             if (adde) {
                 adde.classList.add("safari")
             }
-            if(adde2){
+            if (adde2) {
                 adde2.classList.add("roundSafari")
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [token])
 
     useEffect(() => {
@@ -80,41 +162,19 @@ function Reservation() {
 
     const AddNewTable = (e) => {
         e.preventDefault()
-        const customer = { id: tokeId, fullname: name, phonenumber: phone }
-        const configuration = {
-            method: "post",
-            url: "https://eatcom.onrender.com/AddNewBooking",
-            data: {
-                customer,
-                date,
-                people,
-                message
+        if (!candecode) {
+            if (!checkPhone.test(phone)) {
+                setAlertCheck(true)
+                return false
             }
         }
-        if (!checkPhone.test(phone)) {
-            setAlertCheck(true)
-            return false
-        }
+
         if (date2 >= datetime) {
             setCheckDate(false)
-            axios(configuration)
-                .then(() => {
-                    Swal.fire(
-                        'Booking Successfully!',
-                        '',
-                        'success'
-                    ).then(function () {
-                        window.location.reload();
-                    })
-                }).catch((error) => {
-                    Swal.fire(
-                        'Booking Fail!',
-                        `${error.response.data.message}`,
-                        'error'
-                    ).then(function () {
-                        window.location.reload();
-                    })
-                })
+            const customer = { id: tokeId, fullname: name, phonenumber: phone }
+            const data = { customer, date, people, message }
+            localStorage.setItem("CheckBook", phone)
+            socketRef.current.emit('AddNewBookingSocket', data)
         } else if (date2 < datetime) {
             setCheckDate(true)
         }
@@ -122,33 +182,8 @@ function Reservation() {
 
     const CancelBooking = (e, id) => {
         e.preventDefault()
-        const configuration = {
-            method: "post",
-            url: "https://eatcom.onrender.com/CancelBooking",
-            data: {
-                id: id,
-                reason: cancelReason
-            }
-        }
-
-        axios(configuration)
-            .then(() => {
-                Swal.fire(
-                    'Cancel Successfully!',
-                    '',
-                    'success'
-                ).then(function () {
-                    window.location.reload();
-                })
-            }).catch(() => {
-                Swal.fire(
-                    'Cancel Fail!',
-                    '',
-                    'error'
-                ).then(function () {
-                    window.location.reload();
-                })
-            })
+        const data = { id: id, reason: cancelReason, userid: tokeId }
+        socketRef.current.emit('CancelBookingSocket', data)
     }
     return (
         <>
@@ -248,7 +283,7 @@ function Reservation() {
                                             ) : null}
                                             <div className="col-md-6">
                                                 <label htmlFor="datetime" >Date & Time</label>
-                                                <input value={date} onChange={(e) => setDate(e.target.value)} type="datetime-local" className="cutOut datetimepicker-input" id="datetime" placeholder="📅" required />
+                                                <input onChange={(e) => setDate(e.target.value)} type="datetime-local" className="cutOut datetimepicker-input" id="datetime" placeholder="📅" required />
                                                 {checkDate ? (
                                                     <p className="m-0 pt-1 text-danger">Date can't smaller than today!</p>
                                                 ) : null}

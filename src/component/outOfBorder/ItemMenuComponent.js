@@ -9,7 +9,7 @@ const ItemMenuComponent = ({ Name, start, end }) => {
     useEffect(() => {
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/GetThisMenu",
+            url: "http://localhost:3000/GetThisMenu",
             params: {
                 Name: Name,
                 start: start,

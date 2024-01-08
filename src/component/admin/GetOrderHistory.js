@@ -4,6 +4,7 @@ import { useEffect, useState, Fragment, useRef } from "react";
 import Modal from 'react-modal';
 import ReactPaginate from "react-paginate";
 import Cookies from "universal-cookie";
+import socketIOClient from "socket.io-client";
 
 function GetOrderHistory() {
     const cookies = new Cookies()
@@ -12,13 +13,52 @@ function GetOrderHistory() {
     const [Order, setOrder] = useState([])
     const [ModalData, setModalData] = useState([])
     const [modalOpenDetail, setModalOpenDetail] = useState(false);
+    const socketRef = useRef();
     const [pageCount, setPageCount] = useState(6);
     const currentPage = useRef();
     const limit = 9
 
+    function HandleCancel() {
+        getPagination()
+        if (localStorage.getItem("CountNewContact")) {
+            localStorage.removeItem("CountNewContact")
+        }
+    }
+
     useEffect(() => {
         currentPage.current = 1;
         getPagination()
+
+        socketRef.current = socketIOClient.connect("http://localhost:3000")
+
+        socketRef.current.on('CancelVnpaySuccess', dataGot => {
+            if (decode.userRole === 3) {
+                HandleCancel()
+            }
+        })
+
+        socketRef.current.on('CompleteOrderSuccess', dataGot => {
+            if (decode.userRole === 3) {
+                HandleCancel()
+            }
+        })
+
+        socketRef.current.on('CancelByMagNormalSuccess', dataGot => {
+            if (decode.userRole === dataGot.emp) {
+                HandleCancel()
+            }
+        })
+
+        socketRef.current.on('CancelByMagPaidSuccess', dataGot => {
+            if (decode.userRole === dataGot.emp) {
+                HandleCancel()
+            }
+        })
+
+        return () => {
+            socketRef.current.disconnect();
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     function handlePageClick(e) {
@@ -29,7 +69,7 @@ function GetOrderHistory() {
     function getPagination() {
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/GetAllOrderHistory",
+            url: "http://localhost:3000/GetAllOrderHistory",
             params: {
                 page: currentPage.current,
                 limit: limit

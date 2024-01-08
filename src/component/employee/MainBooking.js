@@ -8,11 +8,13 @@ import $ from 'jquery'
 import Cookies from "universal-cookie";
 import { jwtDecode } from "jwt-decode";
 import Swal from "sweetalert2";
+import socketIOClient from "socket.io-client";
 
 function MainBooking() {
     const cookies = new Cookies()
     const token = cookies.get("TOKEN")
     const decode = jwtDecode(token)
+    const socketRef = useRef();
     const deliverEmployee = { id: decode.userId, email: decode.userEmail }
     const takeEmployee = []
     takeEmployee.push(deliverEmployee)
@@ -36,6 +38,35 @@ function MainBooking() {
     useEffect(() => {
         currentPage.current = 1;
         document.getElementById("defaultOpen").click();
+
+        socketRef.current = socketIOClient.connect("http://localhost:3000")
+
+        socketRef.current.on('CancelBookingSuccess', dataGot => {
+            findBooking()
+        })
+
+        socketRef.current.on('DenyBookingSuccess', dataGot => {
+            findBooking()
+        })
+
+        socketRef.current.on('AddTableCustomerSuccess', dataGot => {
+            findBooking()
+        })
+
+        socketRef.current.on('ChangeTableSuccess', dataGot => {
+            if (dataGot?.data !== "None") {
+                findBooking()
+            }
+        })
+
+        socketRef.current.on('CheckoutBookingSuccess', dataGot => {
+            findBooking()
+        })
+
+        return () => {
+            socketRef.current.disconnect();
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     function handlePageClick(e) {
@@ -46,7 +77,7 @@ function MainBooking() {
     function getTableActive() {
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/GetAllTableActive",
+            url: "http://localhost:3000/GetAllTableActive",
         }
         axios(configuration)
             .then((res) => {
@@ -60,7 +91,7 @@ function MainBooking() {
         e?.preventDefault()
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/SearchAllBooking",
+            url: "http://localhost:3000/SearchAllBooking",
             params: {
                 date: DateInput,
                 page: currentPage.current,
@@ -82,11 +113,10 @@ function MainBooking() {
     const addTableBooking = (e, id) => {
         e.preventDefault()
         let selText = $("#box1Y option:selected").text();
-        console.log(selText);
         if (TableId) {
             const configuration = {
                 method: "post",
-                url: "https://eatcom.onrender.com/AddTableCustomer",
+                url: "http://localhost:3000/AddTableCustomer",
                 data: {
                     tableid: TableId,
                     tablename: selText,
@@ -120,7 +150,7 @@ function MainBooking() {
         e.preventDefault()
         const configuration = {
             method: "post",
-            url: "https://eatcom.onrender.com/DenyBookingCustomer",
+            url: "http://localhost:3000/DenyBookingCustomer",
             data: {
                 id: id,
                 status: 4,
@@ -386,13 +416,13 @@ function MainBooking() {
             </Modal>
             <div id="London" className="tabcontent">
                 <div className="pt-4">
-                    <GetBooking />
+                    <GetBooking decode={decode} />
                 </div>
             </div>
 
             <div id="Tokyo" className="tabcontent">
                 <div className="pt-4">
-                    <BookingHistory />
+                    <BookingHistory decode={decode} />
                 </div>
             </div>
         </>

@@ -1,6 +1,9 @@
 import axios from "axios";
-import { useEffect, useState, lazy, Suspense } from "react";
+import { useEffect, useState, lazy, Suspense, useRef } from "react";
 import Spinner from "../Spinner";
+import socketIOClient from "socket.io-client";
+import { jwtDecode } from "jwt-decode";
+import Cookies from "universal-cookie";
 const HeroChange = lazy(() => import("../outOfBorder/HeroChange"))
 const AboutChange = lazy(() => import("../outOfBorder/AboutChange"))
 const MenuChange = lazy(() => import("../outOfBorder/MenuChange"))
@@ -8,11 +11,15 @@ const FooterChange = lazy(() => import("../outOfBorder/FooterChange"))
 
 function MainUiux() {
     const [data, setData] = useState([])
-    useEffect(() => {
-        document.getElementById("defaultOpen9").click();
+    const cookies = new Cookies()
+    const token = cookies.get("TOKEN")
+    const decode = jwtDecode(token)
+    const socketRef = useRef();
+
+    const called = () => {
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/GetHeroManager",
+            url: "http://localhost:3000/GetHeroManager",
         }
         axios(configuration)
             .then((res) => {
@@ -20,6 +27,47 @@ function MainUiux() {
             }).catch((err) => {
                 console.log(err);
             })
+    }
+    useEffect(() => {
+        document.getElementById("defaultOpen9").click();
+        called()
+
+        socketRef.current = socketIOClient.connect("http://localhost:3000")
+
+        socketRef.current.on('ChangeHeroImageSuccess', dataGot => {
+            if (dataGot.mag !== decode.userId) {
+                called()
+            }
+        })
+
+        socketRef.current.on('ChangeWordUpSuccess', dataGot => {
+            if (dataGot.mag !== decode.userId) {
+                called()
+            }
+        })
+
+        socketRef.current.on('ChangeWordMiddleSuccess', dataGot => {
+            if (dataGot.mag !== decode.userId) {
+                called()
+            }
+        })
+
+        socketRef.current.on('ChangeWordDownSuccess', dataGot => {
+            if (dataGot.mag !== decode.userId) {
+                called()
+            }
+        })
+
+        socketRef.current.on('ChangeWordTimeSuccess', dataGot => {
+            if (dataGot.mag !== decode.userId) {
+                called()
+            }
+        })
+
+        return () => {
+            socketRef.current.disconnect();
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     function openCity9(evt, cityName) {
@@ -49,7 +97,7 @@ function MainUiux() {
             <div id="hero" className="tabcontent9">
                 <div className="pt-4">
                     <Suspense fallback={<Spinner />}>
-                        <HeroChange data={data} />
+                        <HeroChange data={data} decode={decode} />
                     </Suspense>
                 </div>
             </div>
@@ -57,21 +105,21 @@ function MainUiux() {
             <div id="About" className="tabcontent9">
                 <div className="pt-4">
                     <Suspense fallback={<Spinner />}>
-                        <AboutChange data={data} />
+                        <AboutChange data={data} decode={decode} />
                     </Suspense>
                 </div>
             </div>
             <div id="Menu" className="tabcontent9">
                 <div className="pt-4">
                     <Suspense fallback={<Spinner />}>
-                        <MenuChange data={data} />
+                        <MenuChange data={data} decode={decode} />
                     </Suspense>
                 </div>
             </div>
             <div id="Footer" className="tabcontent9">
                 <div className="pt-4">
                     <Suspense fallback={<Spinner />}>
-                        <FooterChange data={data} />
+                        <FooterChange data={data} decode={decode} />
                     </Suspense>
                 </div>
             </div>

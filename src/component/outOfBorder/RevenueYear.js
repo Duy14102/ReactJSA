@@ -5,7 +5,7 @@ function RevenueYear() {
     const [CountData, setCountData] = useState()
     const [total, setTotal] = useState()
     useEffect(() => {
-        fetch("https://eatcom.onrender.com/GetIncomeYear", {
+        fetch("http://localhost:3000/GetIncomeYear", {
             method: "get",
         }).then((res) => res.json()).then((data) => {
             setCountData(data.data)
@@ -144,7 +144,7 @@ function RevenueYear() {
                     <b>🟩</b> : <p className='m-0 text-muted'>Income %</p>
                 </div>
                 <div className='d-flex text-nowrap' style={{ gap: 5 + "%" }}>
-                    <b className='text-white'>1-3</b> : <p className='m-0 text-muted'>Month</p>
+                    <b className='text-white'>1</b> : <p className='m-0 text-muted'>Month</p>
                 </div>
                 <div className='d-flex text-nowrap' style={{ gap: 5 + "%" }}>
                     <b className='text-white'>Max</b> : <p className='m-0 text-muted'>{VND.format(100000000)}</p>

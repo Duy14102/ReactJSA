@@ -1,10 +1,12 @@
-import axios from 'axios';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Modal from 'react-modal';
 import Swal from 'sweetalert2';
+import socketIOClient from "socket.io-client";
 
-function TaskHandle({ id, name }) {
+function TaskHandle({ id, name, decode }) {
     const [modalOpenDetail, setModalOpenDetail] = useState(false);
+    const socketRef = useRef();
+
     var drawed = ""
     if (id.task.status === 1) {
         drawed = "Pending"
@@ -13,17 +15,11 @@ function TaskHandle({ id, name }) {
         drawed = "Completed"
     }
 
-    const finishTask = () => {
-        const configuration = {
-            method: "post",
-            url: "https://eatcom.onrender.com/FinishTaskEmployee",
-            data: {
-                taskid: id.id,
-                userid: name._id
-            }
-        }
-        axios(configuration)
-            .then(() => {
+    useEffect(() => {
+        socketRef.current = socketIOClient.connect("http://localhost:3000")
+
+        socketRef.current.on('FinishTaskSuccess', dataGot => {
+            if (dataGot.emp === decode.userId) {
                 Swal.fire(
                     'Finish task success!',
                     '',
@@ -31,15 +27,28 @@ function TaskHandle({ id, name }) {
                 ).then(function () {
                     window.location.reload();
                 })
-            }).catch(() => {
+            }
+        })
+
+        socketRef.current.on('FinishTaskFail', dataGot => {
+            if (dataGot.emp === decode.userId) {
                 Swal.fire(
                     'Finish task fail!',
                     '',
                     'error'
-                ).then(function () {
-                    window.location.reload();
-                })
-            })
+                )
+            }
+        })
+
+        return () => {
+            socketRef.current.disconnect();
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
+    const finishTask = () => {
+        const data = { taskid: id.id, userid: name._id }
+        socketRef.current.emit('FinishTaskEmployeeSocket', data)
     }
     return (
         <>

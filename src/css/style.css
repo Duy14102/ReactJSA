@@ -22,6 +22,29 @@
     font-weight: 600 !important;
 }
 
+.fatherNewUserNoti {
+    position: fixed;
+    top: 5%;
+    right: 0;
+    opacity: 0;
+    animation: smooth-appear2 0.5s ease forwards;
+    display: flex;
+    flex-direction: column;
+    gap: 12.5px;
+}
+
+.newUserNoti {
+    text-align: center;
+    padding: 12px;
+    border-radius: 6px;
+}
+
+.newUserNoti h6 {
+    text-wrap: nowrap;
+    color: #fff;
+    margin: 0;
+}
+
 .connectNow {
     z-index: 1000;
     box-shadow: 0 8px 20px 0 rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.1);
@@ -42,6 +65,13 @@
 @keyframes smooth-appear {
     to {
         bottom: 2%;
+        opacity: 1;
+    }
+}
+
+@keyframes smooth-appear2 {
+    to {
+        right: 2%;
         opacity: 1;
     }
 }
@@ -676,6 +706,7 @@ iframe {
     padding: 10px;
     opacity: 0.8;
     fill: #fff;
+    position: relative;
 }
 
 .cutOut {
@@ -1073,14 +1104,17 @@ iframe {
         top: 30%;
         left: 1%;
         border-radius: 5px;
-        padding: 9px 9px 1px 9px;
+        padding: 7px 13px 7px 13px;
         background-color: rgb(235, 235, 235);
     }
 
-    .sideTick:hover,
-    .sideTick:active {
+    .sideTick:hover {
         transition: all 0.2s;
         background-color: rgb(218, 218, 218);
+    }
+
+    .sideTick:active {
+        transform: scale(0.8);
     }
 
     .sideTick .manaZone {

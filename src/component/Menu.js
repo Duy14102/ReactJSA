@@ -2,8 +2,9 @@ import $ from 'jquery';
 import ItemMenuComponent from './outOfBorder/ItemMenuComponent';
 import { NavLink } from 'react-router-dom';
 import Hammer from 'hammerjs'
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useEffect, useState, useRef } from 'react';
 import axios from 'axios';
+import socketIOClient from "socket.io-client";
 
 function Menu() {
     const [Load1, setLoad1] = useState(false)
@@ -12,10 +13,12 @@ function Menu() {
     const [menu, setMenu] = useState([])
     const [kakadu, setKakadu] = useState()
     const [spacekaka, setSpacekaka] = useState()
-    useEffect(() => {
+    const socketRef = useRef();
+
+    const called = () => {
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/GetTheMenuWow",
+            url: "http://localhost:3000/GetTheMenuWow",
         }
         axios(configuration)
             .then((res) => {
@@ -23,6 +26,39 @@ function Menu() {
             }).catch((err) => {
                 console.log(err);
             })
+    }
+    useEffect(() => {
+        called()
+        socketRef.current = socketIOClient.connect("http://localhost:3000")
+
+        socketRef.current.on('ChangeHeroImageSuccess', dataGot => {
+            if (dataGot.title === "Menu") {
+                called()
+            }
+        })
+
+        socketRef.current.on('ChangeWordUpSuccess', dataGot => {
+            if (dataGot.title === "Menu") {
+                called()
+            }
+        })
+
+        socketRef.current.on('ChangeWordMiddleSuccess', dataGot => {
+            if (dataGot.title === "Menu") {
+                called()
+            }
+        })
+
+        socketRef.current.on('ChangeWordDownSuccess', dataGot => {
+            if (dataGot.title === "Menu") {
+                called()
+            }
+        })
+
+        return () => {
+            socketRef.current.disconnect();
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     useEffect(() => {

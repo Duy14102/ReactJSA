@@ -1,9 +1,10 @@
 import axios from "axios";
 import HTMLReactParser from "html-react-parser";
 import { jwtDecode } from "jwt-decode";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Swal from "sweetalert2";
 import Cookies from "universal-cookie";
+import socketIOClient from "socket.io-client";
 
 function Contact() {
     const cookies = new Cookies()
@@ -15,6 +16,7 @@ function Contact() {
     const [address, setAddress] = useState()
     const [phone, setPhone] = useState()
     const [email2, setEmail2] = useState()
+    const socketRef = useRef();
 
     useEffect(() => {
         if (token) {
@@ -24,10 +26,10 @@ function Contact() {
         }
     }, [token])
 
-    useEffect(() => {
+    const calledFooter = () => {
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/GetTheFooter"
+            url: "http://localhost:3000/GetTheFooter"
         }
         axios(configuration)
             .then((res) => {
@@ -37,40 +39,73 @@ function Contact() {
             }).catch((err) => {
                 console.log(err);
             })
-    }, [])
+    }
 
-    const addcontact = (e) => {
-        e.preventDefault()
-        const configuration = {
-            method: "post",
-            url: "https://eatcom.onrender.com/AddContact",
-            data: {
-                name,
-                email,
-                title,
-                message
+    useEffect(() => {
+        calledFooter()
+
+        socketRef.current = socketIOClient.connect("http://localhost:3000")
+
+        socketRef.current.on('ChangeWordTimeSuccess', dataGot => {
+            if (dataGot.title === "Footer") {
+                calledFooter()
             }
-        }
-        axios(configuration)
-            .then(() => {
+        })
+
+        socketRef.current.on('ChangeWordUpSuccess', dataGot => {
+            if (dataGot.title === "Footer") {
+                calledFooter()
+            }
+        })
+
+        socketRef.current.on('ChangeWordMiddleSuccess', dataGot => {
+            if (dataGot.title === "Footer") {
+                calledFooter()
+            }
+        })
+
+        socketRef.current.on('ChangeWordDownSuccess', dataGot => {
+            if (dataGot.title === "Footer") {
+                calledFooter()
+            }
+        })
+
+        socketRef.current.on('AddContactSuccess', dataGot => {
+            if (dataGot.email === localStorage.getItem("contactEmail")) {
                 Swal.fire(
                     'Successfully!',
                     '',
                     'success'
                 ).then(function () {
+                    localStorage.removeItem("contactEmail")
                     window.location.reload();
                 })
-            }).catch(() => {
-                Swal.fire(
-                    'Failed!',
-                    '',
-                    'error'
-                ).then(function () {
-                    window.location.reload();
-                })
+            }
+        })
+
+        socketRef.current.on('AddContactFail', dataGot => {
+            Swal.fire(
+                'Failed!',
+                '',
+                'error'
+            ).then(() => {
+                localStorage.removeItem("contactEmail")
             })
+        })
+
+        return () => {
+            socketRef.current.disconnect();
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
+    const addcontact = (e) => {
+        e.preventDefault()
+        const data = { name, email, title, message }
+        localStorage.setItem("contactEmail", email)
+        socketRef.current.emit('AddContactSocket', data)
     }
-    const dataTel = `tel:${HTMLReactParser(`${phone}`)}`
+
     return (
         <div className="container-xxl py-5">
             <div className="container">
@@ -89,7 +124,7 @@ function Contact() {
                                 <div className="w-100">
                                     <h5 className="section-title ff-secondary fw-normal text-start text-primary">Phone Number</h5>
                                 </div>
-                                <a className="footerTel2" href={dataTel}><p><svg style={{ fill: "#FEA116" }} className="me-2" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M280 0C408.1 0 512 103.9 512 232c0 13.3-10.7 24-24 24s-24-10.7-24-24c0-101.6-82.4-184-184-184c-13.3 0-24-10.7-24-24s10.7-24 24-24zm8 192a32 32 0 1 1 0 64 32 32 0 1 1 0-64zm-32-72c0-13.3 10.7-24 24-24c75.1 0 136 60.9 136 136c0 13.3-10.7 24-24 24s-24-10.7-24-24c0-48.6-39.4-88-88-88c-13.3 0-24-10.7-24-24zM117.5 1.4c19.4-5.3 39.7 4.6 47.4 23.2l40 96c6.8 16.3 2.1 35.2-11.6 46.3L144 207.3c33.3 70.4 90.3 127.4 160.7 160.7L345 318.7c11.2-13.7 30-18.4 46.3-11.6l96 40c18.6 7.7 28.5 28 23.2 47.4l-24 88C481.8 499.9 466 512 448 512C200.6 512 0 311.4 0 64C0 46 12.1 30.2 29.5 25.4l88-24z" /></svg>{HTMLReactParser(`${phone}`)}</p></a>
+                                <a className="footerTel2" href={`tel:${HTMLReactParser(`${phone}`)}`}><p><svg style={{ fill: "#FEA116" }} className="me-2" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M280 0C408.1 0 512 103.9 512 232c0 13.3-10.7 24-24 24s-24-10.7-24-24c0-101.6-82.4-184-184-184c-13.3 0-24-10.7-24-24s10.7-24 24-24zm8 192a32 32 0 1 1 0 64 32 32 0 1 1 0-64zm-32-72c0-13.3 10.7-24 24-24c75.1 0 136 60.9 136 136c0 13.3-10.7 24-24 24s-24-10.7-24-24c0-48.6-39.4-88-88-88c-13.3 0-24-10.7-24-24zM117.5 1.4c19.4-5.3 39.7 4.6 47.4 23.2l40 96c6.8 16.3 2.1 35.2-11.6 46.3L144 207.3c33.3 70.4 90.3 127.4 160.7 160.7L345 318.7c11.2-13.7 30-18.4 46.3-11.6l96 40c18.6 7.7 28.5 28 23.2 47.4l-24 88C481.8 499.9 466 512 448 512C200.6 512 0 311.4 0 64C0 46 12.1 30.2 29.5 25.4l88-24z" /></svg>{HTMLReactParser(`${phone}`)}</p></a>
                             </div>
                             <div className="col-md-4">
                                 <h5 className="section-title ff-secondary fw-normal text-start text-primary">Email</h5>

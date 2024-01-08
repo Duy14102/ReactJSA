@@ -49,7 +49,7 @@ function TransactionUI({ responseCode, ahoe, amount, date }) {
                     <h2 className="mb-3">Transaction Failed!</h2>
                     <div className="croui mb-4 hugeImpace">
                         <h5>Detail</h5>
-                        <p><b>OrderId</b> : {ahoe}</p>
+                        <p><b>OrderId</b> : {ahoe.orderid}</p>
                         <p><b>Amount</b> : {VND.format(amount / 100)}</p>
                         <p><b>Date</b> : {date}</p>
                         <p><b>Reason</b> : {kakao}</p>
@@ -62,7 +62,7 @@ function TransactionUI({ responseCode, ahoe, amount, date }) {
                         <NavLink className="joiboy" to="/Cart"> Shopping Cart</NavLink> <span className='slash'>˃</span> <NavLink className="joiboy" to="/CheckOut">Checkout Details</NavLink> <span className='slash'>˃</span> <NavLink className="joiboy" to="/OrderComplete">Order Complete</NavLink>
                     </div>
                     <h2 className="thankYou" data-text="Thankyou!">Thankyou!</h2>
-                    <p>Your Order #Id : {ahoe}</p>
+                    <p>Your Order #Id : {ahoe.orderid}</p>
                     <NavLink to="/" className="returnP">Return to homepage</NavLink>
                 </>
             )}

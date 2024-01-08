@@ -4,14 +4,16 @@ import JoditEditor from 'jodit-react'
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import ReactPaginate from "react-paginate";
+import socketIOClient from "socket.io-client";
 
-function GetAnnounce() {
+function GetAnnounce({ decode }) {
     const [modalOpen, setModalOpen] = useState(false);
     const [ModalData, setModalData] = useState([])
     const [news, setNews] = useState([])
     const [title, setTitle] = useState()
     const [message, setMessage] = useState()
     const editor = useRef(null)
+    const socketRef = useRef();
     const [pageCount, setPageCount] = useState(6);
     const currentPage = useRef();
     const limit = 8
@@ -27,9 +29,50 @@ function GetAnnounce() {
         status = "🔴"
     }
 
+    function Success() {
+        Swal.fire(
+            `Successfully!`,
+            '',
+            'success'
+        ).then(function () {
+            window.location.reload();
+        })
+    }
+
+    function Fail() {
+        Swal.fire(
+            `Fail!`,
+            '',
+            'error'
+        )
+    }
+
     useEffect(() => {
         currentPage.current = 1;
         Pagination()
+
+        socketRef.current = socketIOClient.connect("http://localhost:3000")
+
+        socketRef.current.on('UpdateNewsSuccess', dataGot => {
+            if (dataGot.mag === decode.userId) {
+                Success()
+            } else {
+                Pagination();
+            }
+        })
+
+        socketRef.current.on('UpdateNewsFail', dataGot => {
+            if (dataGot.mag === decode.userId) {
+                Fail()
+            } else {
+                Pagination();
+            }
+        })
+
+        return () => {
+            socketRef.current.disconnect();
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     function handlePageClick(e) {
@@ -40,7 +83,7 @@ function GetAnnounce() {
     function Pagination() {
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/GetAllNews",
+            url: "http://localhost:3000/GetAllNews",
             params: {
                 page: currentPage.current,
                 limit: limit
@@ -57,84 +100,18 @@ function GetAnnounce() {
 
     const addAnn = (e) => {
         e.preventDefault()
-        const configuration = {
-            method: "post",
-            url: "https://eatcom.onrender.com/UpdateNews",
-            data: {
-                id: ModalData._id,
-                title: title,
-                message: message
-            }
-        }
-        axios(configuration)
-            .then(() => {
-                Swal.fire(
-                    'Update Successfully!',
-                    '',
-                    'success'
-                ).then(function () {
-                    window.location.reload();
-                })
-            }).catch(() => {
-                Swal.fire(
-                    'Update Fail!',
-                    '',
-                    'error'
-                )
-            })
+        const data = { id: ModalData._id, title: title, message: message, status: ModalData.status, mag: decode.userId }
+        socketRef.current.emit('UpdateNewsSocket', data)
     }
 
     const deleteAnn = () => {
-        const configuration = {
-            method: "post",
-            url: "https://eatcom.onrender.com/DeleteNews",
-            data: {
-                id: ModalData._id
-            }
-        }
-        axios(configuration)
-            .then(() => {
-                Swal.fire(
-                    'Delete Successfully!',
-                    '',
-                    'success'
-                ).then(function () {
-                    window.location.reload();
-                })
-            }).catch(() => {
-                Swal.fire(
-                    'Delete Fail!',
-                    '',
-                    'error'
-                )
-            })
+        const data = { id: ModalData._id, mag: decode.userId }
+        socketRef.current.emit('DeleteNewsSocket', data)
     }
 
     const changeStatus = () => {
-        const configuration = {
-            method: "post",
-            url: "https://eatcom.onrender.com/ChangeNewsStatus",
-            data: {
-                id: ModalData._id,
-                status: ModalData.status
-            }
-        }
-        axios(configuration)
-            .then(() => {
-                Swal.fire(
-                    'Change Status Successfully!',
-                    '',
-                    'success'
-                ).then(function () {
-                    window.location.reload();
-                })
-            }).catch(() => {
-                Swal.fire(
-                    'Change Status Fail!',
-                    '',
-                    'error'
-                )
-            })
+        const data = { id: ModalData._id, status: ModalData.status, mag: decode.userId }
+        socketRef.current.emit('ChangeNewsStatusSocket', data)
     }
     return (
         <>

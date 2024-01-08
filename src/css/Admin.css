@@ -264,6 +264,20 @@
     opacity: 1;
     background: rgba(54, 80, 209, 1);
     animation: 0.3s ease-out 0s 1 fadeIn;
+    position: relative;
+    fill: #fff;
+}
+
+.svgSidebar svg {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.subOver .drawer .menu a .svgSidebar .insideOfNothing {
+    position: absolute;
+    top: -23px;
+    right: -15px;
 }
 
 .subOver .drawer .menu a:hover {

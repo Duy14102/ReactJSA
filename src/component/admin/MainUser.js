@@ -50,7 +50,7 @@ function MainUser() {
         e.preventDefault();
         const configuration = {
             method: "post",
-            url: "https://eatcom.onrender.com/AddAdmin",
+            url: "http://localhost:3000/AddAdmin",
             data: {
                 email,
                 password,
@@ -97,7 +97,7 @@ function MainUser() {
         e?.preventDefault()
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/Find4User",
+            url: "http://localhost:3000/Find4User",
             params: {
                 name: nameInput,
                 page: currentPage.current,

@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import NotFound from "../../component/outOfBorder/NotFound"
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import UserDataPanel from "../../component/admin/UserDataPanel";
 import { Fragment } from 'react';
 import axios from "axios";
@@ -12,12 +12,14 @@ import { jwtDecode } from "jwt-decode";
 import Layout from "../../Layout";
 import '../../css/Admin.css'
 import Modal from 'react-modal';
+import socketIOClient from "socket.io-client";
 
 function UserPanel() {
     const cookies = new Cookies();
     const token = cookies.get("TOKEN");
     const name = jwtDecode(token)
     let appler = useParams()
+    const socketRef = useRef();
     const [updateemail, setEmail] = useState()
     const [updatepassword, setPassword] = useState()
     const [updatephone, setPhonenumber] = useState()
@@ -33,20 +35,145 @@ function UserPanel() {
     const [seePassword, setSeePassword] = useState(false)
     const [checkDeletePassword, setCheckDeletePassword] = useState()
     const checkPhone = /((09|03|07|08|05)+([0-9]{8})\b)/g
+
+    const getOrder = () => {
+        const configuration = {
+            method: "get",
+            url: "http://localhost:3000/GetOrderUserPanel",
+            params: {
+                id: appler.id
+            }
+        }
+        axios(configuration).then((dot) => { setGetOrder(dot.data.data) }).catch((er) => { console.log(er); })
+    }
+
+    useEffect(() => {
+        socketRef.current = socketIOClient.connect("http://localhost:3000")
+
+        socketRef.current.on('CancelVnpaySuccess', dataGot => {
+            if (dataGot?.data === name.userId) {
+                getOrder()
+            }
+        })
+
+        socketRef.current.on('PaidVnpaySuccess', dataGot => {
+            if (dataGot?.data === name.userId) {
+                getOrder()
+            }
+        })
+
+        socketRef.current.on('PaidPaypalSuccess', dataGot => {
+            if (dataGot?.data === name.userId) {
+                getOrder()
+            }
+        })
+
+        socketRef.current.on('PaidCodSuccess', dataGot => {
+            if (dataGot?.data === name.userId) {
+                getOrder()
+            }
+        })
+
+        socketRef.current.on('UpdateStatusOrderSuccess', dataGot => {
+            if (dataGot?.data === name.userId) {
+                getOrder()
+            }
+        })
+
+        socketRef.current.on('CompleteOrderSuccess', dataGot => {
+            if (dataGot?.data === name.userId) {
+                getOrder()
+            }
+        })
+
+        socketRef.current.on('DenyOrderNormalSuccess', dataGot => {
+            if (dataGot?.data === name.userId) {
+                getOrder()
+            }
+        })
+
+        socketRef.current.on('DenyOrderPaidSuccess', dataGot => {
+            if (dataGot?.data === name.userId) {
+                getOrder()
+            }
+        })
+
+        socketRef.current.on('DenyOrderWaitingSuccess', dataGot => {
+            if (dataGot?.data === name.userId) {
+                getOrder()
+            }
+        })
+
+        socketRef.current.on('totaldenyNormalSuccess', dataGot => {
+            if (dataGot?.data === name.userId) {
+                getOrder()
+            }
+        })
+
+        socketRef.current.on('totaldenyPaidSuccess', dataGot => {
+            if (dataGot?.data === name.userId) {
+                getOrder()
+            }
+        })
+
+
+        socketRef.current.on('CancelByMagNormalSuccess', dataGot => {
+            if (dataGot?.data === name.userId) {
+                getOrder()
+            }
+        })
+
+        socketRef.current.on('CancelByMagPaidSuccess', dataGot => {
+            if (dataGot?.data === name.userId) {
+                getOrder()
+            }
+        })
+
+        socketRef.current.on('DeleteAcountSuccess', dataGot => {
+            if (dataGot?.data === name.userId) {
+                Swal.fire(
+                    'Delete account successfully!',
+                    '',
+                    'success'
+                ).then(function () {
+                    cookies.remove("TOKEN", { path: '/' });
+                    window.location.href = "/"
+                })
+            }
+        })
+
+        socketRef.current.on('DeleteAcountFail', dataGot => {
+            if (dataGot?.data === name.userId) {
+                Swal.fire(
+                    'Delete account fail!',
+                    '',
+                    'error'
+                ).then(function () {
+                    setCheckDeletePassword(dataGot.message)
+                })
+            }
+        })
+
+        return () => {
+            socketRef.current.disconnect();
+        };
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
     useEffect(() => {
         if (name.userRole !== 1.5) {
-            fetch(`https://eatcom.onrender.com/GetDetailUser?userid=${appler.id}`, {
+            fetch(`http://localhost:3000/GetDetailUser?userid=${appler.id}`, {
                 method: "get",
             }).then((res) => res.json()).then((data) => {
                 setGetUser(data);
             })
         }
-        fetch(`https://eatcom.onrender.com/GetOrderUserPanel?id=${appler.id}`, {
-            method: "get",
-        }).then((res) => res.json()).then((data) => {
-            setGetOrder(data.data)
-        })
+
+        getOrder()
+
         document.getElementById("OrderHum").click();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [appler.id, name.userRole])
 
     if (!appler) {
@@ -117,7 +244,7 @@ function UserPanel() {
         e.preventDefault();
         const configuration = {
             method: "post",
-            url: "https://eatcom.onrender.com/UpdateUser",
+            url: "http://localhost:3000/UpdateUser",
             data: {
                 updateid: id,
                 updateemail,
@@ -152,33 +279,8 @@ function UserPanel() {
     function DeleteAcount(e) {
         // prevent the form from refreshing the whole page
         e.preventDefault();
-        const configuration = {
-            method: "post",
-            url: "https://eatcom.onrender.com/DeleteAcountNative",
-            params: {
-                id: appler.id,
-                password: deletePassword,
-            }
-        }
-        axios(configuration)
-            .then(() => {
-                Swal.fire(
-                    'Delete account successfully!',
-                    '',
-                    'success'
-                ).then(function () {
-                    cookies.remove("TOKEN", { path: '/' });
-                    window.location.href = "/"
-                })
-            }).catch((er) => {
-                Swal.fire(
-                    'Delete account fail!',
-                    '',
-                    'error'
-                ).then(function () {
-                    setCheckDeletePassword(er.response.data.message)
-                })
-            })
+        const data = { id: appler.id, password: deletePassword }
+        socketRef.current.emit('DeleteAcountSocket', data)
     }
 
     function openCity3(evt, cityName) {
@@ -335,7 +437,7 @@ function UserPanel() {
                                 <UserDataPanel Data={GetOrder} toke={name} />
                             </div>
                             <div className="UPanelButton" id="Kum">
-                                <UserBookingPanel id={appler.id} />
+                                <UserBookingPanel id={appler.id} decode={name} />
                             </div>
                         </div>
                     </div>

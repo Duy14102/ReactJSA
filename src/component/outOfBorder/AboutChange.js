@@ -1,11 +1,11 @@
-import axios from "axios";
 import JoditEditor from "jodit-react";
-import { Fragment, useState } from "react"
+import { Fragment, useState, useRef, useEffect } from "react"
 import Modal from 'react-modal';
 import Swal from "sweetalert2";
 import HTMLReactParser from "html-react-parser";
+import socketIOClient from "socket.io-client";
 
-function AboutChange({ data }) {
+function AboutChange({ data, decode }) {
     const [modalOpenDetail, setModalOpenDetail] = useState(false);
     const [ModalData, setModalData] = useState([])
     const [checkword1, setCheckWord1] = useState(false)
@@ -16,6 +16,82 @@ function AboutChange({ data }) {
     const [wordmiddle, setWordmiddle] = useState()
     const [worddown, setWorddown] = useState()
     const [image, setImage] = useState()
+    const socketRef = useRef();
+
+    function Success() {
+        Swal.fire(
+            'Change Successfully!',
+            '',
+            'success'
+        ).then(function () {
+            window.location.reload();
+        })
+    }
+
+    function Fail() {
+        Swal.fire(
+            'Change Fail!',
+            '',
+            'error'
+        )
+    }
+
+    useEffect(() => {
+        socketRef.current = socketIOClient.connect("http://localhost:3000")
+
+        socketRef.current.on('ChangeHeroImageSuccess', dataGot => {
+            if (dataGot.title === "About" && dataGot.mag === decode.userId) {
+                Success()
+            }
+        })
+
+        socketRef.current.on('ChangeHeroImageFail', dataGot => {
+            if (dataGot.title === "About" && dataGot.mag === decode.userId) {
+                Fail()()
+            }
+        })
+
+        socketRef.current.on('ChangeWordUpSuccess', dataGot => {
+            if (dataGot.title === "About" && dataGot.mag === decode.userId) {
+                Success()
+            }
+        })
+
+        socketRef.current.on('ChangeWordUpFail', dataGot => {
+            if (dataGot.title === "About" && dataGot.mag === decode.userId) {
+                Fail()
+            }
+        })
+
+        socketRef.current.on('ChangeWordMiddleSuccess', dataGot => {
+            if (dataGot.title === "About" && dataGot.mag === decode.userId) {
+                Success()
+            }
+        })
+
+        socketRef.current.on('ChangeWordMiddleFail', dataGot => {
+            if (dataGot.title === "About" && dataGot.mag === decode.userId) {
+                Fail()
+            }
+        })
+
+        socketRef.current.on('ChangeWordDownSuccess', dataGot => {
+            if (dataGot.title === "About" && dataGot.mag === decode.userId) {
+                Success()
+            }
+        })
+
+        socketRef.current.on('ChangeWordDownFail', dataGot => {
+            if (dataGot.title === "About" && dataGot.mag === decode.userId) {
+                Fail()
+            }
+        })
+
+        return () => {
+            socketRef.current.disconnect();
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     function convertToBase64(e) {
         var reader = new FileReader();
@@ -31,115 +107,26 @@ function AboutChange({ data }) {
 
     const changeImage = (e, name) => {
         e.preventDefault()
-        const configuration = {
-            method: "post",
-            url: "https://eatcom.onrender.com/ChangeHeroImage",
-            data: {
-                title: "About",
-                name: name,
-                image: image
-            }
-        }
-        axios(configuration)
-            .then(() => {
-                Swal.fire(
-                    'Change Successfully!',
-                    '',
-                    'success'
-                ).then(function () {
-                    window.location.reload();
-                })
-            }).catch(() => {
-                Swal.fire(
-                    'Change Fail!',
-                    '',
-                    'error'
-                )
-            })
+        const data = { title: "About", name: name, image: image, mag: decode.userId }
+        socketRef.current.emit('ChangeHeroImageSocket', data)
     }
 
     const changeWordUp = (e) => {
         e.preventDefault()
-        const configuration = {
-            method: "post",
-            url: "https://eatcom.onrender.com/ChangeWordUp",
-            data: {
-                title: "About",
-                wordup: wordup
-            }
-        }
-        axios(configuration)
-            .then(() => {
-                Swal.fire(
-                    'Change Successfully!',
-                    '',
-                    'success'
-                ).then(function () {
-                    window.location.reload();
-                })
-            }).catch(() => {
-                Swal.fire(
-                    'Change Fail!',
-                    '',
-                    'error'
-                )
-            })
+        const data = { title: "About", wordup: wordup, mag: decode.userId }
+        socketRef.current.emit('ChangeWordUpSocket', data)
     }
 
     const changeWordMiddle = (e) => {
         e.preventDefault()
-        const configuration = {
-            method: "post",
-            url: "https://eatcom.onrender.com/ChangeWordMiddle",
-            data: {
-                title: "About",
-                wordmiddle: wordmiddle
-            }
-        }
-        axios(configuration)
-            .then(() => {
-                Swal.fire(
-                    'Change Successfully!',
-                    '',
-                    'success'
-                ).then(function () {
-                    window.location.reload();
-                })
-            }).catch(() => {
-                Swal.fire(
-                    'Change Fail!',
-                    '',
-                    'error'
-                )
-            })
+        const data = { title: "About", wordmiddle: wordmiddle, mag: decode.userId }
+        socketRef.current.emit('ChangeWordMiddleSocket', data)
     }
 
     const changeWordDown = (e) => {
         e.preventDefault()
-        const configuration = {
-            method: "post",
-            url: "https://eatcom.onrender.com/ChangeWordDown",
-            data: {
-                title: "About",
-                worddown: worddown
-            }
-        }
-        axios(configuration)
-            .then(() => {
-                Swal.fire(
-                    'Change Successfully!',
-                    '',
-                    'success'
-                ).then(function () {
-                    window.location.reload();
-                })
-            }).catch(() => {
-                Swal.fire(
-                    'Change Fail!',
-                    '',
-                    'error'
-                )
-            })
+        const data = { title: "About", worddown: worddown, mag: decode.userId }
+        socketRef.current.emit('ChangeWordDownSocket', data)
     }
 
     return (
@@ -216,7 +203,7 @@ function AboutChange({ data }) {
                                         </form>
                                     ) : (
                                         <div className="wordTomcat">
-                                            <textarea style={{ pointerEvents: "none" }} className="textDeny junlen" id="blah7" defaultValue={HTMLReactParser(`${i.word.up}`)} />
+                                            <textarea style={{ pointerEvents: "none" }} className="textDeny junlen" id="blah7" defaultValue={HTMLReactParser(i.word.up).props?.children ? HTMLReactParser(i.word.up).props.children : HTMLReactParser(`${i.word.up}`)} />
                                             <button onClick={() => setCheckWord1(true)} className="editTableName2"><svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512"><path d="M402.6 83.2l90.2 90.2c3.8 3.8 3.8 10 0 13.8L274.4 405.6l-92.8 10.3c-12.4 1.4-22.9-9.1-21.5-21.5l10.3-92.8L388.8 83.2c3.8-3.8 10-3.8 13.8 0zm162-22.9l-48.8-48.8c-15.2-15.2-39.9-15.2-55.2 0l-35.4 35.4c-3.8 3.8-3.8 10 0 13.8l90.2 90.2c3.8 3.8 10 3.8 13.8 0l35.4-35.4c15.2-15.3 15.2-40 0-55.2zM384 346.2V448H64V128h229.8c3.2 0 6.2-1.3 8.5-3.5l40-40c7.6-7.6 2.2-20.5-8.5-20.5H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V306.2c0-10.7-12.9-16-20.5-8.5l-40 40c-2.2 2.3-3.5 5.3-3.5 8.5z" /></svg></button>
                                         </div>
                                     )}
@@ -238,7 +225,7 @@ function AboutChange({ data }) {
                                         </form>
                                     ) : (
                                         <div className="wordTomcat">
-                                            <textarea style={{ pointerEvents: "none" }} className="textDeny junlen" id="blah6" defaultValue={HTMLReactParser(`${i.word.middle}`)} />
+                                            <textarea style={{ pointerEvents: "none" }} className="textDeny junlen" id="blah6" defaultValue={HTMLReactParser(i.word.middle).props?.children ? HTMLReactParser(i.word.middle).props.children : HTMLReactParser(`${i.word.middle}`)} />
                                             <button onClick={() => setCheckWord2(true)} className="editTableName2"><svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512"><path d="M402.6 83.2l90.2 90.2c3.8 3.8 3.8 10 0 13.8L274.4 405.6l-92.8 10.3c-12.4 1.4-22.9-9.1-21.5-21.5l10.3-92.8L388.8 83.2c3.8-3.8 10-3.8 13.8 0zm162-22.9l-48.8-48.8c-15.2-15.2-39.9-15.2-55.2 0l-35.4 35.4c-3.8 3.8-3.8 10 0 13.8l90.2 90.2c3.8 3.8 10 3.8 13.8 0l35.4-35.4c15.2-15.3 15.2-40 0-55.2zM384 346.2V448H64V128h229.8c3.2 0 6.2-1.3 8.5-3.5l40-40c7.6-7.6 2.2-20.5-8.5-20.5H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V306.2c0-10.7-12.9-16-20.5-8.5l-40 40c-2.2 2.3-3.5 5.3-3.5 8.5z" /></svg></button>
                                         </div>
                                     )}
@@ -260,7 +247,7 @@ function AboutChange({ data }) {
                                         </form>
                                     ) : (
                                         <div className="wordTomcat">
-                                            <textarea style={{ pointerEvents: "none" }} className="textDeny junlen" id="blah5" defaultValue={HTMLReactParser(`${i.word.down}`)} />
+                                            <textarea style={{ pointerEvents: "none" }} className="textDeny junlen" id="blah5" defaultValue={HTMLReactParser(i.word.down).props?.children ? HTMLReactParser(i.word.down).props.children : HTMLReactParser(`${i.word.down}`)} />
                                             <button onClick={() => setCheckWord3(true)} className="editTableName2"><svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512"><path d="M402.6 83.2l90.2 90.2c3.8 3.8 3.8 10 0 13.8L274.4 405.6l-92.8 10.3c-12.4 1.4-22.9-9.1-21.5-21.5l10.3-92.8L388.8 83.2c3.8-3.8 10-3.8 13.8 0zm162-22.9l-48.8-48.8c-15.2-15.2-39.9-15.2-55.2 0l-35.4 35.4c-3.8 3.8-3.8 10 0 13.8l90.2 90.2c3.8 3.8 10 3.8 13.8 0l35.4-35.4c15.2-15.3 15.2-40 0-55.2zM384 346.2V448H64V128h229.8c3.2 0 6.2-1.3 8.5-3.5l40-40c7.6-7.6 2.2-20.5-8.5-20.5H48C21.5 64 0 85.5 0 112v352c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48V306.2c0-10.7-12.9-16-20.5-8.5l-40 40c-2.2 2.3-3.5 5.3-3.5 8.5z" /></svg></button>
                                         </div>
                                     )}

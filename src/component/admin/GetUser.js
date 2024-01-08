@@ -3,12 +3,16 @@ import Modal from 'react-modal';
 import axios from "axios";
 import ReactPaginate from 'react-paginate';
 import Swal from "sweetalert2";
+import socketIOClient from "socket.io-client";
 
 function GetUser({ type, status }) {
     const [data, setData] = useState([]);
     const [ModalData, setModalData] = useState([])
     const [modalOpenDetail, setModalOpenDetail] = useState(false);
     const [modalOpenDetail2, setModalOpenDetail2] = useState(false);
+    const [newUser, setNewUser] = useState(false)
+    const [deleteUser, setDeleteUser] = useState(false)
+    const socketRef = useRef();
 
     const [pageCount, setPageCount] = useState(6);
     const currentPage = useRef();
@@ -17,8 +21,37 @@ function GetUser({ type, status }) {
     useEffect(() => {
         currentPage.current = 1;
         getPagination()
+
+        socketRef.current = socketIOClient.connect("http://localhost:3000")
+
+        socketRef.current.on('RegisterSuccess', dataGot => {
+            getPagination()
+            setNewUser(true)
+        })
+
+        socketRef.current.on('DeleteAcountSuccess', dataGot => {
+            getPagination()
+            setDeleteUser(true)
+        })
+
+        return () => {
+            socketRef.current.disconnect();
+        };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+    useEffect(() => {
+        if (newUser) {
+            setTimeout(() => {
+                setNewUser(false)
+            }, 1500);
+        }
+        if (deleteUser) {
+            setTimeout(() => {
+                setDeleteUser(false)
+            }, 1500);
+        }
+    }, [newUser, deleteUser])
 
     function handlePageClick(e) {
         currentPage.current = e.selected + 1
@@ -28,7 +61,7 @@ function GetUser({ type, status }) {
     function getPagination() {
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/GetAllUser2",
+            url: "http://localhost:3000/GetAllUser2",
             params: {
                 type: type,
                 status: status,
@@ -49,7 +82,7 @@ function GetUser({ type, status }) {
     function bannedAc(e) {
         const configuration = {
             method: "post",
-            url: "https://eatcom.onrender.com/BannedByAdmin",
+            url: "http://localhost:3000/BannedByAdmin",
             data: {
                 id: ModalData._id,
                 status: e
@@ -78,6 +111,18 @@ function GetUser({ type, status }) {
 
     return (
         <>
+            <div className="fatherNewUserNoti">
+                {newUser ? (
+                    <div className="newUserNoti" style={{ backgroundColor: "#03ba5f" }}>
+                        <h6>✓ New user registered!</h6>
+                    </div>
+                ) : null}
+                {deleteUser ? (
+                    <div className="newUserNoti" style={{ backgroundColor: "tomato" }}>
+                        <h6>X An account deleted!</h6>
+                    </div>
+                ) : null}
+            </div>
             <table className='table table-bordered text-center solotable'>
                 <thead>
                     <tr className="text-white" style={{ background: "#374148" }}>

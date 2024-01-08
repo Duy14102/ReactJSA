@@ -1,10 +1,12 @@
 // Backed and express
 const express = require('express');
+const http = require("http");
 const app = express();
+const server = http.createServer(app);
 // Connect to MongoDB
 const mongoose = require('mongoose');
 require('dotenv').config({ path: "../.env" })
-mongoose.connect(process.env.REACT_APP_mongoAtlasString).then(() => console.log('Connected To MongoDB')).catch((err) => { console.error(err); });
+mongoose.connect(process.env.REACT_APP_mongoCompassString).then(() => console.log('Connected To MongoDB')).catch((err) => { console.error(err); });
 app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader(
@@ -35,7 +37,7 @@ app.get("/", (req, resp) => {
     resp.send("App is working");
 });
 
-app.listen(3000);
+server.listen(3000);
 
 // Model
 const bcrypt = require("bcrypt");
@@ -61,61 +63,674 @@ const GetNews = mongoose.model("News");
 const UI = require("./model/UI");
 const GetUI = mongoose.model("UI");
 
-//Change Hero Image
-app.post("/ChangeHeroImage", async (req, res) => {
-    try {
-        await cloudinary.uploader.destroy(`UI/${req.body.name}`).then(() => {
-            cloudinary.uploader.upload(req.body.image, {
-                public_id: req.body.name, folder: "UI"
+//Socket IO
+
+const socketIo = require("socket.io")(server, {
+    cors: {
+        origin: "*",
+    }
+});
+
+socketIo.on("connection", (socket) => {
+
+    //Register by Socket
+    socket.on("RegisterSocket", function (data) {
+        bcrypt
+            .hash(data.password, 10)
+            .then((hashedPassword) => {
+                const user = new User({
+                    email: data.email,
+                    password: hashedPassword,
+                    fullname: data.fullname,
+                    phonenumber: data.phone,
+                    role: 1,
+                });
+                user.save()
+                    .then(() => {
+                        socketIo.emit("RegisterSuccess", { fullname: user.fullname, email: data.email });
+                    })
+                    .catch((error) => {
+                        socketIo.emit("RegisterFail", { email: data.email });
+                    });
+            })
+            .catch((e) => {
+                socketIo.emit("RegisterFail", { e });
+            });
+    })
+
+    //Change Hero Image
+    socket.on("ChangeHeroImageSocket", async function (data) {
+        await cloudinary.uploader.destroy(`UI/${data.name}`).then(() => {
+            cloudinary.uploader.upload(data.image, {
+                public_id: data.name, folder: "UI"
             }).then((result) => {
-                GetUI.updateOne({ title: req.body.title, "image.name": req.body.name }, { "image.$.url": result.url }).then(() => { res.send({ data: "succeed" }) }).catch((eei) => { res.status(500).send(eei) })
-            }).catch((er) => { res.status(500).send(er) })
-        }).catch((err) => { res.status(500).send(err) })
-    } catch (e) {
-        console.log(e);
-    }
-})
+                GetUI.updateOne({ title: data.title, "image.name": data.name }, { "image.$.url": result.url }).
+                    then(() => { socketIo.emit("ChangeHeroImageSuccess"), { title: data.title, mag: data.mag } }).
+                    catch(() => { socketIo.emit("ChangeHeroImageFail"), { title: data.title, mag: data.mag } })
+            }).catch(() => { socketIo.emit("ChangeHeroImageFail"), { title: data.title, mag: data.mag } })
+        }).catch(() => { socketIo.emit("ChangeHeroImageFail"), { title: data.title, mag: data.mag } })
+    })
 
-//Change Hero Word
-app.post("/ChangeWordUp", (req, res) => {
-    try {
-        GetUI.updateOne({ title: req.body.title }, {
-            "word.up": req.body.wordup
-        }).then(() => { res.send({ data: "succeed" }) }).catch((err) => { console.log(err); })
-    } catch (e) {
-        console.log(e);
-    }
-})
+    //Change Hero Word
+    socket.on("ChangeWordUpSocket", function (data) {
+        GetUI.updateOne({ title: data.title }, {
+            "word.up": data.wordup
+        }).then(() => socketIo.emit("ChangeWordUpSuccess"), { title: data.title, mag: data.mag })
+            .catch(() => socketIo.emit("ChangeWordUpFail"), { title: data.title, mag: data.mag })
+    })
 
-app.post("/ChangeWordMiddle", (req, res) => {
-    try {
-        GetUI.updateOne({ title: req.body.title }, {
-            "word.middle": req.body.wordmiddle
-        }).then(() => { res.send({ data: "succeed" }) }).catch((err) => { console.log(err); })
-    } catch (e) {
-        console.log(e);
-    }
-})
+    socket.on("ChangeWordMiddleSocket", function (data) {
+        GetUI.updateOne({ title: data.title }, {
+            "word.middle": data.wordmiddle
+        }).then(() => socketIo.emit("ChangeWordMiddleSuccess"), { title: data.title, mag: data.mag })
+            .catch(() => socketIo.emit("ChangeWordMiddleFail"), { title: data.title, mag: data.mag })
+    })
 
-app.post("/ChangeWordDown", (req, res) => {
-    try {
-        GetUI.updateOne({ title: req.body.title }, {
-            "word.down": req.body.worddown
-        }).then(() => { res.send({ data: "succeed" }) }).catch((err) => { console.log(err); })
-    } catch (e) {
-        console.log(e);
-    }
-})
+    socket.on("ChangeWordDownSocket", function (data) {
+        GetUI.updateOne({ title: data.title }, {
+            "word.down": data.worddown
+        }).then(() => socketIo.emit("ChangeWordDownSuccess"), { title: data.title, mag: data.mag })
+            .catch(() => socketIo.emit("ChangeWordDownFail"), { title: data.title, mag: data.mag })
+    })
 
-app.post("/ChangeWordTime", (req, res) => {
-    try {
-        GetUI.updateOne({ title: req.body.title }, {
-            "word.time": req.body.wordtime
-        }).then(() => { res.send({ data: "succeed" }) }).catch((err) => { console.log(err); })
-    } catch (e) {
-        console.log(e);
-    }
-})
+    socket.on("ChangeWordTimeSocket", function (data) {
+        GetUI.updateOne({ title: data.title }, {
+            "word.time": data.wordtime
+        }).then(() => socketIo.emit("ChangeWordTimeSuccess"), { title: data.title, mag: data.mag })
+            .catch(() => socketIo.emit("ChangeWordTimeFail"), { title: data.title, mag: data.mag })
+    })
+
+    //Add Contact
+    socket.on("AddContactSocket", function (data) {
+        const contact = new Contact({
+            name: data.name,
+            email: data.email,
+            title: data.title,
+            message: data.message
+        });
+
+        contact.save().then(() => {
+            socketIo.emit("AddContactSuccess", { email: data.email })
+        }).catch(() => {
+            socketIo.emit("AddContactFail", { email: data.email })
+        });
+    })
+
+    //Update News
+    socket.on("UpdateNewsSocket", function (data) {
+        GetNews.updateOne({ _id: data.id }, {
+            title: data.title,
+            message: data.message
+        }).then(() => {
+            if (data.status === 1) {
+                socketIo.emit("UpdateNewsSuccess", { mag: data.mag })
+            } else {
+                socketIo.emit("UpdateNewsSuccess", { data: "Update", mag: data.mag })
+            }
+        }).catch(() => {
+            socketIo.emit("UpdateNewsFail", { mag: data.mag })
+        })
+    })
+
+    //Delete News
+    socket.on("DeleteNewsSocket", function (data) {
+        GetNews.deleteOne({ _id: data.id })
+            .then(() => { socketIo.emit("UpdateNewsSuccess", { data: "Update", mag: data.mag }) })
+            .catch(() => { socketIo.emit("UpdateNewsFail", { mag: data.mag }) })
+    })
+
+    //Change Status News
+    socket.on("ChangeNewsStatusSocket", function (data) {
+        if (data.status === 1) {
+            GetNews.updateOne({ _id: data.id }, {
+                status: 2
+            }).then(() => {
+                socketIo.emit("UpdateNewsSuccess", { data: "Update", mag: data.mag })
+            }).catch(() => {
+                socketIo.emit("UpdateNewsFail", { mag: data.mag })
+            })
+        }
+        if (data.status === 2) {
+            GetNews.updateOne({ _id: data.id }, {
+                status: 1
+            }).then(() => {
+                socketIo.emit("UpdateNewsSuccess", { data: "Update", mag: data.mag })
+            }).catch(() => {
+                socketIo.emit("UpdateNewsFail", { mag: data.mag })
+            })
+        }
+    })
+
+    //Cancel Vnpay payment
+    socket.on("CancelVnpayPaymentSocket", function (data, datad) {
+        getThisOrder.updateOne({ _id: data.orderid }, {
+            denyreason: data.reason,
+            status: 6,
+            "paymentmethod.type": "Vnpay"
+        }).then(() => {
+            socketIo.emit("CancelVnpaySuccess", { data: data?.userid })
+        }).catch((err) => {
+            console.log(err);
+        })
+    })
+
+    //Paid Vnpay
+    socket.on("PaidVnpayPaymentSocket", function (data) {
+        getThisOrder.updateOne({ _id: data.orderid }, {
+            "paymentmethod.status": 2,
+            "paymentmethod.type": "Vnpay"
+        }).then(() => {
+            socketIo.emit("PaidVnpaySuccess", { data: data?.userid })
+        }).catch((err) => {
+            console.log(err);
+        })
+    })
+
+    //Paid Paypal
+    socket.on("PaidPaypalPaymentSocket", function (data) {
+        getThisOrder.updateOne({ _id: data.orderid }, {
+            "paymentmethod.status": 2,
+            "paymentmethod.type": "Paypal"
+        }).then(() => {
+            socketIo.emit("PaidPaypalSuccess", { data: data?.userid })
+        }).catch((err) => {
+            console.log(err);
+        })
+    })
+
+    //Paid Cod
+    socket.on("PaidCodPaymentSocket", function (data) {
+        getThisOrder.updateOne({ _id: data.orderid }, {
+            "paymentmethod.type": "COD"
+        }).then(() => {
+            socketIo.emit("PaidCodSuccess", { data: data?.userid })
+        }).catch((err) => {
+            console.log(err);
+        })
+    })
+
+    //Update status order
+    socket.on("UpdateStatusOrderSocket", function (data) {
+        var hype = data.orderitems
+        getThisOrder.updateOne({ _id: data.id }, {
+            status: data.status,
+            employee: data.employee
+        }).then(() => {
+            hype.forEach(item => {
+                getThisMenu.updateOne({ _id: item.data._id }, {
+                    $inc: {
+                        foodquantity: -item.quantity
+                    }
+                }).exec()
+            })
+            socketIo.emit("UpdateStatusOrderSuccess", { data: data?.userid, emp: data?.empid })
+        }).catch(() => {
+            socketIo.emit("UpdateStatusOrderFail", { emp: data?.empid })
+        })
+    })
+
+    //Complete Order
+    socket.on("CompleteOrderByEmpSocket", function (data) {
+        if (data.type === 1) {
+            getThisOrder.updateOne({ _id: data.id }, {
+                completeAt: data.date,
+                status: data.status,
+            }).then(() => socketIo.emit("CompleteOrderSuccess", { data: data?.userid, emp: data?.empid }))
+                .catch(() => socketIo.emit("CompleteOrderFail", { emp: data?.empid }))
+        } else if (data.type === 2) {
+            getThisOrder.updateOne({ _id: data.id }, {
+                completeAt: data.date,
+                status: data.status,
+                "paymentmethod.status": 2
+            }).then(() => socketIo.emit("CompleteOrderSuccess", { data: data?.userid, emp: data?.empid }))
+                .catch(() => socketIo.emit("CompleteOrderFail", { emp: data?.empid }))
+        }
+    })
+
+    //Deny Order status
+    socket.on("DenyOrderSocket", function (data) {
+        getThisOrder.updateOne({ _id: data.id }, {
+            denyreason: data.reason,
+            $push: {
+                employee: data.employee
+            },
+            status: data.status
+        }).then(() => {
+            if (data.type === "Normal") {
+                socketIo.emit("DenyOrderNormalSuccess", { data: data?.userid, emp: data?.empid })
+            } else if (data.type === "CusCancel") {
+                socketIo.emit("CustomerWantCancel", { data: data?.userid })
+            } else {
+                socketIo.emit("DenyOrderPaidSuccess", { data: data?.userid, id: data.id, reason: data.reason, fulltotal: data.fulltotal, date: data.date, emp: data?.empid })
+            }
+        }).catch(() => {
+            socketIo.emit("DenyOrderFail", { data: data?.userid, emp: data?.empid })
+        })
+    })
+
+    //Deny Order status
+    socket.on("DenyOrderWaitingSocket", function (data) {
+        getThisOrder.updateOne({ _id: data.id }, {
+            $push: {
+                employee: data.employee
+            },
+            status: data.status
+        }).then(() => {
+            socketIo.emit("DenyOrderWaitingSuccess", { data: data?.userid, emp: data?.empid })
+        }).catch(() => {
+            socketIo.emit("DenyOrderWaitingFail", { emp: data?.empid })
+        })
+    })
+
+    //CancelRequestFour
+    socket.on("CancelRequestFourSocket", function (data) {
+        getThisOrder.updateOne({ _id: data.id }, {
+            status: data.status,
+            denyreason: null
+        }).then(() => socketIo.emit("CancelRequestFourSuccess", { data: data.userid }))
+            .catch(() => socketIo.emit("CancelRequestFourFail", { data: data.userid }))
+    })
+
+    //total deny totaldenyNow
+    socket.on("totaldenyNowSocket", function (data) {
+        getThisOrder.updateOne({ _id: data.id }, {
+            status: data.status,
+            employee: data.employee
+        }).then(() => {
+            if (data.type === "Normal") {
+                socketIo.emit("totaldenyNormalSuccess", { data: data?.userid, emp: data?.empid })
+            } else {
+                socketIo.emit("totaldenyPaidSuccess", { data: data?.userid, id: data.id, fulltotal: data.fulltotal, date: data.date, emp: data?.empid })
+            }
+        }).catch(() => socketIo.emit("totaldenyFail", { emp: data?.empid }))
+    })
+
+    //Cancel by Mag
+    socket.on("CancelByMagSocket", function (data) {
+        getThisOrder.updateOne({ _id: data.id }, {
+            denyreason: "Canceled by manager.",
+            status: 6
+        }).then(() => {
+            if (data.type === "Normal") {
+                socketIo.emit("CancelByMagNormalSuccess", { data: data?.userid, emp: data?.empid, mag: data?.mag })
+            } else {
+                socketIo.emit("CancelByMagPaidSuccess", { data: data?.userid, id: data.id, fulltotal: data.fulltotal, date: data.date, emp: data?.empid, mag: data?.mag })
+            }
+        }).catch(() => {
+            socketIo.emit("CancelByMagFail", { mag: data?.mag })
+        })
+    })
+
+    //AddNewBooking
+    socket.on("AddNewBookingSocket", function (data) {
+        const booking = new Booking({
+            customer: data.customer,
+            date: data.date,
+            people: data.people,
+            status: 1,
+            message: data.message
+        })
+
+        booking.save().then(() => {
+            socketIo.emit("AddNewBookingSuccess", { check: data.customer.phonenumber, data: data.customer.id })
+        })
+            .catch(() => {
+                socketIo.emit("AddNewBookingFail", { check: data.customer.phonenumber })
+            });
+    })
+
+    //Cancel Booking
+    socket.on("CancelBookingSocket", function (data) {
+        GetBooking.updateOne({ _id: data.id }, {
+            status: 5,
+            denyreason: data.reason
+        }).then(() => {
+            socketIo.emit("CancelBookingSuccess", { data: data?.userid })
+        }).catch(() => {
+            socketIo.emit("CancelBookingFail", { data: data?.userid })
+        })
+
+    })
+
+    //Deny Booking
+    socket.on("DenyBookingCustomerSocket", function (data) {
+        GetBooking.updateOne({ _id: data.id }, {
+            status: data.status,
+            denyreason: data.denyreason,
+            employee: data.employee
+        }).then(() => {
+            socketIo.emit("DenyBookingSuccess", { data: data?.userid, mag: data.mag })
+        }).catch(() => {
+            socketIo.emit("DenyBookingFail", { data: data?.userid, mag: data.mag })
+        })
+    })
+
+    //Add Table when booking
+    socket.on("AddTableCustomerSocket", function (data) {
+        const dateX = new Date()
+        const datenow = new Date(dateX.toLocaleString('en-VI', { timeZone: "Asia/Ho_Chi_Minh" }))
+        GetTable.updateOne({ _id: data.tableid }, {
+            customerid: data.cusid,
+            tablestatus: 2,
+            tabledate: datenow
+        }).then(() => {
+            GetBooking.updateOne({ _id: data.cusid }, {
+                table: data.tablename,
+                status: 2
+            }).then(() => {
+                socketIo.emit("AddTableCustomerSuccess", { data: data?.userid, mag: data.mag })
+            }).catch(() => {
+                socketIo.emit("AddTableCustomerFail", { mag: data.mag })
+            })
+        }).catch(() => {
+            socketIo.emit("AddTableCustomerFail", { mag: data.mag })
+        })
+    })
+
+    //Add Table by hand
+    socket.on("AddTableByHandSocket", function (data) {
+        const table = new Table({
+            tablename: data.tablename,
+            tablestatus: 1
+        })
+        table.save().then(() => {
+            socketIo.emit("AddTableByHandSuccess", { mag: data.mag })
+        }).catch(() => {
+            socketIo.emit("AddTableByHandFail", { mag: data.mag })
+        })
+    })
+
+    //Add item to table
+    socket.on("AddItemToTableSocket", async function (data) {
+        const findDup = await GetTable.findOne({ _id: data.tableid, tableitems: { $elemMatch: { "item.foodname": data.foodname } } })
+        const dddd = new Date()
+        const dddda = new Date(dddd.toLocaleString('en-VI', { timeZone: "Asia/Ho_Chi_Minh" }))
+        if (findDup) {
+            GetTable.updateOne({ _id: data.tableid, "tableitems.item.foodname": data.foodname },
+                {
+                    $inc: {
+                        "tableitems.$.quantity": data.quantity,
+                    },
+                    $set: {
+                        "tableitems.$.status": 1
+                    }
+                }).then(() => {
+                    if (data.statusCheck === 1) {
+                        findDup.updateOne({ _id: data.tableid }, {
+                            tabledate: dddda,
+                            tablestatus: 2
+                        }).then(() => {
+                            socketIo.emit("AddItemToTableSuccess", { mag: data.mag, type: data.type, foodname: data.foodname, quantity: data.quantity, data: data?.userid, tableid: data.tableid })
+                        }).catch(() => {
+                            socketIo.emit("AddItemToTableFail", { mag: data.mag, type: data.type, tableid: data.tableid })
+                        })
+                    } else {
+                        socketIo.emit("AddItemToTableSuccess", { mag: data.mag, type: data.type, foodname: data.foodname, quantity: data.quantity, data: data?.userid, tableid: data.tableid })
+                    }
+                }).catch(() => {
+                    socketIo.emit("AddItemToTableFail", { mag: data.mag, type: data.type, tableid: data.tableid })
+                })
+        } else {
+            GetTable.updateOne({ _id: data.tableid },
+                {
+                    $push: {
+                        tableitems: data.item
+                    }
+                }).then(() => {
+                    if (data.statusCheck === 1) {
+                        GetTable.updateOne({ _id: data.tableid }, {
+                            tabledate: dddda,
+                            tablestatus: 2
+                        }).then(() => {
+                            socketIo.emit("AddItemToTableSuccess", { mag: data.mag, type: data.type, foodname: data.foodname, quantity: data.quantity, data: data?.userid, tableid: data.tableid })
+                        }).catch(() => {
+                            socketIo.emit("AddItemToTableFail", { mag: data.mag, type: data.type, tableid: data.tableid })
+                        })
+                    } else {
+                        socketIo.emit("AddItemToTableSuccess", { mag: data.mag, type: data.type, foodname: data.foodname, quantity: data.quantity, data: data?.userid, tableid: data.tableid })
+                    }
+                }).catch(() => {
+                    socketIo.emit("AddItemToTableFail", { mag: data.mag, type: data.type, tableid: data.tableid })
+                })
+        }
+    })
+
+    //Change Table Name
+    socket.on("ChangeTableNameQuickSocket", function (data) {
+        GetTable.updateOne({ _id: data.id }, {
+            tablename: data.name
+        }).then(() => {
+            socketIo.emit("ChangeTableNameSuccess", { mag: data.mag })
+        }).catch(() => {
+            socketIo.emit("ChangeTableNameFail", { mag: data.mag })
+        })
+    })
+
+    //Delete Table by manager
+    socket.on("DeleteTableNowSocket", function (data) {
+        GetTable.deleteOne({ _id: data.id })
+            .then(() => socketIo.emit("DeleteTableSuccess", { mag: data.mag }))
+            .catch(() => socketIo.emit("DeleteTableFail", { mag: data.mag }))
+
+    })
+
+    //Change Table
+    socket.on("ChangeTableNowSocket", function (data) {
+        GetTable.updateOne({ _id: data.newid }, {
+            customerid: data.cusid,
+            tableitems: data.items,
+            tabledate: data.date,
+            tablestatus: 2
+        }).then(() => {
+            GetTable.updateOne({ _id: data.oldid }, {
+                customerid: null,
+                tableitems: [],
+                tabledate: null,
+                tablestatus: 1
+            }).then(() => {
+                socketIo.emit("ChangeTableSuccess", { mag: data.mag, data: data?.cusid })
+            }).catch(() => {
+                socketIo.emit("ChangeTableFail", { mag: data.mag })
+            })
+        }).catch(() => {
+            socketIo.emit("ChangeTableFail", { mag: data.mag })
+        })
+    })
+
+    //Checkout for normal
+    socket.on("Checkout4NormalSocket", function (data) {
+        var hype = data.TbItemHistory
+        const dateX = new Date()
+        const datenow = new Date(dateX.toLocaleString('en-VI', { timeZone: "Asia/Ho_Chi_Minh" }))
+        const historytb = new TableHistory({
+            tablename: data.TbnameHistory,
+            tableitems: hype,
+            tabledate: data.TbDateHistory,
+            datefinish: datenow,
+            employee: data.employee
+        })
+        historytb.save().then(() => {
+            GetTable.updateOne({ _id: data.id }, {
+                customerid: null,
+                tablestatus: 1,
+                tableitems: [],
+                tabledate: null
+            }).then(() => {
+                hype.forEach(datad => {
+                    getThisMenu.updateMany({ _id: datad.item._id }, {
+                        $inc: {
+                            foodquantity: -datad.quantity
+                        }
+                    }).exec()
+                })
+                socketIo.emit("CheckoutNormalSuccess", { mag: data.mag })
+            }).catch(() => {
+                socketIo.emit("CheckoutNormalFail", { mag: data.mag })
+            })
+        }).catch(() => {
+            socketIo.emit("CheckoutNormalFail", { mag: data.mag })
+        })
+    })
+
+    //Checkout for booking
+    socket.on("Checkout4BookingSocket", function (data) {
+        const dateX = new Date()
+        const datenow = new Date(dateX.toLocaleString('en-VI', { timeZone: "Asia/Ho_Chi_Minh" }))
+        GetBooking.updateOne({ _id: data.id }, {
+            status: 3,
+            fulltotal: data.fulltotal,
+            employee: data.employee
+        }).then(() => {
+            var hype = data.TbItemHistory
+            const tbhistory = new TableHistory({
+                customerid: data.Idhistory,
+                tablename: data.TbnameHistory,
+                tableitems: hype,
+                tabledate: data.TbDateHistory,
+                datefinish: datenow,
+                employee: data.employee
+            })
+            tbhistory.save().then(() => {
+                GetTable.updateOne({ _id: data.tableid }, {
+                    customerid: null,
+                    tablestatus: 1,
+                    tableitems: [],
+                    tabledate: null
+                }).then(() => {
+                    hype.forEach(datad => {
+                        getThisMenu.updateOne({ _id: datad.item._id }, {
+                            $inc: {
+                                foodquantity: -datad.quantity
+                            }
+                        }).exec()
+                    })
+                    socketIo.emit("CheckoutBookingSuccess", { mag: data.mag, data: data.Idhistory })
+                }).catch(() => {
+                    socketIo.emit("CheckoutBookingFail", { mag: data.mag })
+                })
+            }).catch(() => {
+                socketIo.emit("CheckoutBookingFail", { mag: data.mag })
+            })
+        }).catch(() => {
+            socketIo.emit("CheckoutBookingFail", { mag: data.mag })
+        })
+    })
+
+    //delete item Qr 
+    socket.on("DeleteQritemSocket", async function (data) {
+        const getIt = await GetTable.findOne({ _id: data.tableid, "tableitems.item.foodname": data.foodname }).then((resa) => { return resa })
+        for (var i = 0; i < getIt.tableitems?.length; i++) {
+            var item = getIt.tableitems[i]
+            if (data.quantity >= item.quantity) {
+                GetTable.updateOne({ _id: data.tableid, "tableitems.item.foodname": data.foodname }, {
+                    $pull: {
+                        tableitems: {
+                            item: data.item.item
+                        }
+                    }
+                }).exec()
+            } else {
+                GetTable.updateOne({ _id: data.tableid, "tableitems.item.foodname": data.foodname }, {
+                    $inc: {
+                        "tableitems.$.quantity": -parseInt(data.quantity),
+                    },
+                }).exec()
+            }
+        }
+        socketIo.emit("DeleteQritemSuccess", { tableid: data.tableid })
+    })
+
+    //Checkout 4 Qr
+    socket.on("Checkout4QrYeahSocket", async function (data) {
+        GetTable.updateOne({ _id: data.id }, {
+            tablestatus: 3
+        }).then(() => {
+            socketIo.emit("Checkout4QrSuccess", { tableid: data.tableid })
+        }).catch(() => {
+            socketIo.emit("Checkout4QrFail", { tableid: data.tableid })
+        })
+    })
+
+    //QR Code Access Table
+    socket.on("QrCodeTableActiveSocket", async function (data) {
+        const dateX = new Date()
+        const datenow = new Date(dateX.toLocaleString('en-VI', { timeZone: "Asia/Ho_Chi_Minh" }))
+        GetTable.updateOne({ _id: data.id }, {
+            customerid: data.cusid,
+            tablestatus: 2,
+            tabledate: datenow
+        }).then(() => {
+            socketIo.emit("QrCodeTableActiveSuccess", { tableid: data.id })
+        }).catch((er) => {
+            console.log(er);
+        })
+    })
+
+    //Delete account
+    socket.on("DeleteAcountSocket", function (data) {
+        User.findOne({ _id: data.id }).then(async (user) => {
+            const compare = await bcrypt.compare(data.password, user.password)
+            if (compare) {
+                const checkOrder = await getThisOrder.find({ user: { $elemMatch: { id: data.id } }, status: { $in: [1, 2, 4] } }).exec()
+                const checkBooking = await GetBooking.find({ "customer.id": data.id, status: { $in: [1, 2] } }).exec()
+                if (checkOrder.length > 0 || checkBooking.length > 0) {
+                    socketIo.emit("DeleteAcountFail", { data: data.id, message: "Your orders haven't complete!" })
+                }
+                else {
+                    getUserD.deleteOne({ _id: data.id }).then(() => {
+                        socketIo.emit("DeleteAcountSuccess", { data: data.id })
+                    }).catch(() => {
+                        socketIo.emit("DeleteAcountFail", { data: data.id, message: "Something wrong!" })
+                    })
+                }
+            } else {
+                socketIo.emit("DeleteAcountFail", { data: data.id, message: "Password invalid!" })
+            }
+        })
+    })
+
+    //Give Employee Task
+    socket.on("GiveTaskEmployeeSocket", function (data) {
+        var id = new mongoose.Types.ObjectId().toString();
+        const task = { task: data.task, id: id }
+        getUserD.updateOne({ _id: data.id }, {
+            $push: {
+                task: task
+            }
+        }).then(() => {
+            socketIo.emit("GiveTaskSuccess", { mag: data.mag, emp: data.id })
+        }).catch(() => {
+            socketIo.emit("GiveTaskFail", { mag: data.mag })
+        })
+    })
+
+    //Finish Task Employee
+    socket.on("FinishTaskEmployeeSocket", function (data) {
+        const date2 = new Date()
+        const datenow = new Date(date2.toLocaleString('en-VI', { timeZone: "Asia/Ho_Chi_Minh" }))
+        const date = new Date(datenow).toLocaleDateString()
+        const time = new Date(datenow).toLocaleTimeString()
+        const datetime = date + " - " + time
+        getUserD.updateOne({ _id: data.userid, "task.id": data.taskid }, {
+            $set: {
+                'task.$.task.datefinish': datetime,
+                'task.$.task.status': 2
+            }
+        }).then(() => {
+            socketIo.emit("FinishTaskSuccess", { emp: data.userid })
+        }).catch(() => {
+            socketIo.emit("FinishTaskFail", { emp: data.userid })
+        })
+    })
+
+    //Delete contact
+    socket.on("DeleteContactSocket", function (data) {
+        getContactNow.deleteOne({ _id: data.id })
+            .then(() => socketIo.emit("DeleteContactSuccess", { mag: data.mag }))
+            .catch(() => socketIo.emit("DeleteContactFail", { mag: data.mag }))
+    })
+
+});
 
 //GetBgHero
 app.get("/GetHeroUI", async (req, res) => {
@@ -283,99 +898,6 @@ app.post("/AddNews", (req, res) => {
         console.log(e);
     }
 })
-
-//Update News
-app.post("/UpdateNews", (req, res) => {
-    try {
-        GetNews.updateOne({ _id: req.body.id }, {
-            title: req.body.title,
-            message: req.body.message
-        }).then(() => {
-            res.send({ data: "succeed" })
-        }).catch((err) => {
-            console.log(err);
-        })
-    } catch (e) {
-        console.log(e);
-    }
-})
-
-//Delete News
-app.post("/DeleteNews", (req, res) => {
-    try {
-        GetNews.deleteOne({ _id: req.body.id }).then(() => { res.send({ data: "succeed" }) }).catch((err) => { console.log(err); })
-    } catch (e) {
-        console.log(e);
-    }
-})
-
-//Change Status News
-app.post("/ChangeNewsStatus", (req, res) => {
-    try {
-        if (req.body.status === 1) {
-            GetNews.updateOne({ _id: req.body.id }, {
-                status: 2
-            }).then(() => {
-                res.send({ data: "succeed" })
-            }).catch((err) => {
-                console.log(err);
-            })
-        }
-        if (req.body.status === 2) {
-            GetNews.updateOne({ _id: req.body.id }, {
-                status: 1
-            }).then(() => {
-                res.send({ data: "succeed" })
-            }).catch((err) => {
-                console.log(err);
-            })
-        }
-    } catch (e) {
-        console.log(e);
-    }
-})
-
-//Register
-app.post("/Register", (request, response) => {
-    // hash the password
-    bcrypt
-        .hash(request.body.password, 10)
-        .then((hashedPassword) => {
-            // create a new user instance and collect the data
-            const user = new User({
-                email: request.body.email,
-                password: hashedPassword,
-                fullname: request.body.fullname,
-                phonenumber: request.body.phone,
-                role: 1,
-            });
-
-            // save the new user
-            user
-                .save()
-                // return success if the new user is added to the database successfully
-                .then((result) => {
-                    response.status(201).send({
-                        message: "User Created Successfully",
-                        fullname: user.fullname,
-                    });
-                })
-                // catch error if the new user wasn't added successfully to the database
-                .catch((error) => {
-                    response.status(500).send({
-                        message: "Error creating user",
-                        error,
-                    });
-                });
-        })
-        // catch error if the password hash isn't successful
-        .catch((e) => {
-            response.status(500).send({
-                message: "Password was not hashed successfully",
-                e,
-            });
-        });
-});
 
 // Add Admin
 app.post("/AddAdmin", (request, response) => {
@@ -678,53 +1200,11 @@ app.get("/GetEmploy4Mana", async (req, res) => {
     }
 })
 
-//Give Employee Task
-app.post("/GiveTaskEmployee", (req, res) => {
-    try {
-        var id = new mongoose.Types.ObjectId().toString();
-        const task = { task: req.body.task, id: id }
-        getUserD.updateOne({ _id: req.body.id }, {
-            $push: {
-                task: task
-            }
-        }).then(() => {
-            res.send({ data: "succeed" })
-        }).catch((err) => {
-            console.log(err);
-        })
-    } catch (e) {
-        console.log(e);
-    }
-})
-
 //Take Employee Task
 app.get("/TakeEmployeeTask", async (req, res) => {
     try {
         const getIt = await getUserD.findOne({ _id: req.query.id })
         res.send({ data: getIt })
-    } catch (e) {
-        console.log(e);
-    }
-})
-
-//Finish Task Employee
-app.post("/FinishTaskEmployee", async (req, res) => {
-    try {
-        const date2 = new Date()
-        const datenow = new Date(date2.toLocaleString('en-VI', { timeZone: "Asia/Ho_Chi_Minh" }))
-        const date = new Date(datenow).toLocaleDateString()
-        const time = new Date(datenow).toLocaleTimeString()
-        const datetime = date + " - " + time
-        getUserD.updateOne({ _id: req.body.userid, "task.id": req.body.taskid }, {
-            $set: {
-                'task.$.task.datefinish': datetime,
-                'task.$.task.status': 2
-            }
-        }).then(() => {
-            res.send({ data: "succeed" })
-        }).catch((err) => {
-            console.log(err);
-        })
     } catch (e) {
         console.log(e);
     }
@@ -847,18 +1327,6 @@ app.get("/GetOrderUserPanel", async (req, res) => {
     }
 })
 
-//CancelRequestFour
-app.post("/CancelRequestFour", (req, res) => {
-    try {
-        getThisOrder.updateOne({ _id: req.body.id }, {
-            status: req.body.status,
-            denyreason: null
-        }).then(() => { res.send({ data: "succeed" }) }).catch((err) => { console.log(err); })
-    } catch (e) {
-        console.log(e);
-    }
-})
-
 
 //Find Order
 app.get("/SearchAllOrder", async (req, res) => {
@@ -936,38 +1404,6 @@ app.get("/GetAllOrderHistory", async (req, res) => {
     }
 })
 
-//Complete Order
-app.post("/CompleteOrderByEmp", (req, res) => {
-    try {
-        if (req.body.type === 1) {
-            getThisOrder.updateOne({ _id: req.body.id }, {
-                completeAt: req.body.date,
-                status: req.body.status,
-            }).then(() => { res.send({ data: "succeed" }) }).catch((err) => { console.log(err); })
-        } else if (req.body.type === 2) {
-            getThisOrder.updateOne({ _id: req.body.id }, {
-                completeAt: req.body.date,
-                status: req.body.status,
-                "paymentmethod.status": 2
-            }).then(() => { res.send({ data: "succeed" }) }).catch((err) => { console.log(err); })
-        }
-    } catch (e) {
-        console.log(e);
-    }
-})
-
-//total deny
-app.post("/totaldenyNow", (req, res) => {
-    try {
-        getThisOrder.updateOne({ _id: req.body.id }, {
-            status: req.body.status,
-            employee: req.body.employee
-        }).then(() => { res.send({ data: "succeed" }) }).catch((err) => { console.log(err); })
-    } catch (e) {
-        console.log(e);
-    }
-})
-
 app.get("/GetAllOrderActive", async (req, res) => {
     const filter = { status: -1, datetime: -1 }
     try {
@@ -995,151 +1431,6 @@ app.get("/GetAllOrderActive", async (req, res) => {
 
         results.result = getOrder.slice(start, end)
         res.send({ results });
-    } catch (e) {
-        console.log(e);
-    }
-})
-
-//Update status order
-app.post("/UpdateStatusOrder", (req, res) => {
-    try {
-        var hype = req.body.orderitems
-        getThisOrder.updateOne({ _id: req.body.id }, {
-            status: req.body.status,
-            employee: req.body.employee
-        }).then(() => {
-            hype.forEach(item => {
-                getThisMenu.updateOne({ _id: item.data._id }, {
-                    $inc: {
-                        foodquantity: -item.quantity
-                    }
-                }).then(() => {
-                    res.send({ message: "succeed" })
-                }).catch((err) => {
-                    console.log(err);
-                })
-            })
-        }).catch((err) => {
-            console.log(err);
-        })
-    } catch (e) {
-        console.log(e);
-    }
-})
-
-//Deny Order status
-app.post("/DenyOrder", (req, res) => {
-    try {
-        getThisOrder.updateOne({ _id: req.query.id }, {
-            denyreason: req.query.reason,
-            $push: {
-                employee: req.query.employee
-            },
-            status: req.query.status
-        }).then(() => {
-            res.send({ data: "Updated" })
-        }).catch((err) => {
-            console.log(err);
-        })
-    } catch (e) {
-        console.log(e);
-    }
-})
-
-//Deny Order status
-app.post("/DenyOrderWaiting", (req, res) => {
-    try {
-        getThisOrder.updateOne({ _id: req.query.id }, {
-            $push: {
-                employee: req.query.employee
-            },
-            status: req.query.status
-        }).then(() => {
-            res.send({ data: "Updated" })
-        }).catch((err) => {
-            console.log(err);
-        })
-    } catch (e) {
-        console.log(e);
-    }
-})
-
-
-//Cancel Vnpay payment
-app.post("/CancelVnpayPayment", (req, res) => {
-    try {
-        getThisOrder.updateOne({ _id: req.query.id }, {
-            denyreason: req.query.reason,
-            status: 4,
-            "paymentmethod.type": "Vnpay"
-        }).then(() => {
-            res.send({ data: "Updated" })
-        }).catch((err) => {
-            console.log(err);
-        })
-    } catch (e) {
-        console.log(e);
-    }
-})
-
-//Paid Vnpay
-app.post("/PaidVnpayPayment", (req, res) => {
-    try {
-        getThisOrder.updateOne({ _id: req.query.id }, {
-            "paymentmethod.status": 2,
-            "paymentmethod.type": "Vnpay"
-        }).then(() => {
-            res.send({ data: "Updated" })
-        }).catch((err) => {
-            console.log(err);
-        })
-    } catch (e) {
-        console.log(e);
-    }
-})
-
-//Paid Paypal
-app.post("/PaidPaypalPayment", (req, res) => {
-    try {
-        getThisOrder.updateOne({ _id: req.query.id }, {
-            "paymentmethod.status": 2,
-            "paymentmethod.type": "Paypal"
-        }).then(() => {
-            res.send({ data: "Updated" })
-        }).catch((err) => {
-            console.log(err);
-        })
-    } catch (e) {
-        console.log(e);
-    }
-})
-
-//Paid Cod
-app.post("/PaidCodPayment", (req, res) => {
-    try {
-        getThisOrder.updateOne({ _id: req.query.id }, {
-            "paymentmethod.type": "COD"
-        }).then(() => {
-            res.send({ data: "Updated" })
-        }).catch((err) => {
-            console.log(err);
-        })
-    } catch (e) {
-        console.log(e);
-    }
-})
-
-//Cancel by Mag
-app.post("/CancelByMag", (req, res) => {
-    try {
-        getThisOrder.updateOne({ _id: req.query.id }, {
-            denyreason: "Canceled by manager.",
-            status: 6
-        }).then(() => {
-            res.send({ data: "Updated" })
-        }).catch((err) => {
-            console.log(err);
-        })
     } catch (e) {
         console.log(e);
     }
@@ -1572,41 +1863,6 @@ app.post("/UpdateMenu", async (req, res) => {
     }
 })
 
-//Add Contact
-app.post("/AddContact", (req, res) => {
-    try {
-        const contact = new Contact({
-            name: req.body.name,
-            email: req.body.email,
-            title: req.body.title,
-            message: req.body.message
-        });
-
-        contact.save().then(() => {
-            res.status(201).send({
-                message: "Successfully",
-            });
-        })
-            .catch((error) => {
-                response.status(500).send({
-                    message: "Error",
-                    error,
-                });
-            });
-
-    } catch (e) {
-        console.log(e);
-    }
-})
-
-app.post("/DeleteContact", (req, res) => {
-    try {
-        getContactNow.deleteOne({ _id: req.body.id }).then(() => { res.send({ data: "succeed" }) }).catch((err) => { console.log(err); })
-    } catch (e) {
-        console.log(e);
-    }
-})
-
 //Get Admin Contact
 app.get("/GetContact", async (req, res) => {
     try {
@@ -1644,65 +1900,6 @@ app.get('/GetTestiCont', async (req, res) => {
     try {
         const getTa = await getContactNow.find({}).limit(5)
         res.send({ data: getTa })
-    } catch (e) {
-        console.log(e);
-    }
-})
-
-app.post("/AddNewBooking", (req, res) => {
-    try {
-        const booking = new Booking({
-            customer: req.body.customer,
-            date: req.body.date,
-            people: req.body.people,
-            status: 1,
-            message: req.body.message
-        })
-
-        booking.save().then(() => {
-            res.status(201).send({
-                message: "Table Created Successfully",
-            });
-        })
-            // catch error if the new user wasn't added successfully to the database
-            .catch(() => {
-                res.status(500).send({
-                    message: "Phone have already Exists!"
-                });
-            });
-    } catch (e) {
-        console.log(e);
-    }
-})
-
-//Deny Booking
-app.post("/DenyBookingCustomer", (req, res) => {
-    try {
-        GetBooking.updateOne({ _id: req.body.id }, {
-            status: req.body.status,
-            denyreason: req.body.denyreason,
-            employee: req.body.employee
-        }).then(() => {
-            res.send({ data: "succeed" })
-        }).catch((err) => {
-            console.log(err);
-        })
-    } catch (e) {
-        console.log(e);
-    }
-})
-
-//Cancel Booking
-app.post("/CancelBooking", (req, res) => {
-    try {
-        GetBooking.updateOne({ _id: req.body.id }, {
-            status: 5,
-            denyreason: req.body.reason
-        }).then(() => {
-            res.send({ data: "succeed" })
-        }).catch((err) => {
-            console.log(err);
-        })
     } catch (e) {
         console.log(e);
     }
@@ -1845,140 +2042,11 @@ app.get("/GetAllTableActive", async (req, res) => {
     }
 })
 
-//QR Code Access Table
-app.post("/QrCodeTableActive", (req, res) => {
-    try {
-        const dateX = new Date()
-        const datenow = new Date(dateX.toLocaleString('en-VI', { timeZone: "Asia/Ho_Chi_Minh" }))
-        GetTable.updateOne({ _id: req.body.id }, {
-            customerid: req.body.cusid,
-            tablestatus: 2,
-            tabledate: datenow
-        }).then(() => {
-            res.send({ data: "succeed" })
-        }).catch((err) => {
-            console.log(err);
-        })
-    } catch (e) {
-        console.log(e);
-    }
-})
-
 //Get Table Item for QRcode
 app.get("/QrCodeItemTB", async (req, res) => {
     try {
         const getIt = await GetTable.findOne({ _id: req.query.id })
         res.send({ data: getIt })
-    } catch (e) {
-        console.log(e);
-    }
-})
-
-//Checkout 4 Qr
-app.post("/Checkout4QrYeah", (req, res) => {
-    try {
-        GetTable.updateOne({ _id: req.query.id }, {
-            tablestatus: 3
-        }).then(() => {
-            res.send({ data: "succeed" })
-        }).catch((err) => {
-            console.log(err);
-        })
-    }
-    catch (e) {
-        console.log(e);
-    }
-})
-
-//Add Table by hand
-app.post("/AddTableByHand", (req, res) => {
-    try {
-        const table = new Table({
-            tablename: req.body.tablename,
-            tablestatus: 1
-        })
-        table.save().then(() => {
-            res.send({ data: "succeed" })
-        }).catch((e) => {
-            console.log(e);
-        })
-    } catch (e) {
-        console.log(e);
-    }
-})
-
-//Change Table Name
-app.post("/ChangeTableNameQuick", (req, res) => {
-    try {
-        GetTable.updateOne({ _id: req.body.id }, {
-            tablename: req.body.name
-        }).then(() => {
-            res.send({ data: "succeed" })
-        }).catch((err) => {
-            console.log(err);
-        })
-    } catch (e) {
-        console.log(e);
-    }
-})
-
-//Delete Table by manager
-app.post("/DeleteTableNow", (req, res) => {
-    try {
-        GetTable.deleteOne({ _id: req.body.id }).then(() => { res.send({ data: "succeed" }) }).catch((err) => { console.log(err); })
-    } catch (e) {
-        console.log(e);
-    }
-})
-
-//Change Table
-app.post("/ChangeTableNow", (req, res) => {
-    try {
-        GetTable.updateOne({ _id: req.body.newid }, {
-            customerid: req.body.cusid,
-            tableitems: req.body.items,
-            tabledate: req.body.date,
-            tablestatus: 2
-        }).then(() => {
-            GetTable.updateOne({ _id: req.body.oldid }, {
-                customerid: null,
-                tableitems: [],
-                tabledate: null,
-                tablestatus: 1
-            }).then(() => {
-                res.send({ data: "succeed" })
-            }).catch((er) => {
-                console.log(er);
-            })
-        }).catch((err) => {
-            console.log(err);
-        })
-    } catch (e) {
-        console.log(e);
-    }
-})
-
-//Add Table when booking
-app.post("/AddTableCustomer", (req, res) => {
-    try {
-        const dateX = new Date()
-        const datenow = new Date(dateX.toLocaleString('en-VI', { timeZone: "Asia/Ho_Chi_Minh" }))
-        GetTable.updateOne({ _id: req.body.tableid }, {
-            customerid: req.body.cusid,
-            tablestatus: 2,
-            tabledate: datenow
-        }).then(() => {
-            GetBooking.updateOne({ _id: req.body.cusid }, {
-                table: req.body.tablename,
-                status: 2
-            }).then(() => {
-                res.send({ data: "succeed" })
-            }).catch((e) => {
-                console.log(e);
-            })
-        }).catch((err) => {
-            console.log(err);
-        })
     } catch (e) {
         console.log(e);
     }
@@ -2048,189 +2116,12 @@ app.get("/GetHistoryTable", async (req, res) => {
     }
 })
 
-//Add item to table
-app.post("/AddItemToTable", async (req, res) => {
-    const findDup = await GetTable.findOne({ _id: req.body.tableid, tableitems: { $elemMatch: { "item.foodname": req.body.foodname } } })
-    try {
-        const dddd = new Date()
-        const dddda = new Date(dddd.toLocaleString('en-VI', { timeZone: "Asia/Ho_Chi_Minh" }))
-        if (findDup) {
-            GetTable.updateOne({ _id: req.body.tableid, "tableitems.item.foodname": req.body.foodname },
-                {
-                    $inc: {
-                        "tableitems.$.quantity": req.body.quantity,
-                    },
-                    $set: {
-                        "tableitems.$.status": 1
-                    }
-                }).then(() => {
-                    if (req.body.statusCheck === 1) {
-                        findDup.updateOne({ _id: req.body.tableid }, {
-                            tabledate: dddda,
-                            tablestatus: 2
-                        }).then(() => {
-                            res.send({ data: { foodname: req.body.foodname, quantity: req.body.quantity } })
-                        }).catch((e) => {
-                            console.log(e);
-                        })
-                    } else {
-                        res.send({ data: { foodname: req.body.foodname, quantity: req.body.quantity } })
-                    }
-                }).catch((er) => {
-                    console.log(er);
-                })
-        } else {
-            GetTable.updateOne({ _id: req.body.tableid },
-                {
-                    $push: {
-                        tableitems: req.body.item
-                    }
-                }).then(() => {
-                    if (req.body.statusCheck === 1) {
-                        GetTable.updateOne({ _id: req.body.tableid }, {
-                            tabledate: dddda,
-                            tablestatus: 2
-                        }).then(() => {
-                            res.send({ data: { foodname: req.body.foodname, quantity: req.body.quantity } })
-                        }).catch((e) => {
-                            console.log(e);
-                        })
-                    } else {
-                        res.send({ data: { foodname: req.body.foodname, quantity: req.body.quantity } })
-                    }
-                }).catch((er) => {
-                    console.log(er);
-                })
-        }
-    } catch (e) {
-        console.log(e);
-    }
-})
-
 //update status item
 app.post("/UpdateItemQrStatus", (req, res) => {
     try {
         GetTable.updateOne({ _id: req.body.tableid, "tableitems.item.foodname": req.body.foodname }, {
             "tableitems.$.status": req.body.status
         }).then(() => { res.send({ data: "succeed" }) }).catch((err) => { console.log(err); })
-    } catch (e) {
-        console.log(e);
-    }
-})
-
-//delete item Qr 
-app.post("/DeleteQritem", async (req, res) => {
-    try {
-        const getIt = await GetTable.findOne({ _id: req.body.tableid, "tableitems.item.foodname": req.body.foodname }).then((resa) => { return resa })
-        for (var i = 0; i < getIt.tableitems?.length; i++) {
-            var item = getIt.tableitems[i]
-            if (req.body.quantity >= item.quantity) {
-                GetTable.updateOne({ _id: req.body.tableid, "tableitems.item.foodname": req.body.foodname }, {
-                    $pull: {
-                        tableitems: {
-                            item: req.body.item.item
-                        }
-                    }
-                }).exec()
-            } else {
-                GetTable.updateOne({ _id: req.body.tableid, "tableitems.item.foodname": req.body.foodname }, {
-                    $inc: {
-                        "tableitems.$.quantity": -parseInt(req.body.quantity),
-                    },
-                }).exec()
-            }
-        }
-        res.send({ data: "succeed" })
-    } catch (e) {
-        console.log(e);
-    }
-})
-
-//Checkout for booking
-app.post("/Checkout4Booking", (req, res) => {
-    try {
-        const dateX = new Date()
-        const datenow = new Date(dateX.toLocaleString('en-VI', { timeZone: "Asia/Ho_Chi_Minh" }))
-        GetBooking.updateOne({ _id: req.body.id }, {
-            status: 3,
-            fulltotal: req.body.fulltotal,
-            employee: req.body.employee
-        }).then(() => {
-            var hype = req.body.TbItemHistory
-            const tbhistory = new TableHistory({
-                customerid: req.body.Idhistory,
-                tablename: req.body.TbnameHistory,
-                tableitems: hype,
-                tabledate: req.body.TbDateHistory,
-                datefinish: datenow,
-                employee: req.body.employee
-            })
-            tbhistory.save().then(() => {
-                GetTable.updateOne({ _id: req.body.tableid }, {
-                    customerid: null,
-                    tablestatus: 1,
-                    tableitems: [],
-                    tabledate: null
-                }).then(() => {
-                    hype.forEach(datad => {
-                        getThisMenu.updateOne({ _id: datad.item._id }, {
-                            $inc: {
-                                foodquantity: -datad.quantity
-                            }
-                        }).then(() => {
-                            res.send({ message: "succeed" })
-                        }).catch((err) => {
-                            console.log(err);
-                        })
-                    })
-                }).catch((err) => {
-                    console.log(err);
-                })
-            }).catch((erro) => {
-                console.log(erro);
-            })
-        }).catch((e) => {
-            console.log(e);
-        })
-    } catch (e) {
-        console.log(e);
-    }
-})
-
-//Checkout for normal
-app.post("/Checkout4Normal", async (req, res) => {
-    try {
-        var hype = req.body.TbItemHistory
-        const dateX = new Date()
-        const datenow = new Date(dateX.toLocaleString('en-VI', { timeZone: "Asia/Ho_Chi_Minh" }))
-        const historytb = new TableHistory({
-            tablename: req.body.TbnameHistory,
-            tableitems: hype,
-            tabledate: req.body.TbDateHistory,
-            datefinish: datenow,
-            employee: req.body.employee
-        })
-        historytb.save().then(() => {
-            GetTable.updateOne({ _id: req.body.id }, {
-                customerid: null,
-                tablestatus: 1,
-                tableitems: [],
-                tabledate: null
-            }).then(() => {
-                hype.forEach(datad => {
-                    getThisMenu.updateMany({ _id: datad.item._id }, {
-                        $inc: {
-                            foodquantity: -datad.quantity
-                        }
-                    }).exec()
-                })
-                res.send({ data: "succeed" })
-            }).catch((er) => {
-                console.log(er);
-            })
-        }).catch((err) => {
-            console.log(err);
-        })
     } catch (e) {
         console.log(e);
     }
@@ -2925,7 +2816,7 @@ app.post('/VnpayCheckout', function (req, res, next) {
     let tmnCode = process.env.REACT_APP_vnpaytmnCode;
     let secretKey = process.env.REACT_APP_vnpaysecretKey;
     let vnpUrl = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html';
-    let returnUrl = 'https://eatcom.store/OrderComplete';
+    let returnUrl = 'http://localhost:5000/OrderComplete';
     let orderId = req.body.orderId;
     let amount = req.body.amount;
     let bankCode = req.body.bankCode;
@@ -2971,18 +2862,24 @@ app.post('/VnpayRefund', function (req, res, next) {
     let vnp_TmnCode = process.env.REACT_APP_vnpaytmnCode;
     let secretKey = process.env.REACT_APP_vnpaysecretKey;
     let vnp_Api = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
+    let orderId = req.body.orderId;
+    let dateX = req.body.transDate;
+    let amount = req.body.amount * 100;
+    let type = req.body.transType;
+    let host = req.body.user;
+    let reason = req.body.reason;
 
-    let vnp_TxnRef = req.body.orderId;
-    let kakaoDate = moment(req.body.transDate).format('YYYYMMDDHHmmss');
+    let vnp_TxnRef = orderId;
+    let kakaoDate = moment(dateX).format('YYYYMMDDHHmmss');
     let vnp_TransactionDate = kakaoDate;
-    let vnp_Amount = req.body.amount * 100;
-    let vnp_TransactionType = req.body.transType;
-    let vnp_CreateBy = req.body.user;
+    let vnp_Amount = amount;
+    let vnp_TransactionType = type;
+    let vnp_CreateBy = host
 
     let vnp_RequestId = moment(date).format('HHmmss');
     let vnp_Version = '2.1.0';
     let vnp_Command = 'refund';
-    let vnp_OrderInfo = req.body.reason;
+    let vnp_OrderInfo = reason;
 
     let vnp_IpAddr = req.headers['x-forwarded-for'] ||
         req.connection.remoteAddress ||
@@ -3015,6 +2912,8 @@ app.post('/VnpayRefund', function (req, res, next) {
         'vnp_SecureHash': vnp_SecureHash
     };
 
+    console.log(dataObj);
+
     try {
         request({
             url: vnp_Api,
@@ -3028,30 +2927,3 @@ app.post('/VnpayRefund', function (req, res, next) {
         console.log(err);
     }
 });
-
-app.post("/DeleteAcountNative", (req, res) => {
-    try {
-        User.findOne({ _id: req.query.id }).then(async (user) => {
-            const compare = await bcrypt.compare(req.query.password, user.password)
-            if (compare) {
-                const checkOrder = await getThisOrder.find({ user: { $elemMatch: { id: req.query.id } }, status: { $in: [1, 2, 4] } }).exec()
-                const checkBooking = await GetBooking.find({ "customer.id": req.query.id, status: { $in: [1, 2] } }).exec()
-                if (checkOrder.length > 0 || checkBooking.length > 0) {
-                    res.status(500).send({ message: "You still have order & booking not complete!" })
-                }
-                else {
-                    getUserD.deleteOne({ _id: req.query.id }).then(() => {
-                        res.send({ data: "Succent" })
-                    }).catch(() => {
-                        res.status(501).send()
-                    })
-                }
-            } else {
-                res.status(502).send({ message: "Password invalid!" })
-            }
-        })
-    } catch (error) {
-        console.log(error);
-    }
-
-})

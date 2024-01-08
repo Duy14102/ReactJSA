@@ -3,8 +3,9 @@ import { useState, useEffect, useRef } from 'react';
 import Modal from 'react-modal';
 import ReactPaginate from 'react-paginate';
 import Swal from 'sweetalert2';
+import socketIOClient from "socket.io-client";
 
-function MainGiveTask({ modalOpenAdmin, setModalOpenAdmin }) {
+function MainGiveTask({ modalOpenAdmin, setModalOpenAdmin, decode }) {
     const [modalOpenAdmin2, setModalOpenAdmin2] = useState(false);
     const [modalOpenAdmin3, setModalOpenAdmin3] = useState(false);
     const [openGiveTask, setOpenGiveTask] = useState(false)
@@ -17,6 +18,7 @@ function MainGiveTask({ modalOpenAdmin, setModalOpenAdmin }) {
     const time = new Date().toLocaleTimeString()
     const datetime = date + " - " + time
     const Both = { title: Title, message: Message, date: datetime, status: 1, datefinish: null }
+    const socketRef = useRef();
 
     const [pageCount, setPageCount] = useState(6);
     const currentPage = useRef();
@@ -25,6 +27,44 @@ function MainGiveTask({ modalOpenAdmin, setModalOpenAdmin }) {
     useEffect(() => {
         currentPage.current = 1;
         getPagination()
+
+        socketRef.current = socketIOClient.connect("http://localhost:3000")
+
+        socketRef.current.on('GiveTaskSuccess', dataGot => {
+            if (dataGot.mag === decode.userId) {
+                Swal.fire(
+                    'Give Task Successfully!',
+                    '',
+                    'success'
+                ).then(function () {
+                    window.location.reload();
+                })
+            } else {
+                getPagination()
+            }
+        })
+
+        socketRef.current.on('GiveTaskFail', dataGot => {
+            if (dataGot.mag === decode.userId) {
+                Swal.fire(
+                    'Give Task Fail!',
+                    '',
+                    'error'
+                )
+            }
+        })
+
+        socketRef.current.on('FinishTaskSuccess', dataGot => {
+            getPagination()
+            if (localStorage.getItem('tabs') === "dashboard") {
+                localStorage.removeItem("CountNewTask")
+            }
+        })
+
+        return () => {
+            socketRef.current.disconnect();
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     function handlePageClick(e) {
@@ -35,7 +75,7 @@ function MainGiveTask({ modalOpenAdmin, setModalOpenAdmin }) {
     const getPagination = () => {
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/GetEmploy4Mana",
+            url: "http://localhost:3000/GetEmploy4Mana",
             params: {
                 page: currentPage.current,
                 limit: limit
@@ -53,32 +93,8 @@ function MainGiveTask({ modalOpenAdmin, setModalOpenAdmin }) {
 
     const GiveTask = (e) => {
         e.preventDefault()
-        const configuration = {
-            method: "post",
-            url: "https://eatcom.onrender.com/GiveTaskEmployee",
-            data: {
-                id: ModalData._id,
-                task: Both
-            }
-        }
-        axios(configuration)
-            .then(() => {
-                Swal.fire(
-                    'Give Task Successfully!',
-                    '',
-                    'success'
-                ).then(function () {
-                    window.location.reload();
-                })
-            }).catch(() => {
-                Swal.fire(
-                    'Give Task Fail!',
-                    '',
-                    'error'
-                ).then(function () {
-                    window.location.reload();
-                })
-            })
+        const data = { id: ModalData._id, task: Both, mag: decode.userId }
+        socketRef.current.emit('GiveTaskEmployeeSocket', data)
     }
     return (
         <>

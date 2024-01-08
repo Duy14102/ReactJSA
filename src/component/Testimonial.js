@@ -33,7 +33,7 @@ function Testimonial() {
     useEffect(() => {
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/GetTestiCont",
+            url: "http://localhost:3000/GetTestiCont",
         }
         axios(configuration)
             .then((res) => {

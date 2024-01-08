@@ -5,7 +5,7 @@ function RevenueDay() {
     const [CountData, setCountData] = useState()
     const [total, setTotal] = useState()
     useEffect(() => {
-        fetch("https://eatcom.onrender.com/GetIncomeDay", {
+        fetch("http://localhost:3000/GetIncomeDay", {
             method: "get",
         }).then((res) => res.json()).then((data) => {
             setCountData(data.data)

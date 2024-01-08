@@ -1,14 +1,66 @@
-import axios from "axios";
 import PropTypes from "prop-types";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Swal from "sweetalert2";
 import Modal from 'react-modal';
+import socketIOClient from "socket.io-client";
 
 function UserDataPanel({ Data, toke }) {
     const [ModalData, setModalData] = useState([])
     const [Accept, setAccept] = useState(false)
     const [DenyReason, setDenyReason] = useState("")
     const [modalOpenDetail, setModalOpenDetail] = useState(false);
+    const socketRef = useRef();
+
+    function Success() {
+        Swal.fire(
+            'Successfully!',
+            '',
+            'success'
+        ).then(function () {
+            window.location.reload();
+        })
+    }
+
+    function Fail() {
+        Swal.fire(
+            'Fail!',
+            '',
+            'error'
+        )
+    }
+
+    useEffect(() => {
+        socketRef.current = socketIOClient.connect("http://localhost:3000")
+
+        socketRef.current.on('CustomerWantCancel', dataGot => {
+            if (dataGot?.data === toke.userId) {
+                Success()
+            }
+        })
+
+        socketRef.current.on('DenyOrderFail', dataGot => {
+            if (dataGot?.data === toke.userId) {
+                Fail()
+            }
+        })
+
+        socketRef.current.on('CancelRequestFourSuccess', dataGot => {
+            if (dataGot?.data === toke.userId) {
+                Success()
+            }
+        })
+
+        socketRef.current.on('CancelRequestFourFail', dataGot => {
+            if (dataGot?.data === toke.userId) {
+                Fail()
+            }
+        })
+
+        return () => {
+            socketRef.current.disconnect();
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     useEffect(() => {
         const kaw = document.getElementById("clickFy")
@@ -24,62 +76,13 @@ function UserDataPanel({ Data, toke }) {
 
     const denyOrder = (e, id) => {
         e.preventDefault();
-        const configuration = {
-            method: "post",
-            url: "https://eatcom.onrender.com/DenyOrder",
-            params: {
-                id: id,
-                reason: DenyReason,
-                status: 4
-            }
-        }
-        axios(configuration)
-            .then(() => {
-                Swal.fire(
-                    'Request cancel successfully!',
-                    '',
-                    'success'
-                ).then(function () {
-                    window.location.reload();
-                })
-            }).catch((e) => {
-                Swal.fire(
-                    'Request cancel fail!',
-                    '',
-                    'error'
-                ).then(function () {
-                    console.log(e);
-                })
-            })
+        const data = { id: id, reason: DenyReason, status: 4, type: "CusCancel", userid: toke.userId }
+        socketRef.current.emit('DenyOrderSocket', data)
     }
 
     const CancelRequest = () => {
-        const configuration = {
-            method: "post",
-            url: "https://eatcom.onrender.com/CancelRequestFour",
-            data: {
-                id: ModalData._id,
-                status: 1
-            }
-        }
-        axios(configuration)
-            .then(() => {
-                Swal.fire(
-                    'Cancel request successfully!',
-                    '',
-                    'success'
-                ).then(function () {
-                    window.location.reload();
-                })
-            }).catch((e) => {
-                Swal.fire(
-                    'Cancel request fail!',
-                    '',
-                    'error'
-                ).then(function () {
-                    console.log(e);
-                })
-            })
+        const data = { id: ModalData._id, status: 1, userid: toke.userId }
+        socketRef.current.emit('CancelRequestFourSocket', data)
     }
 
     function openCity5(evt, cityName) {

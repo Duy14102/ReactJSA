@@ -9,12 +9,14 @@ import Swal from "sweetalert2";
 import Layout from "../Layout";
 import Cookies from "universal-cookie";
 import { jwtDecode } from "jwt-decode";
+import socketIOClient from "socket.io-client";
 // import "../css/CategoryCss.css";
 
 function QrCodeTable() {
     let appler = useParams()
     const cookies = new Cookies()
     const token = cookies.get("TOKEN")
+    const socketRef = useRef();
     const [Category, setCategory] = useState([]);
     var Cunt = null
     var Kunt = null
@@ -30,6 +32,23 @@ function QrCodeTable() {
     const currentPage = useRef();
     const limit = 9
     //Get Detail
+
+    function Success() {
+        Swal.fire(
+            'Successfully!',
+            '',
+            'success'
+        )
+    }
+
+    function Fail() {
+        Swal.fire(
+            'Fail!',
+            '',
+            'error'
+        )
+    }
+
     useEffect(() => {
         if (getQr === "2") {
             setModalOpenDetail(false)
@@ -38,13 +57,82 @@ function QrCodeTable() {
         }
         currentPage.current = 1;
         getPagination();
+
+        socketRef.current = socketIOClient.connect("http://localhost:3000")
+
+        socketRef.current.on('AddItemToTableSuccess', dataGot => {
+            console.log(dataGot);
+            if (dataGot.type === "QR" && appler.id === dataGot.tableid) {
+                getTable4()
+                setDetect(dataGot)
+                setTimeout(() => {
+                    const configuration2 = {
+                        method: "post",
+                        url: "http://localhost:3000/UpdateItemQrStatus",
+                        data: {
+                            tableid: dataGot.tableid,
+                            foodname: dataGot.foodname,
+                            status: 2
+                        }
+                    }
+                    axios(configuration2)
+                        .then(() => {
+                            setDetect(dataGot)
+                        }).catch((err) => { console.log(err); })
+                }, 15000)
+            }
+        })
+
+        socketRef.current.on('AddItemToTableFail', dataGot => {
+            if (dataGot.type === "QR" && appler.id === dataGot.tableid) {
+                Fail()
+            }
+        })
+
+        socketRef.current.on('DeleteQritemSuccess', dataGot => {
+            if (appler.id === dataGot.tableid) {
+                Success()
+                getTable4()
+            }
+        })
+
+        socketRef.current.on('Checkout4QrSuccess', dataGot => {
+            if (appler.id === dataGot.tableid) {
+                Swal.fire(
+                    'Checkout Successfully!',
+                    'Thank you for using our services',
+                    'success'
+                ).then(() => {
+                    localStorage.removeItem("QrCode")
+                    window.location.href = "/"
+                })
+            }
+        })
+
+        socketRef.current.on('Checkout4QrFail', dataGot => {
+            if (appler.id === dataGot.tableid) {
+                Fail()
+            }
+        })
+
+        socketRef.current.on('QrCodeTableActiveSuccess', dataGot => {
+            if (appler.id === dataGot.tableid) {
+                appler.qr = "2"
+                localStorage.setItem("QrCode", appler.qr)
+                window.location.reload()
+            }
+        })
+
+        return () => {
+            socketRef.current.disconnect();
+        };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const getTable4 = useCallback(() => {
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/QrCodeItemTB",
+            url: "http://localhost:3000/QrCodeItemTB",
             params: {
                 id: appler.id
             }
@@ -72,7 +160,7 @@ function QrCodeTable() {
     function getPagination() {
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/GetCategoryMenu",
+            url: "http://localhost:3000/GetCategoryMenu",
             params: {
                 category: appler.cate,
                 page: currentPage.current,
@@ -82,7 +170,6 @@ function QrCodeTable() {
         };
         axios(configuration)
             .then((result) => {
-                console.log(result);
                 setCategory(result.data.results.result);
                 setCount(result.data.results.total)
                 setPageCount(result.data.results.pageCount)
@@ -122,23 +209,8 @@ function QrCodeTable() {
             const decode = jwtDecode(token)
             kock = decode.userId
         }
-        const configuration = {
-            method: "post",
-            url: "https://eatcom.onrender.com/QrCodeTableActive",
-            data: {
-                id: appler.id,
-                cusid: kock
-            }
-        };
-        axios(configuration)
-            .then(() => {
-                appler.qr = "2"
-                localStorage.setItem("QrCode", appler.qr)
-                window.location.reload()
-            })
-            .catch((err) => {
-                console.log(err);
-            })
+        const data = { id: appler.id, cusid: kock }
+        socketRef.current.emit('QrCodeTableActiveSocket', data)
     }
 
     const takeitNow = (e, k) => {
@@ -148,106 +220,18 @@ function QrCodeTable() {
             foodname = k.foodname
         }
         e.preventDefault()
-        const configuration = {
-            method: "post",
-            url: "https://eatcom.onrender.com/AddItemToTable",
-            data: {
-                tableid: appler.id,
-                item: item,
-                quantity: QuantityAdd,
-                foodname: foodname
-            }
-        };
-        axios(configuration)
-            .then((res) => {
-                setDetect(res.data.data)
-                setTimeout(() => {
-                    const configuration2 = {
-                        method: "post",
-                        url: "https://eatcom.onrender.com/UpdateItemQrStatus",
-                        data: {
-                            tableid: appler.id,
-                            foodname: res.data.data.foodname,
-                            status: 2
-                        }
-                    }
-                    axios(configuration2)
-                        .then(() => {
-                            setDetect(res.data.data)
-                        }).catch((err) => { console.log(err); })
-                }, 15000)
-            })
-            .catch((err) => {
-                Swal.fire(
-                    'Added Fail!',
-                    '',
-                    'error'
-                ).then(() => {
-                    console.log(err);
-                })
-            });
+        const data = { tableid: appler.id, item: item, quantity: QuantityAdd, foodname: foodname, type: "QR" }
+        socketRef.current.emit('AddItemToTableSocket', data)
     }
 
     const deleteItem = (name, item) => {
-        const configuration = {
-            method: "post",
-            url: "https://eatcom.onrender.com/DeleteQritem",
-            data: {
-                tableid: appler.id,
-                quantity: QuantityAdd,
-                foodname: name,
-                item: item
-            }
-        };
-        axios(configuration)
-            .then(() => {
-                Swal.fire(
-                    'Delete Successfully!',
-                    '',
-                    'success'
-                ).then(() => {
-                    window.location.reload()
-                })
-            })
-            .catch((err) => {
-                Swal.fire(
-                    'Delete Fail!',
-                    '',
-                    'error'
-                ).then(() => {
-                    console.log(err);
-                })
-            });
+        const data = { tableid: appler.id, quantity: QuantityAdd, foodname: name, item: item }
+        socketRef.current.emit('DeleteQritemSocket', data)
     }
 
     const CheckOutQr = (e) => {
-        const configuration = {
-            method: "post",
-            url: "https://eatcom.onrender.com/Checkout4QrYeah",
-            params: {
-                id: e._id
-            }
-        };
-        axios(configuration)
-            .then(() => {
-                Swal.fire(
-                    'Checkout Successfully!',
-                    'Thank you for using our services',
-                    'success'
-                ).then(() => {
-                    localStorage.removeItem("QrCode")
-                    window.location.href = "/"
-                })
-            })
-            .catch((err) => {
-                Swal.fire(
-                    'Checkout Fail!',
-                    '',
-                    'error'
-                ).then(() => {
-                    console.log(err);
-                })
-            });
+        const data = { id: e._id, tableid: appler.id }
+        socketRef.current.emit('Checkout4QrYeahSocket', data)
     }
 
     $(function () {
@@ -327,7 +311,7 @@ function QrCodeTable() {
                         {sidebar ? (
                             <>
                                 <button onClick={() => setSidebar(false)} className="sideTick">
-                                    <i className="fi fi-br-menu-burger manaZone"></i>
+                                    <svg className="manaZone" xmlns="http://www.w3.org/2000/svg" height="16" width="14" viewBox="0 0 448 512"><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z" /></svg>
                                 </button>
                                 <div className="sidebarCutton">
                                     <h6 className="text-center">Your Cart</h6>
@@ -409,7 +393,7 @@ function QrCodeTable() {
                             </>
                         ) : (
                             <button onClick={() => setSidebar(true)} className="sideTick">
-                                <i className="fi fi-br-menu-burger manaZone"></i>
+                                <svg className="manaZone" xmlns="http://www.w3.org/2000/svg" height="16" width="14" viewBox="0 0 448 512"><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z" /></svg>
                             </button>
                         )}
                         <div className="bg-white">
@@ -543,7 +527,9 @@ function QrCodeTable() {
                                                             <td>{i.foodname}</td>
                                                             <td>{VND.format(i.foodprice)}</td>
                                                             <td><input type="number" onChange={(e) => setQuantityAdd(e.target.value)} min={1} max={i.foodquantity} defaultValue={1} className="textDeny" /></td>
-                                                            <td><button className="addIQr" onClick={(e) => takeitNow(e, i)}><i className="fi fi-ss-shopping-cart"></i></button></td>
+                                                            <td><button className="addIQr" onClick={(e) => takeitNow(e, i)}>
+                                                                <svg style={{ fill: "#0f172b" }} xmlns="http://www.w3.org/2000/svg" height="16" width="18" viewBox="0 0 576 512"><path d="M0 24C0 10.7 10.7 0 24 0H69.5c22 0 41.5 12.8 50.6 32h411c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3H170.7l5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5H488c13.3 0 24 10.7 24 24s-10.7 24-24 24H199.7c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5H24C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z" /></svg>
+                                                            </button></td>
                                                         </tr>
                                                     )
                                                 })}

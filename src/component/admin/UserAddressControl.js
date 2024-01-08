@@ -34,7 +34,7 @@ function UserAddressControl({ address, edit, userid, user }) {
     const deleteAddress = (e) => {
         const configuration = {
             method: "post",
-            url: "https://eatcom.onrender.com/RemoveAddressUser",
+            url: "http://localhost:3000/RemoveAddressUser",
             data: {
                 userid: userid,
                 address: e
@@ -60,7 +60,7 @@ function UserAddressControl({ address, edit, userid, user }) {
         } else {
             const configuration = {
                 method: "post",
-                url: "https://eatcom.onrender.com/AddAddressUser",
+                url: "http://localhost:3000/AddAddressUser",
                 data: {
                     id: userid,
                     address: ProAddress

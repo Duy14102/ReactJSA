@@ -44,7 +44,7 @@ function Layout({ children }) {
     useEffect(() => {
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/GetHeroUI",
+            url: "http://localhost:3000/GetHeroUI",
             params: {
                 name: "e4onxrx7hmgzmrbel9jk"
             }

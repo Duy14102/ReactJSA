@@ -2,18 +2,48 @@ import axios from "axios"
 import { useState, useEffect, useRef } from "react"
 import ReactPaginate from "react-paginate";
 import Modal from 'react-modal';
+import socketIOClient from "socket.io-client";
 
-function BookingHistory() {
+function BookingHistory({ decode }) {
     const [booking, setBooking] = useState([])
     const [ModalData, setModalData] = useState([])
     const [modalOpenDetail, setModalOpenDetail] = useState(false);
+    const socketRef = useRef();
     const [pageCount, setPageCount] = useState(6);
     const currentPage = useRef();
     const limit = 8
 
+    function HandleCancel() {
+        getPagination()
+        if (localStorage.getItem("CountNewBook")) {
+            localStorage.removeItem("CountNewBook")
+        }
+    }
+
     useEffect(() => {
         currentPage.current = 1;
         getPagination()
+
+        socketRef.current = socketIOClient.connect("http://localhost:3000")
+
+        socketRef.current.on('CancelBookingSuccess', dataGot => {
+            if (decode.userRole === 3) {
+                HandleCancel()
+            }
+        })
+
+        socketRef.current.on('DenyBookingSuccess', dataGot => {
+            getPagination()
+        })
+
+        socketRef.current.on('CheckoutBookingSuccess', dataGot => {
+            getPagination()
+        })
+
+        return () => {
+            socketRef.current.disconnect();
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     function handlePageClick(e) {
@@ -24,7 +54,7 @@ function BookingHistory() {
     function getPagination() {
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/GetBookingHistory",
+            url: "http://localhost:3000/GetBookingHistory",
             params: {
                 page: currentPage.current,
                 limit: limit

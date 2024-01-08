@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 import Cookies from "universal-cookie";
 import { jwtDecode } from "jwt-decode";
 import CancelByMag from "./CancelByMag";
+import socketIOClient from "socket.io-client";
 
 function MainOrder() {
     const cookies = new Cookies()
@@ -23,6 +24,7 @@ function MainOrder() {
     const [DateInput, setDateInput] = useState()
     const [Accept, setAccept] = useState(false)
     const [DenyReason, setDenyReason] = useState("")
+    const socketRef = useRef();
 
     const [pageCount, setPageCount] = useState(6);
     const currentPage = useRef();
@@ -47,6 +49,69 @@ function MainOrder() {
         evt.currentTarget.className += " active2";
     }
 
+    useEffect(() => {
+        socketRef.current = socketIOClient.connect("http://localhost:3000")
+        if (openTable) {
+
+            socketRef.current.on('UpdateStatusOrderSuccess', dataGot => {
+                if (dataGot.emp !== decode.userId) {
+                    findOrder()
+                }
+            })
+
+            socketRef.current.on('CompleteOrderSuccess', dataGot => {
+                if (decode.userRole === 3) {
+                    findOrder()
+                }
+            })
+
+            socketRef.current.on('CancelRequestFourSuccess', dataGot => {
+                findOrder()
+            })
+
+            socketRef.current.on('CustomerWantCancel', dataGot => {
+                findOrder()
+            })
+
+            socketRef.current.on('DenyOrderNormalSuccess', dataGot => {
+                findOrder()
+            })
+
+            socketRef.current.on('DenyOrderPaidSuccess', dataGot => {
+                findOrder()
+            })
+
+            socketRef.current.on('DenyOrderWaitingSuccess', dataGot => {
+                findOrder()
+            })
+
+            socketRef.current.on('totaldenyNormalSuccess', dataGot => {
+                findOrder()
+            })
+
+            socketRef.current.on('totaldenyPaidSuccess', dataGot => {
+                findOrder()
+            })
+
+            socketRef.current.on('CancelByMagNormalSuccess', dataGot => {
+                if (decode.userId === dataGot.emp) {
+                    findOrder()
+                }
+            })
+
+            socketRef.current.on('CancelByMagPaidSuccess', dataGot => {
+                if (decode.userId === dataGot.emp) {
+                    findOrder()
+                }
+            })
+        }
+        return () => {
+            socketRef.current.disconnect();
+        };
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [openTable])
+
     function handlePageClick(e) {
         currentPage.current = e.selected + 1
         findOrder();
@@ -56,7 +121,7 @@ function MainOrder() {
         e?.preventDefault()
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/SearchAllOrder",
+            url: "http://localhost:3000/SearchAllOrder",
             params: {
                 date: DateInput,
                 page: currentPage.current,
@@ -77,7 +142,7 @@ function MainOrder() {
     const appoveOrder = (e, yolo) => {
         const configuration = {
             method: 'post',
-            url: 'https://eatcom.onrender.com/UpdateStatusOrder',
+            url: 'http://localhost:3000/UpdateStatusOrder',
             data: {
                 id: e,
                 status: 2,
@@ -109,7 +174,7 @@ function MainOrder() {
         e.preventDefault();
         const configuration = {
             method: "post",
-            url: "https://eatcom.onrender.com/DenyOrder",
+            url: "http://localhost:3000/DenyOrder",
             params: {
                 id: id,
                 reason: DenyReason,
@@ -140,7 +205,7 @@ function MainOrder() {
     const completeOrder = (type) => {
         const configuration = {
             method: "post",
-            url: "https://eatcom.onrender.com/CompleteOrderByEmp",
+            url: "http://localhost:3000/CompleteOrderByEmp",
             data: {
                 id: ModalData._id,
                 date: Date.now(),
@@ -506,11 +571,11 @@ function MainOrder() {
                         ) : null}
                     </>
                 )}
+                {modalOpenDetail3 ? (
+                    <CancelByMag fulltotal={fulltotal} ModalData={ModalData} setmodal={setModalOpenDetail3} />
+                ) : null}
                 <button className='closeModal' onClick={() => { setModalOpenAdmin2(false); setModalOpenAdmin(true) }}>x</button>
             </Modal>
-            {ModalData.paymentmethod?.type === "Vnpay" ? (
-                <CancelByMag ModalData={ModalData} fulltotal={fulltotal} modal={modalOpenDetail3} setmodal={setModalOpenDetail3} />
-            ) : null}
             <div id="cartactive" className="tabcontent2">
                 <div className="pt-4">
                     <GetOrder />

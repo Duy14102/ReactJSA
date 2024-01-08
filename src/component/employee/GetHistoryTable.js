@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import ReactPaginate from "react-paginate";
 import Modal from 'react-modal';
 import axios from "axios";
+import socketIOClient from "socket.io-client";
 
 function GetHistoryTable() {
     const [table, setTable] = useState([])
@@ -9,6 +10,7 @@ function GetHistoryTable() {
     const [ModalData, setModalData] = useState([])
     const [pageCount, setPageCount] = useState(6);
     const currentPage = useRef();
+    const socketRef = useRef();
     const limit = 9
     var total = 0
     var fulltotal = 0
@@ -16,6 +18,21 @@ function GetHistoryTable() {
     useEffect(() => {
         currentPage.current = 1;
         getPagination()
+
+        socketRef.current = socketIOClient.connect("http://localhost:3000")
+
+        socketRef.current.on('CheckoutNormalSuccess', dataGot => {
+            getPagination()
+        })
+
+        socketRef.current.on('CheckoutBookingSuccess', dataGot => {
+            getPagination()
+        })
+
+        return () => {
+            socketRef.current.disconnect();
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     function handlePageClick(e) {
@@ -26,7 +43,7 @@ function GetHistoryTable() {
     function getPagination() {
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/GetHistoryTable",
+            url: "http://localhost:3000/GetHistoryTable",
             params: {
                 page: currentPage.current,
                 limit: limit

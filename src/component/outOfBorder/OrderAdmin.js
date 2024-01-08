@@ -1,13 +1,14 @@
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import PropTypes from "prop-types";
-import { Fragment, useEffect } from "react";
+import { Fragment, useEffect, useRef } from "react";
 import { useState } from "react";
 import Modal from 'react-modal';
 import Swal from "sweetalert2";
 import Cookies from "universal-cookie";
 import CancelByMag from "../admin/CancelByMag";
 import CancelRequest from "../admin/CancelRequest";
+import socketIOClient from "socket.io-client";
 
 function OrderAdmin({ Data }) {
     const cookies = new Cookies()
@@ -17,6 +18,7 @@ function OrderAdmin({ Data }) {
     const [Accept, setAccept] = useState(false)
     const [DenyReason, setDenyReason] = useState("")
     const [ModalData, setModalData] = useState([])
+    const socketRef = useRef();
 
     var [modalOpenDetail2, setModalOpenDetail2] = useState(false);
     const [spinner, setSpinner] = useState(false)
@@ -29,36 +31,85 @@ function OrderAdmin({ Data }) {
         }
     }, [modalOpenDetail2])
 
+    function Success() {
+        Swal.fire(
+            'Successfully!',
+            '',
+            'success'
+        ).then(function () {
+            window.location.reload();
+        })
+    }
+
+    function Fail() {
+        Swal.fire(
+            'Fail!',
+            '',
+            'error'
+        )
+    }
+
+    useEffect(() => {
+        socketRef.current = socketIOClient.connect("http://localhost:3000")
+
+        socketRef.current.on('UpdateStatusOrderSuccess', dataGot => {
+            if (dataGot?.emp === decode.userId) {
+                Success()
+            }
+        })
+
+        socketRef.current.on('UpdateStatusOrderFail', dataGot => {
+            if (dataGot?.emp === decode.userId) {
+                Fail()
+            }
+        })
+
+        socketRef.current.on('CompleteOrderSuccess', dataGot => {
+            if (dataGot?.emp === decode.userId) {
+                Success()
+            }
+        })
+
+        socketRef.current.on('CompleteOrderFail', dataGot => {
+            if (dataGot?.emp === decode.userId) {
+                Fail()
+            }
+        })
+
+        socketRef.current.on('DenyOrderNormalSuccess', dataGot => {
+            if (dataGot?.emp === decode.userId) {
+                Success()
+            }
+        })
+
+        socketRef.current.on('DenyOrderPaidSuccess', dataGot => {
+            if (dataGot?.emp === decode.userId) {
+                denyOrderKun(dataGot.id, dataGot.date, dataGot.fulltotal, dataGot.reason)
+            }
+        })
+
+        socketRef.current.on('DenyOrderWaitingSuccess', dataGot => {
+            if (dataGot?.emp === decode.userId) {
+                Success()
+            }
+        })
+
+        socketRef.current.on('DenyOrderWaitingFail', dataGot => {
+            if (dataGot?.emp === decode.userId) {
+                Fail()
+            }
+        })
+
+        return () => {
+            socketRef.current.disconnect();
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
 
     const appoveOrder = (e, yolo) => {
-        const configuration = {
-            method: 'post',
-            url: 'https://eatcom.onrender.com/UpdateStatusOrder',
-            data: {
-                id: e,
-                status: 2,
-                employee: deliverEmployee,
-                orderitems: yolo
-            }
-        }
-        axios(configuration)
-            .then(() => {
-                Swal.fire(
-                    'Accepted successfully!',
-                    '',
-                    'success'
-                ).then(function () {
-                    window.location.reload();
-                })
-            }).catch((e) => {
-                Swal.fire(
-                    'Accepted Fail!',
-                    '',
-                    'error'
-                ).then(function () {
-                    console.log(e);
-                })
-            })
+        const data = { id: e, userid: ModalData?.user[0].id, status: 2, employee: deliverEmployee, orderitems: yolo, empid: decode.userId }
+        socketRef.current.emit('UpdateStatusOrderSocket', data)
     }
 
     var statusCheck = ""
@@ -74,151 +125,48 @@ function OrderAdmin({ Data }) {
     const time = new Date(ModalData.createdAt).toLocaleTimeString()
     const datemodal = date + " - " + time
 
-    const denyOrderKun = (id) => {
+    const denyOrderKun = (id, date, amount, reason) => {
         const configuration = {
             method: "post",
-            url: "https://eatcom.onrender.com/VnpayRefund",
+            url: "http://localhost:3000/VnpayRefund",
             data: {
                 orderId: id,
-                transDate: ModalData.createdAt,
-                amount: fulltotal,
+                transDate: date,
+                amount: amount,
                 transType: "03",
                 user: "Manager",
-                reason: DenyReason
+                reason: reason
             }
         }
         setSpinner(true)
         axios(configuration).then(() => {
             setSpinner(false)
-            Swal.fire(
-                'Denied successfully!',
-                '',
-                'success'
-            ).then(function () {
-                window.location.reload();
-            })
-        }).catch((err) => {
-            Swal.fire(
-                'Denied fail!',
-                '',
-                'error'
-            ).then(function () {
-                console.log(err);
-            })
+            Success()
+        }).catch(() => {
+            Fail()
         })
     }
 
     const denyOrder = (e, id) => {
         e.preventDefault();
-        const configuration = {
-            method: "post",
-            url: "https://eatcom.onrender.com/DenyOrder",
-            params: {
-                id: id,
-                reason: DenyReason,
-                employee: deliverEmployee,
-                status: 3,
-            }
-        }
-        axios(configuration)
-            .then(() => {
-                Swal.fire(
-                    'Denied successfully!',
-                    '',
-                    'success'
-                ).then(function () {
-                    window.location.reload();
-                })
-            }).catch((e) => {
-                Swal.fire(
-                    'Denied fail!',
-                    '',
-                    'error'
-                ).then(function () {
-                    console.log(e);
-                })
-            })
+        const data = { id: id, userid: ModalData?.user[0].id, reason: DenyReason, employee: deliverEmployee, status: 3, type: "Normal", empid: decode.userId }
+        socketRef.current.emit('DenyOrderSocket', data)
     }
 
     const denyOrderWait = (id) => {
-        const configuration = {
-            method: "post",
-            url: "https://eatcom.onrender.com/DenyOrderWaiting",
-            params: {
-                id: id,
-                employee: deliverEmployee,
-                status: 6,
-            }
-        }
-        axios(configuration)
-            .then(() => {
-                Swal.fire(
-                    'Canceled successfully!',
-                    '',
-                    'success'
-                ).then(function () {
-                    window.location.reload();
-                })
-            }).catch((e) => {
-                Swal.fire(
-                    'Canceled fail!',
-                    '',
-                    'error'
-                ).then(function () {
-                    console.log(e);
-                })
-            })
+        const data = { id: id, userid: ModalData?.user[0].id, employee: deliverEmployee, status: 6, empid: decode.userId }
+        socketRef.current.emit('DenyOrderWaitingSocket', data)
     }
 
-    const denyOrderPaid = (e, id) => {
+    const denyOrderPaid = (e, id, Fu) => {
         e.preventDefault();
-        const configuration = {
-            method: "post",
-            url: "https://eatcom.onrender.com/DenyOrder",
-            params: {
-                id: id,
-                reason: DenyReason,
-                employee: deliverEmployee,
-                status: 3,
-            }
-        }
-        axios(configuration)
-            .then(() => {
-                denyOrderKun(id)
-            }).catch((e) => {
-                console.log(e);
-            })
+        const data = { id: id, userid: ModalData?.user[0].id, reason: DenyReason, employee: deliverEmployee, status: 3, type: "Paid", fulltotal: Fu, date: ModalData.createdAt, empid: decode.userId }
+        socketRef.current.emit('DenyOrderSocket', data)
     }
 
     const completeOrder = (type) => {
-        const configuration = {
-            method: "post",
-            url: "https://eatcom.onrender.com/CompleteOrderByEmp",
-            data: {
-                id: ModalData._id,
-                date: Date.now('vi'),
-                status: 5,
-                type: type
-            }
-        }
-        axios(configuration)
-            .then(() => {
-                Swal.fire(
-                    'Complete successfully!',
-                    '',
-                    'success'
-                ).then(function () {
-                    window.location.reload();
-                })
-            }).catch((err) => {
-                Swal.fire(
-                    'Complete fail!',
-                    '',
-                    'error'
-                ).then(function () {
-                    console.log(err);
-                })
-            })
+        const data = { id: ModalData._id, userid: ModalData?.user[0].id, date: Date.now('vi'), status: 5, type: type, empid: decode.userId }
+        socketRef.current.emit('CompleteOrderByEmpSocket', data)
     }
 
     const VND = new Intl.NumberFormat('vi-VN', {
@@ -397,23 +345,23 @@ function OrderAdmin({ Data }) {
                     <>
                         <div className="d-flex justify-content-between">
                             <p>✅ Order has been <b>Accepted</b></p>
-                            {decode.userRole === 3 && ModalData.paymentmethod?.type === "Vnpay" ? (
-                                <button onClick={() => setModalOpenDetail3(true)} className="btn btn-danger">Cancel</button>
-                            ) : null}
-                            {ModalData.employee?.map((i) => {
-                                if (i.id === decode.userId) {
-                                    return (
-                                        <>
-                                            {ModalData.paymentmethod.status === 1 ? (
+                            <div style={{ display: "flex", gap: 10 }}>
+                                {decode.userRole === 3 && ModalData.paymentmethod?.type !== "Paypal" ? (
+                                    <button onClick={() => setModalOpenDetail3(true)} className="btn btn-danger">Cancel</button>
+                                ) : null}
+                                {ModalData.employee?.map((i) => {
+                                    if (i.id === decode.userId) {
+                                        return (
+                                            ModalData.paymentmethod.status === 1 ? (
                                                 <button onClick={() => completeOrder(2)} className="btn btn-primary">Complete Order</button>
                                             ) : (
                                                 <button onClick={() => completeOrder(1)} className="btn btn-primary">Complete Order</button>
-                                            )}
-                                        </>
-                                    )
-                                }
-                                return null
-                            })}
+                                            )
+                                        )
+                                    }
+                                    return null
+                                })}
+                            </div>
                         </div>
                     </>
                 ) : null}
@@ -449,7 +397,7 @@ function OrderAdmin({ Data }) {
                     <div className="pt-3">
                         <p>Reason why deny : </p>
                         {ModalData.paymentmethod.status === 2 && ModalData.paymentmethod.type === "Vnpay" ? (
-                            <form onSubmit={(e) => denyOrderPaid(e, ModalData._id)}>
+                            <form onSubmit={(e) => denyOrderPaid(e, ModalData._id, fulltotal)}>
                                 <textarea value={DenyReason} onChange={(e) => setDenyReason(e.target.value)} className="textDeny" required />
                                 <div style={{ gap: 1 + "%" }} className="d-flex mt-2">
                                     <button type="submit" className="btn btn-primary ">Comfirm</button>
@@ -469,21 +417,21 @@ function OrderAdmin({ Data }) {
                 ) : null}
                 {reject ? (
                     <div className="pt-3">
-                        <p>Reason why deny : </p>
+                        <h5 className="text-center pb-2">Are you sure ?</h5>
                         <div className="d-flex justify-content-evenly align-items-center">
                             <button className="btn btn-primary" onClick={() => denyOrderWait(ModalData._id)}>Yes</button>
                             <button className="btn btn-secondary" onClick={() => setReject(false)}>No</button>
                         </div>
                     </div>
                 ) : null}
+                {modalOpenDetail4 ? (
+                    <CancelRequest fulltotal={fulltotal} ModalData={ModalData} setmodal={setModalOpenDetail4} />
+                ) : null}
+                {modalOpenDetail3 ? (
+                    <CancelByMag fulltotal={fulltotal} ModalData={ModalData} setmodal={setModalOpenDetail3} />
+                ) : null}
                 <button className='closeModal' onClick={() => setModalOpenDetail2(false)}>x</button>
             </Modal >
-            {ModalData.paymentmethod?.type === "Vnpay" ? (
-                <>
-                    <CancelByMag fulltotal={fulltotal} ModalData={ModalData} modal={modalOpenDetail3} setmodal={setModalOpenDetail3} />
-                    <CancelRequest fulltotal={fulltotal} ModalData={ModalData} modal={modalOpenDetail4} setmodal={setModalOpenDetail4} />
-                </>
-            ) : null}
         </>
     )
 }

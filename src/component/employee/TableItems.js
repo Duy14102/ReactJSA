@@ -3,17 +3,46 @@ import { useEffect } from "react";
 import { useState, useRef } from "react";
 import ReactPaginate from "react-paginate"
 import Swal from "sweetalert2";
+import socketIOClient from "socket.io-client";
 
-function TableItems({ ModalData }) {
+function TableItems({ ModalData, decode }) {
     const [pageCount2, setPageCount2] = useState(6);
     const currentPage = useRef();
     const limit = 9
+    const socketRef = useRef();
     var [QuantityAdd, setQuantityAdd] = useState()
     const [menu, setMenu] = useState([])
 
     useEffect(() => {
         currentPage.current = 1;
         getAdminMenu()
+
+        socketRef.current = socketIOClient.connect("http://localhost:3000")
+
+        socketRef.current.on('AddItemToTableSuccess', dataGot => {
+            if (dataGot.mag === decode.userId && dataGot.type === "Normal") {
+                Swal.fire(
+                    'Added Successfully!',
+                    '',
+                    'success'
+                )
+            }
+        })
+
+        socketRef.current.on('AddItemToTableFail', dataGot => {
+            if (dataGot.mag === decode.userId && dataGot.type === "Normal") {
+                Swal.fire(
+                    'Added Fail!',
+                    '',
+                    'error'
+                )
+            }
+        })
+
+        return () => {
+            socketRef.current.disconnect();
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     function handlePageClick2(e) {
@@ -24,7 +53,7 @@ function TableItems({ ModalData }) {
     function getAdminMenu() {
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/GetItemCanTable",
+            url: "http://localhost:3000/GetItemCanTable",
             params: {
                 page: currentPage.current,
                 limit: limit
@@ -50,32 +79,8 @@ function TableItems({ ModalData }) {
             foodname = k.foodname
         }
         e.preventDefault()
-        const configuration = {
-            method: "post",
-            url: "https://eatcom.onrender.com/AddItemToTable",
-            data: {
-                tableid: ModalData._id,
-                statusCheck: ModalData.tablestatus,
-                item: item,
-                quantity: QuantityAdd,
-                foodname: foodname
-            }
-        };
-        axios(configuration)
-            .then(() => {
-                Swal.fire(
-                    'Added Successfully!',
-                    '',
-                    'success'
-                )
-            })
-            .catch(() => {
-                Swal.fire(
-                    'Added Fail!',
-                    '',
-                    'error'
-                )
-            });
+        const data = { tableid: ModalData._id, statusCheck: ModalData.tablestatus, item: item, quantity: QuantityAdd, foodname: foodname, type: "Normal", mag: decode.userId, userid: ModalData?.customerid }
+        socketRef.current.emit('AddItemToTableSocket', data)
     }
     return (
         <>

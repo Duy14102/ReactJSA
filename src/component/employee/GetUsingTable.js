@@ -7,6 +7,7 @@ import Cookies from "universal-cookie";
 import { jwtDecode } from "jwt-decode";
 import TableItems from "./TableItems";
 import QRcode from 'qrcode.react'
+import socketIOClient from "socket.io-client";
 
 function GetUsingTable() {
     const [table, setTable] = useState([])
@@ -24,6 +25,7 @@ function GetUsingTable() {
     const [TBnamechange, setTBnamechange] = useState()
     var detect1 = null
     var detect2 = null
+    const socketRef = useRef();
     const currentPage = useRef();
     const limit = 9
     const cookies = new Cookies()
@@ -35,10 +37,138 @@ function GetUsingTable() {
     var total = 0
     var fulltotal = 0
 
+    function Success() {
+        Swal.fire(
+            'Successfully!',
+            '',
+            'success'
+        ).then(function () {
+            window.location.reload()
+        })
+    }
+
+    function Fail() {
+        Swal.fire(
+            'Fail!',
+            '',
+            'error'
+        )
+    }
+
     useEffect(() => {
         currentPage.current = 1;
         getPagination()
         getTableActive();
+
+        socketRef.current = socketIOClient.connect("http://localhost:3000")
+
+        socketRef.current.on('AddTableByHandSuccess', dataGot => {
+            getPagination()
+            getTableActive();
+        })
+
+        socketRef.current.on('AddTableCustomerSuccess', dataGot => {
+            getPagination()
+            getTableActive();
+        })
+
+        socketRef.current.on('AddItemToTableSuccess', dataGot => {
+            getPagination()
+        })
+
+        socketRef.current.on('ChangeTableNameSuccess', dataGot => {
+            if (dataGot.mag === decode.userId) {
+                Success()
+            } else {
+                getPagination()
+                getTableActive()
+            }
+        })
+
+        socketRef.current.on('ChangeTableNameFail', dataGot => {
+            if (dataGot.mag === decode.userId) {
+                Fail()
+            }
+        })
+
+        socketRef.current.on('DeleteTableSuccess', dataGot => {
+            if (dataGot.mag === decode.userId) {
+                Success()
+            } else {
+                getPagination()
+                getTableActive()
+            }
+        })
+
+        socketRef.current.on('DeleteTableFail', dataGot => {
+            if (dataGot.mag === decode.userId) {
+                Fail()
+            }
+        })
+
+        socketRef.current.on('ChangeTableSuccess', dataGot => {
+            if (dataGot.mag === decode.userId) {
+                Success()
+            } else {
+                getPagination()
+                getTableActive()
+            }
+        })
+
+        socketRef.current.on('ChangeTableFail', dataGot => {
+            if (dataGot.mag === decode.userId) {
+                Fail()
+            }
+        })
+
+        socketRef.current.on('CheckoutNormalSuccess', dataGot => {
+            if (dataGot.mag === decode.userId) {
+                Success()
+            } else {
+                getPagination()
+                getTableActive()
+            }
+        })
+
+        socketRef.current.on('CheckoutNormalFail', dataGot => {
+            if (dataGot.mag === decode.userId) {
+                Fail()
+            }
+        })
+
+        socketRef.current.on('CheckoutBookingSuccess', dataGot => {
+            if (dataGot.mag === decode.userId) {
+                Success()
+            } else {
+                getPagination()
+                getTableActive()
+            }
+        })
+
+        socketRef.current.on('CheckoutBookingFail', dataGot => {
+            if (dataGot.mag === decode.userId) {
+                Fail()
+            }
+        })
+
+        socketRef.current.on('QrCodeTableActiveSuccess', dataGot => {
+            getPagination()
+            getTableActive()
+        })
+
+        socketRef.current.on('DeleteQritemSuccess', dataGot => {
+            getPagination()
+        })
+
+        socketRef.current.on('Checkout4QrSuccess', dataGot => {
+            getPagination()
+            getTableActive()
+        })
+
+        return () => {
+            socketRef.current.disconnect();
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     function handlePageClick(e) {
@@ -49,7 +179,7 @@ function GetUsingTable() {
     function getPagination() {
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/GetTableUse",
+            url: "http://localhost:3000/GetTableUse",
             params: {
                 page: currentPage.current,
                 limit: limit
@@ -68,7 +198,7 @@ function GetUsingTable() {
     function getTableActive() {
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/GetAllTableActive",
+            url: "http://localhost:3000/GetAllTableActive",
         }
         axios(configuration)
             .then((res) => {
@@ -81,7 +211,7 @@ function GetUsingTable() {
     const getThatTable = (e) => {
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/GetTable4BookingHistory",
+            url: "http://localhost:3000/GetTable4BookingHistory",
             params: {
                 cusid: e
             }
@@ -96,165 +226,35 @@ function GetUsingTable() {
     }
 
     const checkOut = (e) => {
-        const configuration = {
-            method: "post",
-            url: "https://eatcom.onrender.com/Checkout4Booking",
-            data: {
-                id: e,
-                fulltotal: fulltotal,
-                tableid: ModalData._id,
-                employee: takeEmployee,
-                Idhistory: ModalData.customerid,
-                TbnameHistory: ModalData.tablename,
-                TbDateHistory: ModalData.tabledate,
-                TbItemHistory: ModalData.tableitems
-            }
-        };
-        axios(configuration)
-            .then(() => {
-                Swal.fire(
-                    'Checkout Successfully!',
-                    '',
-                    'success'
-                ).then(function () {
-                    window.location.reload()
-                })
-            })
-            .catch(() => {
-                Swal.fire(
-                    'Checkout Fail!',
-                    '',
-                    'error'
-                ).then(function () {
-                    window.location.reload()
-                })
-            });
+        const data = { mag: decode.userId, id: e, fulltotal: fulltotal, tableid: ModalData._id, employee: takeEmployee, Idhistory: ModalData.customerid, TbnameHistory: ModalData.tablename, TbDateHistory: ModalData.tabledate, TbItemHistory: ModalData.tableitems }
+        socketRef.current.emit('Checkout4BookingSocket', data)
     }
 
     const checkOut4Normal = () => {
-        const configuration = {
-            method: "post",
-            url: "https://eatcom.onrender.com/Checkout4Normal",
-            data: {
-                id: ModalData._id,
-                employee: takeEmployee,
-                Idhistory: ModalData.customerid,
-                TbnameHistory: ModalData.tablename,
-                TbDateHistory: ModalData.tabledate,
-                TbItemHistory: ModalData.tableitems
-            }
-        };
-        axios(configuration)
-            .then(() => {
-                Swal.fire(
-                    'Checkout Successfully!',
-                    '',
-                    'success'
-                ).then(function () {
-                    window.location.reload()
-                })
-            })
-            .catch(() => {
-                Swal.fire(
-                    'Checkout Fail!',
-                    '',
-                    'error'
-                ).then(function () {
-                    window.location.reload()
-                })
-            });
+        const data = { id: ModalData._id, employee: takeEmployee, Idhistory: ModalData.customerid, TbnameHistory: ModalData.tablename, TbDateHistory: ModalData.tabledate, TbItemHistory: ModalData.tableitems, mag: decode.userId }
+        socketRef.current.emit('Checkout4NormalSocket', data)
     }
 
     const changeNewtable = (e) => {
         e.preventDefault()
         if (changeThis) {
-            const configuration = {
-                method: "post",
-                url: "https://eatcom.onrender.com/ChangeTableNow",
-                data: {
-                    oldid: ModalData._id,
-                    newid: changeThis,
-                    cusid: ModalData.customerid,
-                    items: ModalData.tableitems,
-                    date: ModalData.tabledate
-                }
-            }
-            axios(configuration)
-                .then(() => {
-                    Swal.fire(
-                        'Change Table Successfully!',
-                        '',
-                        'success'
-                    ).then(function () {
-                        window.location.reload()
-                    })
-                })
-                .catch(() => {
-                    Swal.fire(
-                        'Change Table Fail!',
-                        '',
-                        'error'
-                    ).then(function () {
-                        window.location.reload()
-                    })
-                });
+            setCheckTableId(false)
+            const data = { oldid: ModalData._id, newid: changeThis, cusid: ModalData.customerid, items: ModalData.tableitems, date: ModalData.tabledate, mag: decode.userId }
+            socketRef.current.emit('ChangeTableNowSocket', data)
         } else {
             setCheckTableId(true)
         }
     }
 
     const deleteTable = () => {
-        const configuration = {
-            method: "post",
-            url: "https://eatcom.onrender.com/DeleteTableNow",
-            data: {
-                id: ModalData._id
-            }
-        }
-        axios(configuration)
-            .then(() => {
-                Swal.fire(
-                    'Delete Table Successfully!',
-                    '',
-                    'success'
-                ).then(function () {
-                    window.location.reload()
-                })
-            }).catch(() => {
-                Swal.fire(
-                    'Delete Table Fail!',
-                    '',
-                    'error'
-                )
-            })
+        const data = { id: ModalData._id, mag: decode.userId }
+        socketRef.current.emit('DeleteTableNowSocket', data)
     }
 
     const changeTableName = (e) => {
         e.preventDefault()
-        const configuration = {
-            method: "post",
-            url: "https://eatcom.onrender.com/ChangeTableNameQuick",
-            data: {
-                id: ModalData._id,
-                name: TBnamechange
-            }
-        }
-        axios(configuration)
-            .then(() => {
-                Swal.fire(
-                    'Change Successfully!',
-                    '',
-                    'success'
-                ).then(function () {
-                    window.location.reload()
-                })
-            }).catch(() => {
-                Swal.fire(
-                    'Change Fail!',
-                    '',
-                    'error'
-                )
-            })
+        const data = { id: ModalData._id, name: TBnamechange, mag: decode.userId }
+        socketRef.current.emit('ChangeTableNameQuickSocket', data)
     }
 
     const VND = new Intl.NumberFormat('vi-VN', {
@@ -279,7 +279,7 @@ function GetUsingTable() {
     if (ModalData.tablestatus === 3) {
         denver = "Checkout Pending"
     }
-    var codeQr = `https://eatcom.store/QrCodeTable/${ModalData._id}/1/Meat/nto`
+    var codeQr = `http://localhost:5000/QrCodeTable/${ModalData._id}/1/Meat/nto`
 
     const downloadQR = () => {
         const canvas = document.getElementById('qrcode');
@@ -598,7 +598,7 @@ function GetUsingTable() {
                         zIndex: 999
                     },
                 }}>
-                <TableItems ModalData={ModalData} />
+                <TableItems ModalData={ModalData} decode={decode} />
                 <button className='closeModal' onClick={() => { setModalOpenDetail2(false); resetTable() }}>x</button>
             </Modal>
         </>

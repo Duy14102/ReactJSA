@@ -6,7 +6,7 @@ import RevenueDay from "../outOfBorder/RevenueDay"
 import RevenueMonth from "../outOfBorder/RevenueMonth"
 import RevenueYear from "../outOfBorder/RevenueYear"
 
-function ManagerDashboard() {
+function ManagerDashboard({ decode }) {
     const [modalOpenAdmin, setModalOpenAdmin] = useState(false);
     const [CountData, setCountData] = useState()
     const [load1, setLoad1] = useState(false)
@@ -17,7 +17,7 @@ function ManagerDashboard() {
 
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/GetData4Admin",
+            url: "http://localhost:3000/GetData4Admin",
         }
         axios(configuration)
             .then((res) => {
@@ -63,7 +63,7 @@ function ManagerDashboard() {
                         <div className='d-flex justify-content-between'>
                             <p className='m-0 text-white'>1% increase</p>
                             <button onClick={() => setModalOpenAdmin(true)} className='text-white'>See all ˃˃</button>
-                            <Givetask modalOpenAdmin={modalOpenAdmin} setModalOpenAdmin={setModalOpenAdmin} />
+                            <Givetask modalOpenAdmin={modalOpenAdmin} setModalOpenAdmin={setModalOpenAdmin} decode={decode} />
                         </div>
                     </div>
                 </div>
@@ -142,7 +142,7 @@ function ManagerDashboard() {
                 </div>
                 <div className="bestie">
                     <h4 className='text-center text-white'>Contact</h4>
-                    <GetContact />
+                    <GetContact decode={decode} />
                 </div>
             </div>
         </>

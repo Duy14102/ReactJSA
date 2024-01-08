@@ -4,10 +4,9 @@ import { useState, useEffect, useRef } from "react"
 import ReactPaginate from "react-paginate";
 import Modal from 'react-modal';
 import Swal from "sweetalert2";
-import Cookies from "universal-cookie";
-import { jwtDecode } from "jwt-decode";
+import socketIOClient from "socket.io-client";
 
-function GetTable() {
+function GetTable({ decode }) {
     const [booking, setBooking] = useState([])
     const [ModalData, setModalData] = useState([])
     const [GetTable, setGetTable] = useState([])
@@ -17,10 +16,11 @@ function GetTable() {
     const [correct, setCorrect] = useState(false)
     const [deny, setDeny] = useState(false)
     const [CheckTableId, setCheckTableId] = useState(false)
+    const [newOrder, setNewOrder] = useState(false)
+    const [cancelOrder, setCancelOrder] = useState(false)
+    const [denyOrder, setDenyOrder] = useState(false)
+    const socketRef = useRef();
 
-    const cookies = new Cookies()
-    const token = cookies.get("TOKEN")
-    const decode = jwtDecode(token)
     const deliverEmployee = { id: decode.userId, email: decode.userEmail }
     const takeEmployee = []
     takeEmployee.push(deliverEmployee)
@@ -29,11 +29,162 @@ function GetTable() {
     const currentPage = useRef();
     const limit = 8
 
+    function HandleNew(countTabs) {
+        if (countTabs === "booking") {
+            localStorage.removeItem("CountNewBook")
+        }
+        getPagination()
+        setNewOrder(true)
+    }
+
+    function HandleCancel(countTabs) {
+        if (countTabs === "booking") {
+            localStorage.removeItem("CountNewBook")
+        }
+        getPagination()
+        setCancelOrder(true)
+    }
+
+    function HandleDeny(countTabs) {
+        if (countTabs === "booking") {
+            localStorage.removeItem("CountNewBook")
+        }
+        getPagination()
+        setDenyOrder(true)
+    }
+
     useEffect(() => {
+        if (newOrder) {
+            setTimeout(() => {
+                setNewOrder(false)
+            }, 1500);
+        }
+        if (cancelOrder) {
+            setTimeout(() => {
+                setCancelOrder(false)
+            }, 1500);
+        }
+    }, [newOrder, cancelOrder])
+
+    function Success() {
+        Swal.fire(
+            'Successfully!',
+            '',
+            'success'
+        ).then(function () {
+            window.location.reload()
+        })
+    }
+
+    function Fail() {
+        Swal.fire(
+            'Fail!',
+            '',
+            'error'
+        )
+    }
+
+    useEffect(() => {
+        const countTabs = localStorage.getItem('tabs')
         currentPage.current = 1;
         getPagination()
         getTableActive()
+
+        socketRef.current = socketIOClient.connect("http://localhost:3000")
+
+        socketRef.current.on('AddTableByHandSuccess', dataGot => {
+            getTableActive()
+        })
+
+        socketRef.current.on('AddNewBookingSuccess', dataGot => {
+            HandleNew(countTabs)
+        })
+
+        socketRef.current.on('CancelBookingSuccess', dataGot => {
+            HandleCancel(countTabs)
+        })
+
+        socketRef.current.on('DenyBookingSuccess', dataGot => {
+            if (decode.userId === dataGot.mag) {
+                Success()
+            } else {
+                HandleDeny(countTabs)
+            }
+        })
+
+        socketRef.current.on('DenyBookingFail', dataGot => {
+            if (decode.userId === dataGot.mag) {
+                Fail()
+            }
+        })
+
+        socketRef.current.on('AddTableCustomerSuccess', dataGot => {
+            if (decode.userId === dataGot.mag) {
+                Success()
+            } else {
+                getPagination()
+                getTableActive()
+            }
+        })
+
+        socketRef.current.on('AddTableCustomerFail', dataGot => {
+            if (decode.userId === dataGot.mag) {
+                Fail()
+            }
+        })
+
+        socketRef.current.on('ChangeTableNameSuccess', dataGot => {
+            getTableActive()
+        })
+
+        socketRef.current.on('DeleteTableSuccess', dataGot => {
+            getTableActive()
+        })
+
+        socketRef.current.on('ChangeTableSuccess', dataGot => {
+            getTableActive()
+        })
+
+        socketRef.current.on('CheckoutNormalSuccess', dataGot => {
+            getTableActive()
+        })
+
+        socketRef.current.on('CheckoutBookingSuccess', dataGot => {
+            getPagination()
+            getTableActive()
+        })
+
+        socketRef.current.on('QrCodeTableActiveSuccess', dataGot => {
+            getTableActive()
+        })
+
+        socketRef.current.on('Checkout4QrSuccess', dataGot => {
+            getTableActive()
+        })
+
+        return () => {
+            socketRef.current.disconnect();
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+    useEffect(() => {
+        if (newOrder) {
+            setTimeout(() => {
+                setNewOrder(false)
+            }, 1500);
+        }
+        if (cancelOrder) {
+            setTimeout(() => {
+                setCancelOrder(false)
+            }, 1500);
+        }
+        if (denyOrder) {
+            setTimeout(() => {
+                setDenyOrder(false)
+            }, 1500);
+        }
+    }, [newOrder, cancelOrder, denyOrder])
 
     function handlePageClick(e) {
         currentPage.current = e.selected + 1
@@ -43,7 +194,7 @@ function GetTable() {
     function getPagination() {
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/GetBookingByStatus",
+            url: "http://localhost:3000/GetBookingByStatus",
             params: {
                 page: currentPage.current,
                 limit: limit
@@ -62,7 +213,7 @@ function GetTable() {
     function getTableActive() {
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/GetAllTableActive",
+            url: "http://localhost:3000/GetAllTableActive",
         }
         axios(configuration)
             .then((res) => {
@@ -72,73 +223,22 @@ function GetTable() {
             })
     }
 
-    const addTableBooking = (e, id) => {
+    const addTableBooking = (e, id, userX) => {
         e.preventDefault()
         let selText = $("#box1Y option:selected").text();
-        console.log(selText);
         if (TableId) {
-            const configuration = {
-                method: "post",
-                url: "https://eatcom.onrender.com/AddTableCustomer",
-                data: {
-                    tableid: TableId,
-                    tablename: selText,
-                    cusid: id
-                }
-            }
-            axios(configuration)
-                .then(() => {
-                    Swal.fire(
-                        'Booking Table Successfully!',
-                        '',
-                        'success'
-                    ).then(function () {
-                        window.location.reload()
-                    })
-                }).catch(() => {
-                    Swal.fire(
-                        'Booking Table Fail!',
-                        '',
-                        'error'
-                    ).then(function () {
-                        window.location.reload()
-                    })
-                })
+            setCheckTableId(false)
+            const data = { tableid: TableId, tablename: selText, cusid: id, userid: userX, mag: decode.userId }
+            socketRef.current.emit('AddTableCustomerSocket', data)
         } else {
             setCheckTableId(true)
         }
     }
 
-    const denybooking = (e, id) => {
+    const denybooking = (e, id, userX) => {
         e.preventDefault()
-        const configuration = {
-            method: "post",
-            url: "https://eatcom.onrender.com/DenyBookingCustomer",
-            data: {
-                id: id,
-                status: 4,
-                denyreason: Denyreason,
-                employee: takeEmployee
-            }
-        }
-        axios(configuration)
-            .then(() => {
-                Swal.fire(
-                    'Denied Successfully!',
-                    '',
-                    'success'
-                ).then(function () {
-                    window.location.reload()
-                })
-            }).catch(() => {
-                Swal.fire(
-                    'Denied Fail!',
-                    '',
-                    'error'
-                ).then(function () {
-                    window.location.reload()
-                })
-            })
+        const data = { id: id, status: 4, denyreason: Denyreason, employee: takeEmployee, mag: decode.userId, userid: userX }
+        socketRef.current.emit('DenyBookingCustomerSocket', data)
     }
 
     const date = new Date(ModalData.createdAt).toLocaleDateString()
@@ -149,6 +249,23 @@ function GetTable() {
     const datemodal2 = date2 + " - " + time2
     return (
         <>
+            <div className="fatherNewUserNoti">
+                {newOrder ? (
+                    <div className="newUserNoti" style={{ backgroundColor: "#03ba5f" }}>
+                        <h6>✓ New booking!</h6>
+                    </div>
+                ) : null}
+                {cancelOrder ? (
+                    <div className="newUserNoti" style={{ backgroundColor: "tomato" }}>
+                        <h6>X Booking cancel!</h6>
+                    </div>
+                ) : null}
+                {denyOrder ? (
+                    <div className="newUserNoti" style={{ backgroundColor: "tomato" }}>
+                        <h6>X Booking deny!</h6>
+                    </div>
+                ) : null}
+            </div>
             <table className='table table-bordered text-center'>
                 <thead>
                     <tr className="text-white text-center" style={{ background: "#374148" }}>
@@ -263,7 +380,7 @@ function GetTable() {
                 {correct ? (
                     <div className="pt-3">
                         <p>Choosing Table : </p>
-                        <form onSubmit={(e) => addTableBooking(e, ModalData._id)}>
+                        <form onSubmit={(e) => addTableBooking(e, ModalData._id, ModalData.customer.id)}>
                             <div className="ytui" style={{ gap: 2 + "%" }}>
                                 <select id="box1Y" onInput={(e) => setTableId(e.target.value)} className="neul" required>
                                     <option selected disabled hidden>Choose Table</option>
@@ -286,7 +403,7 @@ function GetTable() {
                 ) : deny ? (
                     <div className="pt-3">
                         <p>Reason why deny : </p>
-                        <form onSubmit={(e) => denybooking(e, ModalData._id)}>
+                        <form onSubmit={(e) => denybooking(e, ModalData._id, ModalData.customer.id)}>
                             <textarea onChange={(e) => setDenyreason(e.target.value)} className="textDeny" required />
                             <div style={{ gap: 1 + "%" }} className="d-flex mt-2">
                                 <button type="submit" className="btn btn-primary ">Comfirm</button>

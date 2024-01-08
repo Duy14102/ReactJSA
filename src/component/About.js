@@ -1,16 +1,53 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import HTMLReactParser from "html-react-parser";
+import socketIOClient from "socket.io-client";
 
 function About() {
     var word1 = ""
     var word2 = ""
     var word3 = ""
     const [getLaid, setGetLaid] = useState()
+    const socketRef = useRef();
     useEffect(() => {
+        callEd()
+
+        socketRef.current = socketIOClient.connect("http://localhost:3000")
+
+        socketRef.current.on('ChangeHeroImageSuccess', dataGot => {
+            if (dataGot.title === "About") {
+                callEd()
+            }
+        })
+
+        socketRef.current.on('ChangeWordUpSuccess', dataGot => {
+            if (dataGot.title === "About") {
+                callEd()
+            }
+        })
+
+        socketRef.current.on('ChangeWordMiddleSuccess', dataGot => {
+            if (dataGot.title === "About") {
+                callEd()
+            }
+        })
+
+        socketRef.current.on('ChangeWordDownSuccess', dataGot => {
+            if (dataGot.title === "About") {
+                callEd()
+            }
+        })
+
+        return () => {
+            socketRef.current.disconnect();
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
+    const callEd = () => {
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/GetAllAbout"
+            url: "http://localhost:3000/GetAllAbout"
         }
         axios(configuration)
             .then((res) => {
@@ -18,7 +55,7 @@ function About() {
             }).catch((err) => {
                 console.log(err);
             })
-    }, [])
+    }
 
     if (getLaid?.word.up) {
         word1 = HTMLReactParser(getLaid?.word.up)

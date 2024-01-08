@@ -4,30 +4,101 @@ import ReactPaginate from "react-paginate";
 import Swal from "sweetalert2";
 import $ from 'jquery'
 import Modal from 'react-modal';
+import socketIOClient from "socket.io-client";
 
-function UserBookingPanel({ id }) {
+function UserBookingPanel({ id, decode }) {
     const [Booking, setBooking] = useState([])
     const [BookingHistory, setBookingHistory] = useState([])
     const [ModalData, setModalData] = useState([])
     const [modalOpenDetail, setModalOpenDetail] = useState(false);
     const [openOOO, setOpenOOO] = useState(false)
     const [cancelReason, setCancelReason] = useState()
+    const socketRef = useRef();
 
     const [pageCount, setPageCount] = useState(6);
     const currentPage = useRef();
     const limit = 8
 
     useEffect(() => {
+        socketRef.current = socketIOClient.connect("http://localhost:3000")
+
+        socketRef.current.on('AddNewBookingSuccess', dataGot => {
+            if (dataGot?.data === decode.userId) {
+                getPagination();
+                miller();
+            }
+        })
+
+        socketRef.current.on('CancelBookingSuccess', dataGot => {
+            if (dataGot?.data === decode.userId) {
+                Swal.fire(
+                    'Successfully!',
+                    '',
+                    'success'
+                ).then(function () {
+                    window.location.reload();
+                })
+            }
+        })
+
+        socketRef.current.on('CancelBookingFail', dataGot => {
+            if (dataGot?.data === decode.userId) {
+                Swal.fire(
+                    'Fail!',
+                    ``,
+                    'error'
+                )
+            }
+        })
+
+        socketRef.current.on('DenyBookingSuccess', dataGot => {
+            if (decode.userId === dataGot?.data) {
+                getPagination()
+                miller();
+            }
+        })
+
+        socketRef.current.on('AddTableCustomerSuccess', dataGot => {
+            if (decode.userId === dataGot?.data) {
+                getPagination()
+                miller();
+            }
+        })
+
+        socketRef.current.on('ChangeTableSuccess', dataGot => {
+            if (decode.userId === dataGot?.data) {
+                getPagination()
+                miller();
+            }
+        })
+
+        socketRef.current.on('CheckoutBookingSuccess', dataGot => {
+            if (dataGot?.data === decode.userId) {
+                getPagination()
+                miller();
+            }
+        })
+
+        return () => {
+            socketRef.current.disconnect();
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
+    const miller = () => {
+        fetch(`http://localhost:3000/GetTokenBooking?id=${id}`, {
+            method: "get",
+        }).then((res) => res.json()).then((data) => {
+            setBooking(data);
+        })
+    }
+
+    useEffect(() => {
         $('#SickSidekick').click()
         currentPage.current = 1;
         getPagination()
-
-        fetch(`https://eatcom.onrender.com/GetTokenBooking?id=${id}`, {
-            method: "get",
-        }).then((res) => res.json()).then((data) => {
-            console.log(data);
-            setBooking(data);
-        })
+        miller()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id])
 
     function handlePageClick(e) {
@@ -38,7 +109,7 @@ function UserBookingPanel({ id }) {
     function getPagination() {
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/GetBookingHistory",
+            url: "http://localhost:3000/GetBookingHistory",
             params: {
                 page: currentPage.current,
                 limit: limit
@@ -56,33 +127,8 @@ function UserBookingPanel({ id }) {
 
     const CancelBooking = (e, id) => {
         e.preventDefault()
-        const configuration = {
-            method: "post",
-            url: "https://eatcom.onrender.com/CancelBooking",
-            data: {
-                id: id,
-                reason: cancelReason
-            }
-        }
-
-        axios(configuration)
-            .then(() => {
-                Swal.fire(
-                    'Cancel Successfully!',
-                    '',
-                    'success'
-                ).then(function () {
-                    window.location.reload();
-                })
-            }).catch(() => {
-                Swal.fire(
-                    'Cancel Fail!',
-                    '',
-                    'error'
-                ).then(function () {
-                    window.location.reload();
-                })
-            })
+        const data = { id: id, reason: cancelReason, userid: decode.userId }
+        socketRef.current.emit('CancelBookingSocket', data)
     }
 
     function openCity3(evt, cityName) {
@@ -110,7 +156,6 @@ function UserBookingPanel({ id }) {
     const time2 = new Date(ModalData.date).toLocaleTimeString()
     const datemodal = date + " - " + time
     const datemodal2 = date2 + " - " + time2
-    console.log(Booking.length);
     return (
         <>
             <h6 className="text-center">Your Booking</h6>

@@ -1,14 +1,16 @@
 import axios from "axios"
-import { useState, useEffect, Fragment } from "react"
+import { useState, useEffect, Fragment, useRef } from "react"
 import HTMLReactParser from 'html-react-parser'
+import socketIOClient from "socket.io-client";
 
 function AnnounceMe() {
     const [news, setNews] = useState([])
+    const socketRef = useRef();
 
-    useEffect(() => {
+    const called = () => {
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/GetNewsActive"
+            url: "http://localhost:3000/GetNewsActive"
         }
         axios(configuration)
             .then((res) => {
@@ -16,6 +18,22 @@ function AnnounceMe() {
             }).catch((err) => {
                 console.log(err);
             })
+    }
+
+    useEffect(() => {
+        called()
+
+        socketRef.current = socketIOClient.connect("http://localhost:3000")
+
+        socketRef.current.on('UpdateNewsSuccess', dataGot => {
+            if (dataGot?.data) {
+                called()
+            }
+        })
+
+        return () => {
+            socketRef.current.disconnect();
+        };
     }, [])
     return (
         <>
