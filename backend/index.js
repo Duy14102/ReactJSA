@@ -6,7 +6,7 @@ const server = http.createServer(app);
 // Connect to MongoDB
 const mongoose = require('mongoose');
 require('dotenv').config({ path: "../.env" })
-mongoose.connect(process.env.REACT_APP_mongoCompassString).then(() => console.log('Connected To MongoDB')).catch((err) => { console.error(err); });
+mongoose.connect(process.env.REACT_APP_mongoAtlasString).then(() => console.log('Connected To MongoDB')).catch((err) => { console.error(err); });
 app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader(
@@ -2816,7 +2816,7 @@ app.post('/VnpayCheckout', function (req, res, next) {
     let tmnCode = process.env.REACT_APP_vnpaytmnCode;
     let secretKey = process.env.REACT_APP_vnpaysecretKey;
     let vnpUrl = 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html';
-    let returnUrl = 'http://localhost:5000/OrderComplete';
+    let returnUrl = 'https://eatcom.store/OrderComplete';
     let orderId = req.body.orderId;
     let amount = req.body.amount;
     let bankCode = req.body.bankCode;

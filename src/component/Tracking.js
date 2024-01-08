@@ -14,7 +14,7 @@ function Tracking() {
         e.preventDefault();
         const configuration = {
             method: 'get',
-            url: 'http://localhost:3000/GetThisOrder',
+            url: 'https://eatcom.onrender.com/GetThisOrder',
             params: {
                 id: Orderid
             }

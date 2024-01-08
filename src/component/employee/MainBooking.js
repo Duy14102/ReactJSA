@@ -39,7 +39,7 @@ function MainBooking() {
         currentPage.current = 1;
         document.getElementById("defaultOpen").click();
 
-        socketRef.current = socketIOClient.connect("http://localhost:3000")
+        socketRef.current = socketIOClient.connect("https://eatcom.onrender.com")
 
         socketRef.current.on('CancelBookingSuccess', dataGot => {
             findBooking()
@@ -77,7 +77,7 @@ function MainBooking() {
     function getTableActive() {
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/GetAllTableActive",
+            url: "https://eatcom.onrender.com/GetAllTableActive",
         }
         axios(configuration)
             .then((res) => {
@@ -91,7 +91,7 @@ function MainBooking() {
         e?.preventDefault()
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/SearchAllBooking",
+            url: "https://eatcom.onrender.com/SearchAllBooking",
             params: {
                 date: DateInput,
                 page: currentPage.current,
@@ -116,7 +116,7 @@ function MainBooking() {
         if (TableId) {
             const configuration = {
                 method: "post",
-                url: "http://localhost:3000/AddTableCustomer",
+                url: "https://eatcom.onrender.com/AddTableCustomer",
                 data: {
                     tableid: TableId,
                     tablename: selText,
@@ -150,7 +150,7 @@ function MainBooking() {
         e.preventDefault()
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/DenyBookingCustomer",
+            url: "https://eatcom.onrender.com/DenyBookingCustomer",
             data: {
                 id: id,
                 status: 4,

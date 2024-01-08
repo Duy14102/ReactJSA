@@ -30,7 +30,7 @@ function UserDataPanel({ Data, toke }) {
     }
 
     useEffect(() => {
-        socketRef.current = socketIOClient.connect("http://localhost:3000")
+        socketRef.current = socketIOClient.connect("https://eatcom.onrender.com")
 
         socketRef.current.on('CustomerWantCancel', dataGot => {
             if (dataGot?.data === toke.userId) {

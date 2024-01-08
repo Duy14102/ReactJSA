@@ -24,7 +24,7 @@ function BookingHistory({ decode }) {
         currentPage.current = 1;
         getPagination()
 
-        socketRef.current = socketIOClient.connect("http://localhost:3000")
+        socketRef.current = socketIOClient.connect("https://eatcom.onrender.com")
 
         socketRef.current.on('CancelBookingSuccess', dataGot => {
             if (decode.userRole === 3) {
@@ -54,7 +54,7 @@ function BookingHistory({ decode }) {
     function getPagination() {
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/GetBookingHistory",
+            url: "https://eatcom.onrender.com/GetBookingHistory",
             params: {
                 page: currentPage.current,
                 limit: limit

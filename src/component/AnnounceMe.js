@@ -10,7 +10,7 @@ function AnnounceMe() {
     const called = () => {
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/GetNewsActive"
+            url: "https://eatcom.onrender.com/GetNewsActive"
         }
         axios(configuration)
             .then((res) => {
@@ -23,7 +23,7 @@ function AnnounceMe() {
     useEffect(() => {
         called()
 
-        socketRef.current = socketIOClient.connect("http://localhost:3000")
+        socketRef.current = socketIOClient.connect("https://eatcom.onrender.com")
 
         socketRef.current.on('UpdateNewsSuccess', dataGot => {
             if (dataGot?.data) {

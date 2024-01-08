@@ -29,7 +29,7 @@ function GetOrderHistory() {
         currentPage.current = 1;
         getPagination()
 
-        socketRef.current = socketIOClient.connect("http://localhost:3000")
+        socketRef.current = socketIOClient.connect("https://eatcom.onrender.com")
 
         socketRef.current.on('CancelVnpaySuccess', dataGot => {
             if (decode.userRole === 3) {
@@ -69,7 +69,7 @@ function GetOrderHistory() {
     function getPagination() {
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/GetAllOrderHistory",
+            url: "https://eatcom.onrender.com/GetAllOrderHistory",
             params: {
                 page: currentPage.current,
                 limit: limit

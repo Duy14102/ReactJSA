@@ -22,7 +22,7 @@ function GetUser({ type, status }) {
         currentPage.current = 1;
         getPagination()
 
-        socketRef.current = socketIOClient.connect("http://localhost:3000")
+        socketRef.current = socketIOClient.connect("https://eatcom.onrender.com")
 
         socketRef.current.on('RegisterSuccess', dataGot => {
             getPagination()
@@ -61,7 +61,7 @@ function GetUser({ type, status }) {
     function getPagination() {
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/GetAllUser2",
+            url: "https://eatcom.onrender.com/GetAllUser2",
             params: {
                 type: type,
                 status: status,
@@ -82,7 +82,7 @@ function GetUser({ type, status }) {
     function bannedAc(e) {
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/BannedByAdmin",
+            url: "https://eatcom.onrender.com/BannedByAdmin",
             data: {
                 id: ModalData._id,
                 status: e

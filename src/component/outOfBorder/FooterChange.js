@@ -34,7 +34,7 @@ function FooterChange({ data, decode }) {
     }
 
     useEffect(() => {
-        socketRef.current = socketIOClient.connect("http://localhost:3000")
+        socketRef.current = socketIOClient.connect("https://eatcom.onrender.com")
 
         socketRef.current.on('ChangeWordTimeSuccess', dataGot => {
             if (dataGot.title === "Footer" && dataGot.mag === decode.userId) {

@@ -90,7 +90,7 @@ function GetTable({ decode }) {
         getPagination()
         getTableActive()
 
-        socketRef.current = socketIOClient.connect("http://localhost:3000")
+        socketRef.current = socketIOClient.connect("https://eatcom.onrender.com")
 
         socketRef.current.on('AddTableByHandSuccess', dataGot => {
             getTableActive()
@@ -194,7 +194,7 @@ function GetTable({ decode }) {
     function getPagination() {
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/GetBookingByStatus",
+            url: "https://eatcom.onrender.com/GetBookingByStatus",
             params: {
                 page: currentPage.current,
                 limit: limit
@@ -213,7 +213,7 @@ function GetTable({ decode }) {
     function getTableActive() {
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/GetAllTableActive",
+            url: "https://eatcom.onrender.com/GetAllTableActive",
         }
         axios(configuration)
             .then((res) => {

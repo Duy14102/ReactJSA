@@ -37,7 +37,7 @@ function MenuChange({ data, decode }) {
     }
 
     useEffect(() => {
-        socketRef.current = socketIOClient.connect("http://localhost:3000")
+        socketRef.current = socketIOClient.connect("https://eatcom.onrender.com")
 
         socketRef.current.on('ChangeHeroImageSuccess', dataGot => {
             if (dataGot.title === "Menu" && dataGot.mag === decode.userId) {

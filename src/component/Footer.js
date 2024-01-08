@@ -14,7 +14,7 @@ function Footer() {
     const called = () => {
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/GetTheFooter"
+            url: "https://eatcom.onrender.com/GetTheFooter"
         }
         axios(configuration)
             .then((res) => {
@@ -29,7 +29,7 @@ function Footer() {
     useEffect(() => {
         called()
 
-        socketRef.current = socketIOClient.connect("http://localhost:3000")
+        socketRef.current = socketIOClient.connect("https://eatcom.onrender.com")
 
         socketRef.current.on('ChangeWordTimeSuccess', dataGot => {
             if (dataGot.title === "Footer") {

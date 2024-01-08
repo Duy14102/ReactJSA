@@ -15,7 +15,7 @@ function HeroBanner() {
     const calledUI = () => {
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/GetHeroUI",
+            url: "https://eatcom.onrender.com/GetHeroUI",
             params: {
                 name: "oh2rwdomomeno4sgguhf"
             }
@@ -33,7 +33,7 @@ function HeroBanner() {
 
         const configuration2 = {
             method: "get",
-            url: "http://localhost:3000/GetHeroText",
+            url: "https://eatcom.onrender.com/GetHeroText",
         }
         axios(configuration2)
             .then((res) => {
@@ -46,7 +46,7 @@ function HeroBanner() {
     useEffect(() => {
         calledUI()
         calledText()
-        socketRef.current = socketIOClient.connect("http://localhost:3000")
+        socketRef.current = socketIOClient.connect("https://eatcom.onrender.com")
 
         socketRef.current.on('ChangeHeroImageSuccess', dataGot => {
             if (dataGot.title === "Hero") {

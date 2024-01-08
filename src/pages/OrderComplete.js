@@ -24,7 +24,7 @@ function OrderComplete() {
             return NotFound()
         }
 
-        socketRef.current = socketIOClient.connect("http://localhost:3000")
+        socketRef.current = socketIOClient.connect("https://eatcom.onrender.com")
 
         if (queryParameters.size > 1) {
             const type = queryParameters.get("vnp_ResponseCode")
@@ -85,7 +85,7 @@ function OrderComplete() {
             if (type4) {
                 const configuration = {
                     method: "post",
-                    url: "http://localhost:3000/ChangeVnpayDate",
+                    url: "https://eatcom.onrender.com/ChangeVnpayDate",
                     data: {
                         id: type4,
                         date: sendDate

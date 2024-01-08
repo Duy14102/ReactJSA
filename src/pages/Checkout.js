@@ -43,7 +43,7 @@ function Checkout() {
             const decoded = jwtDecode(token);
             const configuration = {
                 method: "get",
-                url: "http://localhost:3000/GetDetailUser",
+                url: "https://eatcom.onrender.com/GetDetailUser",
                 params: {
                     userid: decoded.userId
                 }
@@ -82,7 +82,7 @@ function Checkout() {
         if (paypalState === "COMPLETED") {
             const configuration = {
                 method: "post",
-                url: "http://localhost:3000/UploadOrder",
+                url: "https://eatcom.onrender.com/UploadOrder",
                 data: {
                     user,
                     phonenumber,
@@ -98,7 +98,7 @@ function Checkout() {
                         const decode = jwtDecode(token);
                         const configuration = {
                             method: "post",
-                            url: "http://localhost:3000/AddAddressUser",
+                            url: "https://eatcom.onrender.com/AddAddressUser",
                             data: {
                                 id: decode.userId,
                                 address: havePhone
@@ -184,7 +184,7 @@ function Checkout() {
     const VnpayCheckout = (data) => {
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/VnpayCheckout",
+            url: "https://eatcom.onrender.com/VnpayCheckout",
             data: {
                 amount: fulltotal,
                 bankCode: bankCode,
@@ -217,7 +217,7 @@ function Checkout() {
         e.preventDefault();
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/UploadOrder",
+            url: "https://eatcom.onrender.com/UploadOrder",
             data: {
                 user,
                 phonenumber,
@@ -233,7 +233,7 @@ function Checkout() {
                     const decode = jwtDecode(token);
                     const configuration = {
                         method: "post",
-                        url: "http://localhost:3000/AddAddressUser",
+                        url: "https://eatcom.onrender.com/AddAddressUser",
                         data: {
                             id: decode.userId,
                             address: havePhone

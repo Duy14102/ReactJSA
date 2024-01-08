@@ -12,7 +12,7 @@ function About() {
     useEffect(() => {
         callEd()
 
-        socketRef.current = socketIOClient.connect("http://localhost:3000")
+        socketRef.current = socketIOClient.connect("https://eatcom.onrender.com")
 
         socketRef.current.on('ChangeHeroImageSuccess', dataGot => {
             if (dataGot.title === "About") {
@@ -47,7 +47,7 @@ function About() {
     const callEd = () => {
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/GetAllAbout"
+            url: "https://eatcom.onrender.com/GetAllAbout"
         }
         axios(configuration)
             .then((res) => {
