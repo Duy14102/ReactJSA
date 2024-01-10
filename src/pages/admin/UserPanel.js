@@ -32,7 +32,14 @@ function UserPanel() {
     const [spinner, setSpinner] = useState(false)
     const [alertCheck, setAlertCheck] = useState(false)
     const [modalOpenDetail, setModalOpenDetail] = useState(false);
+    const [newOrder, setNewOrder] = useState(false)
+    const [orderComplete, setOrderComplete] = useState(false)
+    const [cancelByMag, setCancelByMag] = useState(false)
+    const [cancelOrder, setCancelOrder] = useState(false)
     const [seePassword, setSeePassword] = useState(false)
+    const [bookingDeny, setBookingDeny] = useState(false)
+    const [changeTable, setChangeTable] = useState(false)
+    const [checkoutBook, setCheckoutBook] = useState(false)
     const [checkDeletePassword, setCheckDeletePassword] = useState()
     const checkPhone = /((09|03|07|08|05)+([0-9]{8})\b)/g
 
@@ -47,30 +54,50 @@ function UserPanel() {
         axios(configuration).then((dot) => { setGetOrder(dot.data.data) }).catch((er) => { console.log(er); })
     }
 
+    function HandleNew() {
+        getOrder()
+        setNewOrder(true)
+    }
+
+    function HandleComplete() {
+        getOrder()
+        setOrderComplete(true)
+    }
+
+    function HandleCancel() {
+        getOrder()
+        setCancelOrder(true)
+    }
+
+    function HandleCancelByMag() {
+        getOrder()
+        setCancelByMag(true)
+    }
+
     useEffect(() => {
         socketRef.current = socketIOClient.connect("https://eatcom.onrender.com")
 
         socketRef.current.on('CancelVnpaySuccess', dataGot => {
             if (dataGot?.data === name.userId) {
-                getOrder()
+                HandleCancel()
             }
         })
 
         socketRef.current.on('PaidVnpaySuccess', dataGot => {
             if (dataGot?.data === name.userId) {
-                getOrder()
+                HandleNew()
             }
         })
 
         socketRef.current.on('PaidPaypalSuccess', dataGot => {
             if (dataGot?.data === name.userId) {
-                getOrder()
+                HandleNew()
             }
         })
 
         socketRef.current.on('PaidCodSuccess', dataGot => {
             if (dataGot?.data === name.userId) {
-                getOrder()
+                HandleNew()
             }
         })
 
@@ -82,7 +109,7 @@ function UserPanel() {
 
         socketRef.current.on('CompleteOrderSuccess', dataGot => {
             if (dataGot?.data === name.userId) {
-                getOrder()
+                HandleComplete()
             }
         })
 
@@ -119,13 +146,13 @@ function UserPanel() {
 
         socketRef.current.on('CancelByMagNormalSuccess', dataGot => {
             if (dataGot?.data === name.userId) {
-                getOrder()
+                HandleCancelByMag()
             }
         })
 
         socketRef.current.on('CancelByMagPaidSuccess', dataGot => {
             if (dataGot?.data === name.userId) {
-                getOrder()
+                HandleCancelByMag()
             }
         })
 
@@ -154,12 +181,69 @@ function UserPanel() {
             }
         })
 
+        socketRef.current.on('DenyBookingSuccess', dataGot => {
+            if (name.userId === dataGot?.data) {
+                setBookingDeny(true)
+            }
+        })
+
+        socketRef.current.on('ChangeTableSuccess', dataGot => {
+            if (name.userId === dataGot?.data) {
+                setChangeTable(true)
+            }
+        })
+
+        socketRef.current.on('CheckoutBookingSuccess', dataGot => {
+            if (dataGot?.data === name.userId) {
+                setCheckoutBook(true)
+            }
+        })
+
+
         return () => {
             socketRef.current.disconnect();
         };
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+    useEffect(() => {
+        if (newOrder) {
+            setTimeout(() => {
+                setNewOrder(false)
+            }, 1500);
+        }
+        if (cancelOrder) {
+            setTimeout(() => {
+                setCancelOrder(false)
+            }, 1500);
+        }
+        if (orderComplete) {
+            setTimeout(() => {
+                setOrderComplete(false)
+            }, 1500);
+        }
+        if (cancelByMag) {
+            setTimeout(() => {
+                setCancelByMag(false)
+            }, 1500);
+        }
+        if (bookingDeny) {
+            setTimeout(() => {
+                setBookingDeny(false)
+            }, 1500);
+        }
+        if (changeTable) {
+            setTimeout(() => {
+                setChangeTable(false)
+            }, 1500);
+        }
+        if (checkoutBook) {
+            setTimeout(() => {
+                setCheckoutBook(false)
+            }, 1500);
+        }
+    }, [newOrder, cancelOrder, orderComplete, cancelByMag, bookingDeny, changeTable, checkoutBook])
 
     useEffect(() => {
         if (name.userRole !== 1.5) {
@@ -303,6 +387,43 @@ function UserPanel() {
 
     return (
         <Layout>
+            <div className="fatherNewUserNoti">
+                {newOrder ? (
+                    <div className="newUserNoti" style={{ backgroundColor: "#03ba5f" }}>
+                        <h6>✓ New order!</h6>
+                    </div>
+                ) : null}
+                {cancelOrder ? (
+                    <div className="newUserNoti" style={{ backgroundColor: "tomato" }}>
+                        <h6>X Order cancel!</h6>
+                    </div>
+                ) : null}
+                {orderComplete ? (
+                    <div className="newUserNoti" style={{ backgroundColor: "#FEA116" }}>
+                        <h6>✓ An order completed!</h6>
+                    </div>
+                ) : null}
+                {cancelByMag ? (
+                    <div className="newUserNoti" style={{ backgroundColor: "tomato" }}>
+                        <h6>X Order progress canceled by manager!</h6>
+                    </div>
+                ) : null}
+                {bookingDeny ? (
+                    <div className="newUserNoti" style={{ backgroundColor: "tomato" }}>
+                        <h6>X Your booking have been denied!</h6>
+                    </div>
+                ) : null}
+                {changeTable ? (
+                    <div className="newUserNoti" style={{ backgroundColor: "#66B92E" }}>
+                        <h6>X Your booking table changed!</h6>
+                    </div>
+                ) : null}
+                {checkoutBook ? (
+                    <div className="newUserNoti" style={{ backgroundColor: "#FEA116" }}>
+                        <h6>X Your booking completed!</h6>
+                    </div>
+                ) : null}
+            </div>
             <div className="bg-white">
                 <div className="container py-4">
                     <div className="coverUser">
@@ -311,7 +432,7 @@ function UserPanel() {
                                 <div className="headOverview">
                                     <h5 style={{ whiteSpace: "nowrap" }} className="m-0">User Overview</h5>
                                     {Edit ? (
-                                        <div style={{ gap: 5 + "%", paddingRight: 15 }} className="d-flex justify-content-center">
+                                        <div style={{ gap: 5 + "%", paddingRight: 15 }} className="fatherButton4Edit">
                                             <button type="button" style={{ fontSize: 13 }} className="btn btn-danger text-nowrap thhuhu" onClick={() => setModalOpenDetail(true)}>Delete account</button>
                                             <button type="submit" className="button4Edit" >Comfirm</button>
                                             <button type="button" className="button4Edit" onClick={() => { setEdit(false); setAlertCheck(false) }}>Cancel</button>
