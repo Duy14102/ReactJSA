@@ -1,7 +1,6 @@
 import { NavLink, useLocation } from "react-router-dom";
 import NotFound from "../component/outOfBorder/NotFound";
-// import '../css/CategoryCss.css'
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useReducer } from "react";
 import axios from "axios";
 import Cookies from "universal-cookie";
 import { jwtDecode } from "jwt-decode";
@@ -15,19 +14,24 @@ function Checkout() {
     const havePhone = []
     const user = []
     const ahoe = localStorage.getItem("complete")
-    const [Card, setCard] = useState(false)
-    const [SaveAddress, setSaveAddress] = useState(false)
-    const [AccountAddress, setAccountAddress] = useState(false)
-    const [paypalState, setPaypalState] = useState()
-    const [vnpay, setVnpay] = useState(false)
-    const [paypal, setPaypal] = useState(false)
-    const [Firstname, setFirstname] = useState("")
-    const [Lastname, setLastname] = useState("")
-    const [phonenumber, setPhonenumber] = useState("")
-    const [address, setAddress] = useState("")
-    const [bankCode, setBankCode] = useState()
-    const [FullnameToken, setFullnameToken] = useState("")
-    const [LoadAddress, setLoadAddress] = useState([])
+    const [checkoutState, setCheckoutState] = useReducer((prev, next) => ({
+        ...prev, ...next
+    }), {
+        Card: false,
+        SaveAddress: false,
+        AccountAddress: false,
+        paypalState: null,
+        vnpay: false,
+        paypal: false,
+        Firstname: "",
+        Lastname: "",
+        phonenumber: "",
+        address: "",
+        bankCode: null,
+        FullnameToken: "",
+        LoadAddress: []
+    })
+
     var fullname = ""
     let location = useLocation()
     const cookies = new Cookies();
@@ -36,7 +40,7 @@ function Checkout() {
     if (token) {
         candecode = jwtDecode(token)
     }
-    havePhone.push(address)
+    havePhone.push(checkoutState.address)
 
     useEffect(() => {
         const getDetailUser = () => {
@@ -50,43 +54,43 @@ function Checkout() {
             };
             axios(configuration)
                 .then((result) => {
-                    setLoadAddress(result.data)
+                    setCheckoutState({ LoadAddress: result.data })
                 })
                 .catch((error) => {
                     console.log(error);
                 });
         }
 
-        if (AccountAddress) {
+        if (checkoutState.AccountAddress) {
             getDetailUser()
         }
         if (token && candecode?.userRole !== 1.5) {
             getDetailUser()
         }
-    }, [AccountAddress, token, candecode?.userRole])
+    }, [checkoutState.AccountAddress, token, candecode?.userRole])
 
 
     useEffect(() => {
         let pre = ""
-        Object.values(LoadAddress).map((k) => {
+        Object.values(checkoutState.LoadAddress).map((k) => {
             pre = k.phonenumber
             return (
                 null
             )
         })
-        setFullnameToken(candecode?.userName)
-        setPhonenumber(pre)
-    }, [LoadAddress, candecode?.userName])
+        setCheckoutState({ FullnameToken: candecode?.userName })
+        setCheckoutState({ phonenumber: pre })
+    }, [checkoutState.LoadAddress, candecode?.userName])
 
     useEffect(() => {
-        if (paypalState === "COMPLETED") {
+        if (checkoutState.paypalState === "COMPLETED") {
             const configuration = {
                 method: "post",
                 url: "https://eatcom.onrender.com/UploadOrder",
                 data: {
-                    user,
-                    phonenumber,
-                    address,
+                    user: user,
+                    phonenumber: checkoutState.phonenumber,
+                    address: checkoutState.address,
                     paymentmethod,
                     shippingfee,
                     orderitems
@@ -94,7 +98,7 @@ function Checkout() {
             }
             axios(configuration)
                 .then((result) => {
-                    if (SaveAddress) {
+                    if (checkoutState.SaveAddress) {
                         const decode = jwtDecode(token);
                         const configuration = {
                             method: "post",
@@ -126,15 +130,15 @@ function Checkout() {
                 });
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [paypalState])
+    }, [checkoutState.paypalState])
 
     if (token) {
         const decode3 = jwtDecode(token)
-        fullname = FullnameToken
+        fullname = checkoutState.FullnameToken
         const nit = { id: decode3.userId, fullname: fullname }
         user.push(nit)
     } else {
-        fullname = Firstname + " " + Lastname
+        fullname = checkoutState.Firstname + " " + checkoutState.Lastname
         const nat = { id: "none", fullname: fullname }
         user.push(nat)
     }
@@ -187,7 +191,7 @@ function Checkout() {
             url: "https://eatcom.onrender.com/VnpayCheckout",
             data: {
                 amount: fulltotal,
-                bankCode: bankCode,
+                bankCode: checkoutState.bankCode,
                 orderId: data.orderid
             }
         }
@@ -201,13 +205,13 @@ function Checkout() {
 
     const paypalCheckout = (data) => {
         localStorage.setItem("complete", JSON.stringify(data))
-        if (Card && paypalState) {
-            window.location.href = `/OrderComplete?status=${paypalState}`;
+        if (checkoutState.Card && checkoutState.paypalState) {
+            window.location.href = `/OrderComplete?status=${checkoutState.paypalState}`;
         }
     }
 
 
-    if (Card) {
+    if (checkoutState.Card) {
         paymentmethod = 1
     } else {
         paymentmethod = 2
@@ -219,9 +223,9 @@ function Checkout() {
             method: "post",
             url: "https://eatcom.onrender.com/UploadOrder",
             data: {
-                user,
-                phonenumber,
-                address,
+                user: user,
+                phonenumber: checkoutState.phonenumber,
+                address: checkoutState.address,
                 paymentmethod,
                 shippingfee,
                 orderitems
@@ -229,7 +233,7 @@ function Checkout() {
         }
         axios(configuration)
             .then((result) => {
-                if (SaveAddress) {
+                if (checkoutState.SaveAddress) {
                     const decode = jwtDecode(token);
                     const configuration = {
                         method: "post",
@@ -254,7 +258,7 @@ function Checkout() {
                 }
                 window.history.replaceState({}, document.title)
                 localStorage.removeItem("cart")
-                if (Card && vnpay) {
+                if (checkoutState.Card && checkoutState.vnpay) {
                     VnpayCheckout(data)
                 } else {
                     localStorage.setItem("complete", JSON.stringify(data))
@@ -268,17 +272,17 @@ function Checkout() {
 
     const handleCheckbox = (e) => {
         if (e.target.checked) {
-            setAccountAddress(true)
+            setCheckoutState({ AccountAddress: true })
         } else if (!e.target.checked) {
-            setAccountAddress(false)
+            setCheckoutState({ AccountAddress: false })
         }
     }
 
     const handleCheckbox2 = (e) => {
         if (e.target.checked) {
-            setSaveAddress(true)
+            setCheckoutState({ SaveAddress: true })
         } else if (!e.target.checked) {
-            setSaveAddress(false)
+            setCheckoutState({ SaveAddress: false })
         }
     }
     return (
@@ -314,16 +318,16 @@ function Checkout() {
                                     <strong>{VND.format(fulltotal)}</strong>
                                 </li>
                             </ul>
-                            {paypal ? null : (
+                            {checkoutState.paypal ? null : (
                                 <button form="checkoutForm" className="btn btn-primary w-100 p-2 resCheckoutB" type="submit">Confirm</button>
                             )}
-                            {paypal ? (
+                            {checkoutState.paypal ? (
                                 <div className="mt-4 resCheckoutB">
                                     <PayPalButton
                                         amount={fulltotal / 25000}
                                         // shippingPreference="NO_SHIPPING" // default is "GET_FROM_FILE"
                                         onSuccess={(details) => {
-                                            setPaypalState(details.status)
+                                            setCheckoutState({ paypalState: details.status })
                                         }}
                                         onError={(err) => {
                                             console.log(err);
@@ -340,14 +344,14 @@ function Checkout() {
                                         <div className="row">
                                             <div className="col-md-6 mb-3 inputC">
                                                 <label htmlFor="firstName">First name</label>
-                                                <input onInput={(e) => setFirstname(e.target.value)} type="text" className="form-control" id="firstName" placeholder="John" required />
+                                                <input onInput={(e) => setCheckoutState({ Firstname: e.target.value })} type="text" className="form-control" id="firstName" placeholder="John" required />
                                                 <div className="invalid-feedback">
                                                     Valid first name is required.
                                                 </div>
                                             </div>
                                             <div className="col-md-6 mb-3 inputC">
                                                 <label htmlFor="lastName">Last name</label>
-                                                <input onInput={(e) => setLastname(e.target.value)} type="text" className="form-control" id="lastName" placeholder="Doe" required />
+                                                <input onInput={(e) => setCheckoutState({ Lastname: e.target.value })} type="text" className="form-control" id="lastName" placeholder="Doe" required />
                                                 <div className="invalid-feedback">
                                                     Valid last name is required.
                                                 </div>
@@ -356,7 +360,7 @@ function Checkout() {
 
                                         <div className="mb-3 inputC">
                                             <label htmlFor="email">Phone Number</label>
-                                            <input type="number" name="phonenumber" value={phonenumber} onChange={(e) => setPhonenumber(e.target.value)} className="form-control" id="email" placeholder="0123456789" required />
+                                            <input type="number" name="phonenumber" value={checkoutState.phonenumber} onInput={(e) => setCheckoutState({ phonenumber: e.target.value })} className="form-control" id="email" placeholder="0123456789" required />
                                             <div className="invalid-feedback">
                                                 Please enter a valid email address for shipping updates.
                                             </div>
@@ -367,19 +371,19 @@ function Checkout() {
                                 {candecode?.userRole === 1.5 ? (
                                     <div className="mb-3 inputC">
                                         <label htmlFor="email">Phone Number</label>
-                                        <input type="number" name="phonenumber" value={phonenumber} onChange={(e) => setPhonenumber(e.target.value)} className="form-control" id="email" placeholder="0123456789" required />
+                                        <input type="number" name="phonenumber" value={checkoutState.phonenumber} onInput={(e) => setCheckoutState({ phonenumber: e.target.value })} className="form-control" id="email" placeholder="0123456789" required />
                                         <div className="invalid-feedback">
                                             Please enter a valid email address for shipping updates.
                                         </div>
                                     </div>
                                 ) : null}
 
-                                {AccountAddress ? (
+                                {checkoutState.AccountAddress ? (
                                     <div className="mb-3">
                                         <label htmlFor="address">Address</label><br />
-                                        <select name="address" onChange={(e) => setAddress(e.target.value)} className="selectA" id="address" required>
+                                        <select name="address" onChange={(e) => setCheckoutState({ address: e.target.value })} className="selectA" id="address" required>
                                             <option selected disabled hidden>Select your address</option>
-                                            {Object.values(LoadAddress).map((i) => {
+                                            {Object.values(checkoutState.LoadAddress).map((i) => {
                                                 return (
                                                     <Fragment key={i._id}>
                                                         {i.address.map((a) => {
@@ -397,7 +401,7 @@ function Checkout() {
                                 ) : (
                                     <div className="mb-3 inputC">
                                         <label htmlFor="address">Address</label>
-                                        <input type="text" name="address" value={address} onChange={(e) => setAddress(e.target.value)} className="form-control" id="address" placeholder="123 - Ha Noi - Vietnam" required />
+                                        <input type="text" name="address" value={checkoutState.address} onChange={(e) => setCheckoutState({ address: e.target.value })} className="form-control" id="address" placeholder="123 - Ha Noi - Vietnam" required />
                                         <div className="invalid-feedback">
                                             Please enter your shipping address.
                                         </div>
@@ -406,7 +410,7 @@ function Checkout() {
 
                                 {token && candecode?.userRole !== 1.5 ? (
                                     <>
-                                        {SaveAddress ? (
+                                        {checkoutState.SaveAddress ? (
                                             <div style={{ pointerEvents: "none", opacity: 0.4 }} className="custom-control custom-checkbox">
                                                 <input onClick={(e) => handleCheckbox(e)} type="checkbox" className="custom-control-input" id="same-address" />
                                                 <label className="custom-control-label" htmlFor="same-address"> Use the account address</label>
@@ -417,7 +421,7 @@ function Checkout() {
                                                 <label className="custom-control-label" htmlFor="same-address"> Use the account address</label>
                                             </div>
                                         )}
-                                        {AccountAddress ? (
+                                        {checkoutState.AccountAddress ? (
                                             <div style={{ pointerEvents: "none", opacity: 0.4 }} className="custom-control custom-checkbox">
                                                 <input onInput={(e) => handleCheckbox2(e)} type="checkbox" className="custom-control-input" id="save-address" />
                                                 <label className="custom-control-label" htmlFor="save-address"> Save this address</label>
@@ -434,22 +438,22 @@ function Checkout() {
                                 <h4 className="mb-3">Payment</h4>
                                 <div className="d-block my-3">
                                     <div className="custom-control custom-radio">
-                                        <input onInput={() => setCard(true)} id="credit" name="paymentMethod" type="radio" className="custom-control-input" required />
+                                        <input onInput={() => setCheckoutState({ Card: true })} id="credit" name="paymentMethod" type="radio" className="custom-control-input" required />
                                         <label className="custom-control-label" htmlFor="credit"> ATM</label>
                                     </div>
                                     <div className="custom-control custom-radio">
-                                        <input onInput={() => setCard(false)} id="debit" name="paymentMethod" type="radio" className="custom-control-input" required />
+                                        <input onInput={() => setCheckoutState({ Card: false })} id="debit" name="paymentMethod" type="radio" className="custom-control-input" required />
                                         <label className="custom-control-label" htmlFor="debit"> COD</label>
                                     </div>
                                 </div>
-                                {Card ? (
+                                {checkoutState.Card ? (
                                     <>
                                         <div className="d-flex" style={{ gap: 15 + "px" }}>
-                                            <button className="buttonAtm" type="button" onClick={() => { setVnpay(true); setPaypal(false) }}><img alt="" height={30} width={90} src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-VNPAY-QR-1.png" /></button>
-                                            <button className="buttonAtm" type="button" onClick={() => { setVnpay(false); setPaypal(true) }}><img alt="" height={30} width={90} src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/PayPal_logo.svg/2560px-PayPal_logo.svg.png" /></button>
+                                            <button className="buttonAtm" type="button" onClick={() => setCheckoutState({ vnpay: true, paypal: false })}><img alt="" height={30} width={90} src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-VNPAY-QR-1.png" /></button>
+                                            <button className="buttonAtm" type="button" onClick={() => setCheckoutState({ vnpay: false, paypal: true })}><img alt="" height={30} width={90} src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/PayPal_logo.svg/2560px-PayPal_logo.svg.png" /></button>
                                         </div>
-                                        {vnpay ? (
-                                            <select onChange={(e) => setBankCode(e.target.value)} name="bankcode" id="bankcode" className="form-control bg-white mt-4" required>
+                                        {checkoutState.vnpay ? (
+                                            <select onChange={(e) => setCheckoutState({ bankCode: e.target.value })} name="bankcode" id="bankcode" className="form-control bg-white mt-4" required>
                                                 <option value="">Không chọn</option>
                                                 <option value="MBAPP">Ung dung MobileBanking</option>
                                                 <option value="VNPAYQR">VNPAYQR</option>
@@ -490,17 +494,17 @@ function Checkout() {
                                         ) : null}
                                     </>
                                 ) : null}
-                                {paypal ? null : (
+                                {checkoutState.paypal ? null : (
                                     <button form="checkoutForm" className="btn btn-primary w-100 p-2 resCheckoutB2 mt-4" type="submit">Confirm</button>
                                 )}
-                                {paypal ? (
+                                {checkoutState.paypal ? (
                                     <div className="mt-4 resCheckoutB2 w-100">
                                         <PayPalButton
                                             ty
                                             amount={fulltotal / 25000}
                                             // shippingPreference="NO_SHIPPING" // default is "GET_FROM_FILE"
                                             onSuccess={(details) => {
-                                                setPaypalState(details.status)
+                                                setCheckoutState({ paypalState: details.status })
                                             }}
                                             onError={(err) => {
                                                 console.log(err);

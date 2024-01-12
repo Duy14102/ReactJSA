@@ -13,13 +13,13 @@ import socketIOClient from "socket.io-client";
 // import "../css/CategoryCss.css";
 
 function QrCodeTable() {
+    var Cunt = null
+    var Kunt = null
     let appler = useParams()
     const cookies = new Cookies()
     const token = cookies.get("TOKEN")
     const socketRef = useRef();
     const [Category, setCategory] = useState([]);
-    var Cunt = null
-    var Kunt = null
     const [Count, setCount] = useState([]);
     const [Table, GetTable] = useState([])
     const [detect, setDetect] = useState(null)

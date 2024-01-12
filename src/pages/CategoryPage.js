@@ -1,19 +1,21 @@
 import { NavLink, useParams } from 'react-router-dom';
-import { useState, useEffect, useRef } from 'react';
+import { useEffect, useRef, useReducer } from 'react';
 import NotFound from '../component/outOfBorder/NotFound';
 import axios from 'axios';
 import $ from 'jquery'
 import ReactPaginate from 'react-paginate';
 import Layout from '../Layout';
-import Alert from '../component/outOfBorder/Alert';
-// import "../css/CategoryCss.css";
 
 function CategoryPage() {
     let appler = useParams()
-    const [Category, setCategory] = useState([]);
-    const [Count, setCount] = useState([]);
-    const [pageCount, setPageCount] = useState(6);
-    const [callAlert, setCallAlert] = useState(false)
+    const [cateState, setCateState] = useReducer((prev, next) => ({
+        ...prev, ...next
+    }), {
+        Category: [],
+        Count: [],
+        pageCount: 6,
+        callAlert: false
+    })
     const currentPage = useRef();
     const limit = 9
     //Get Detail
@@ -22,6 +24,15 @@ function CategoryPage() {
         getPagination();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
+
+    useEffect(() => {
+        if (cateState.callAlert) {
+            setTimeout(() => {
+                setCateState({ callAlert: false })
+            }, 3000)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [cateState.callAlert])
 
     /*      Pagination     */
     function handlePageClick(e) {
@@ -42,9 +53,9 @@ function CategoryPage() {
         };
         axios(configuration)
             .then((result) => {
-                setCategory(result.data.results.result);
-                setCount(result.data.results.total)
-                setPageCount(result.data.results.pageCount)
+                setCateState({ Category: result.data.results.result })
+                setCateState({ Count: result.data.results.total })
+                setCateState({ pageCount: result.data.results.pageCount })
             })
             .catch((error) => {
                 console.log(error);
@@ -86,20 +97,20 @@ function CategoryPage() {
             var student1 = { name: name, quantity: quantity };
             students.push(student1);
             localStorage.setItem("cart", JSON.stringify(students));
-            setCallAlert(true)
+            setCateState({ callAlert: true })
         } else {
             var sameItem = JSON.parse(localStorage.getItem("cart")) || [];
             for (var i = 0; i < sameItem.length; i++) {
                 if (name === sameItem[i].name) {
                     sameItem[i].quantity += quantity;
                     localStorage.setItem('cart', JSON.stringify(sameItem))
-                    setCallAlert(true)
+                    setCateState({ callAlert: true })
                 } else if (i === sameItem.length - 1) {
                     var stored2 = JSON.parse(localStorage.getItem("cart"));
                     var student2 = { name: name, quantity: quantity };
                     stored2.push(student2);
                     localStorage.setItem("cart", JSON.stringify(stored2));
-                    setCallAlert(true)
+                    setCateState({ callAlert: true })
                 }
             }
         }
@@ -120,8 +131,13 @@ function CategoryPage() {
     }
     return (
         <Layout>
-            {callAlert ? (
-                <Alert call={callAlert} setCall={setCallAlert} type={"Green"} />
+            {cateState.callAlert ? (
+                <div className="d-flex justify-content-end danguru">
+                    <div class='alertNow'>
+                        <i className="fas fa-check-circle alert__icon"></i>
+                        <p class='m-0'>Add to cart success!</p>
+                    </div>
+                </div>
             ) : null}
             <div className='bg-white'>
                 <div className='container'>
@@ -148,7 +164,7 @@ function CategoryPage() {
                                     </select>
                                 </div>
                                 <div className='ThirdRow'>
-                                    <p className='allover3'>Display all {Count} results</p>
+                                    <p className='allover3'>Display all {cateState.Count} results</p>
                                     <select id='select' onChange={(e) => Filter(e.target.value)} className='FilterDrop'>
                                         <option value={"nto"}>New to old</option>
                                         <option value={"otn"}>Old to new</option>
@@ -158,7 +174,7 @@ function CategoryPage() {
                                     </select>
                                 </div>
                             </div>
-                            {Object.values(Category).map(i => {
+                            {Object.values(cateState.Category).map(i => {
                                 var quantity = 1
                                 return (
                                     <div className="product-box column p-0 CateColumn" key={i._id}>
@@ -195,7 +211,7 @@ function CategoryPage() {
                                 nextLabel="Next >"
                                 onPageChange={handlePageClick}
                                 pageRangeDisplayed={5}
-                                pageCount={pageCount}
+                                pageCount={cateState.pageCount}
                                 previousLabel="< Previous"
                                 renderOnZeroPageCount={null}
                                 marginPagesDisplayed={2}

@@ -1,6 +1,6 @@
 import { NavLink, useParams } from 'react-router-dom';
 import NotFound from '../component/outOfBorder/NotFound';
-import { useEffect, Fragment, useState, useRef } from 'react';
+import { useEffect, Fragment, useState, useRef, useReducer } from 'react';
 import axios from 'axios';
 import jQuery from "jquery";
 import "../lib/owlcarousel/assets/owl.carousel.min.css";
@@ -8,7 +8,6 @@ import Swal from 'sweetalert2';
 import { jwtDecode } from "jwt-decode";
 import Cookies from "universal-cookie";
 import ReactPaginate from 'react-paginate';
-import Alert from '../component/outOfBorder/Alert';
 import Layout from '../Layout';
 import "../css/DetailMenuPage.css";
 window.jQuery = jQuery
@@ -22,21 +21,24 @@ function DetailMenuPage() {
         candecode = jwtDecode(token)
     }
     let appler = useParams()
-    const [detail, setDetail] = useState([]);
-    const [menu, setMenu] = useState([]);
+    const [detailState, setDetailState] = useReducer((prev, next) => ({
+        ...prev, ...next
+    }), {
+        detail: [],
+        menu: [],
+        imgF: "",
+        reviewMessage: null,
+        getUserW: [],
+        reviewStar: null,
+        wowreview: [],
+        checkStar: false,
+        checkKiu: false,
+        callAlert: false,
+        gotReview: null,
+        pageCount: 6
+    })
     var [reviewName, setReviewName] = useState()
-    const [imgF, setImgF] = useState("")
-    const [reviewMessage, setReviewMessage] = useState()
-    const [getUserW, setGetUserW] = useState([])
-    const [reviewStar, setReviewStar] = useState()
-    const [wowreview, setWowReview] = useState([])
-    const [checkStar, setCheckStar] = useState(false)
-    const [callAlert, setCallAlert] = useState(false)
-    const [checkKiu, setCheckKiu] = useState(false)
-    const [gotReview, setGotReview] = useState()
     var [quantity, setQuantity] = useState(1)
-
-    const [pageCount, setPageCount] = useState(6);
     const currentPage = useRef();
     jQuery(function ($) {
         // Variables
@@ -120,20 +122,20 @@ function DetailMenuPage() {
             fetch(`https://eatcom.onrender.com/GetDetailUser?userid=${decode.userId}`, {
                 method: "get",
             }).then((res) => res.json()).then((menu) => {
-                setGetUserW(menu);
+                setDetailState({ getUserW: menu });
             })
         }
 
         fetch(`https://eatcom.onrender.com/GetSimilarP?Name=${appler.cate}`, {
             method: "get",
         }).then((res) => res.json()).then((menu) => {
-            setMenu(menu.data);
+            setDetailState({ menu: menu.data });
         })
 
         fetch(`https://eatcom.onrender.com/GetDetailMenu?foodid=${appler.id}`, {
             method: "get",
         }).then((res) => res.json()).then((data) => {
-            setDetail(data);
+            setDetailState({ detail: data })
         })
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [appler.id, appler.cate, token])
@@ -145,20 +147,20 @@ function DetailMenuPage() {
             var student1 = { name: name, quantity: quantity };
             students.push(student1);
             localStorage.setItem("cart", JSON.stringify(students));
-            setCallAlert(true)
+            setDetailState({ callAlert: true })
         } else {
             var sameItem = JSON.parse(localStorage.getItem("cart")) || [];
             for (var i = 0; i < sameItem.length; i++) {
                 if (name === sameItem[i].name) {
                     sameItem[i].quantity += quantity;
                     localStorage.setItem('cart', JSON.stringify(sameItem))
-                    setCallAlert(true)
+                    setDetailState({ callAlert: true })
                 } else if (i === sameItem.length - 1) {
                     var stored2 = JSON.parse(localStorage.getItem("cart"));
                     var student2 = { name: name, quantity: quantity };
                     stored2.push(student2);
                     localStorage.setItem("cart", JSON.stringify(stored2));
-                    setCallAlert(true)
+                    setDetailState({ callAlert: true })
                 }
             }
         }
@@ -192,30 +194,39 @@ function DetailMenuPage() {
         }
 
         results.result = i.review?.slice(start, end)
-        setWowReview(results.result)
-        setPageCount(results.pageCount)
+        setDetailState({ wowreview: results.result })
+        setDetailState({ pageCount: results.pageCount })
     }
 
     useEffect(() => {
+        if (detailState.callAlert) {
+            setTimeout(() => {
+                setDetailState({ callAlert: false })
+            }, 1500)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [detailState.callAlert])
+
+    useEffect(() => {
         currentPage.current = 1;
-        Object.values(detail).map(i => {
+        Object.values(detailState.detail).map(i => {
             outshin(i)
             return null
         })
         if (token) {
             if (candecode.userRole !== 1.5) {
-                Object.values(getUserW).map((h) => {
-                    setImgF(h.userimage)
+                Object.values(detailState.getUserW).map((h) => {
+                    setDetailState({ imgF: h.userimage })
                     return null
                 })
             }
 
             if (candecode.userRole === 1.5) {
-                setImgF(candecode.userImage)
+                setDetailState({ imgF: candecode.userImage })
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [detail, getUserW, token])
+    }, [detailState.detail, detailState.getUserW, token])
 
 
     const addreview = (e, ids) => {
@@ -225,7 +236,7 @@ function DetailMenuPage() {
             thisId = decode.userId
             reviewName = decode.userName
         }
-        const takeReview = { id: thisId, name: reviewName, star: reviewStar, message: reviewMessage, date: datetime, image: imgF }
+        const takeReview = { id: thisId, name: reviewName, star: detailState.reviewStar, message: detailState.reviewMessage, date: datetime, image: detailState.imgF }
         e.preventDefault()
         const configuration = {
             method: "post",
@@ -235,7 +246,7 @@ function DetailMenuPage() {
                 review: takeReview
             }
         };
-        if (reviewStar) {
+        if (detailState.reviewStar) {
             axios(configuration)
                 .then(() => {
                     Swal.fire(
@@ -256,22 +267,22 @@ function DetailMenuPage() {
                     })
                 });
         } else {
-            setCheckStar(true)
+            setDetailState({ checkStar: true })
         }
     }
 
     useEffect(() => {
-        wowreview.map((f) => {
+        detailState.wowreview.map((f) => {
             if (token) {
                 const decode = jwtDecode(token)
                 if (f.id === decode.userId) {
-                    setCheckKiu(true)
-                    setGotReview(f)
+                    setDetailState({ checkKiu: true })
+                    setDetailState({ gotReview: f })
                 }
             }
             return null
         })
-    }, [token, wowreview])
+    }, [token, detailState.wowreview])
 
     // localStorage.clear()
 
@@ -291,11 +302,16 @@ function DetailMenuPage() {
     const rating = stars => '★★★★★☆☆☆☆☆'.slice(5 - stars, 10 - stars);
     return (
         <Layout>
-            {callAlert ? (
-                <Alert call={callAlert} setCall={setCallAlert} type={"Green"} />
+            {detailState.callAlert ? (
+                <div className="d-flex justify-content-end danguru">
+                    <div class='alertNow'>
+                        <i className="fas fa-check-circle alert__icon"></i>
+                        <p class='m-0'>Add to cart success!</p>
+                    </div>
+                </div>
             ) : null}
             <div className='bg-white'>
-                {Object.values(detail).map(i => {
+                {Object.values(detailState.detail).map(i => {
                     if (quantity > i.foodquantity) {
                         quantity = i.foodquantity;
                     }
@@ -369,20 +385,20 @@ function DetailMenuPage() {
                                                                         <div className="reviews-counter">
                                                                             <div className="rate">
                                                                                 <input type='radio' style={{ display: "none" }} required />
-                                                                                <input type="radio" onChange={(e) => setReviewStar(e.target.value)} id="star5" name="rate" value="5" />
+                                                                                <input type="radio" onChange={(e) => setDetailState({ reviewStar: e.target.value })} id="star5" name="rate" value="5" />
                                                                                 <label title="text" htmlFor='star5'>5 stars</label>
-                                                                                <input type="radio" onChange={(e) => setReviewStar(e.target.value)} id="star4" name="rate" value="4" />
+                                                                                <input type="radio" onChange={(e) => setDetailState({ reviewStar: e.target.value })} id="star4" name="rate" value="4" />
                                                                                 <label title="text" htmlFor='star4'>4 stars</label>
-                                                                                <input type="radio" onChange={(e) => setReviewStar(e.target.value)} id="star3" name="rate" value="3" />
+                                                                                <input type="radio" onChange={(e) => setDetailState({ reviewStar: e.target.value })} id="star3" name="rate" value="3" />
                                                                                 <label title="text" htmlFor='star3'>3 stars</label>
-                                                                                <input type="radio" onChange={(e) => setReviewStar(e.target.value)} id="star2" name="rate" value="2" />
+                                                                                <input type="radio" onChange={(e) => setDetailState({ reviewStar: e.target.value })} id="star2" name="rate" value="2" />
                                                                                 <label title="text" htmlFor='star2'>2 stars</label>
-                                                                                <input type="radio" onChange={(e) => setReviewStar(e.target.value)} id="star1" name="rate" value="1" />
+                                                                                <input type="radio" onChange={(e) => setDetailState({ reviewStar: e.target.value })} id="star1" name="rate" value="1" />
                                                                                 <label title="text" htmlFor='star1'>1 star</label>
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                                                                    {checkStar ? (
+                                                                    {detailState.checkStar ? (
                                                                         <p className='text-danger'>Choose star for this item !</p>
                                                                     ) : null}
                                                                 </div>
@@ -395,7 +411,7 @@ function DetailMenuPage() {
                                                             )}
                                                             <div className="form-group pt-4">
                                                                 <label>Your message</label>
-                                                                <textarea onChange={(e) => setReviewMessage(e.target.value)} className="form-control" rows="10" required />
+                                                                <textarea onChange={(e) => setDetailState({ reviewMessage: e.target.value })} className="form-control" rows="10" required />
                                                             </div>
                                                             <button type='submit' className="round-black-btn">Submit Review</button>
                                                         </form>
@@ -404,7 +420,7 @@ function DetailMenuPage() {
                                                     <>
                                                         <div className='d-flex justify-content-between w-100'>
                                                             <div style={{ width: 58 + "%" }}>
-                                                                {wowreview.map((r) => {
+                                                                {detailState.wowreview.map((r) => {
                                                                     return (
                                                                         <Fragment key={r.date}>
                                                                             <div className='gutton'>
@@ -428,7 +444,7 @@ function DetailMenuPage() {
                                                                     nextLabel="Next >"
                                                                     onPageChange={(e) => handlePageClick(e.selected, i)}
                                                                     pageRangeDisplayed={5}
-                                                                    pageCount={pageCount}
+                                                                    pageCount={detailState.pageCount}
                                                                     previousLabel="< Prev"
                                                                     renderOnZeroPageCount={null}
                                                                     marginPagesDisplayed={2}
@@ -444,22 +460,18 @@ function DetailMenuPage() {
                                                                 />
                                                             </div>
                                                             <div className='holdTall' style={{ width: 40 + "%" }}>
-                                                                {checkKiu ? (
+                                                                {detailState.checkKiu ? (
                                                                     <>
                                                                         <div className='text-center'>
                                                                             <div className="review-heading">REVIEWS</div>
                                                                             <p>You have review this item!</p>
                                                                         </div>
                                                                         <div className='gutton'>
-                                                                            {gotReview.image ? (
-                                                                                <img alt='' height={50} width={50} src={gotReview.image} />
-                                                                            ) : (
-                                                                                <img alt='' height={50} width={50} src="https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg" />
-                                                                            )}
+                                                                            <img alt='' height={50} width={50} src={detailState.gotReview.image ? detailState.gotReview.image : "https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg"} />
                                                                             <div>
-                                                                                <div style={{ color: "#FEA116" }}>{rating(gotReview.star)}</div>
-                                                                                <p className='m-0'><b>{gotReview.name}</b> - {gotReview.date}</p>
-                                                                                <p className='m-0'>{gotReview.message}</p>
+                                                                                <div style={{ color: "#FEA116" }}>{rating(detailState.gotReview.star)}</div>
+                                                                                <p className='m-0'><b>{detailState.gotReview.name}</b> - {detailState.gotReview.date}</p>
+                                                                                <p className='m-0'>{detailState.gotReview.message}</p>
                                                                             </div>
                                                                         </div>
                                                                     </>
@@ -474,20 +486,20 @@ function DetailMenuPage() {
                                                                                         <div className="reviews-counter">
                                                                                             <div className="rate">
                                                                                                 <input type='radio' style={{ display: "none" }} required />
-                                                                                                <input type="radio" onChange={(e) => setReviewStar(e.target.value)} id="star5" name="rate" value="5" />
+                                                                                                <input type="radio" onChange={(e) => setDetailState({ reviewStar: e.target.value })} id="star5" name="rate" value="5" />
                                                                                                 <label title="text" htmlFor='star5'>5 stars</label>
-                                                                                                <input type="radio" onChange={(e) => setReviewStar(e.target.value)} id="star4" name="rate" value="4" />
+                                                                                                <input type="radio" onChange={(e) => setDetailState({ reviewStar: e.target.value })} id="star4" name="rate" value="4" />
                                                                                                 <label title="text" htmlFor='star4'>4 stars</label>
-                                                                                                <input type="radio" onChange={(e) => setReviewStar(e.target.value)} id="star3" name="rate" value="3" />
+                                                                                                <input type="radio" onChange={(e) => setDetailState({ reviewStar: e.target.value })} id="star3" name="rate" value="3" />
                                                                                                 <label title="text" htmlFor='star3'>3 stars</label>
-                                                                                                <input type="radio" onChange={(e) => setReviewStar(e.target.value)} id="star2" name="rate" value="2" />
+                                                                                                <input type="radio" onChange={(e) => setDetailState({ reviewStar: e.target.value })} id="star2" name="rate" value="2" />
                                                                                                 <label title="text" htmlFor='star2'>2 stars</label>
-                                                                                                <input type="radio" onChange={(e) => setReviewStar(e.target.value)} id="star1" name="rate" value="1" />
+                                                                                                <input type="radio" onChange={(e) => setDetailState({ reviewStar: e.target.value })} id="star1" name="rate" value="1" />
                                                                                                 <label title="text" htmlFor='star1'>1 star</label>
                                                                                             </div>
                                                                                         </div>
                                                                                     </div>
-                                                                                    {checkStar ? (
+                                                                                    {detailState.checkStar ? (
                                                                                         <p className='text-danger'>Choose star for this item !</p>
                                                                                     ) : null}
                                                                                 </div>
@@ -500,7 +512,7 @@ function DetailMenuPage() {
                                                                             )}
                                                                             <div className="form-group pt-4">
                                                                                 <label>Your message</label>
-                                                                                <textarea onChange={(e) => setReviewMessage(e.target.value)} className="textDeny" rows="10" required />
+                                                                                <textarea onChange={(e) => setDetailState({ reviewMessage: e.target.value })} className="textDeny" rows="10" required />
                                                                             </div>
                                                                             <button type='submit' className="round-black-btn">Submit Review</button>
                                                                         </form>
@@ -526,9 +538,9 @@ function DetailMenuPage() {
                                             <h3 className="mb-5">
                                                 Similar product</h3>
                                         </div>
-                                        {menu.length > 0 ?
+                                        {detailState.menu.length > 0 ?
                                             <div className="owl-carousel testimonial-carousel2">
-                                                {menu.map(a => {
+                                                {detailState.menu.map(a => {
                                                     return (
                                                         <Fragment key={a._id}>
                                                             {a.foodcategory === i.foodcategory && a._id !== i._id ? (

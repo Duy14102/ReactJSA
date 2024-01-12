@@ -1,16 +1,20 @@
 import { NavLink } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useEffect, useReducer } from "react";
 import Layout from "../Layout";
 import "../css/Cart.css";
 
 function Cart() {
     const val = JSON.parse(localStorage.getItem('cart'))
     const ahoe = localStorage.getItem("complete")
-    const [checkVal, setCheckVal] = useState(false)
-    const [Cart, setCart] = useState([])
-    const [checkLoad, setCheckLoad] = useState(false)
-    const [checkCoupon, setCheckCoupon] = useState("")
-    const [shippingFee, setShippingFee] = useState(30000)
+    const [cartState, setCartState] = useReducer((prev, next) => ({
+        ...prev, ...next
+    }), {
+        checkVal: false,
+        Cart: [],
+        checkLoad: false,
+        checkCoupon: "",
+        shippingFee: 30000,
+    })
     const pushData = []
     useEffect(() => {
         dataHandler()
@@ -30,10 +34,10 @@ function Cart() {
                 const resD = await res.json()
                 overCount.push(resD)
             }
-            setCart(overCount)
+            setCartState({ Cart: overCount })
         } else {
             localStorage.clear()
-            setCheckVal(true)
+            setCartState({ checkVal: true })
         }
     }
 
@@ -76,17 +80,17 @@ function Cart() {
     }
 
     useEffect(() => {
-        if (checkLoad) {
+        if (cartState.checkLoad) {
             window.location.reload()
         }
-    }, [checkLoad])
+    }, [cartState.checkLoad])
 
     var fulltotal = 0
     var total2 = 0
     const mero = (i, e) => {
         var total = i.foodprice * e
         total2 += total
-        fulltotal = total2 + shippingFee
+        fulltotal = total2 + cartState.shippingFee
         const dataToPush = { data: i, quantity: e }
         pushData.push(dataToPush)
         return (
@@ -104,8 +108,8 @@ function Cart() {
 
     function applyCoupon(e) {
         e.preventDefault()
-        if (checkCoupon === "duydeptrai") {
-            setShippingFee(0)
+        if (cartState.checkCoupon === "duydeptrai") {
+            setCartState({ shippingFee: 0 })
         }
     }
 
@@ -114,9 +118,9 @@ function Cart() {
             <div className="bg-white">
                 <div className="container">
                     <div className="py-5 text-center businessWay">
-                        <NavLink className="joiboy" to="/Cart"> Shopping Cart</NavLink>  <span className='slash'>˃</span> <NavLink className="joiboy" to="/Checkout" state={{ valid: pushData, shippingFee: shippingFee }}>Checkout Details</NavLink> <span className='slash'>˃</span> {ahoe ? (<NavLink className="joiboy" to="/">Order Complete</NavLink>) : (<NavLink className="joiboy" style={{ pointerEvents: "none" }} to="/">Order Complete</NavLink>)}
+                        <NavLink className="joiboy" to="/Cart"> Shopping Cart</NavLink>  <span className='slash'>˃</span> <NavLink className="joiboy" to="/Checkout" state={{ valid: pushData, shippingFee: cartState.shippingFee }}>Checkout Details</NavLink> <span className='slash'>˃</span> {ahoe ? (<NavLink className="joiboy" to="/">Order Complete</NavLink>) : (<NavLink className="joiboy" style={{ pointerEvents: "none" }} to="/">Order Complete</NavLink>)}
                     </div>
-                    {checkVal ? (
+                    {cartState.checkVal ? (
                         <div style={{ height: 45 + "vh" }} className="pt-4 pb-4 text-center">
                             <p>There's no items in cart</p>
                             <NavLink to="/" className="ReturnH"><b>Return to homepage</b></NavLink>
@@ -134,7 +138,7 @@ function Cart() {
                                         </tr>
                                     </thead>
                                     <tbody style={{ verticalAlign: "middle" }}>
-                                        {Cart.map((i) => {
+                                        {cartState.Cart.map((i) => {
                                             return (
                                                 mero(...i.data, i.quantity)
                                             )
@@ -143,7 +147,7 @@ function Cart() {
                                 </table>
                                 <div className="buttonN1">
                                     <NavLink reloadDocument to="/" className="btnFirst">← Continue Shoppping</NavLink>
-                                    <button onClick={() => setCheckLoad(true)} className="btnSecond">Update Cart</button>
+                                    <button onClick={() => setCartState({ checkLoad: true })} className="btnSecond">Update Cart</button>
                                 </div>
                             </div>
                             <table className="table CartTa Numbertwo">
@@ -159,7 +163,7 @@ function Cart() {
                                     </tr>
                                     <tr>
                                         <td>Shipping</td>
-                                        <td className="text-end">{VND.format(shippingFee)}</td>
+                                        <td className="text-end">{VND.format(cartState.shippingFee)}</td>
                                     </tr>
                                     <tr>
                                         <td><b>Full Total</b></td>
@@ -167,14 +171,14 @@ function Cart() {
                                     </tr>
                                     <tr>
                                         <td colSpan={2}>
-                                            <NavLink to="/Checkout" state={{ valid: pushData, shippingFee: shippingFee }} className="btnCheckout"><b>Checkout</b></NavLink>
+                                            <NavLink to="/Checkout" state={{ valid: pushData, shippingFee: cartState.shippingFee }} className="btnCheckout"><b>Checkout</b></NavLink>
                                             <p className="pt-3" style={{ margin: 0 }}> <svg style={{ fill: "#777" }} xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><path d="M0 80V229.5c0 17 6.7 33.3 18.7 45.3l176 176c25 25 65.5 25 90.5 0L418.7 317.3c25-25 25-65.5 0-90.5l-176-176c-12-12-28.3-18.7-45.3-18.7H48C21.5 32 0 53.5 0 80zm112 32a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" /></svg> Coupon</p>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td colSpan={2} className="inputC">
                                             <form onSubmit={(e) => applyCoupon(e)}>
-                                                <input onInput={(e) => setCheckCoupon(e.target.value)} type="text" placeholder="Coupon Code...." required />
+                                                <input onInput={(e) => setCartState({ checkCoupon: e.target.value })} type="text" placeholder="Coupon Code...." required />
                                                 <div className="text-center pt-3">
                                                     <button type="submit" className="btnCoupon">Apply</button>
                                                 </div>

@@ -1689,10 +1689,6 @@ iframe {
     background: rgba(196, 195, 195, 0.5);
 }
 
-.encot {
-    text-align: center;
-}
-
 .MagicAppearText span {
     background-size: 0% 100%;
     background-clip: text !important;
@@ -1733,6 +1729,10 @@ iframe {
 }
 
 @media (max-width:575px) {
+    .encot {
+        text-align: center;
+    }
+    
     .deleteAccountInputField {
         width: 90% !important;
     }
