@@ -138,7 +138,8 @@ function LoginSite() {
     }
 
     const login = useGoogleLogin({
-        onSuccess: (codeResponse) => setLoginState({ user: codeResponse }),
+        onSuccess: (codeResponse) => setLoginState({ user: codeResponse.access_token }),
+        // onSuccess: (codeResponse) => console.log(codeResponse),
         onError: (error) => console.log('Login Failed:', error)
     });
 
