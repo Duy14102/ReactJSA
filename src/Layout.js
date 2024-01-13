@@ -10,7 +10,6 @@ import "./lib/animate/animateAnimate.min.css";
 
 function Layout({ children }) {
     const [styleA, setStyleA] = useState()
-
     const [offline, setOffline] = useState(false)
     const [online, setOnline] = useState(false)
     function reloadIt() {

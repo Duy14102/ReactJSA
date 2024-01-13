@@ -2,17 +2,21 @@ import $ from 'jquery';
 import ItemMenuComponent from './outOfBorder/ItemMenuComponent';
 import { NavLink } from 'react-router-dom';
 import Hammer from 'hammerjs'
-import { Fragment, useEffect, useState, useRef } from 'react';
+import { Fragment, useEffect, useRef, useReducer } from 'react';
 import axios from 'axios';
 import socketIOClient from "socket.io-client";
 
 function Menu() {
-    const [Load1, setLoad1] = useState(false)
-    const [Load2, setLoad2] = useState(false)
-    const [Load3, setLoad3] = useState(false)
-    const [menu, setMenu] = useState([])
-    const [kakadu, setKakadu] = useState()
-    const [spacekaka, setSpacekaka] = useState()
+    const [menuState, setMenuState] = useReducer((prev, next) => ({
+        ...prev, ...next
+    }), {
+        Load1: false,
+        Load2: false,
+        Load3: false,
+        menu: [],
+        kakadu: null,
+        spacekaka: null,
+    })
     const socketRef = useRef();
 
     const called = () => {
@@ -22,7 +26,7 @@ function Menu() {
         }
         axios(configuration)
             .then((res) => {
-                setMenu(res.data)
+                setMenuState({ menu: res.data })
             }).catch((err) => {
                 console.log(err);
             })
@@ -62,29 +66,31 @@ function Menu() {
     }, [])
 
     useEffect(() => {
-        Object.values(menu).map((i) => {
+        Object.values(menuState.menu).map((i) => {
             i.image?.map((a) => {
                 if (a.name === "lsneuszzbne2v2iyecaj") {
-                    setKakadu({
+                    const Hook = {
                         "background": `url(${a.url})`,
                         "backgroundSize": "100% 100%",
                         "backgroundRepeat": "no-repeat",
                         "backgroundPosition": "center center"
-                    })
+                    }
+                    setMenuState({ kakadu: Hook })
                 }
                 if (a.name === "lwur9bwvniiygtyu6daf") {
-                    setSpacekaka({
+                    const Hook = {
                         "background": `url(${a.url})`,
                         "backgroundSize": "100% 100%",
                         "backgroundRepeat": "no-repeat",
                         "backgroundPosition": "center center"
-                    })
+                    }
+                    setMenuState({ spacekaka: Hook })
                 }
                 return null
             })
             return null
         })
-    }, [menu])
+    }, [menuState.menu])
 
     useEffect(() => {
         const elem = document.getElementById("book")
@@ -141,13 +147,13 @@ function Menu() {
             });
         }
         if ($('section.paged:nth-child(2)').hasClass('activet') === true) {
-            setLoad1(true)
+            setMenuState({ Load1: true })
         }
         if ($('section.paged:nth-child(3)').hasClass('activet') === true) {
-            setLoad2(true)
+            setMenuState({ Load2: true })
         }
         if ($('section.paged:nth-child(4)').hasClass('activet') === true) {
-            setLoad3(true)
+            setMenuState({ Load3: true })
         }
 
     }
@@ -190,12 +196,12 @@ function Menu() {
                     <div className="scene thhuhu" id="scene">
                         <article id="book">
                             <section className="paged activet">
-                                <div className="front" style={kakadu}>
+                                <div className="front" style={menuState.kakadu}>
                                 </div>
-                                <div className="back p-5" style={spacekaka}>
+                                <div className="back p-5" style={menuState.spacekaka}>
                                     <h4 className='text-center mt-3'>Foreword</h4>
                                     <div className='text-start'>
-                                        {Object.values(menu).map((i) => {
+                                        {Object.values(menuState.menu).map((i) => {
                                             return (
                                                 <Fragment key={i._id}>
                                                     <p className='pt-3'><b>1. </b> {i.word.up}</p>
@@ -209,15 +215,15 @@ function Menu() {
                             </section>
 
                             <section className="paged d-none">
-                                <div className="front p-5" style={spacekaka}>
+                                <div className="front p-5" style={menuState.spacekaka}>
                                     <h4 className='text-center mt-3'>Meat</h4>
-                                    {Load1 ? (
+                                    {menuState.Load1 ? (
                                         <ItemMenuComponent Name='Meat' start={0} end={4} />
                                     ) : null}
                                 </div>
-                                <div className="back p-5" style={spacekaka}>
+                                <div className="back p-5" style={menuState.spacekaka}>
                                     <h4 className='text-center mt-3'>Meat</h4>
-                                    {Load1 ? (
+                                    {menuState.Load1 ? (
                                         <ItemMenuComponent Name='Meat' start={4} end={8} />
                                     ) : null}
                                     <div className='text-center'>
@@ -227,15 +233,15 @@ function Menu() {
                             </section>
 
                             <section className="paged d-none">
-                                <div className="front p-5" style={spacekaka}>
+                                <div className="front p-5" style={menuState.spacekaka}>
                                     <h4 className='text-center mt-3'>Vegetables</h4>
-                                    {Load2 ? (
+                                    {menuState.Load2 ? (
                                         <ItemMenuComponent Name='Vegetables' start={0} end={4} />
                                     ) : null}
                                 </div>
-                                <div className="back p-5" style={spacekaka}>
+                                <div className="back p-5" style={menuState.spacekaka}>
                                     <h4 className='text-center mt-3'>Vegetables</h4>
-                                    {Load2 ? (
+                                    {menuState.Load2 ? (
                                         <ItemMenuComponent Name='Vegetables' start={4} end={8} />
                                     ) : null}
                                     <div className='text-center'>
@@ -245,15 +251,15 @@ function Menu() {
                             </section>
 
                             <section className="paged d-none">
-                                <div className="front p-5" style={spacekaka}>
+                                <div className="front p-5" style={menuState.spacekaka}>
                                     <h4 className='text-center mt-3'>Drink</h4>
-                                    {Load3 ? (
+                                    {menuState.Load3 ? (
                                         <ItemMenuComponent Name='Drink' start={0} end={4} />
                                     ) : null}
                                 </div>
-                                <div className="back p-5" style={spacekaka}>
+                                <div className="back p-5" style={menuState.spacekaka}>
                                     <h4 className='text-center mt-3'>Drink</h4>
-                                    {Load3 ? (
+                                    {menuState.Load3 ? (
                                         <ItemMenuComponent Name='Drink' start={4} end={8} />
                                     ) : null}
                                     <div className='text-center'>
@@ -263,16 +269,16 @@ function Menu() {
                             </section>
 
                             <section className="paged d-none">
-                                <div className="front" style={spacekaka}>
+                                <div className="front" style={menuState.spacekaka}>
                                 </div>
-                                <div className="back" style={kakadu}>
+                                <div className="back" style={menuState.kakadu}>
                                 </div>
                             </section>
                         </article>
                     </div>
                 </div>
             </div>
-        </div >
+        </div>
     );
 }
 export default Menu;

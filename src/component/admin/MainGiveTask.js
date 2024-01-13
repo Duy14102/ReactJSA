@@ -99,7 +99,7 @@ function MainGiveTask({ modalOpenAdmin, setModalOpenAdmin, decode }) {
     return (
         <>
             <Modal
-                isOpen={modalOpenAdmin} onRequestClose={() => setModalOpenAdmin(false)} ariaHideApp={false}
+                isOpen={modalOpenAdmin} onRequestClose={() => setModalOpenAdmin({ modalOpenAdmin: false })} ariaHideApp={false}
                 style={{
                     overlay: {
                         position: 'fixed',
@@ -168,7 +168,7 @@ function MainGiveTask({ modalOpenAdmin, setModalOpenAdmin, decode }) {
                     activeClassName="active"
                     forcePage={currentPage.current - 1}
                 />
-                <button className='closeModal' onClick={() => setModalOpenAdmin(false)}>x</button>
+                <button className='closeModal' onClick={() => setModalOpenAdmin({ modalOpenAdmin: false })}>x</button>
             </Modal>
             <Modal
                 isOpen={modalOpenAdmin2} onRequestClose={() => setModalOpenAdmin2(false)} ariaHideApp={false}
@@ -255,7 +255,7 @@ function MainGiveTask({ modalOpenAdmin, setModalOpenAdmin, decode }) {
                         </table>
                     )}
                 </div>
-                <button className='closeModal' onClick={() => { setModalOpenAdmin2(false); setModalOpenAdmin(true) }}>x</button>
+                <button className='closeModal' onClick={() => { setModalOpenAdmin2(false); setModalOpenAdmin({ modalOpenAdmin: true }) }}>x</button>
             </Modal>
             <Modal
                 isOpen={modalOpenAdmin3} onRequestClose={() => setModalOpenAdmin3(false)} ariaHideApp={false}

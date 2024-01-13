@@ -1609,6 +1609,17 @@ app.get("/GetDetailMenu", async (req, res) => {
     }
 })
 
+//Get Search Debounce
+app.get("/GetDebounce", async (req, res) => {
+    try {
+        const regex = new RegExp(req.query.foodSearch, 'i')
+        const getSearch = await getThisMenu.find({ foodname: regex }).limit(3)
+        res.send({ data: getSearch })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
 //Get Search
 app.get("/GetSearch", async (req, res) => {
     try {

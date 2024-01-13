@@ -1,19 +1,21 @@
 import { NavLink, useParams } from "react-router-dom";
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useReducer } from "react";
 import NotFound from "../component/outOfBorder/NotFound";
 import $ from 'jquery';
 import axios from "axios";
 import ReactPaginate from 'react-paginate';
 import Layout from '../Layout';
-import Alert from "../component/outOfBorder/Alert";
-// import "../css/CategoryCss.css";
 
 function SearchSite() {
     let appler = useParams()
-    const [Count, setCount] = useState([]);
-    const [searchdata, setSearchData] = useState([]);
-    const [pageCount, setPageCount] = useState(6);
-    const [callAlert, setCallAlert] = useState(false)
+    const [searchState, setSearchState] = useReducer((prev, next) => ({
+        ...prev, ...next
+    }), {
+        Count: [],
+        searchdata: [],
+        pageCount: 6,
+        callAlert: false,
+    })
     const currentPage = useRef();
     const limit = 9
     // Get Search Data
@@ -42,9 +44,9 @@ function SearchSite() {
         };
         axios(configuration)
             .then((result) => {
-                setSearchData(result.data.results.result);
-                setCount(result.data.results.total)
-                setPageCount(result.data.results.pageCount)
+                setSearchState({ searchdata: result.data.results.result })
+                setSearchState({ Count: result.data.results.total })
+                setSearchState({ pageCount: result.data.results.pageCount })
             })
             .catch((error) => {
                 console.log(error);
@@ -72,20 +74,21 @@ function SearchSite() {
             var student1 = { name: name, quantity: quantity };
             students.push(student1);
             localStorage.setItem("cart", JSON.stringify(students));
-            setCallAlert(true)
+            setSearchState({ callAlert: true })
         } else {
             var sameItem = JSON.parse(localStorage.getItem("cart")) || [];
             for (var i = 0; i < sameItem.length; i++) {
                 if (name === sameItem[i].name) {
                     sameItem[i].quantity += quantity;
                     localStorage.setItem('cart', JSON.stringify(sameItem))
-                    setCallAlert(true)
+                    setSearchState({ callAlert: true })
+
                 } else if (i === sameItem.length - 1) {
                     var stored2 = JSON.parse(localStorage.getItem("cart"));
                     var student2 = { name: name, quantity: quantity };
                     stored2.push(student2);
                     localStorage.setItem("cart", JSON.stringify(stored2));
-                    setCallAlert(true)
+                    setSearchState({ callAlert: true })
                 }
             }
         }
@@ -105,15 +108,20 @@ function SearchSite() {
     }
     return (
         <Layout>
-            {callAlert ? (
-                <Alert call={callAlert} setCall={setCallAlert} type={"Green"} />
+            {searchState.callAlert ? (
+                <div className="d-flex justify-content-end danguru">
+                    <div class='alertNow'>
+                        <i className="fas fa-check-circle alert__icon"></i>
+                        <p class='m-0'>Add to cart success!</p>
+                    </div>
+                </div>
             ) : null}
             <div className='bg-white'>
                 <div className='container'>
                     <div className='ruler pt-3'>
                         <p style={{ margin: 0 }}><NavLink className="textNavlink" to="/">Home</NavLink> / <b>Search result for : "{appler.id}"</b></p>
                         <div className='ThirdRow'>
-                            <p style={{ margin: 0, width: 100 + "%", marginBottom: 5 }}>Display all {Count} results</p>
+                            <p style={{ margin: 0, width: 100 + "%", marginBottom: 5 }}>Display all {searchState.Count} results</p>
                             <select id='select2' onChange={(e) => Filter(e.target.value)} className='FilterDrop'>
                                 <option value={"nto"}>New to old</option>
                                 <option value={"otn"}>Old to new</option>
@@ -134,7 +142,7 @@ function SearchSite() {
                             </div>
                         </div>
                         <div className="row SecondRow">
-                            {Object.values(searchdata).map(i => {
+                            {Object.values(searchState.searchdata).map(i => {
                                 var quantity = 1
                                 return (
                                     <div className="product-box column p-0 CateColumn" key={i._id}>
@@ -171,7 +179,7 @@ function SearchSite() {
                                 nextLabel="next >"
                                 onPageChange={handlePageClick}
                                 pageRangeDisplayed={5}
-                                pageCount={pageCount}
+                                pageCount={searchState.pageCount}
                                 previousLabel="< previous"
                                 renderOnZeroPageCount={null}
                                 marginPagesDisplayed={2}

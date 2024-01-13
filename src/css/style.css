@@ -665,26 +665,106 @@ iframe {
     fill: #4b4b4b;
 }
 
+.fatherSearchNaN {
+    background-color: rgba(0, 0, 0, 0.3);
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
+    position: relative
+}
+
 .searchNaN {
     display: flex;
+    align-items: center;
     justify-content: space-between;
     background-color: #fff;
-    padding: 7px;
+    padding: 9px;
     border: none;
     border-radius: 99px;
 }
 
 .underSearchNaN {
     color: #fff;
-    background: rgba(0, 0, 0, 0.3);
+    position: absolute;
+    width: 100%;
+    height: 100%;
     display: flex;
     flex-direction: column;
     padding: 15px;
     gap: 15px;
 }
 
-.underSearchNaN p {
-    margin: 0;
+.takeKare {
+    width: 10%;
+    text-align: center;
+    opacity: 0;
+}
+
+.takeKare2 {
+    width: 10%;
+    text-align: center;
+}
+
+.wantDer,
+.wantDer2 {
+    text-align: center;
+    border-top: 1px solid gray;
+    padding-top: 5px;
+}
+
+.wantDer a {
+    color: #fff;
+}
+
+.wantDer2 a {
+    color: gray;
+}
+
+.wantDer a:hover {
+    color: #FEA116;
+    transition: all 0.2s;
+}
+
+.insideUnderSearchNaN {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+.insideUnderSearchNaN2 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+    padding: 10px;
+}
+
+.insideUnderSearchNaN:hover {
+    background-color: rgba(165, 165, 165, 0.3);
+    transition: all 0.2s;
+}
+
+.insideUnderSearchNaN2:hover {
+    background-color: lightgray;
+    transition: all 0.2s;
+}
+
+.insideUnderSearchNaN p {
+    color: #fff;
+}
+
+.insideUnderSearchNaN2 p {
+    color: gray;
+}
+
+.insideUnderSearchNaN:active,
+.insideUnderSearchNaN2:active {
+    transform: scale(0.93);
+}
+
+.insideUnderSearchNaN:hover .takeKare {
+    opacity: 1;
+    transition: all 0.2s;
 }
 
 .back-to-top {
@@ -1732,7 +1812,7 @@ iframe {
     .encot {
         text-align: center;
     }
-    
+
     .deleteAccountInputField {
         width: 90% !important;
     }

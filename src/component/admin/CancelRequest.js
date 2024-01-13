@@ -104,7 +104,7 @@ function CancelRequest({ ModalData, fulltotal, setmodal }) {
                 ) : (
                     <button onClick={() => cancelIt()} className="btn btn-primary">Yes</button>
                 )}
-                <button className="btn btn-secondary" onClick={() => setmodal(false)}>No</button>
+                <button className="btn btn-secondary" onClick={() => setmodal({ modalOpenDetail4: false })}>No</button>
             </div>
         </div>
     )

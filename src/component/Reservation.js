@@ -1,6 +1,6 @@
 import { jwtDecode } from "jwt-decode";
 import { Fragment } from "react";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useReducer } from "react";
 import Swal from "sweetalert2";
 import Cookies from "universal-cookie";
 import socketIOClient from "socket.io-client";
@@ -13,20 +13,24 @@ function Reservation() {
         candecode = jwtDecode(token)
     }
     const socketRef = useRef();
-    const [name, setName] = useState()
-    const [tokeId, setTokeId] = useState("None")
-    const [phone, setPhone] = useState()
-    const [date, setDate] = useState()
-    const [people, setPeople] = useState()
-    const [message, setMessage] = useState()
-    const [cancelReason, setCancelReason] = useState()
-    const [getUser, setGetUser] = useState([])
-    const [bookingBook, setBookingBook] = useState(null)
-    const [checkDate, setCheckDate] = useState(false)
-    const [openOOO, setOpenOOO] = useState(false)
-    const [alertCheck, setAlertCheck] = useState(false)
+    const [reservationState, setReservationState] = useReducer((prev, next) => ({
+        ...prev, ...next
+    }), {
+        name: null,
+        tokeId: "None",
+        phone: null,
+        date: null,
+        people: null,
+        message: null,
+        cancelReason: null,
+        getUser: [],
+        bookingBook: null,
+        checkDate: false,
+        openOOO: false,
+        alertCheck: false
+    })
     const datetime = new Date().getTime()
-    const date2 = new Date(date).getTime()
+    const date2 = new Date(reservationState.date).getTime()
     const checkPhone = /((09|03|07|08|05)+([0-9]{8})\b)/g
 
     function Success() {
@@ -110,7 +114,7 @@ function Reservation() {
         fetch(`https://eatcom.onrender.com/GetTokenBooking?id=${candecode?.userId}`, {
             method: "get",
         }).then((res) => res.json()).then((data) => {
-            setBookingBook(data)
+            setReservationState({ bookingBook: data })
         })
     }
 
@@ -121,7 +125,7 @@ function Reservation() {
                 fetch(`https://eatcom.onrender.com/GetDetailUser?userid=${decode.userId}`, {
                     method: "get",
                 }).then((res) => res.json()).then((data) => {
-                    setGetUser(data)
+                    setReservationState({ getUser: data })
                 })
             }
             called()
@@ -141,48 +145,47 @@ function Reservation() {
     }, [token])
 
     useEffect(() => {
-        if (date2 >= datetime) {
-            setCheckDate(false)
-        } else if (date2 < datetime) {
-            setCheckDate(true)
+        if (reservationState.date) {
+            if (date2 >= datetime) {
+                setReservationState({ checkDate: false })
+            } else if (date2 < datetime) {
+                setReservationState({ checkDate: true })
+            }
         }
 
         if (candecode?.userRole !== 1.5) {
-            Object.values(getUser).map((i) => {
-                setName(i.fullname)
-                setPhone(i.phonenumber)
-                setTokeId(i._id)
+            Object.values(reservationState.getUser).map((i) => {
+                setReservationState({ name: i.fullname, phone: i.phonenumber, tokeId: i._id })
                 return null
             })
         } else if (candecode?.userRole === 1.5) {
-            setName(candecode?.userName)
-            setTokeId(candecode?.userId)
+            setReservationState({ name: candecode?.userName, tokeId: candecode?.userId })
         }
-    }, [date2, datetime, candecode?.userRole, getUser, candecode?.userName, candecode?.userId])
+    }, [date2, datetime, reservationState.date, candecode?.userRole, reservationState.getUser, candecode?.userName, candecode?.userId])
 
     const AddNewTable = (e) => {
         e.preventDefault()
         if (!candecode) {
-            if (!checkPhone.test(phone)) {
-                setAlertCheck(true)
+            if (!checkPhone.test(reservationState.phone)) {
+                setReservationState({ alertCheck: true })
                 return false
             }
         }
 
         if (date2 >= datetime) {
-            setCheckDate(false)
-            const customer = { id: tokeId, fullname: name, phonenumber: phone }
-            const data = { customer, date, people, message }
-            localStorage.setItem("CheckBook", phone)
+            setReservationState({ checkDate: false })
+            const customer = { id: reservationState.tokeId, fullname: reservationState.name, phonenumber: reservationState.phone }
+            const data = { customer, date: reservationState.date, people: reservationState.people, message: reservationState.message }
+            localStorage.setItem("CheckBook", reservationState.phone)
             socketRef.current.emit('AddNewBookingSocket', data)
         } else if (date2 < datetime) {
-            setCheckDate(true)
+            setReservationState({ checkDate: true })
         }
     }
 
     const CancelBooking = (e, id) => {
         e.preventDefault()
-        const data = { id: id, reason: cancelReason, userid: tokeId }
+        const data = { id: id, reason: reservationState.cancelReason, userid: reservationState.tokeId }
         socketRef.current.emit('CancelBookingSocket', data)
     }
     return (
@@ -196,11 +199,11 @@ function Reservation() {
                     <div className="col-md-6 bg-white">
                         <div className="p-5 wow fadeInUp" data-wow-delay="0.2s">
                             <h5 className="section-title ff-secondary text-start text-primary fw-normal">Booking</h5>
-                            {bookingBook?.data ? (
+                            {reservationState.bookingBook?.data ? (
                                 <>
                                     <h2 className="mb-4 text-nowrap">Your Booking Information</h2>
                                     <hr />
-                                    {Object.values(bookingBook).map((i) => {
+                                    {Object.values(reservationState.bookingBook).map((i) => {
                                         const date = new Date(i?.createdAt).toLocaleDateString()
                                         const time = new Date(i?.createdAt).toLocaleTimeString()
                                         const date2 = new Date(i?.date).toLocaleDateString()
@@ -235,14 +238,14 @@ function Reservation() {
                                                 </div>
                                                 {i.status === 1 ? (
                                                     <>
-                                                        <button onClick={() => setOpenOOO(true)} className="btn btn-danger">Cancel</button>
-                                                        {openOOO ? (
+                                                        <button onClick={() => setReservationState({ openOOO: true })} className="btn btn-danger">Cancel</button>
+                                                        {reservationState.openOOO ? (
                                                             <form onSubmit={(e) => CancelBooking(e, i?._id)} className="hugeImpace pt-3">
                                                                 <p className="m-0"><b>Reason</b> : </p>
-                                                                <textarea onChange={(e) => setCancelReason(e.target.value)} className="textDeny" placeholder="Reason....." required />
+                                                                <textarea onChange={(e) => setReservationState({ cancelReason: e.target.value })} className="textDeny" placeholder="Reason....." required />
                                                                 <div className="d-flex" style={{ gap: 1 + "%" }}>
                                                                     <button type="submit" className="btn btn-primary">Confirm</button>
-                                                                    <button onClick={() => setOpenOOO(false)} type="button" className="btn btn-secondary">Cancel</button>
+                                                                    <button onClick={() => setReservationState({ openOOO: false })} type="button" className="btn btn-secondary">Cancel</button>
                                                                 </div>
                                                             </form>
                                                         ) : null}
@@ -261,12 +264,12 @@ function Reservation() {
                                                 <>
                                                     <div className="col-md-6">
                                                         <label htmlFor="name">Your Name</label>
-                                                        <input value={name} onChange={(e) => setName(e.target.value)} type="text" className="cutOut" id="name" placeholder="Your Name" required />
+                                                        <input onChange={(e) => setReservationState({ name: e.target.value })} type="text" className="cutOut" id="name" placeholder="Your Name" required />
                                                     </div>
                                                     <div className="col-md-6">
                                                         <label htmlFor="phone" >Your Phone Number</label>
-                                                        <input value={phone} onChange={(e) => setPhone(e.target.value)} type="number" className="cutOut" id="phone" placeholder="Your Phone Number" required />
-                                                        {alertCheck ? (
+                                                        <input onChange={(e) => setReservationState({ phone: e.target.value })} type="number" className="cutOut" id="phone" placeholder="Your Phone Number" required />
+                                                        {reservationState.alertCheck ? (
                                                             <p className="m-0 pt-1 text-danger">Phone number invalid!</p>
                                                         ) : null}
                                                     </div>
@@ -275,22 +278,22 @@ function Reservation() {
                                             {candecode?.userRole === 1.5 ? (
                                                 <div className="col-md-6">
                                                     <label htmlFor="phone" >Your Phone Number</label>
-                                                    <input value={phone} onChange={(e) => setPhone(e.target.value)} type="number" className="cutOut" id="phone" placeholder="Your Phone Number" required />
-                                                    {alertCheck ? (
+                                                    <input onChange={(e) => setReservationState({ phone: e.target.value })} type="number" className="cutOut" id="phone" placeholder="Your Phone Number" required />
+                                                    {reservationState.alertCheck ? (
                                                         <p className="m-0 pt-1 text-danger">Phone number invalid!</p>
                                                     ) : null}
                                                 </div>
                                             ) : null}
                                             <div className="col-md-6">
                                                 <label htmlFor="datetime" >Date & Time</label>
-                                                <input onChange={(e) => setDate(e.target.value)} type="datetime-local" className="cutOut datetimepicker-input" id="datetime" placeholder="📅" required />
-                                                {checkDate ? (
+                                                <input onChange={(e) => setReservationState({ date: e.target.value })} type="datetime-local" className="cutOut datetimepicker-input" id="datetime" placeholder="📅" required />
+                                                {reservationState.checkDate ? (
                                                     <p className="m-0 pt-1 text-danger">Date can't smaller than today!</p>
                                                 ) : null}
                                             </div>
                                             <div className="col-md-6">
                                                 <label htmlFor="select1">No Of People</label>
-                                                <select value={people} onChange={(e) => setPeople(e.target.value)} className="cutOut" id="select1" required>
+                                                <select onChange={(e) => setReservationState({ people: e.target.value })} className="cutOut" id="select1" required>
                                                     <option value={1}>People 1</option>
                                                     <option value={2}>People 2</option>
                                                     <option value={3}>People 3</option>
@@ -301,7 +304,7 @@ function Reservation() {
                                             </div>
                                             <div className="col-12">
                                                 <label htmlFor="message">Note</label>
-                                                <textarea value={message} onChange={(e) => setMessage(e.target.value)} className="cutOut" placeholder="Special Request" id="message" style={{ height: 100 + "px" }}></textarea>
+                                                <textarea onChange={(e) => setReservationState({ message: e.target.value })} className="cutOut" placeholder="Special Request" id="message" style={{ height: 100 + "px" }}></textarea>
                                             </div>
                                             <div className="col-12">
                                                 <button className="btn btn-primary w-100 py-3" type="submit">Book Now</button>

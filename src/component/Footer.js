@@ -1,14 +1,18 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useReducer } from "react";
 import { NavLink } from "react-router-dom";
 import axios from 'axios'
 import HTMLReactParser from "html-react-parser";
 import socketIOClient from "socket.io-client";
 
 function Footer() {
-    const [address, setAddress] = useState()
-    const [phone, setPhone] = useState()
-    const [email, setEmail] = useState()
-    const [time, setTime] = useState()
+    const [footerState, setFooterState] = useReducer((prev, next) => ({
+        ...prev, ...next
+    }), {
+        address: null,
+        phone: null,
+        email: null,
+        time: null,
+    })
     const socketRef = useRef();
 
     const called = () => {
@@ -18,10 +22,7 @@ function Footer() {
         }
         axios(configuration)
             .then((res) => {
-                setAddress(res.data.data.word.up)
-                setPhone(res.data.data.word.middle)
-                setEmail(res.data.data.word.down)
-                setTime(res.data.data.word.time)
+                setFooterState({ address: res.data.data.word.up, phone: res.data.data.word.middle, email: res.data.data.word.down, time: res.data.data.word.time })
             }).catch((err) => {
                 console.log(err);
             })
@@ -61,7 +62,7 @@ function Footer() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    const dataTel = `tel:${HTMLReactParser(`${phone}`)}`
+    const dataTel = `tel:${HTMLReactParser(`${footerState.phone}`)}`
     return (
         <div className="container-fluid bg-dark text-light footer pt-5 fadeIn">
             <div className="container py-5">
@@ -80,13 +81,13 @@ function Footer() {
                     <div className="col-lg-3 col-md-6">
                         <h4 className="section-title ff-secondary text-start text-primary fw-normal mb-4">Opening</h4>
                         <h5 className="text-light fw-normal">All week</h5>
-                        <p>{HTMLReactParser(`${time}`)}</p>
+                        <p>{HTMLReactParser(`${footerState.time}`)}</p>
                     </div>
                     <div className="col-lg-3 col-md-6">
                         <h4 className="section-title ff-secondary text-start text-primary fw-normal mb-4">Contact</h4>
-                        <p className="mb-2"><svg style={{ fill: "#fff" }} className="me-3" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 384 512"><path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z" /></svg>{HTMLReactParser(`${address}`)}</p>
-                        <a className="footerTel" href={dataTel}><p className="mb-2"><svg style={{ fill: "#fff" }} className="me-3" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M280 0C408.1 0 512 103.9 512 232c0 13.3-10.7 24-24 24s-24-10.7-24-24c0-101.6-82.4-184-184-184c-13.3 0-24-10.7-24-24s10.7-24 24-24zm8 192a32 32 0 1 1 0 64 32 32 0 1 1 0-64zm-32-72c0-13.3 10.7-24 24-24c75.1 0 136 60.9 136 136c0 13.3-10.7 24-24 24s-24-10.7-24-24c0-48.6-39.4-88-88-88c-13.3 0-24-10.7-24-24zM117.5 1.4c19.4-5.3 39.7 4.6 47.4 23.2l40 96c6.8 16.3 2.1 35.2-11.6 46.3L144 207.3c33.3 70.4 90.3 127.4 160.7 160.7L345 318.7c11.2-13.7 30-18.4 46.3-11.6l96 40c18.6 7.7 28.5 28 23.2 47.4l-24 88C481.8 499.9 466 512 448 512C200.6 512 0 311.4 0 64C0 46 12.1 30.2 29.5 25.4l88-24z" /></svg>{HTMLReactParser(`${phone}`)}</p></a>
-                        <p className="mb-2"><svg style={{ fill: "#fff" }} className="me-3" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48H48zM0 176V384c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V176L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z" /></svg>{HTMLReactParser(`${email}`)}</p>
+                        <p className="mb-2"><svg style={{ fill: "#fff" }} className="me-3" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 384 512"><path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z" /></svg>{HTMLReactParser(`${footerState.address}`)}</p>
+                        <a className="footerTel" href={dataTel}><p className="mb-2"><svg style={{ fill: "#fff" }} className="me-3" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M280 0C408.1 0 512 103.9 512 232c0 13.3-10.7 24-24 24s-24-10.7-24-24c0-101.6-82.4-184-184-184c-13.3 0-24-10.7-24-24s10.7-24 24-24zm8 192a32 32 0 1 1 0 64 32 32 0 1 1 0-64zm-32-72c0-13.3 10.7-24 24-24c75.1 0 136 60.9 136 136c0 13.3-10.7 24-24 24s-24-10.7-24-24c0-48.6-39.4-88-88-88c-13.3 0-24-10.7-24-24zM117.5 1.4c19.4-5.3 39.7 4.6 47.4 23.2l40 96c6.8 16.3 2.1 35.2-11.6 46.3L144 207.3c33.3 70.4 90.3 127.4 160.7 160.7L345 318.7c11.2-13.7 30-18.4 46.3-11.6l96 40c18.6 7.7 28.5 28 23.2 47.4l-24 88C481.8 499.9 466 512 448 512C200.6 512 0 311.4 0 64C0 46 12.1 30.2 29.5 25.4l88-24z" /></svg>{HTMLReactParser(`${footerState.phone}`)}</p></a>
+                        <p className="mb-2"><svg style={{ fill: "#fff" }} className="me-3" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48H48zM0 176V384c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V176L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z" /></svg>{HTMLReactParser(`${footerState.email}`)}</p>
                         <div className="d-flex pt-2">
                             <a href="https://twitter.com/" className="btn btn-outline-light btn-social p-0 twit" title="X-Twitter"><svg className="brandtwit" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="80 0 350 500"><path d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L272.9 180.9 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z" /></svg></a>
                             <a href="https://www.facebook.com/" className="btn btn-outline-light btn-social p-0 faceb" title="Facebook"><svg className="brandfaceb" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="30 0 450 500"><path d="M504 256C504 119 393 8 256 8S8 119 8 256c0 123.78 90.69 226.38 209.25 245V327.69h-63V256h63v-54.64c0-62.15 37-96.48 93.67-96.48 27.14 0 55.52 4.84 55.52 4.84v61h-31.28c-30.8 0-40.41 19.12-40.41 38.73V256h68.78l-11 71.69h-57.78V501C413.31 482.38 504 379.78 504 256z" /></svg></a>
@@ -104,7 +105,7 @@ function Footer() {
                     </div>
                 </div>
             </div>
-        </div >
+        </div>
     );
 }
 export default Footer;

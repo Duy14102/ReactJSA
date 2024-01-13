@@ -104,7 +104,7 @@ function CancelByMag({ ModalData, fulltotal, setmodal }) {
                 ) : (
                     <button onClick={() => cancelIt()} className="btn btn-primary">Yes</button>
                 )}
-                <button className="btn btn-secondary" onClick={() => setmodal(false)}>No</button>
+                <button className="btn btn-secondary" onClick={() => setmodal({ modalOpenDetail3: false })}>No</button>
             </div>
         </div>
     )

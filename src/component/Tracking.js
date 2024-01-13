@@ -1,14 +1,18 @@
-import { useState } from 'react';
+import { useReducer } from 'react';
 import '../css/Admin.css'
 import axios from 'axios';
 import Modal from 'react-modal';
 import { Fragment } from 'react';
 
 function Tracking() {
-    const [Orderid, setOrderid] = useState(0)
-    const [Order, setOrder] = useState([])
-    const [Displaytable, setDisplaytable] = useState(false)
-    const [modalOpenDetail, setModalOpenDetail] = useState(false);
+    const [trackingState, setTrackingState] = useReducer((prev, next) => ({
+        ...prev, ...next
+    }), {
+        Orderid: 0,
+        Order: [],
+        Displaytable: false,
+        modalOpenDetail: false,
+    })
 
     const searchorder = (e) => {
         e.preventDefault();
@@ -16,13 +20,12 @@ function Tracking() {
             method: 'get',
             url: 'https://eatcom.onrender.com/GetThisOrder',
             params: {
-                id: Orderid
+                id: trackingState.Orderid
             }
         }
         axios(configuration)
             .then((res) => {
-                setOrder(res.data.data)
-                setDisplaytable(true)
+                setTrackingState({ Order: res.data.data, Displaytable: true })
             }).catch((err) => {
                 console.log(err);
             })
@@ -42,14 +45,14 @@ function Tracking() {
                         <form onSubmit={(e) => searchorder(e)}>
                             <input type='submit' style={{ display: "none" }} />
                             <div className='d-flex justify-content-between w-100'>
-                                <input onInput={(e) => setOrderid(e.target.value)} placeholder='#Id' required />
+                                <input onInput={(e) => setTrackingState({ Orderid: e.target.value })} placeholder='#Id' required />
                                 <button style={{ width: 10 + "%" }} type="submit"><svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" /></svg></button>
                             </div>
                         </form>
                     </div>
                 </div>
                 <div className='pt-4'>
-                    {Displaytable ? (
+                    {trackingState.Displaytable ? (
                         <table className='table text-center'>
                             <thead>
                                 <tr style={{ whiteSpace: "nowrap" }}>
@@ -61,7 +64,7 @@ function Tracking() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {Order.map((i) => {
+                                {trackingState.Order.map((i) => {
                                     const date = new Date(i.createdAt).toLocaleDateString()
                                     const time = new Date(i.createdAt).toLocaleTimeString()
                                     const datetime = date + " - " + time
@@ -96,9 +99,9 @@ function Tracking() {
                                                 <td className='thhuhu'>{i.phonenumber}</td>
                                                 <td className='thhuhu'>{datetime}</td>
                                                 <td>{statusCheck}</td>
-                                                <td><button onClick={() => setModalOpenDetail(true)} className='btn btn-success'>Detail</button></td>
+                                                <td><button onClick={() => setTrackingState({ modalOpenDetail: true })} className='btn btn-success'>Detail</button></td>
                                             </tr>
-                                            <Modal isOpen={modalOpenDetail} onRequestClose={() => setModalOpenDetail(false)} ariaHideApp={false}
+                                            <Modal isOpen={trackingState.modalOpenDetail} onRequestClose={() => setTrackingState({ modalOpenDetail: false })} ariaHideApp={false}
                                                 style={{
                                                     overlay: {
                                                         backgroundColor: 'rgb(33 33 33 / 75%)'
@@ -198,7 +201,7 @@ function Tracking() {
                                                         </>
                                                     ) : null}
                                                 </div>
-                                                <button className='closeModal' onClick={() => setModalOpenDetail(false)}>x</button>
+                                                <button className='closeModal' onClick={() => setTrackingState({ modalOpenDetail: false })}>x</button>
                                             </Modal>
                                         </Fragment>
                                     )

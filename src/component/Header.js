@@ -2,14 +2,22 @@ import { NavLink } from "react-router-dom";
 import $ from 'jquery';
 import Cookies from "universal-cookie";
 import Modal from 'react-modal'
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useReducer } from "react";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import { googleLogout } from '@react-oauth/google';
 
 function Header({ type }) {
     const val = JSON.parse(localStorage.getItem('cart'))
-    const [GetUser, setGetUser] = useState([])
+    const [headerState, setHeaderState] = useReducer((prev, next) => ({
+        ...prev, ...next
+    }), {
+        GetUser: [],
+        logout: false,
+        search: "",
+        spinner: false,
+        debounceCall: [],
+    })
     var candecode = null
     var countVal = 0
     if (val) {
@@ -22,9 +30,6 @@ function Header({ type }) {
     if (token) {
         candecode = jwtDecode(token);
     }
-    const [logout, setLogout] = useState(false);
-    const [search, setSearch] = useState()
-
     useEffect(() => {
         if (token) {
             const decoded = jwtDecode(token);
@@ -38,7 +43,7 @@ function Header({ type }) {
                 };
                 axios(configuration)
                     .then((result) => {
-                        setGetUser(result.data)
+                        setHeaderState({ GetUser: result.data })
                     })
                     .catch((error) => {
                         console.log(error);
@@ -114,17 +119,46 @@ function Header({ type }) {
             method: "get",
             url: "https://eatcom.onrender.com/GetSearch",
             params: {
-                foodSearch: search
+                foodSearch: headerState.search
             }
         };
         axios(configuration)
             .then(() => {
-                window.location.href = `/SearchSite/${search}/nto`
+                window.location.href = `/SearchSite/${headerState.search}/nto`
             })
             .catch((error) => {
                 console.log(error);
             });
     }
+
+    useEffect(() => {
+        if (headerState.search !== "") {
+            const delayDebounceFn = setTimeout(() => {
+                setHeaderState({ spinner: true })
+                const configuration = {
+                    method: "get",
+                    url: "https://eatcom.onrender.com/GetDebounce",
+                    params: {
+                        foodSearch: headerState.search
+                    }
+                };
+                setTimeout(() => {
+                    axios(configuration)
+                        .then((res) => {
+                            setHeaderState({ spinner: false })
+                            setHeaderState({ debounceCall: res.data.data })
+                        })
+                        .catch((error) => {
+                            setHeaderState({ spinner: false })
+                            console.log(error);
+                        });
+                }, 350);
+            }, 750)
+            return () => clearTimeout(delayDebounceFn)
+        } else {
+            return () => setHeaderState({ debounceCall: [] })
+        }
+    }, [headerState.search])
 
     const logoutThis = () => {
         cookies.remove("TOKEN", { path: '/' });
@@ -153,16 +187,52 @@ function Header({ type }) {
                 </div>
                 <div className="collapse navbar-collapse" id="navbarCollapse">
                     <div className="navbar-nav ms-auto py-0 justUYI">
-                        <form onSubmit={(e) => SearchType(e)} className="responFormSearch">
-                            <div className="d-flex justify-content-between" style={{ height: 45 }}>
-                                <div className="SearchForm">
-                                    <input className="inputSearch" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search something..." required />
-                                    <input type="submit" style={{ display: "none" }}></input>
+                        <div className="responFormSearch" style={{ position: "relative" }}>
+                            <form onSubmit={(e) => SearchType(e)}>
+                                <div className="d-flex justify-content-between" style={{ height: 45 }}>
+                                    <div className="SearchForm">
+                                        <input className="inputSearch" onChange={(e) => setHeaderState({ search: e.target.value })} placeholder="Search something..." required />
+                                        <input type="submit" style={{ display: "none" }}></input>
+                                    </div>
+                                    <button className="SearchSubmit" type="submit"><svg style={{ fill: "#fff" }} xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" /></svg></button>
                                 </div>
-                                <button className="SearchSubmit" type="submit"><svg style={{ fill: "#fff" }} xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" /></svg></button>
-                            </div>
-                        </form>
-                        <button aria-labelledby="SearchButton" onClick={() => setLogout(true)} className="nav-item nav-link Wrinked nav-link-button responSearch FatherSvgSearch" to="/"><svg className="svgSearch" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" /></svg></button>
+                            </form>
+                            {headerState.search !== "" ? (
+                                <div style={{ position: "absolute", width: "100%", zIndex: 10, backgroundColor: "#fff", marginTop: 5, height: 350 }}>
+                                    <div className="underSearchNaN">
+                                        {headerState.spinner ? (
+                                            <div id="spinner" className="show position-fixed translate-middle w-100 vh-100 start-50 d-flex align-items-center justify-content-center" style={{ top: "20%" }}>
+                                                <div className="spinner-border text-primary" style={{ width: 2 + "rem", height: 2 + "rem" }} role="status">
+                                                    <span className="sr-only"></span>
+                                                </div>
+                                            </div>
+                                        ) : null}
+                                        {headerState.debounceCall?.map((i) => {
+                                            return (
+                                                <NavLink key={i._id} className="insideUnderSearchNaN2" reloadDocument to={`/DetailMenuPage/${i.foodname}/${i.foodcategory}`}>
+                                                    <div className="d-flex" style={{ gap: 15, width: "90%" }}>
+                                                        <img alt="" src={i.foodimage} width={70} height={65} />
+                                                        <div className="d-flex" style={{ flexDirection: "column", gap: 7 }}>
+                                                            <p className="m-0 text-nowrap"><b>{i.foodname}</b></p>
+                                                            <p className="m-0 text-nowrap">{i.foodcategory}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="takeKare2">
+                                                        <p className="m-0" style={{ color: "gray", fontSize: 25 }}>{">"}</p>
+                                                    </div>
+                                                </NavLink>
+                                            )
+                                        })}
+                                        {headerState.debounceCall.length > 0 ? (
+                                            <div className="wantDer2">
+                                                <NavLink reloadDocument to={`/SearchSite/${headerState.search}/nto`}>See all items</NavLink>
+                                            </div>
+                                        ) : null}
+                                    </div>
+                                </div>
+                            ) : null}
+                        </div>
+                        <button aria-labelledby="SearchButton" onClick={() => setHeaderState({ logout: true })} className="nav-item nav-link Wrinked nav-link-button responSearch FatherSvgSearch" to="/"><svg className="svgSearch" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" /></svg></button>
                         <NavLink reloadDocument to="/" activeclassname="active" className="nav-item nav-link Wrinked">Home</NavLink>
                         <div id="headups1" className="nav-item dropdown responSearch">
                             <a href="# " className="nav-link dropdown-toggle">Menu</a>
@@ -194,7 +264,7 @@ function Header({ type }) {
                     <div id="headups" className="nav-item dropdown mulHead Wrinked responSearch">
                         {token ? (
                             candecode.userRole !== 1.5 ? (
-                                Object.values(GetUser).map((i) => {
+                                Object.values(headerState.GetUser).map((i) => {
                                     const decode = jwtDecode(token)
                                     return (
                                         <div key={i._id} className="Move1">
@@ -230,7 +300,7 @@ function Header({ type }) {
                     <div className="responFormSearch">
                         {token ? (
                             candecode.userRole !== 1.5 ? (
-                                Object.values(GetUser).map((i) => {
+                                Object.values(headerState.GetUser).map((i) => {
                                     return (
                                         <Fragment key={i._id}>
                                             <div className="navbar-nav ms-auto py-0">
@@ -255,14 +325,14 @@ function Header({ type }) {
                 </div>
             </nav>
             <Modal
-                isOpen={logout} onRequestClose={() => setLogout(false)} ariaHideApp={false}
+                isOpen={headerState.logout} onRequestClose={() => setHeaderState({ logout: false })} ariaHideApp={false}
                 style={{
                     overlay: {
                         backgroundColor: 'rgb(33 33 33 / 75%)'
                     },
                     content: {
                         border: "none",
-                        top: "50%",
+                        top: "65%",
                         left: "50%",
                         right: "auto",
                         bottom: "auto",
@@ -273,12 +343,46 @@ function Header({ type }) {
                         overflow: "hidden",
                     },
                 }}>
-                <div className="searchNaN">
-                    <form onSubmit={(e) => SearchType(e)} className="SearchForm">
-                        <input className="inputSearch" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search something..." required />
-                        <input type="submit" style={{ display: "none" }}></input>
-                    </form>
-                    <button className="SearchSubmit" onClick={(e) => SearchType(e)} type="submit"><svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" /></svg></button>
+                <div style={{ height: 410 }} className={headerState.search !== "" ? "fatherSearchNaN" : null}>
+                    <div className="searchNaN">
+                        <form onSubmit={(e) => SearchType(e)} className="SearchForm">
+                            <input className="inputSearch" id="typer" onChange={(e) => setHeaderState({ search: e.target.value })} placeholder="Search something..." required />
+                            <input type="submit" style={{ display: "none" }}></input>
+                        </form>
+                        <button className="SearchSubmit" onClick={(e) => SearchType(e)} type="submit"><svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" /></svg></button>
+                    </div>
+                    {headerState.search !== "" ? (
+                        <div className="underSearchNaN">
+                            {headerState.spinner ? (
+                                <div id="spinner" className="show position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+                                    <div className="spinner-border text-primary" style={{ width: 2 + "rem", height: 2 + "rem" }} role="status">
+                                        <span className="sr-only"></span>
+                                    </div>
+                                </div>
+                            ) : null}
+                            {headerState.debounceCall?.map((i) => {
+                                return (
+                                    <NavLink key={i._id} className="insideUnderSearchNaN" reloadDocument to={`/DetailMenuPage/${i.foodname}/${i.foodcategory}`}>
+                                        <div className="d-flex" style={{ gap: 15, width: "90%" }}>
+                                            <img alt="" src={i.foodimage} width={70} height={65} />
+                                            <div className="d-flex" style={{ flexDirection: "column", gap: 7 }}>
+                                                <p className="m-0 text-nowrap"><b>{i.foodname}</b></p>
+                                                <p className="m-0 text-nowrap">{i.foodcategory}</p>
+                                            </div>
+                                        </div>
+                                        <div className="takeKare">
+                                            <p className="m-0" style={{ color: "lightgray", fontSize: 25 }}>{">"}</p>
+                                        </div>
+                                    </NavLink>
+                                )
+                            })}
+                            {headerState.debounceCall.length > 0 ? (
+                                <div className="wantDer">
+                                    <NavLink reloadDocument to={`/SearchSite/${headerState.search}/nto`}>See all items</NavLink>
+                                </div>
+                            ) : null}
+                        </div>
+                    ) : null}
                 </div>
             </Modal>
         </>

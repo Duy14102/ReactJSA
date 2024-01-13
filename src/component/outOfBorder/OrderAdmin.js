@@ -1,7 +1,7 @@
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import PropTypes from "prop-types";
-import { Fragment, useEffect, useRef } from "react";
+import { Fragment, useEffect, useRef, useReducer } from "react";
 import { useState } from "react";
 import Modal from 'react-modal';
 import Swal from "sweetalert2";
@@ -15,21 +15,25 @@ function OrderAdmin({ Data }) {
     const token = cookies.get("TOKEN")
     const decode = jwtDecode(token)
     const deliverEmployee = { id: decode.userId, email: decode.userEmail }
-    const [Accept, setAccept] = useState(false)
-    const [DenyReason, setDenyReason] = useState("")
-    const [ModalData, setModalData] = useState([])
+    const [orderAdminState, setOrderAdminState] = useReducer((prev, next) => ({
+        ...prev, ...next
+    }), {
+        Accept: false,
+        DenyReason: "",
+        ModalData: [],
+        spinner: false,
+        modalOpenDetail3: false,
+        modalOpenDetail4: false,
+        reject: false,
+    })
     const socketRef = useRef();
 
     var [modalOpenDetail2, setModalOpenDetail2] = useState(false);
-    const [spinner, setSpinner] = useState(false)
-    const [modalOpenDetail3, setModalOpenDetail3] = useState(false);
-    const [modalOpenDetail4, setModalOpenDetail4] = useState(false);
-    const [reject, setReject] = useState(false);
     useEffect(() => {
-        if (modalOpenDetail2 === false) {
-            setAccept(false)
+        if (orderAdminState.modalOpenDetail2 === false) {
+            setOrderAdminState({ Accept: false })
         }
-    }, [modalOpenDetail2])
+    }, [orderAdminState.modalOpenDetail2])
 
     function Success() {
         Swal.fire(
@@ -108,7 +112,7 @@ function OrderAdmin({ Data }) {
 
 
     const appoveOrder = (e, yolo) => {
-        const data = { id: e, userid: ModalData?.user[0].id, status: 2, employee: deliverEmployee, orderitems: yolo, empid: decode.userId }
+        const data = { id: e, userid: orderAdminState.ModalData?.user[0].id, status: 2, employee: deliverEmployee, orderitems: yolo, empid: decode.userId }
         socketRef.current.emit('UpdateStatusOrderSocket', data)
     }
 
@@ -116,13 +120,13 @@ function OrderAdmin({ Data }) {
     var kakaCheck = ""
     var total2 = 0
     var fulltotal = 0
-    if (ModalData.paymentmethod?.status === 1) {
+    if (orderAdminState.ModalData.paymentmethod?.status === 1) {
         kakaCheck = "( Unpaid )"
-    } else if (ModalData.paymentmethod?.status === 2) {
+    } else if (orderAdminState.ModalData.paymentmethod?.status === 2) {
         kakaCheck = "( Paid )"
     }
-    const date = new Date(ModalData.createdAt).toLocaleDateString()
-    const time = new Date(ModalData.createdAt).toLocaleTimeString()
+    const date = new Date(orderAdminState.ModalData.createdAt).toLocaleDateString()
+    const time = new Date(orderAdminState.ModalData.createdAt).toLocaleTimeString()
     const datemodal = date + " - " + time
 
     const denyOrderKun = (id, date, amount, reason) => {
@@ -138,9 +142,9 @@ function OrderAdmin({ Data }) {
                 reason: reason
             }
         }
-        setSpinner(true)
+        setOrderAdminState({ spinner: true })
         axios(configuration).then(() => {
-            setSpinner(false)
+            setOrderAdminState({ spinner: false })
             Success()
         }).catch(() => {
             Fail()
@@ -149,23 +153,23 @@ function OrderAdmin({ Data }) {
 
     const denyOrder = (e, id) => {
         e.preventDefault();
-        const data = { id: id, userid: ModalData?.user[0].id, reason: DenyReason, employee: deliverEmployee, status: 3, type: "Normal", empid: decode.userId }
+        const data = { id: id, userid: orderAdminState.ModalData?.user[0].id, reason: orderAdminState.DenyReason, employee: deliverEmployee, status: 3, type: "Normal", empid: decode.userId }
         socketRef.current.emit('DenyOrderSocket', data)
     }
 
     const denyOrderWait = (id) => {
-        const data = { id: id, userid: ModalData?.user[0].id, employee: deliverEmployee, status: 6, empid: decode.userId }
+        const data = { id: id, userid: orderAdminState.ModalData?.user[0].id, employee: deliverEmployee, status: 6, empid: decode.userId }
         socketRef.current.emit('DenyOrderWaitingSocket', data)
     }
 
     const denyOrderPaid = (e, id, Fu) => {
         e.preventDefault();
-        const data = { id: id, userid: ModalData?.user[0].id, reason: DenyReason, employee: deliverEmployee, status: 3, type: "Paid", fulltotal: Fu, date: ModalData.createdAt, empid: decode.userId }
+        const data = { id: id, userid: orderAdminState.ModalData?.user[0].id, reason: orderAdminState.DenyReason, employee: deliverEmployee, status: 3, type: "Paid", fulltotal: Fu, date: orderAdminState.ModalData.createdAt, empid: decode.userId }
         socketRef.current.emit('DenyOrderSocket', data)
     }
 
     const completeOrder = (type) => {
-        const data = { id: ModalData._id, userid: ModalData?.user[0].id, date: Date.now('vi'), status: 5, type: type, empid: decode.userId }
+        const data = { id: orderAdminState.ModalData._id, userid: orderAdminState.ModalData?.user[0].id, date: Date.now('vi'), status: 5, type: type, empid: decode.userId }
         socketRef.current.emit('CompleteOrderByEmpSocket', data)
     }
 
@@ -201,7 +205,7 @@ function OrderAdmin({ Data }) {
                                         <td className="thhuhu">{i.phonenumber}</td>
                                         <td className="thhuhu">{datetime}</td>
                                         <td>{statusCheck}</td>
-                                        <td><button onClick={() => { setModalData(i); setModalOpenDetail2(true) }} className='btn btn-success'>Detail</button></td>
+                                        <td><button onClick={() => { setOrderAdminState({ ModalData: i }); setModalOpenDetail2(true) }} className='btn btn-success'>Detail</button></td>
                                     </tr>
                                 )
                             }
@@ -217,7 +221,7 @@ function OrderAdmin({ Data }) {
                                 <td className="thhuhu">{i.phonenumber}</td>
                                 <td className="thhuhu">{datetime}</td>
                                 <td>{statusCheck}</td>
-                                <td><button onClick={() => { setModalData(i); setModalOpenDetail2(true) }} className='btn btn-success'>Detail</button></td>
+                                <td><button onClick={() => { setOrderAdminState({ ModalData: i }); setModalOpenDetail2(true) }} className='btn btn-success'>Detail</button></td>
                             </tr>
                         ) : null}
                         {decode.userRole === 3 ? (
@@ -230,10 +234,10 @@ function OrderAdmin({ Data }) {
                                 <td className="thhuhu">{i.phonenumber}</td>
                                 <td className="thhuhu">{datetime}</td>
                                 <td>{statusCheck}</td>
-                                <td><button onClick={() => { setModalData(i); setModalOpenDetail2(true) }} className='btn btn-success'>Detail</button></td>
+                                <td><button onClick={() => { setOrderAdminState({ ModalData: i }); setModalOpenDetail2(true) }} className='btn btn-success'>Detail</button></td>
                             </tr>
                         ) : null}
-                    </Fragment >
+                    </Fragment>
                 )
             })}
             <Modal id="otpModal" isOpen={modalOpenDetail2} onRequestClose={() => setModalOpenDetail2(false)} ariaHideApp={false}
@@ -256,7 +260,7 @@ function OrderAdmin({ Data }) {
                         zIndex: 999
                     },
                 }}>
-                {spinner ? (
+                {orderAdminState.spinner ? (
                     <div style={{ background: "rgba(255, 255, 255, 0.6)" }} id="spinner" className="show position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
                         <div className="spinner-border text-primary" style={{ width: 3 + "rem", height: 3 + "rem" }} role="status">
                             <span className="sr-only"></span>
@@ -265,12 +269,12 @@ function OrderAdmin({ Data }) {
                 ) : null}
                 <h2 className='text-center'>Order Detail</h2>
                 <div className="coverNOut">
-                    <p className="m-0"><b>Id</b> : {ModalData._id}</p>
+                    <p className="m-0"><b>Id</b> : {orderAdminState.ModalData._id}</p>
                     <p className="m-0"><b>Date</b> : {datemodal}</p>
                 </div>
                 <hr />
                 <div className="hugeImpace">
-                    {ModalData.user?.map((t) => {
+                    {orderAdminState.ModalData.user?.map((t) => {
                         var textSp = "( visisting guests )"
                         return (
                             <div className="coverNOut" key={t}>
@@ -279,10 +283,10 @@ function OrderAdmin({ Data }) {
                                 ) : (
                                     <p><b>Fullname</b> : {t.fullname}</p>
                                 )}
-                                {ModalData.employee?.map((o) => {
+                                {orderAdminState.ModalData.employee?.map((o) => {
                                     return (
                                         <>
-                                            {ModalData.status !== 1 ? (
+                                            {orderAdminState.ModalData.status !== 1 ? (
                                                 <p><b>Employee</b> : {o.email}</p>
                                             ) : null}
                                         </>
@@ -291,9 +295,9 @@ function OrderAdmin({ Data }) {
                             </div>
                         )
                     })}
-                    <p><b>Phone number</b> : {ModalData.phonenumber}</p>
-                    <p><b>Address</b> : {ModalData.address}</p>
-                    <p><b>Payment method</b> : {ModalData.paymentmethod?.type} {kakaCheck}</p>
+                    <p><b>Phone number</b> : {orderAdminState.ModalData.phonenumber}</p>
+                    <p><b>Address</b> : {orderAdminState.ModalData.address}</p>
+                    <p><b>Payment method</b> : {orderAdminState.ModalData.paymentmethod?.type} {kakaCheck}</p>
                     <p><b>Status</b> : {statusCheck}</p>
                 </div>
                 <table className='table table-bordered solotable'>
@@ -306,10 +310,10 @@ function OrderAdmin({ Data }) {
                         </tr>
                     </thead>
                     <tbody>
-                        {ModalData.orderitems?.map((a) => {
+                        {orderAdminState.ModalData.orderitems?.map((a) => {
                             var total = a.quantity * a.data.foodprice
                             total2 += total
-                            fulltotal = total2 + ModalData.shippingfee
+                            fulltotal = total2 + orderAdminState.ModalData.shippingfee
                             return (
                                 <tr key={a.data._id}>
                                     <td>{a.data.foodname}</td>
@@ -321,7 +325,7 @@ function OrderAdmin({ Data }) {
                         })}
                         <tr className='thhuhu'>
                             <td colSpan={3}>Shipping</td>
-                            <td>{VND.format(ModalData.shippingfee)}</td>
+                            <td>{VND.format(orderAdminState.ModalData.shippingfee)}</td>
                         </tr>
                         <tr className='thhuhu'>
                             <th colSpan={3}>Fulltotal</th>
@@ -331,7 +335,7 @@ function OrderAdmin({ Data }) {
                     <tbody className='jackass'>
                         <tr >
                             <td colSpan={2}>Shipping</td>
-                            <td>{VND.format(ModalData.shippingfee)}</td>
+                            <td>{VND.format(orderAdminState.ModalData.shippingfee)}</td>
                         </tr>
                         <tr>
                             <th colSpan={2}>Fulltotal</th>
@@ -341,18 +345,18 @@ function OrderAdmin({ Data }) {
                 </table>
                 <h5 className="text-center pt-2">Order Processing</h5>
                 <hr />
-                {ModalData.status === 2 ? (
+                {orderAdminState.ModalData.status === 2 ? (
                     <>
                         <div className="d-flex justify-content-between">
                             <p>✅ Order has been <b>Accepted</b></p>
                             <div style={{ display: "flex", gap: 10 }}>
-                                {decode.userRole === 3 && ModalData.paymentmethod?.type !== "Paypal" ? (
-                                    <button onClick={() => setModalOpenDetail3(true)} className="btn btn-danger">Cancel</button>
+                                {decode.userRole === 3 && orderAdminState.ModalData.paymentmethod?.type !== "Paypal" ? (
+                                    <button onClick={() => setOrderAdminState({ modalOpenDetail3: true })} className="btn btn-danger">Cancel</button>
                                 ) : null}
-                                {ModalData.employee?.map((i) => {
+                                {orderAdminState.ModalData.employee?.map((i) => {
                                     if (i.id === decode.userId) {
                                         return (
-                                            ModalData.paymentmethod.status === 1 ? (
+                                            orderAdminState.ModalData.paymentmethod.status === 1 ? (
                                                 <button onClick={() => completeOrder(2)} className="btn btn-primary">Complete Order</button>
                                             ) : (
                                                 <button onClick={() => completeOrder(1)} className="btn btn-primary">Complete Order</button>
@@ -366,72 +370,72 @@ function OrderAdmin({ Data }) {
                     </>
                 ) : null}
                 <div className="d-flex justify-content-around">
-                    {ModalData.status === 1 ? (
+                    {orderAdminState.ModalData.status === 1 ? (
                         <>
-                            {Accept ? (
+                            {orderAdminState.Accept ? (
                                 <button style={{ pointerEvents: "none", opacity: 0.4 }} className="btn btn-success">Accept</button>
                             ) : (
-                                <button onClick={() => appoveOrder(ModalData._id, ModalData.orderitems)} className="btn btn-success">Accept</button>
+                                <button onClick={() => appoveOrder(orderAdminState.ModalData._id, orderAdminState.ModalData.orderitems)} className="btn btn-success">Accept</button>
                             )}
-                            {decode.userRole === 3 && (ModalData.paymentmethod.type === "Vnpay" || ModalData.paymentmethod.type === "COD") ? (
-                                <button onClick={() => setAccept(true)} className="btn btn-danger">Deny</button>
+                            {decode.userRole === 3 && (orderAdminState.ModalData.paymentmethod.type === "Vnpay" || orderAdminState.ModalData.paymentmethod.type === "COD") ? (
+                                <button onClick={() => setOrderAdminState({ Accept: true })} className="btn btn-danger">Deny</button>
                             ) : null}
                         </>
                     ) : null}
                 </div>
-                {ModalData.status === 4 ? (
+                {orderAdminState.ModalData.status === 4 ? (
                     <>
                         <div className="d-flex justify-content-between">
                             <p>🕒 Order is waiting to <b>Cancel</b></p>
-                            {decode.userRole === 3 && ModalData.paymentmethod?.type === "Vnpay" ? (
-                                <button onClick={() => setModalOpenDetail4(true)} className="btn btn-danger">Cancel</button>
+                            {decode.userRole === 3 && orderAdminState.ModalData.paymentmethod?.type === "Vnpay" ? (
+                                <button onClick={() => setOrderAdminState({ modalOpenDetail4: true })} className="btn btn-danger">Cancel</button>
                             ) : null}
-                            {decode.userRole === 3 && ModalData.paymentmethod?.type === "COD" ? (
-                                <button onClick={() => setReject(true)} className="btn btn-danger">Cancel</button>
+                            {decode.userRole === 3 && orderAdminState.ModalData.paymentmethod?.type === "COD" ? (
+                                <button onClick={() => setOrderAdminState({ reject: true })} className="btn btn-danger">Cancel</button>
                             ) : null}
                         </div>
-                        <p>Reason : {ModalData.denyreason}</p>
+                        <p>Reason : {orderAdminState.ModalData.denyreason}</p>
                     </>
                 ) : null}
-                {Accept ? (
+                {orderAdminState.Accept ? (
                     <div className="pt-3">
                         <p>Reason why deny : </p>
-                        {ModalData.paymentmethod.status === 2 && ModalData.paymentmethod.type === "Vnpay" ? (
-                            <form onSubmit={(e) => denyOrderPaid(e, ModalData._id, fulltotal)}>
-                                <textarea value={DenyReason} onChange={(e) => setDenyReason(e.target.value)} className="textDeny" required />
+                        {orderAdminState.ModalData.paymentmethod.status === 2 && orderAdminState.ModalData.paymentmethod.type === "Vnpay" ? (
+                            <form onSubmit={(e) => denyOrderPaid(e, orderAdminState.ModalData._id, fulltotal)}>
+                                <textarea value={orderAdminState.DenyReason} onChange={(e) => setOrderAdminState({ DenyReason: e.target.value })} className="textDeny" required />
                                 <div style={{ gap: 1 + "%" }} className="d-flex mt-2">
                                     <button type="submit" className="btn btn-primary ">Comfirm</button>
-                                    <button onClick={() => setAccept(false)} className="btn btn-secondary ">Cancel</button>
+                                    <button onClick={() => setOrderAdminState({ Accept: false })} className="btn btn-secondary ">Cancel</button>
                                 </div>
                             </form>
                         ) : (
-                            <form onSubmit={(e) => denyOrder(e, ModalData._id)}>
-                                <textarea value={DenyReason} onChange={(e) => setDenyReason(e.target.value)} className="textDeny" required />
+                            <form onSubmit={(e) => denyOrder(e, orderAdminState.ModalData._id)}>
+                                <textarea value={orderAdminState.DenyReason} onChange={(e) => setOrderAdminState({ DenyReason: e.target.value })} className="textDeny" required />
                                 <div style={{ gap: 1 + "%" }} className="d-flex mt-2">
                                     <button type="submit" className="btn btn-primary ">Comfirm</button>
-                                    <button onClick={() => setAccept(false)} className="btn btn-secondary ">Cancel</button>
+                                    <button onClick={() => setOrderAdminState({ Accept: false })} className="btn btn-secondary ">Cancel</button>
                                 </div>
                             </form>
                         )}
                     </div>
                 ) : null}
-                {reject ? (
+                {orderAdminState.reject ? (
                     <div className="pt-3">
                         <h5 className="text-center pb-2">Are you sure ?</h5>
                         <div className="d-flex justify-content-evenly align-items-center">
-                            <button className="btn btn-primary" onClick={() => denyOrderWait(ModalData._id)}>Yes</button>
-                            <button className="btn btn-secondary" onClick={() => setReject(false)}>No</button>
+                            <button className="btn btn-primary" onClick={() => denyOrderWait(orderAdminState.ModalData._id)}>Yes</button>
+                            <button className="btn btn-secondary" onClick={() => setOrderAdminState({ reject: false })}>No</button>
                         </div>
                     </div>
                 ) : null}
-                {modalOpenDetail4 ? (
-                    <CancelRequest fulltotal={fulltotal} ModalData={ModalData} setmodal={setModalOpenDetail4} />
+                {orderAdminState.modalOpenDetail4 ? (
+                    <CancelRequest fulltotal={fulltotal} ModalData={orderAdminState.ModalData} setmodal={setOrderAdminState} />
                 ) : null}
-                {modalOpenDetail3 ? (
-                    <CancelByMag fulltotal={fulltotal} ModalData={ModalData} setmodal={setModalOpenDetail3} />
+                {orderAdminState.modalOpenDetail3 ? (
+                    <CancelByMag fulltotal={fulltotal} ModalData={orderAdminState.ModalData} setmodal={setOrderAdminState} />
                 ) : null}
                 <button className='closeModal' onClick={() => setModalOpenDetail2(false)}>x</button>
-            </Modal >
+            </Modal>
         </>
     )
 }

@@ -2,25 +2,29 @@ import NotFound from "../component/outOfBorder/NotFound";
 import Layout from "../Layout";
 import axios from "axios";
 import TransactionUI from "../component/outOfBorder/TransactionUI";
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useReducer } from "react";
 import { NavLink } from "react-router-dom";
 import socketIOClient from "socket.io-client";
 import "../css/Cart.css";
 
 function OrderComplete() {
     const socketRef = useRef();
-    const [data, setData] = useState(false)
-    const [remove, setRemove] = useState(false)
+    const [completeState, setCompleteState] = useReducer((prev, next) => ({
+        ...prev, ...next
+    }), {
+        data: false,
+        remove: false,
+        responseCode: null,
+        amount: null,
+        date: null,
+    })
     const ahoe = localStorage.getItem("complete")
     const ahoeGuys = JSON.parse(ahoe)
-    const [responseCode, setResponseCode] = useState()
-    const [amount, setAmount] = useState()
-    const [date, setDate] = useState()
     const queryParameters = new URLSearchParams(window.location.search)
 
     useEffect(() => {
-        if (remove) {
-            setRemove(false)
+        if (completeState.remove) {
+            setCompleteState({ remove: false })
             return NotFound()
         }
 
@@ -40,9 +44,9 @@ function OrderComplete() {
             var sendDate = new Date(year, month - 1, day, hour, minute, second)
             var dow = new Date(year, month - 1, day, hour, minute, second).toLocaleDateString()
             var tim = new Date(year, month - 1, day, hour, minute, second).toLocaleTimeString()
-            setDate(dow + " - " + tim)
-            setAmount(type2)
-            setResponseCode(type)
+            setCompleteState({ date: dow + " - " + tim })
+            setCompleteState({ amount: type2 })
+            setCompleteState({ responseCode: type })
 
             var kakao = null
             if (type === '24') {
@@ -111,14 +115,14 @@ function OrderComplete() {
         if (queryParameters.size === 1) {
             const type = queryParameters.get("status")
             if (type === "COMPLETED") {
-                setData(true)
+                setCompleteState({ data: true })
                 const data3 = { orderid: ahoeGuys.orderid, userid: ahoeGuys?.userid }
                 socketRef.current.emit('PaidPaypalPaymentSocket', data3)
             }
         }
 
         if (queryParameters.size === 0) {
-            setData(true)
+            setCompleteState({ data: true })
             const data4 = { orderid: ahoeGuys.orderid, userid: ahoeGuys?.userid }
             socketRef.current.emit('PaidCodPaymentSocket', data4)
         }
@@ -131,15 +135,15 @@ function OrderComplete() {
     }, [ahoe])
 
     setTimeout(() => {
-        setRemove(true)
+        setCompleteState({ remove: true })
     }, 60000);
-    
+
     return (
         <Layout>
             <div className="bg-white">
                 <div style={{ height: 50 + "vh" }}>
                     <div className="container text-center">
-                        {data ? (
+                        {completeState.data ? (
                             <>
                                 <div className="py-5 businessWay">
                                     <NavLink className="joiboy" to="/Cart"> Shopping Cart</NavLink> <span className='slash'>˃</span> <NavLink className="joiboy" to="/CheckOut">Checkout Details</NavLink> <span className='slash'>˃</span> <NavLink className="joiboy" to="/OrderComplete">Order Complete</NavLink>
@@ -149,7 +153,7 @@ function OrderComplete() {
                                 <NavLink to="/" className="returnP">Return to homepage</NavLink>
                             </>
                         ) : (
-                            <TransactionUI ahoe={ahoeGuys} amount={amount} responseCode={responseCode} date={date} />
+                            <TransactionUI ahoe={ahoeGuys} amount={completeState.amount} responseCode={completeState.responseCode} date={completeState.date} />
                         )}
                     </div>
                 </div>
