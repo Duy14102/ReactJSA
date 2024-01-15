@@ -1,6 +1,7 @@
 // Backed and express
 const express = require('express');
 const http = require("http");
+const https = require("https")
 const app = express();
 const server = http.createServer(app);
 // Connect to MongoDB
@@ -733,10 +734,11 @@ socketIo.on("connection", (socket) => {
 });
 
 // Refresh server
-http.createServer(function (req, res) {
-    res.write("Refresh")
-    res.end()
-}).listen(3000)
+setInterval(() => {
+    https.get("https://eatcom.onrender.com", (resa) => {
+        console.log("Refresh");
+    })
+}, 1740000);
 
 //GetBgHero
 app.get("/GetHeroUI", async (req, res) => {
