@@ -733,9 +733,10 @@ socketIo.on("connection", (socket) => {
 });
 
 // Refresh server
-setInterval(() => {
-    console.log("Refresh")
-}, 1740000);
+http.createServer(function (req, res) {
+    res.write("Refresh")
+    res.end()
+}).listen(3000)
 
 //GetBgHero
 app.get("/GetHeroUI", async (req, res) => {
