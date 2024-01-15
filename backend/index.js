@@ -738,7 +738,7 @@ setInterval(() => {
     https.get("https://eatcom.onrender.com", (resa) => {
         console.log("Refresh");
     })
-}, 1740000);
+}, 600000);
 
 //GetBgHero
 app.get("/GetHeroUI", async (req, res) => {
