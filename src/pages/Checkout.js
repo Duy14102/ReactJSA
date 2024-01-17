@@ -28,6 +28,7 @@ function Checkout() {
         phonenumber: "",
         address: "",
         bankCode: null,
+        bankList: null,
         FullnameToken: "",
         LoadAddress: []
     })
@@ -41,6 +42,10 @@ function Checkout() {
         candecode = jwtDecode(token)
     }
     havePhone.push(checkoutState.address)
+
+    window.addEventListener("beforeunload", e => {
+        e.preventDefault()
+    })
 
     useEffect(() => {
         const getDetailUser = () => {
@@ -131,6 +136,22 @@ function Checkout() {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [checkoutState.paypalState])
+
+    //Call bank list api
+    useEffect(() => {
+        if (checkoutState.vnpay) {
+            const configurationX = {
+                method: "get",
+                url: "https://api.vietqr.io/v2/banks"
+            }
+            axios(configurationX)
+                .then((res) => {
+                    setCheckoutState({ bankList: res.data.data })
+                }).catch((er) => {
+                    console.log(er);
+                })
+        }
+    }, [checkoutState.vnpay])
 
     if (token) {
         const decode3 = jwtDecode(token)
@@ -455,41 +476,11 @@ function Checkout() {
                                         {checkoutState.vnpay ? (
                                             <select onChange={(e) => setCheckoutState({ bankCode: e.target.value })} name="bankcode" id="bankcode" className="form-control bg-white mt-4" required>
                                                 <option value="">Không chọn</option>
-                                                <option value="MBAPP">Ung dung MobileBanking</option>
-                                                <option value="VNPAYQR">VNPAYQR</option>
-                                                <option value="VNBANK">LOCAL BANK</option>
-                                                <option value="IB">INTERNET BANKING</option>
-                                                <option value="ATM">ATM CARD</option>
-                                                <option value="INTCARD">INTERNATIONAL CARD</option>
-                                                <option value="VISA">VISA</option>
-                                                <option value="MASTERCARD"> MASTERCARD</option>
-                                                <option value="JCB">JCB</option>
-                                                <option value="UPI">UPI</option>
-                                                <option value="VIB">VIB</option>
-                                                <option value="VIETCAPITALBANK">VIETCAPITALBANK</option>
-                                                <option value="SCB">Ngan hang SCB</option>
-                                                <option value="NCB">Ngan hang NCB</option>
-                                                <option value="SACOMBANK">Ngan hang SacomBank  </option>
-                                                <option value="EXIMBANK">Ngan hang EximBank </option>
-                                                <option value="MSBANK">Ngan hang MSBANK </option>
-                                                <option value="NAMABANK">Ngan hang NamABank </option>
-                                                <option value="VNMART"> Vi dien tu VnMart</option>
-                                                <option value="VIETINBANK">Ngan hang Vietinbank  </option>
-                                                <option value="VIETCOMBANK">Ngan hang VCB </option>
-                                                <option value="HDBANK">Ngan hang HDBank</option>
-                                                <option value="DONGABANK">Ngan hang Dong A</option>
-                                                <option value="TPBANK">Ngân hàng TPBank </option>
-                                                <option value="OJB">Ngân hàng OceanBank</option>
-                                                <option value="BIDV">Ngân hàng BIDV </option>
-                                                <option value="TECHCOMBANK">Ngân hàng Techcombank </option>
-                                                <option value="VPBANK">Ngan hang VPBank </option>
-                                                <option value="AGRIBANK">Ngan hang Agribank </option>
-                                                <option value="MBBANK">Ngan hang MBBank </option>
-                                                <option value="ACB">Ngan hang ACB </option>
-                                                <option value="OCB">Ngan hang OCB </option>
-                                                <option value="IVB">Ngan hang IVB </option>
-                                                <option value="SHB">Ngan hang SHB </option>
-                                                <option value="APPLEPAY">Apple Pay </option>
+                                                {checkoutState.bankList?.map((j) => {
+                                                    return (
+                                                        <option key={j.id} value={j.code}>{j.shortName}</option>
+                                                    )
+                                                })}
                                             </select>
                                         ) : null}
                                     </>
