@@ -52,8 +52,6 @@ function Header({ type }) {
         }
         var items = document.getElementById("buttonCollapse")
         var collapse = document.getElementById("navbarCollapse")
-        var dropdownToggle1 = document.getElementById("headups1")
-        var dropdownMenu1 = document.getElementById("firstLv2")
         var dropdownToggle2 = document.getElementById("secondLv1")
         var dropdownMenu2 = document.getElementById("secondLv2")
         var showClass = "show"
@@ -63,14 +61,6 @@ function Header({ type }) {
             } else {
                 collapse.classList.add(showClass)
             }
-        }, { passive: true })
-
-        dropdownToggle1.addEventListener("mouseenter", function () {
-            dropdownMenu1.classList.add(showClass)
-        }, { passive: true })
-
-        dropdownToggle1.addEventListener("mouseleave", function () {
-            dropdownMenu1.classList.remove(showClass)
         }, { passive: true })
 
         dropdownToggle2.addEventListener("click", function () {
@@ -235,20 +225,10 @@ function Header({ type }) {
                         <button aria-labelledby="SearchButton" onClick={() => setHeaderState({ logout: true })} className="nav-item nav-link Wrinked nav-link-button responSearch FatherSvgSearch" to="/"><svg className="svgSearch" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352a144 144 0 1 0 0-288 144 144 0 1 0 0 288z" /></svg></button>
                         <NavLink reloadDocument to="/" activeclassname="active" className="nav-item nav-link Wrinked">Home</NavLink>
                         <div id="headups1" className="nav-item dropdown responSearch">
-                            <a href="# " className="nav-link dropdown-toggle">Menu</a>
-                            <div className="dropdown-menu m-0 text-center" id="firstLv2">
-                                <NavLink reloadDocument to="/CategorySite/Meat/nto" className="dropdown-item">Meat</NavLink>
-                                <NavLink reloadDocument to="/CategorySite/Drink/nto" className="dropdown-item">Drink</NavLink>
-                                <NavLink reloadDocument to="/CategorySite/Vegetables/nto" className="dropdown-item">Vegetables</NavLink>
-                            </div>
+                            <NavLink reloadDocument to="/CategorySite/Menu/nto" className="nav-link">Menu</NavLink>
                         </div>
                         <div id="headups2" className="nav-item Wrinked dropdown responFormSearch">
-                            <a href="# " className="nav-link dropdown-toggle" id="secondLv1">Menu</a>
-                            <div className="dropdown-menu m-0 text-center" id="secondLv2">
-                                <NavLink reloadDocument to="/CategorySite/Meat/nto" className="dropdown-item">Meat</NavLink>
-                                <NavLink reloadDocument to="/CategorySite/Drink/nto" className="dropdown-item">Drink</NavLink>
-                                <NavLink reloadDocument to="/CategorySite/Vegetables/nto" className="dropdown-item">Vegetables</NavLink>
-                            </div>
+                            <NavLink reloadDocument to="/CategorySite/Menu/nto" className="nav-link" id="secondLv1">Menu</NavLink>
                         </div>
                         <NavLink reloadDocument to="/Announcement" className="nav-item nav-link Wrinked">Announcement</NavLink>
                         <NavLink reloadDocument to="/TrackOrder" className="nav-item nav-link Wrinked">Track Order</NavLink>

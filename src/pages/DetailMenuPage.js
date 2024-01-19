@@ -35,6 +35,7 @@ function DetailMenuPage() {
         checkKiu: false,
         callAlert: false,
         gotReview: null,
+        topping: [],
         pageCount: 6
     })
     var [reviewName, setReviewName] = useState()
@@ -123,6 +124,20 @@ function DetailMenuPage() {
                 method: "get",
             }).then((res) => res.json()).then((menu) => {
                 setDetailState({ getUserW: menu });
+            })
+        }
+
+        fetch(`https://eatcom.onrender.com/GetSimilarP?Name=${appler.cate}`, {
+            method: "get",
+        }).then((res) => res.json()).then((menu) => {
+            setDetailState({ menu: menu.data });
+        })
+
+        if (appler.cate === "Main") {
+            fetch(`https://eatcom.onrender.com/GetTopping`, {
+                method: "get",
+            }).then((res) => res.json()).then((menu) => {
+                setDetailState({ topping: menu.data });
             })
         }
 
@@ -300,6 +315,23 @@ function DetailMenuPage() {
         currency: 'VND',
     });
     const rating = stars => '★★★★★☆☆☆☆☆'.slice(5 - stars, 10 - stars);
+    function getStars(rating) {
+        var kings = null
+        const stars = [];
+        rating?.map((l) => {
+            kings += parseInt(l.star)
+            return null
+        })
+        const queen = kings / rating?.length
+        for (let i = 0; i < 5; i++) {
+            if (queen - 1 < i) {
+                stars.push(<span key={i} className='starGlow'>☆</span>);
+            } else {
+                stars.push(<span key={i} className='starGlow'>★</span>);
+            }
+        }
+        return stars;
+    }
     return (
         <Layout>
             {detailState.callAlert ? (
@@ -310,58 +342,69 @@ function DetailMenuPage() {
                     </div>
                 </div>
             ) : null}
-            <div className='bg-white'>
+            <div style={{ backgroundColor: "#f2f2f2" }}>
                 {Object.values(detailState.detail).map(i => {
                     if (quantity > i.foodquantity) {
                         quantity = i.foodquantity;
                     }
                     return (
                         <Fragment key={i._id}>
-                            <div className="container py-5">
-                                <p><NavLink reloadDocument className="Allright" to="/">Home</NavLink> / <NavLink reloadDocument className="Allright" to={`/CategorySite/${i.foodcategory}/nto`}>{i.foodcategory}</NavLink> / <NavLink to="# " state={{ id: i._id }} className="Allright">{i.foodname}</NavLink></p>
-                                <div className="buhhuh">
-                                    <img loading="lazy" alt='' src={i.foodimage} className='thisImageRespon' />
-                                    <div className='sonbuhhuh'>
-                                        <div className="product-dtl">
-                                            <div className="product-info">
+                            <div className='bg-white'>
+                                <div className='container'>
+                                    <div className="buhhuh">
+                                        <img loading="lazy" alt='' src={i.foodimage} className='thisImageRespon' />
+                                        <div className='sonbuhhuh'>
+                                            <p><NavLink reloadDocument className="Allright" to="/">Home</NavLink> / <NavLink reloadDocument className="Allright" to={`/CategorySite/${i.foodcategory}/nto`}>{i.foodcategory}</NavLink> / <NavLink to="# " state={{ id: i._id }} className="Allright">{i.foodname}</NavLink></p>
+                                            <div className="product-dtl">
                                                 <div className="product-name">{i.foodname}</div>
-                                                <div className="product-price-discount"><span>{VND.format(i.foodprice)}</span></div>
-                                            </div>
+                                                <div className='d-flex align-items-center' style={{ gap: 10 }}>
+                                                    <div className='d-flex' style={{ gap: 1 }}>
+                                                        {getStars(i.review)}
+                                                    </div>
+                                                    <p className='m-0'><span className='starGlowFriend'>{i.review.length}</span> review from customer</p>
+                                                </div>
+                                                <div className='d-flex align-items-center' style={{ gap: 15 }}>
+                                                    <div className='d-flex align-items-center' style={{ gap: 5 }}>
+                                                        <div className='statusProMax' style={{ backgroundColor: i.foodquantity > 0 ? "#6cc942" : "tomato" }}></div>
+                                                        <p className='m-0' style={{ color: i.foodquantity > 0 ? "#6cc942" : "tomato" }}>{i.foodquantity > 0 ? "Stocking" : "Out of stock"}</p>
+                                                    </div>
+                                                    <div className="product-price-discount"><span className='coverThisMoney'>$</span>{VND.format(i.foodprice)}</div>
+                                                </div>
 
-                                            <p>Quantity : {i.foodquantity}</p>
+                                                <p>{i.fooddescription}</p>
 
-                                            <p>{i.review.length} review from customer</p>
-
-                                            <div className="product-count gotThisFlex">
-                                                <div>
-                                                    <label>Quantity</label>
+                                                <div className="product-count gotThisFlex">
+                                                    <div>
+                                                        {i.foodquantity > 0 ? (
+                                                            <div className='d-flex'>
+                                                                <button onClick={() => handleDecrement()} className="btn btn-secondary">-</button>
+                                                                <input type="number" min={1} max={i.foodquantity} value={quantity} className='qty mx-1' readOnly />
+                                                                <button onClick={() => handleIncrement(i.foodquantity)} className="btn btn-secondary">+</button>
+                                                            </div>
+                                                        ) : (
+                                                            <div style={{ pointerEvents: "none", opacity: 0.5 }} className='d-flex'>
+                                                                <button className="btn btn-secondary">-</button>
+                                                                <input type="number" value={0} className='qty mx-1' />
+                                                                <button className="btn btn-secondary">+</button>
+                                                            </div>
+                                                        )}
+                                                    </div>
                                                     {i.foodquantity > 0 ? (
-                                                        <div className='d-flex'>
-                                                            <button onClick={() => handleDecrement()} className="btn btn-secondary">-</button>
-                                                            <input type="number" min={1} max={i.foodquantity} value={quantity} className='qty mx-1' readOnly />
-                                                            <button onClick={() => handleIncrement(i.foodquantity)} className="btn btn-secondary">+</button>
-                                                        </div>
+                                                        <button onClick={() => addToCart(i.foodname, quantity)} className="round-black-btn">Add to Cart</button>
                                                     ) : (
-                                                        <div style={{ pointerEvents: "none", opacity: 0.5 }} className='d-flex'>
-                                                            <button className="btn btn-secondary">-</button>
-                                                            <input type="number" value={0} className='qty mx-1' />
-                                                            <button className="btn btn-secondary">+</button>
-                                                        </div>
+                                                        <button style={{ pointerEvents: "none", opacity: 0.5 }} className="round-black-btn">Out of stock</button>
                                                     )}
                                                 </div>
-                                                {i.foodquantity > 0 ? (
-                                                    <button onClick={() => addToCart(i.foodname, quantity)} className="round-black-btn">Add to Cart</button>
-                                                ) : (
-                                                    <button style={{ pointerEvents: "none", opacity: 0.5 }} className="round-black-btn">Out of stock</button>
-                                                )}
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div className='container py-4 mt-5'>
                                 <div className="product-info-tabs">
                                     <ul className="nav nav-tabs" id="myTab" role="tablist">
                                         <li className="nav-item">
-                                            <a className="nav-link active activeThis" id="description-tab" href="#description">Description</a>
+                                            <a className="nav-link active activeThis" id="description-tab" href="#description">Topping</a>
                                         </li>
                                         <li className="nav-item">
                                             <a className="nav-link" id="review-tab" href="#review">Reviews ({i.review?.length})</a>
@@ -369,7 +412,94 @@ function DetailMenuPage() {
                                     </ul>
                                     <div className="tab-content mt-5" id="myTabContent">
                                         <div className="tab-pane active activeThis" id="description">
-                                            {i.fooddescription}
+                                            <div className='d-flex justify-content-between w-100'>
+                                                <div className='conquerLeft'>
+                                                    <button>Meat</button>
+                                                    <button>Vegetables</button>
+                                                    <button>Drink</button>
+                                                </div>
+                                                <div className='conquerRight'>
+                                                    {detailState.topping.length > 0 && appler.cate === "Main" ? (
+                                                        <>
+                                                            <p className='KickTitleJK'>Meat</p>
+                                                            <div className='py-3'>
+                                                                {detailState.topping?.map((z) => {
+                                                                    return (
+                                                                        z.foodcategory === "Meat" ? (
+                                                                            <Fragment key={z._id}>
+                                                                                <div className='d-flex justify-content-between w-100'>
+                                                                                    <div style={{ width: "10%" }}>
+                                                                                        <img src={z.foodimage} width={62} height={60} alt='' />
+                                                                                    </div>
+                                                                                    <div style={{ width: "70%" }}>
+                                                                                        <p className='m-0'><b>{z.foodname}</b></p>
+                                                                                        <p style={{ fontSize: 15, color: "gray" }}>{z.fooddescription}</p>
+                                                                                    </div>
+                                                                                    <p style={{ width: "10%", textAlign: "center" }}>{VND.format(z.foodprice)}</p>
+                                                                                    <div style={{ width: "10%", textAlign: "center" }}>
+                                                                                        <button className='plusPlusDe'>+</button>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <hr style={{ color: "lightgray", marginTop: 0 }} />
+                                                                            </Fragment>
+                                                                        ) : null
+                                                                    )
+                                                                })}
+                                                            </div>
+                                                            <p className='KickTitleJK'>Vegetables</p>
+                                                            <div className='py-3'>
+                                                                {detailState.topping?.map((z) => {
+                                                                    return (
+                                                                        z.foodcategory === "Vegetables" ? (
+                                                                            <Fragment key={z._id}>
+                                                                                <div className='d-flex justify-content-between w-100'>
+                                                                                    <div style={{ width: "10%" }}>
+                                                                                        <img src={z.foodimage} width={62} height={60} alt='' />
+                                                                                    </div>
+                                                                                    <div style={{ width: "70%" }}>
+                                                                                        <p className='m-0'><b>{z.foodname}</b></p>
+                                                                                        <p style={{ fontSize: 15, color: "gray" }}>{z.fooddescription}</p>
+                                                                                    </div>
+                                                                                    <p style={{ width: "10%", textAlign: "center" }}>{VND.format(z.foodprice)}</p>
+                                                                                    <div style={{ width: "10%", textAlign: "center" }}>
+                                                                                        <button className='plusPlusDe'>+</button>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <hr style={{ color: "lightgray", marginTop: 0 }} />
+                                                                            </Fragment>
+                                                                        ) : null
+                                                                    )
+                                                                })}
+                                                            </div>
+                                                            <p className='KickTitleJK'>Drink</p>
+                                                            <div className='py-3'>
+                                                                {detailState.topping?.map((z) => {
+                                                                    return (
+                                                                        z.foodcategory === "Drink" ? (
+                                                                            <Fragment key={z._id}>
+                                                                                <div className='d-flex justify-content-between w-100'>
+                                                                                    <div style={{ width: "10%" }}>
+                                                                                        <img src={z.foodimage} width={62} height={60} alt='' />
+                                                                                    </div>
+                                                                                    <div style={{ width: "70%" }}>
+                                                                                        <p className='m-0'><b>{z.foodname}</b></p>
+                                                                                        <p style={{ fontSize: 15, color: "gray" }}>{z.fooddescription}</p>
+                                                                                    </div>
+                                                                                    <p style={{ width: "10%", textAlign: "center" }}>{VND.format(z.foodprice)}</p>
+                                                                                    <div style={{ width: "10%", textAlign: "center" }}>
+                                                                                        <button className='plusPlusDe'>+</button>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <hr style={{ color: "lightgray", marginTop: 0 }} />
+                                                                            </Fragment>
+                                                                        ) : null
+                                                                    )
+                                                                })}
+                                                            </div>
+                                                        </>
+                                                    ) : null}
+                                                </div>
+                                            </div>
                                         </div>
                                         <div className="tab-pane" id="review">
                                             {token ? (
@@ -532,35 +662,35 @@ function DetailMenuPage() {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="container-fluid py-5 wow fadeInUp" data-wow-delay="0.1s">
-                                    <div className='container'>
-                                        <div className="text-center">
-                                            <h3 className="mb-5">
-                                                Similar product</h3>
-                                        </div>
-                                        {detailState.menu.length > 0 ?
-                                            <div className="owl-carousel testimonial-carousel2">
-                                                {detailState.menu.map(a => {
-                                                    return (
-                                                        <Fragment key={a._id}>
-                                                            {a.foodcategory === i.foodcategory && a._id !== i._id ? (
-                                                                <div className="testimonial-item bg-transparent">
-                                                                    <NavLink reloadDocument to={`/DetailMenuPage/${a.foodname}/${a.foodcategory}`}>
-                                                                        <img loading="lazy" alt='' height={200} src={a.foodimage} />
-                                                                    </NavLink>
-                                                                    <p style={{ margin: 0 }} className='text-center'>{a.foodcategory}</p>
-                                                                    <NavLink className="text-center" reloadDocument to={`/DetailMenuPage/${a._id}`}>
-                                                                        <p style={{ margin: 0, color: "#FEA116" }}><b>{a.foodname}</b></p>
-                                                                    </NavLink>
-                                                                    <h6 style={{ margin: 0 }} className='text-center'>{VND.format(a.foodprice)}</h6>
-                                                                </div>
-                                                            ) : null}
-                                                        </Fragment>
-                                                    )
-                                                })}
-                                            </div>
-                                            : ""}
+                            </div>
+                            <div className="container-fluid py-5 wow fadeInUp" data-wow-delay="0.1s">
+                                <div className='container'>
+                                    <div className="text-center">
+                                        <h3 className="mb-5">
+                                            Similar product</h3>
                                     </div>
+                                    {detailState.menu.length > 0 ?
+                                        <div className="owl-carousel testimonial-carousel2">
+                                            {detailState.menu.map(a => {
+                                                return (
+                                                    <Fragment key={a._id}>
+                                                        {a.foodcategory === i.foodcategory && a._id !== i._id ? (
+                                                            <div className="testimonial-item bg-transparent">
+                                                                <NavLink reloadDocument to={`/DetailMenuPage/${a.foodname}/${a.foodcategory}`}>
+                                                                    <img loading="lazy" alt='' height={200} src={a.foodimage} />
+                                                                </NavLink>
+                                                                <p style={{ margin: 0 }} className='text-center'>{a.foodcategory}</p>
+                                                                <NavLink className="text-center" reloadDocument to={`/DetailMenuPage/${a._id}`}>
+                                                                    <p style={{ margin: 0, color: "#FEA116" }}><b>{a.foodname}</b></p>
+                                                                </NavLink>
+                                                                <h6 style={{ margin: 0 }} className='text-center'>{VND.format(a.foodprice)}</h6>
+                                                            </div>
+                                                        ) : null}
+                                                    </Fragment>
+                                                )
+                                            })}
+                                        </div>
+                                        : ""}
                                 </div>
                             </div>
                         </Fragment>

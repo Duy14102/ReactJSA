@@ -123,13 +123,19 @@ function MainMenu() {
         <>
             <div className="myDIVdad">
                 <div style={{ gap: 5 + "%" }} id="myDIV5" className="d-flex align-items-center">
-                    <button id="defaultOpen5" className="MBbutton5 active5" onClick={(e) => openCity5(e, 'Meat')}><p >Meat</p></button>
+                    <button id="defaultOpen5" className="MBbutton5 active5" onClick={(e) => openCity5(e, 'Main')}><p >Main</p></button>
+                    <button className="MBbutton5" onClick={(e) => openCity5(e, 'Meat')}><p>Meat</p></button>
                     <button className="MBbutton5" onClick={(e) => openCity5(e, 'Drink')}><p>Drink</p></button>
                     <button className="MBbutton5" onClick={(e) => openCity5(e, 'Vegetables')}><p>Vegetables</p></button>
                 </div>
                 <div className='laughtale'>
                     <button onClick={() => setModalOpen2(true)} className="btn btn-primary">🔎 Items</button>
                     <button onClick={() => setModalOpen(true)} className="btn btn-primary">➕ Items</button>
+                </div>
+            </div>
+            <div id="Main" className="tabcontent5">
+                <div className="pt-4">
+                    <GetMenu cate={"Main"} />
                 </div>
             </div>
             <div id="Meat" className="tabcontent5">
@@ -311,6 +317,7 @@ function MainMenu() {
                                         <label>Category</label>
                                         <select className='textDeny' onChange={(e) => setFoodcategory(e.target.value)} required>
                                             <option value="">Click me</option>
+                                            <option value="Main">Main dishes</option>
                                             <option value="Meat">Meat</option>
                                             <option value="Drink">Drink</option>
                                             <option value="Vegetables">Vegetables</option>

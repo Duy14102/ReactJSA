@@ -546,8 +546,6 @@ iframe {
     }
 }
 
-
-
 .gotThisFlex {
     width: 100%;
     display: flex;
@@ -1089,9 +1087,31 @@ iframe {
     display: none !important;
 }
 
+.fatherCateX {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    gap: 2.5%;
+    padding: 0 !important;
+}
+
 .CateColumn {
     flex: 0 0 auto;
-    width: 33.33333% !important;
+    width: 18% !important;
+    position: relative;
+    margin-bottom: 18px;
+}
+
+.CateColumn .coolerStatus {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 1;
+    border: 1px solid #fff;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
 }
 
 .costumeUI {
@@ -1139,6 +1159,10 @@ iframe {
 }
 
 @media (max-width: 991.98px) {
+    .fatherCateX {
+        gap: 1% !important;
+    }
+
     .gear {
         font-size: large !important;
     }
@@ -1260,7 +1284,7 @@ iframe {
     }
 
     .CateColumn {
-        width: 50% !important;
+        width: 49% !important;
     }
 
     .sticky-top.navbar-dark {
@@ -1808,7 +1832,27 @@ iframe {
     }
 }
 
+.Jkaem {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #d7d7d7;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
 @media (max-width:575px) {
+    .CatuRespon {
+        width: 380px !important;
+    }
+
+    .CatuRespon .checkMuck {
+        width: 50% !important;
+    }
+
+    .fatherCateX {
+        justify-content: center;
+    }
+
     .encot {
         text-align: center;
     }
@@ -2182,10 +2226,6 @@ iframe {
         padding-top: 5%;
     }
 
-    .CatuRespon {
-        width: 45% !important;
-    }
-
     .businessWay .joiboy {
         display: none;
     }
@@ -2449,15 +2489,7 @@ iframe {
     display: block;
     position: relative;
     transition: all .3s cubic-bezier(.785, .135, .15, .86);
-    padding: 1rem;
-}
-
-.liutiudiu {
-    opacity: 0;
-}
-
-.liutiudiu button {
-    width: 100%;
+    padding: 8px;
 }
 
 .product-item {
@@ -2465,46 +2497,33 @@ iframe {
     text-align: center;
     color: #000;
     overflow: hidden;
-    margin-bottom: 1rem;
     background: #fff;
-    box-shadow: 0 10px 40px -3px rgba(0, 0, 0, 0.1);
     border-radius: 7px;
     transform: scale(0.97, 0.97);
-    transition: all .17s cubic-bezier(0.24, 0.71, 0.58, 0.57);
+    border: 1px solid lightgray;
+    transition: all 0.25s;
 }
 
 .product-item:hover {
-    box-shadow: 0 0px 50px -10px rgba(0, 0, 0, 0.3);
-    color: black;
-}
-
-.product-item:hover .liutiudiu {
-    transition: all 0.4s;
-    opacity: 1;
-}
-
-.product-item .product-item-image {
-    display: block;
-    position: relative;
-    transform: translate3d(0, 0, 0);
-    transition: all .5s cubic-bezier(.68, -.55, .265, 1.55);
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .2), 0 4px 15px 0 rgba(0, 0, 0, .19);
 }
 
 .product-item .product-item-image img {
     position: relative;
     z-index: 3;
     width: 100%;
-    height: 200px;
+    height: 150px;
 }
 
 .product-item .product-item-category {
     font-size: .875rem;
+    color: gray;
 }
 
 .product-item .product-item-title {
     display: inline-block;
-    font-size: 1.125rem;
-    font-weight: 600;
+    font-size: 16px;
+    font-weight: 700;
     transition: all 0.2s;
 }
 
@@ -2538,37 +2557,74 @@ iframe {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 30%;
+    width: 25%;
     margin: 0;
-    gap: 4%;
+    gap: 1%;
 }
 
 .allover3 {
     white-space: nowrap;
     margin: 0;
     width: 100%;
+    color: #464646;
 }
 
-.CatuRespon {
-    pointer-events: none;
-    width: 20%;
-    opacity: 0;
+.hasCateX {
+    font-size: 15px;
+    padding: 4px 7px;
+    width: 120px !important;
+    text-wrap: nowrap;
+    background-color: #d7d7d7;
+    position: relative;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.hasCateX .deleteTagX {
+    padding: 0.8px 3.7px;
+    line-height: 10px;
+    font-size: 12px;
+    cursor: pointer;
+    position: absolute;
+    top: -6px;
+    right: -10px;
+    color: #f2f2f2;
+    background-color: #6d6f71;
+    border-radius: 50%;
+    text-align: center;
+    width: 12px;
+    height: 12px;
+}
+
+.AigButton {
+    position: relative;
+    padding: 3px 16px 8px;
+    display: inline-block;
+    border-radius: 6px 6px 0 0;
+    color: #464646;
+}
+
+.AigButton::after {
+    border: solid #464646;
+    border-width: 0 1px 1px 0;
+    display: inline-block;
+    padding: 2px;
+    transform: translate(-50%) rotate(45deg);
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    content: "";
 }
 
 .FilterDrop {
     white-space: nowrap;
-    border: 1px solid #ddd;
+    border: 1px solid lightgray;
     background: #fff;
-    box-shadow: 0 10px 40px -3px rgba(0, 0, 0, 0.1);
     padding: 1.5%;
     width: 100%;
     outline: none;
     color: #0F172B;
     border-radius: 5px;
-}
-
-.FilterDrop:focus {
-    box-shadow: 0 0px 50px -10px rgba(0, 0, 0, 0.3);
 }
 
 .ruler {
@@ -2596,11 +2652,9 @@ iframe {
     color: black;
 }
 
-.product-item .product-item-title:hover {
-    color: #FEA116;
-}
-
 .product-item .product-item-price {
+    font-weight: bold;
+    color: #FEA116;
     font-size: 1.0625rem;
 }
 
@@ -2615,6 +2669,78 @@ iframe {
 .inputC input:focus {
     border-color: #ddd !important;
     box-shadow: 0 0 5px #ccc;
+}
+
+.ownerOfX {
+    position: relative;
+}
+
+.CatuRespon {
+    position: absolute;
+    width: 100%;
+    z-index: 50;
+    box-shadow: 1px 1px 5px 0 rgba(50, 50, 50, .4);
+    background-color: #fff;
+    overflow-y: auto;
+    border-radius: 0 6px 6px 6px;
+    height: 160px;
+    width: 700px;
+    padding: 15px;
+    opacity: 0;
+    left: -200px;
+    animation: CatuRespon-appear 0.35s ease forwards;
+}
+
+@keyframes CatuRespon-appear {
+    to {
+        left: 0;
+        opacity: 1;
+    }
+}
+
+.greekBas {
+    font-size: 13.5px;
+    color: #fff;
+    padding: 5px 10px;
+    transition: all 0.25s;
+}
+
+.greekBas:hover {
+    filter: brightness(0.85);
+}
+
+.greekBas:active {
+    transform: scale(0.9);
+}
+
+.fatherCheckMuck {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.CatuRespon .checkMuck {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    line-height: 25px;
+    align-items: center;
+    width: 33.33333%;
+    position: relative;
+    flex-wrap: wrap;
+}
+
+.CatuRespon .checkMuck input {
+    position: relative;
+    width: 20px;
+    height: 20px;
+    border: 1px solid #9e9e9e;
+    accent-color: #fea116;
+    border-radius: 6px;
+}
+
+.CatuRespon .checkMuck label {
+    color: #6d6f71;
 }
 
 @media(min-width:1200px) and (max-width:1366px) {
@@ -2646,12 +2772,6 @@ iframe {
 
     .FirstRow {
         display: none;
-    }
-
-    .CatuRespon {
-        width: 25%;
-        pointer-events: all;
-        opacity: 1;
     }
 
     .liutiudiu {

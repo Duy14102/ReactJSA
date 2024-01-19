@@ -1,6 +1,5 @@
 import { NavLink, useParams } from 'react-router-dom';
 import { useEffect, useRef, useReducer } from 'react';
-import NotFound from '../component/outOfBorder/NotFound';
 import axios from 'axios';
 import $ from 'jquery'
 import ReactPaginate from 'react-paginate';
@@ -14,25 +13,31 @@ function CategoryPage() {
         Category: [],
         Count: [],
         pageCount: 6,
-        callAlert: false
+        classify: false,
+        countChoose: null
     })
     const currentPage = useRef();
-    const limit = 9
+    const limit = 20
     //Get Detail
     useEffect(() => {
         currentPage.current = 1;
+        var countPro = 0
+        if (appler.id.includes("Meat")) {
+            countPro++
+        }
+        if (appler.id.includes("Vegetables")) {
+            countPro++
+        }
+        if (appler.id.includes("Drink")) {
+            countPro++
+        }
+        if (appler.id.includes("Main")) {
+            countPro++
+        }
+        setCateState({ countChoose: countPro })
         getPagination();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
-
-    useEffect(() => {
-        if (cateState.callAlert) {
-            setTimeout(() => {
-                setCateState({ callAlert: false })
-            }, 3000)
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [cateState.callAlert])
 
     /*      Pagination     */
     function handlePageClick(e) {
@@ -64,61 +69,59 @@ function CategoryPage() {
 
     const Filter = (e) => {
         if (e === "nto") {
-            window.location.href = `/CategorySite/${appler.id}/nto`
+            window.location.href = `/CategorySite/${appler?.id}/nto`
         }
         if (e === "otn") {
-            window.location.href = `/CategorySite/${appler.id}/otn`
+            window.location.href = `/CategorySite/${appler?.id}/otn`
         }
         if (e === "hpf") {
-            window.location.href = `/CategorySite/${appler.id}/hpf`
+            window.location.href = `/CategorySite/${appler?.id}/hpf`
         }
         if (e === "lpf") {
-            window.location.href = `/CategorySite/${appler.id}/lpf`
+            window.location.href = `/CategorySite/${appler?.id}/lpf`
         }
         if (e === "atz") {
-            window.location.href = `/CategorySite/${appler.id}/atz`
+            window.location.href = `/CategorySite/${appler?.id}/atz`
         }
     }
 
-    const CateFilter = (e) => {
-        if (e === "Meat") {
-            window.location.href = `/CategorySite/${e}/nto`
-        } if (e === "Vegetables") {
-            window.location.href = `/CategorySite/${e}/nto`
-        } if (e === "Drink") {
-            window.location.href = `/CategorySite/${e}/nto`
+    function changeMain(e) {
+        if (!e.target.checked) {
+            appler.id = appler.id.replace(",Main", "")
+        } else if (e.target.checked) {
+            appler.id += ",Main"
+        }
+    }
+    function changeMeat(e) {
+        if (!e.target.checked) {
+            appler.id = appler.id.replace(",Meat", "")
+        } else if (e.target.checked) {
+            appler.id += ",Meat"
+        }
+    }
+    function changeVege(e) {
+        if (!e.target.checked) {
+            appler.id = appler.id.replace(",Vegetables", "")
+        } else if (e.target.checked) {
+            appler.id += ",Vegetables"
+        }
+    }
+    function changeDrink(e) {
+        if (!e.target.checked) {
+            appler.id = appler.id.replace(",Drink", "")
+        } else if (e.target.checked) {
+            appler.id += ",Drink"
         }
     }
 
-    function addToCart(name, quantity) {
-        var stored = JSON.parse(localStorage.getItem("cart"));
-        if (!stored) {
-            var students = [];
-            var student1 = { name: name, quantity: quantity };
-            students.push(student1);
-            localStorage.setItem("cart", JSON.stringify(students));
-            setCateState({ callAlert: true })
-        } else {
-            var sameItem = JSON.parse(localStorage.getItem("cart")) || [];
-            for (var i = 0; i < sameItem.length; i++) {
-                if (name === sameItem[i].name) {
-                    sameItem[i].quantity += quantity;
-                    localStorage.setItem('cart', JSON.stringify(sameItem))
-                    setCateState({ callAlert: true })
-                } else if (i === sameItem.length - 1) {
-                    var stored2 = JSON.parse(localStorage.getItem("cart"));
-                    var student2 = { name: name, quantity: quantity };
-                    stored2.push(student2);
-                    localStorage.setItem("cart", JSON.stringify(stored2));
-                    setCateState({ callAlert: true })
-                }
-            }
-        }
+    function clearCate() {
+        appler.id = "Menu"
+        window.location.href = `/CategorySite/${appler.id}/nto`
     }
 
     $(function () {
         $("#select").val(appler.fil);
-        $("#mix2up").val(appler.id);
+        $("#mix2up").val(appler?.id);
     })
 
     const VND = new Intl.NumberFormat('vi-VN', {
@@ -126,42 +129,45 @@ function CategoryPage() {
         currency: 'VND',
     });
 
-    if (!appler) {
-        return NotFound();
+    function changeCate() {
+        window.location.href = `/CategorySite/${appler.id}/nto`
     }
     return (
         <Layout>
-            {cateState.callAlert ? (
-                <div className="d-flex justify-content-end danguru">
-                    <div class='alertNow'>
-                        <i className="fas fa-check-circle alert__icon"></i>
-                        <p class='m-0'>Add to cart success!</p>
-                    </div>
-                </div>
-            ) : null}
-            <div className='bg-white'>
+            <div style={{ backgroundColor: "#f2f2f2", paddingTop: 5, paddingBottom: 11 }}>
                 <div className='container'>
-                    <div className='pt-3'>
-                        <p className='encot' style={{ margin: 0 }}><NavLink className="textNavlink" to="/">Home</NavLink> / <NavLink reloadDocument className="textNavlink" to={`/CategorySite/${appler.id}/nto`}><b>{appler.id}</b></NavLink></p>
-                    </div>
-                    <div className='ruler pt-4'>
-                        <div className='FirstRow'>
-                            <div className='nOthing'>
-                                <h5>Product Category</h5>
-                                <hr style={{ width: 15 + "%", height: 3 + "px" }} />
-                                <NavLink reloadDocument to={`/CategorySite/Meat/${appler.fil}`} activeclassname='active' className="text-black"><p>Meat</p></NavLink>
-                                <NavLink reloadDocument to={`/CategorySite/Drink/${appler.fil}`} className="text-black" ><p>Drink</p></NavLink>
-                                <NavLink reloadDocument to={`/CategorySite/Vegetables/${appler.fil}`} className="text-black"><p>Vegetables</p></NavLink>
-                            </div>
-                        </div>
-                        <div className="row SecondRow">
-                            <div className='d-flex justify-content-between Jkaem'>
-                                <div className='CatuRespon'>
-                                    <select id='mix2up' onChange={(e) => CateFilter(e.target.value)} className='FilterDrop'>
-                                        <option value={"Meat"}>Meat</option>
-                                        <option value={"Vegetables"}>Vegetables</option>
-                                        <option value={"Drink"}>Drink</option>
-                                    </select>
+                    <div className='pt-4'>
+                        <div className="row">
+                            <div className='Jkaem'>
+                                <div className='ownerOfX'>
+                                    <button style={cateState.classify ? { backgroundColor: "#fff", fontWeight: "bold" } : null} onClick={() => cateState.classify ? setCateState({ classify: false }) : setCateState({ classify: true })} className='AigButton'>Categories</button>
+                                    {cateState.classify ? (
+                                        <div className='CatuRespon'>
+                                            <div className='fatherCheckMuck'>
+                                                <div className='checkMuck'>
+                                                    <input onClick={(e) => changeMain(e)} defaultChecked={appler.id.includes("Main") ? "checked" : null} type="checkbox" id="Main" value="Main" />
+                                                    <label htmlFor="Main" className='text-nowrap'>Main dishes</label>
+                                                </div>
+                                                <div className='checkMuck'>
+                                                    <input onClick={(e) => changeMeat(e)} defaultChecked={appler.id.includes("Meat") ? "checked" : null} type="checkbox" id="Main" value="Main" />
+                                                    <label htmlFor="Main" className='text-nowrap'>Meat</label>
+                                                </div>
+                                                <div className='checkMuck'>
+                                                    <input onClick={(e) => changeVege(e)} defaultChecked={appler.id.includes("Vegetables") ? "checked" : null} type="checkbox" id="Main" value="Main" />
+                                                    <label htmlFor="Main" className='text-nowrap'>Vegetables</label>
+                                                </div>
+                                                <div className='checkMuck'>
+                                                    <input onClick={(e) => changeDrink(e)} defaultChecked={appler.id.includes("Drink") ? "checked" : null} type="checkbox" id="Main" value="Main" />
+                                                    <label htmlFor="Main" className='text-nowrap'>Drink</label>
+                                                </div>
+                                            </div>
+                                            <hr className='m-0' />
+                                            <div className='d-flex' style={{ gap: "10px", marginTop: 15 }}>
+                                                <button onClick={() => changeCate()} className='greekBas' style={{ backgroundColor: "#239839" }}>Confirm</button>
+                                                <button onClick={() => setCateState({ classify: false })} className='greekBas' style={{ backgroundColor: "gray" }}>Cancel</button>
+                                            </div>
+                                        </div>
+                                    ) : null}
                                 </div>
                                 <div className='ThirdRow'>
                                     <p className='allover3'>Display all {cateState.Count} results</p>
@@ -174,38 +180,37 @@ function CategoryPage() {
                                     </select>
                                 </div>
                             </div>
-                            {Object.values(cateState.Category).map(i => {
-                                var quantity = 1
-                                return (
-                                    <div className="product-box column p-0 CateColumn" key={i._id}>
-                                        <div className="product-item">
-                                            <NavLink reloadDocument to={`/DetailMenuPage/${i.foodname}/${i.foodcategory}`}>
+                            {cateState.countChoose > 0 ? (
+                                <div className='hasCateX'>
+                                    <p className='m-0'>Categories <b>{`(${cateState.countChoose})`}</b></p>
+                                    <button onClick={() => clearCate()} className='deleteTagX'>x</button>
+                                </div>
+                            ) : null}
+                            <div className='fatherCateX'>
+                                {Object.values(cateState.Category).map(i => {
+                                    return (
+                                        <NavLink className="product-box column p-0 CateColumn" key={i._id} reloadDocument to={`/DetailMenuPage/${i.foodname}/${i.foodcategory}`}>
+                                            <div className='coolerStatus' style={{ backgroundColor: i.foodquantity > 0 ? "#239839" : "tomato" }}></div>
+                                            <div className="product-item">
                                                 <div className="product-item-image">
                                                     <img loading='lazy' src={i.foodimage} alt="" />
                                                     <div className="product-item-image-hover">
                                                     </div>
                                                 </div>
-                                            </NavLink>
-                                            <div className="product-item-content">
-                                                <div className="product-item-category">
-                                                    {i.foodcategory}
-                                                </div>
-                                                <NavLink reloadDocument to={`/DetailMenuPage/${i.foodname}/${i.foodcategory}`} className="product-item-title text-nowrap">{i.foodname} </NavLink>
-                                                <div className="product-item-price">
-                                                    {VND.format(i.foodprice)}
+                                                <div className="product-item-content">
+                                                    <div className="product-item-title text-nowrap">{i.foodname} </div>
+                                                    <div className="product-item-category">
+                                                        {i.foodcategory}
+                                                    </div>
+                                                    <div className="product-item-price">
+                                                        {VND.format(i.foodprice)}
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div className='liutiudiu'>
-                                                {i.foodquantity > 0 ? (
-                                                    <button onClick={() => addToCart(i.foodname, quantity)} className='btn btn-primary'>Add to cart</button>
-                                                ) : (
-                                                    <button style={{ pointerEvents: "none", opacity: 0.5 }} className='btn btn-primary'>Add to cart</button>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </div>
-                                )
-                            })}
+                                        </NavLink>
+                                    )
+                                })}
+                            </div>
                             <ReactPaginate
                                 breakLabel="..."
                                 nextLabel="Next >"

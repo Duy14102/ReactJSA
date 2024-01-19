@@ -1701,34 +1701,61 @@ app.get("/GetSearchAutoComplete", async (req, res) => {
     }
 })
 
+// Get Topping
+app.get("/GetTopping", async (req, res) => {
+    try {
+        const getIt = await getThisMenu.find({ foodcategory: { $in: ["Meat", "Vegetables", "Drink"] } })
+        res.send({ data: getIt })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
 //Get Category Menu
 app.get("/GetCategoryMenu", async (req, res) => {
     try {
         var getIta = null
+        const takeBack = {}
+        if (req.query.category.includes("Main")) {
+            takeBack["Main"] = "Main"
+        }
+        if (req.query.category.includes("Meat")) {
+            takeBack["Meat"] = "Meat"
+        }
+        if (req.query.category.includes("Vegetables")) {
+            takeBack["Vegetables"] = "Vegetables"
+        }
+        if (req.query.category.includes("Drink")) {
+            takeBack["Drink"] = "Drink"
+        }
         switch (req.query.filter) {
             case "nto":
-                const sort = { _id: -1 }
-                getIta = await getThisMenu.find({ foodcategory: req.query.category }).sort(sort);
+                const sort = { foodquantity: -1, _id: -1 }
+                getIta = await getThisMenu.find({ foodcategory: { $in: [takeBack?.Main, takeBack?.Meat, takeBack?.Vegetables, takeBack?.Drink] } }).sort(sort)
                 break;
             case "otn":
-                const sort2 = { _id: 1 }
-                getIta = await getThisMenu.find({ foodcategory: req.query.category }).sort(sort2);
+                const sort2 = { foodquantity: -1, _id: 1 }
+                getIta = await getThisMenu.find({ foodcategory: { $in: [takeBack?.Main, takeBack?.Meat, takeBack?.Vegetables, takeBack?.Drink] } }).sort(sort2);
                 break;
             case "hpf":
-                const sort3 = { foodprice: -1 }
-                getIta = await getThisMenu.find({ foodcategory: req.query.category }).sort(sort3);
+                const sort3 = { foodquantity: -1, foodprice: -1 }
+                getIta = await getThisMenu.find({ foodcategory: { $in: [takeBack?.Main, takeBack?.Meat, takeBack?.Vegetables, takeBack?.Drink] } }).sort(sort3);
                 break;
             case "lpf":
-                const sort4 = { foodprice: 1 }
-                getIta = await getThisMenu.find({ foodcategory: req.query.category }).sort(sort4);
+                const sort4 = { foodquantity: -1, foodprice: 1 }
+                getIta = await getThisMenu.find({ foodcategory: { $in: [takeBack?.Main, takeBack?.Meat, takeBack?.Vegetables, takeBack?.Drink] } }).sort(sort4);
                 break;
             case "atz":
-                const sort5 = { foodname: 1 }
-                getIta = await getThisMenu.find({ foodcategory: req.query.category }).sort(sort5);
+                const sort5 = { foodquantity: -1, foodname: 1 }
+                getIta = await getThisMenu.find({ foodcategory: { $in: [takeBack?.Main, takeBack?.Meat, takeBack?.Vegetables, takeBack?.Drink] } }).sort(sort5);
                 break;
             default:
-                getIta = await getThisMenu.find({ foodcategory: req.query.category }).sort(sort);
+                getIta = await getThisMenu.find({ foodcategory: { $in: [takeBack?.Main, takeBack?.Meat, takeBack?.Vegetables, takeBack?.Drink] } }).sort(sort);
                 break;
+        }
+        if (req.query.category === "Menu") {
+            const sort = { foodquantity: -1, _id: -1 }
+            getIta = await getThisMenu.find({}).sort(sort)
         }
 
         const page = parseInt(req.query.page)
