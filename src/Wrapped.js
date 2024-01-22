@@ -29,7 +29,7 @@ function Wrapped() {
                 <Route path="/" Component={mainApp} />
                 <Route path="ContactSite" Component={mainContact} />
                 <Route path="CategorySite/:id/:fil" Component={mainCategory} />
-                <Route path="SearchSite/:id/:fil" Component={mainSearch} />
+                <Route path="SearchSite/:id/:cate/:fil" Component={mainSearch} />
                 <Route path="BookingSite" Component={mainBooking} />
                 <Route path="Announcement" Component={mainAnnounce} />
                 <Route path="TrackOrder" Component={mainTrack} />

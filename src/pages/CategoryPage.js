@@ -1,9 +1,10 @@
-import { NavLink, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useEffect, useRef, useReducer } from 'react';
 import axios from 'axios';
 import $ from 'jquery'
-import ReactPaginate from 'react-paginate';
 import Layout from '../Layout';
+import Header from '../component/Header';
+import Menu from '../component/Menu'
 
 function CategoryPage() {
     let appler = useParams()
@@ -11,13 +12,14 @@ function CategoryPage() {
         ...prev, ...next
     }), {
         Category: [],
+        CategoryRespon: [],
         Count: [],
         pageCount: 6,
         classify: false,
         countChoose: null
     })
     const currentPage = useRef();
-    const limit = 20
+    const limit = 10
     //Get Detail
     useEffect(() => {
         currentPage.current = 1;
@@ -58,7 +60,8 @@ function CategoryPage() {
         };
         axios(configuration)
             .then((result) => {
-                setCateState({ Category: result.data.results.result })
+                setCateState({ Category: result.data.results.allMatch })
+                setCateState({ CategoryRespon: result.data.results.result })
                 setCateState({ Count: result.data.results.total })
                 setCateState({ pageCount: result.data.results.pageCount })
             })
@@ -124,114 +127,65 @@ function CategoryPage() {
         $("#mix2up").val(appler?.id);
     })
 
-    const VND = new Intl.NumberFormat('vi-VN', {
-        style: 'currency',
-        currency: 'VND',
-    });
-
     function changeCate() {
         window.location.href = `/CategorySite/${appler.id}/nto`
     }
+
     return (
         <Layout>
-            <div style={{ backgroundColor: "#f2f2f2", paddingTop: 5, paddingBottom: 11 }}>
-                <div className='container'>
-                    <div className='pt-4'>
-                        <div className="row">
-                            <div className='Jkaem'>
-                                <div className='ownerOfX'>
-                                    <button style={cateState.classify ? { backgroundColor: "#fff", fontWeight: "bold" } : null} onClick={() => cateState.classify ? setCateState({ classify: false }) : setCateState({ classify: true })} className='AigButton'>Categories</button>
-                                    {cateState.classify ? (
-                                        <div className='CatuRespon'>
-                                            <div className='fatherCheckMuck'>
-                                                <div className='checkMuck'>
-                                                    <input onClick={(e) => changeMain(e)} defaultChecked={appler.id.includes("Main") ? "checked" : null} type="checkbox" id="Main" value="Main" />
-                                                    <label htmlFor="Main" className='text-nowrap'>Main dishes</label>
-                                                </div>
-                                                <div className='checkMuck'>
-                                                    <input onClick={(e) => changeMeat(e)} defaultChecked={appler.id.includes("Meat") ? "checked" : null} type="checkbox" id="Main" value="Main" />
-                                                    <label htmlFor="Main" className='text-nowrap'>Meat</label>
-                                                </div>
-                                                <div className='checkMuck'>
-                                                    <input onClick={(e) => changeVege(e)} defaultChecked={appler.id.includes("Vegetables") ? "checked" : null} type="checkbox" id="Main" value="Main" />
-                                                    <label htmlFor="Main" className='text-nowrap'>Vegetables</label>
-                                                </div>
-                                                <div className='checkMuck'>
-                                                    <input onClick={(e) => changeDrink(e)} defaultChecked={appler.id.includes("Drink") ? "checked" : null} type="checkbox" id="Main" value="Main" />
-                                                    <label htmlFor="Main" className='text-nowrap'>Drink</label>
-                                                </div>
-                                            </div>
-                                            <hr className='m-0' />
-                                            <div className='d-flex' style={{ gap: "10px", marginTop: 15 }}>
-                                                <button onClick={() => changeCate()} className='greekBas' style={{ backgroundColor: "#239839" }}>Confirm</button>
-                                                <button onClick={() => setCateState({ classify: false })} className='greekBas' style={{ backgroundColor: "gray" }}>Cancel</button>
-                                            </div>
+            <Header type={"Yes"} />
+            <div style={{ background: "#f5f5f5" }}>
+                <div className='py-4 container'>
+                    <div className='Jkaem'>
+                        <div className='ownerOfX'>
+                            <button style={cateState.classify ? { backgroundColor: "#fff", fontWeight: "bold" } : null} onClick={() => cateState.classify ? setCateState({ classify: false }) : setCateState({ classify: true })} className='AigButton'>Categories</button>
+                            {cateState.classify ? (
+                                <div className='CatuRespon'>
+                                    <div className='fatherCheckMuck'>
+                                        <div className='checkMuck'>
+                                            <input onClick={(e) => changeMain(e)} defaultChecked={appler.id.includes("Main") ? "checked" : null} type="checkbox" id="Main" value="Main" />
+                                            <label htmlFor="Main" className='text-nowrap'>Main dishes</label>
                                         </div>
-                                    ) : null}
-                                </div>
-                                <div className='ThirdRow'>
-                                    <p className='allover3'>Display all {cateState.Count} results</p>
-                                    <select id='select' onChange={(e) => Filter(e.target.value)} className='FilterDrop'>
-                                        <option value={"nto"}>New to old</option>
-                                        <option value={"otn"}>Old to new</option>
-                                        <option value={"hpf"}>High price first</option>
-                                        <option value={"lpf"}>Low price first</option>
-                                        <option value={"atz"}>A to Z</option>
-                                    </select>
-                                </div>
-                            </div>
-                            {cateState.countChoose > 0 ? (
-                                <div className='hasCateX'>
-                                    <p className='m-0'>Categories <b>{`(${cateState.countChoose})`}</b></p>
-                                    <button onClick={() => clearCate()} className='deleteTagX'>x</button>
+                                        <div className='checkMuck'>
+                                            <input onClick={(e) => changeMeat(e)} defaultChecked={appler.id.includes("Meat") ? "checked" : null} type="checkbox" id="Main" value="Main" />
+                                            <label htmlFor="Main" className='text-nowrap'>Meat</label>
+                                        </div>
+                                        <div className='checkMuck'>
+                                            <input onClick={(e) => changeVege(e)} defaultChecked={appler.id.includes("Vegetables") ? "checked" : null} type="checkbox" id="Main" value="Main" />
+                                            <label htmlFor="Main" className='text-nowrap'>Vegetables</label>
+                                        </div>
+                                        <div className='checkMuck'>
+                                            <input onClick={(e) => changeDrink(e)} defaultChecked={appler.id.includes("Drink") ? "checked" : null} type="checkbox" id="Main" value="Main" />
+                                            <label htmlFor="Main" className='text-nowrap'>Drink</label>
+                                        </div>
+                                    </div>
+                                    <hr className='m-0' />
+                                    <div className='d-flex' style={{ gap: "10px", marginTop: 15 }}>
+                                        <button onClick={() => changeCate()} className='greekBas' style={{ backgroundColor: "#239839" }}>Confirm</button>
+                                        <button onClick={() => setCateState({ classify: false })} className='greekBas' style={{ backgroundColor: "gray" }}>Cancel</button>
+                                    </div>
                                 </div>
                             ) : null}
-                            <div className='fatherCateX'>
-                                {Object.values(cateState.Category).map(i => {
-                                    return (
-                                        <NavLink className="product-box column p-0 CateColumn" key={i._id} reloadDocument to={`/DetailMenuPage/${i.foodname}/${i.foodcategory}`}>
-                                            <div className='coolerStatus' style={{ backgroundColor: i.foodquantity > 0 ? "#239839" : "tomato" }}></div>
-                                            <div className="product-item">
-                                                <div className="product-item-image">
-                                                    <img loading='lazy' src={i.foodimage} alt="" />
-                                                    <div className="product-item-image-hover">
-                                                    </div>
-                                                </div>
-                                                <div className="product-item-content">
-                                                    <div className="product-item-title text-nowrap">{i.foodname} </div>
-                                                    <div className="product-item-category">
-                                                        {i.foodcategory}
-                                                    </div>
-                                                    <div className="product-item-price">
-                                                        {VND.format(i.foodprice)}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </NavLink>
-                                    )
-                                })}
-                            </div>
-                            <ReactPaginate
-                                breakLabel="..."
-                                nextLabel="Next >"
-                                onPageChange={handlePageClick}
-                                pageRangeDisplayed={5}
-                                pageCount={cateState.pageCount}
-                                previousLabel="< Previous"
-                                renderOnZeroPageCount={null}
-                                marginPagesDisplayed={2}
-                                containerClassName="pagination justify-content-center"
-                                pageClassName="page-item"
-                                pageLinkClassName="page-link"
-                                previousClassName="page-item"
-                                previousLinkClassName="page-link"
-                                nextClassName="page-item"
-                                nextLinkClassName="page-link"
-                                activeClassName="active"
-                                forcePage={currentPage.current - 1}
-                            />
+                        </div>
+                        <div className='ThirdRow'>
+                            <p className='allover3'>Display all {cateState.Count} results</p>
+                            <select id='select' onChange={(e) => Filter(e.target.value)} className='FilterDrop'>
+                                <option value={"nto"}>New to old</option>
+                                <option value={"otn"}>Old to new</option>
+                                <option value={"hpf"}>High price first</option>
+                                <option value={"lpf"}>Low price first</option>
+                                <option value={"atz"}>A to Z</option>
+                            </select>
                         </div>
                     </div>
+                    {cateState.countChoose > 0 ? (
+                        <div className='hasCateX'>
+                            <p className='m-0'>Categories <b>{`(${cateState.countChoose})`}</b></p>
+                            <button onClick={() => clearCate()} className='deleteTagX'>x</button>
+                        </div>
+                    ) : null}
+
+                    <Menu dataX={cateState.Category} CategoryRespon={cateState.CategoryRespon} handleX={handlePageClick} pCount={cateState.pageCount} curP={currentPage} />
                 </div>
             </div>
         </Layout>

@@ -190,7 +190,7 @@ function Reservation() {
     }
     return (
         <>
-            <div className="container-fluid py-5 px-0 wow fadeInUp" data-wow-delay="0.1s">
+            <div className="container-fluid px-0 wow fadeInUp" data-wow-delay="0.1s">
                 <div className="d-flex g-0">
                     <div className="col-md-6">
                         <div className="video">

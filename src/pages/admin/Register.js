@@ -6,6 +6,7 @@ import NotFound from '../../component/outOfBorder/NotFound';
 import { NavLink } from 'react-router-dom';
 import Layout from '../../Layout';
 import socketIOClient from "socket.io-client";
+import Header from '../../component/Header';
 
 function LoginSite() {
     const [registerState, setRegisterState] = useReducer((prev, next) => ({
@@ -183,7 +184,7 @@ function LoginSite() {
     }
     return (
         <Layout>
-
+            <Header type={"Yes"} />
             <div className="limiter">
                 <div className="container-login100">
                     <div className="wrap-login100">

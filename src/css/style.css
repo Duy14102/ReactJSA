@@ -7,6 +7,11 @@
     --dark: #0F172B;
 }
 
+.containerNephew {
+    padding-right: 18%;
+    padding-left: 18%;
+}
+
 .btn-lg {
     padding: 0 !important;
     display: flex !important;
@@ -773,11 +778,6 @@ iframe {
     z-index: 99;
 }
 
-.SpecialHeader {
-    background-color: #0F172B !important;
-    position: relative !important;
-}
-
 .svgSidebar {
     width: 50px;
     height: 50px;
@@ -893,6 +893,11 @@ iframe {
     border-radius: 2px;
 }
 
+.GroundW {
+    position: fixed !important;
+    top: 0;
+}
+
 /*          Book            */
 .scene {
     width: 500px;
@@ -904,7 +909,25 @@ iframe {
     right: 0;
     top: 0;
     bottom: 0;
+}
 
+.moveToNextPage {
+    height: 100%;
+    width: 35px;
+    position: absolute;
+    right: 0;
+}
+
+.moveToPrevPage {
+    height: 100%;
+    width: 35px;
+    position: absolute;
+    left: 0;
+}
+
+.moveToNextPage:hover,
+.moveToPrevPage:hover {
+    cursor: pointer;
 }
 
 #book {
@@ -916,7 +939,6 @@ iframe {
 }
 
 .paged {
-    cursor: pointer;
     position: absolute;
     color: black;
     width: 100%;
@@ -928,16 +950,44 @@ iframe {
     -webkit-transform-origin: left center;
     -ms-transform-origin: left center;
     transform-origin: left center;
+    border: solid #ebebeb;
+    border-width: 1px 1px 1px 1px;
+    border-radius: 4px;
+}
+
+.callingUpperT {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+}
+
+.btnSonCallingUpperT .sonCallingUpperT {
+    width: 15px;
+    height: 15px;
+    fill: #fff;
+}
+
+.btnSonCallingUpperT {
+    border-radius: 3px;
+    background-color: #fea116;
+    padding: 2px 5px 2px 5px;
+    transition: all 0.2s;
+}
+
+.btnSonCallingUpperT:hover {
+    background-color: #e08d10;
 }
 
 .upPerTown {
     font-size: 1vw;
+    border-bottom: 1px solid rgb(236, 236, 236);
+    position: relative;
 }
 
 .upPerTown:hover,
 .upPerTown:active {
     transition: all 0.3s;
-    box-shadow: 0 8px 20px 0 rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.2), 0 2px 4px 0 rgba(0, 0, 0, 0.1);
 }
 
 .upPerTown img {
@@ -985,10 +1035,21 @@ iframe {
     position: fixed;
 }
 
+.magicTechNav {
+    background-color: transparent;
+    animation: magicNavOh 0.4s ease forwards;
+}
+
+@keyframes magicNavOh {
+    to {
+        background-color: #0f172b;
+    }
+}
+
 .navbar-dark .navbar-nav .nav-link {
     position: relative;
     margin-left: 25px;
-    padding: 35px 0;
+    padding: 22px 0;
     font-size: 15px;
     color: var(--light) !important;
     text-transform: uppercase;
@@ -1092,15 +1153,14 @@ iframe {
     flex-wrap: wrap;
     align-items: center;
     width: 100%;
-    gap: 2.5%;
+    gap: 1%;
     padding: 0 !important;
 }
 
 .CateColumn {
-    flex: 0 0 auto;
-    width: 18% !important;
     position: relative;
-    margin-bottom: 18px;
+    margin-bottom: 8px;
+    width: 20% !important;
 }
 
 .CateColumn .coolerStatus {
@@ -1509,17 +1569,88 @@ iframe {
     display: none !important;
 }
 
+.danguru {
+    display: flex;
+    justify-content: flex-end;
+}
+
 .alertNow {
-    right: 1%;
+    z-index: 1000;
     top: 10%;
-    padding: 1.2%;
+    padding: 10px 15px;
+    border-radius: 4px;
     color: black;
     text-wrap: nowrap;
-    gap: 5%;
+    gap: 10px;
     display: flex;
     align-items: center;
     position: fixed;
-    background-color: #d6f5d6;
+    background-color: #b3dbae;
+    border: 1px solid #16a05d;
+    animation: appearOKB 0.4s ease forwards;
+}
+
+@keyframes appearOKB {
+    from {
+        opacity: 0;
+        right: -15%;
+    }
+
+    to {
+        opacity: 1;
+        right: 1%;
+    }
+}
+
+.closeAlertKikuny {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: 5px;
+    right: 4px;
+    transition: all 0.2s;
+}
+
+.closeAlertKikuny:hover {
+    filter: brightness(0.5);
+}
+
+.closeAlertKikuny::before {
+    width: 2px;
+    height: 14px;
+    content: "";
+    background-color: #767676;
+    display: inline-block;
+    margin: -6px 0 0 -1px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: rotate(45deg);
+}
+
+.closeAlertKikuny::after {
+    width: 2px;
+    height: 14px;
+    content: "";
+    background-color: #767676;
+    display: inline-block;
+    transform: rotate(-45deg);
+}
+
+.alertNow p {
+    font-size: 15px;
+}
+
+.alertNow .kikuny {
+    border-radius: 50%;
+    background-color: #16a05d;
+    padding: 6px 8px;
+}
+
+.alertNow .kikuny svg {
+    width: 20px;
+    height: 20px;
+    fill: #fff;
 }
 
 .alertDelete {
@@ -1793,6 +1924,10 @@ iframe {
     background: rgba(196, 195, 195, 0.5);
 }
 
+.followRuleX {
+    position: fixed;
+}
+
 .MagicAppearText span {
     background-size: 0% 100%;
     background-clip: text !important;
@@ -1826,6 +1961,26 @@ iframe {
     font-size: 18px;
 }
 
+.beHoleX {
+    background-color: gray;
+    color: #fff;
+    border-radius: 50%;
+    font-weight: bold;
+    padding: 0 5px;
+    width: 25px;
+    height: 25px;
+    fill: #fff;
+    transition: all 0.2s;
+}
+
+.beHoleX:hover {
+    filter: brightness(0.8);
+}
+
+.beHoleX:active {
+    transform: scale(0.9);
+}
+
 @keyframes scroll-reveal {
     to {
         background-size: 100% 100%;
@@ -1840,7 +1995,36 @@ iframe {
     margin-bottom: 10px;
 }
 
+.viewAllBestPro {
+    border: 2px solid #fea116;
+    border-radius: 20px;
+    padding: 4px 15px;
+    color: #fea116;
+    transition: all 0.25s;
+    font-size: 18px;
+}
+
+.viewAllBestPro:hover {
+    background-color: #fea116;
+    color: #fff;
+}
+
+
 @media (max-width:575px) {
+    .followRuleX {
+        margin: 0 !important;
+        width: 100% !important;
+        position: static !important;
+    }
+
+    .followRuleX .sonFollowRuleX {
+        margin: 0;
+    }
+
+    .followRuleX .sonFollowRuleX2 {
+        margin-top: 15px;
+    }
+
     .CatuRespon {
         width: 380px !important;
     }
@@ -1959,8 +2143,7 @@ iframe {
     }
 
     .perKnow {
-        display: inline-flex !important;
-        justify-content: center;
+        display: block !important;
     }
 
     .fatherU {
@@ -2270,6 +2453,11 @@ iframe {
 
 
 /*** Hero Header ***/
+
+.hero-header {
+    height: 65vh;
+}
+
 .hero-header img {
     animation: imgRotate 50s linear infinite;
 }
@@ -2494,7 +2682,6 @@ iframe {
 
 .product-item {
     display: block;
-    text-align: center;
     color: #000;
     overflow: hidden;
     background: #fff;

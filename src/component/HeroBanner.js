@@ -9,6 +9,7 @@ function HeroBanner() {
     var word2 = ""
     var word3 = ""
     const [styleA, setStyleA] = useState()
+    const [styleX, setStyleX] = useState()
     const [text, setText] = useState()
     const socketRef = useRef();
 
@@ -43,9 +44,31 @@ function HeroBanner() {
             })
     }
 
+    const calledBG = () => {
+        const configuration = {
+            method: "get",
+            url: "https://eatcom.onrender.com/GetHeroUI",
+            params: {
+                name: "e4onxrx7hmgzmrbel9jk"
+            }
+        }
+        axios(configuration)
+            .then((res) => {
+                setStyleX({
+                    "background": `linear-gradient(rgba(15, 23, 43, .9), rgba(15, 23, 43, .9)), url(${res.data.data})`,
+                    "backgroundPosition": "center center",
+                    "backgroundRepeat": "no-repeat",
+                    "backgroundSize": "cover",
+                })
+            }).catch((err) => {
+                console.log(err);
+            })
+    }
+
     useEffect(() => {
         calledUI()
         calledText()
+        calledBG()
         socketRef.current = socketIOClient.connect("https://eatcom.onrender.com")
 
         socketRef.current.on('ChangeHeroImageSuccess', dataGot => {
@@ -88,17 +111,17 @@ function HeroBanner() {
         word3 = HTMLReactParser(text?.down)
     }
     return (
-        <div className="container-fluid py-5 hero-header mb-5">
-            <div className="container my-5 py-5">
-                <div className="row align-items-center g-5">
-                    <div className="col-lg-6 text-center text-lg-start">
-                        <h1 className="display-3 text-white animated slideInLeft">{word1}</h1>
-                        <h1 className="display-3 text-white animated slideInLeft">{word2}</h1>
+        <div className="container-fluid py-5 hero-header" style={styleX}>
+            <div className="container py-5 h-100">
+                <div className="row align-items-center g-5 followRuleX container">
+                    <div className="col-lg-6 text-center text-lg-start sonFollowRuleX">
+                        <h2 className="display-3 text-white animated slideInLeft">{word1}</h2>
+                        <h2 className="display-3 text-white animated slideInLeft">{word2}</h2>
                         <p className="text-white animated slideInLeft mb-4 pb-2">{word3}</p>
-                        <NavLink reloadDocument to="/BookingSite" className="btn btn-primary py-sm-3 px-sm-5 me-3 animated slideInLeft">Book A Table</NavLink>
+                        <NavLink reloadDocument to="/BookingSite" className="btn btn-primary py-sm-3 px-sm-5 animated slideInLeft">Book A Table</NavLink>
                     </div>
-                    <div className="col-lg-6 text-center text-lg-end overflow-hidden lenderX">
-                        <img className="img-fluid" width="100%" height="100%" src={styleA} alt="" />
+                    <div className="col-lg-6 text-center text-lg-end overflow-hidden lenderX sonFollowRuleX2">
+                        <img className="img-fluid" width="70%" height="70%" src={styleA} alt="" />
                     </div>
                 </div>
             </div>

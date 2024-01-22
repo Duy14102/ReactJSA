@@ -7,6 +7,7 @@ import { jwtDecode } from "jwt-decode";
 import Layout from "../Layout";
 import { PayPalButton } from "react-paypal-button-v2";
 import "../css/Cart.css";
+import Header from "../component/Header";
 
 function Checkout() {
     var paymentmethod = 0
@@ -42,10 +43,6 @@ function Checkout() {
         candecode = jwtDecode(token)
     }
     havePhone.push(checkoutState.address)
-
-    window.addEventListener("beforeunload", e => {
-        e.preventDefault()
-    })
 
     useEffect(() => {
         const getDetailUser = () => {
@@ -308,6 +305,7 @@ function Checkout() {
     }
     return (
         <Layout>
+            <Header type={"Yes"} />
             <div className="bg-white">
                 <div className="container py-5">
                     <div className="pb-5 text-center businessWay">

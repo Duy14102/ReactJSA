@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react"
 import Footer from "./component/Footer"
-import Header from "./component/Header"
-import axios from "axios"
 import WOW from 'wowjs';
 import Backtotop from "./component/outOfBorder/Backtotop";
 import "./css/style.css";
@@ -9,7 +7,6 @@ import "./css/bootstrap.min.css";
 import "./lib/animate/animateAnimate.min.css";
 
 function Layout({ children }) {
-    const [styleA, setStyleA] = useState()
     const [offline, setOffline] = useState(false)
     const [online, setOnline] = useState(false)
     function reloadIt() {
@@ -40,30 +37,9 @@ function Layout({ children }) {
         }).init();
     }, [])
 
-    useEffect(() => {
-        const configuration = {
-            method: "get",
-            url: "https://eatcom.onrender.com/GetHeroUI",
-            params: {
-                name: "e4onxrx7hmgzmrbel9jk"
-            }
-        }
-        axios(configuration)
-            .then((res) => {
-                setStyleA({
-                    "background": `linear-gradient(rgba(15, 23, 43, .9), rgba(15, 23, 43, .9)), url(${res.data.data})`,
-                    "backgroundPosition": "center center",
-                    "backgroundRepeat": "no-repeat",
-                    "backgroundSize": "cover",
-                    "backgroundAttachment": "fixed",
-                })
-            }).catch((err) => {
-                console.log(err);
-            })
-    }, [])
     return (
         <>
-            <div className="container-fluid p-0" style={styleA}>
+            <div className="container-fluid p-0">
                 {offline ? (
                     <div className="connectNow">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 280"><rect height={200} width={200} fill="none" /><line x1="48" y1="40" x2="208" y2="216" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="24" /><path d="M25,98.2A147.2,147.2,0,0,1,72.4,66.9" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="24" /><path d="M59,132.1A98.3,98.3,0,0,1,108,106" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="24" /><path d="M92.9,166.1a50.9,50.9,0,0,1,67.6-2.4" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="24" /><path d="M117,56.4c3.6-.3,7.3-.4,11-.4A145.6,145.6,0,0,1,230.9,98.2" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="24" /><path d="M167.8,112.3A99.2,99.2,0,0,1,197,132.1" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="24" /><circle cx="128" cy="200" r="16" /></svg>
@@ -79,9 +55,10 @@ function Layout({ children }) {
                         <h4 onClick={() => setOnline(false)} className="returnX m-0">⨯</h4>
                     </div>
                 ) : null}
-                <Header />
                 <main>{children}</main>
-                <Footer />
+                <div style={{ zIndex: 5, position: "relative" }}>
+                    <Footer />
+                </div>
                 <Backtotop />
             </div>
         </>

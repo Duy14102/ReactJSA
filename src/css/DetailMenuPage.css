@@ -183,6 +183,12 @@
     padding-bottom: 30px;
 }
 
+.buhhuh2 {
+    background-color: #fff;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
 .holdTall {
     border: 2px solid #FEA116;
     padding: 2%;
@@ -211,6 +217,14 @@
     background-color: #FEA116;
     color: #fff;
     padding: 0 4px 0 6px;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.starGlowFriend2 {
+    background-color: #FEA116;
+    color: #fff;
+    padding: 0 4px 0 4px;
     border-radius: 4px;
     font-size: 16px;
 }
@@ -266,25 +280,63 @@
     text-decoration: none;
 }
 
-.product-info-tabs .nav-tabs {
-    border-bottom: 2px solid #d8d8d8;
-}
-
 .product-info-tabs .nav-tabs .nav-item {
     margin-bottom: 0;
+}
+
+.product-info-tabs .nav-tabs {
+    border-bottom: none !important;
 }
 
 .product-info-tabs .nav-tabs .nav-link.active {
     background-color: #fff !important;
     border-top-right-radius: 4px;
     border-top-left-radius: 4px;
+    border: solid #ebebeb;
+    border-width: 1px 1px 1px 1px;
+    border-bottom: solid #fff;
+    position: relative;
+    z-index: 10;
+}
+
+.Mk978 {
+    display: flex;
+    justify-content: space-between;
+    background: #fff;
+    padding: 1.5rem;
+    width: 100%;
+    border: solid #ebebeb;
+    border-width: 1px 1px 1px 1px;
+    border-radius: 4px;
+}
+
+.Mk9782 {
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    padding: 1.5rem;
+    width: 100%;
+    border: solid #ebebeb;
+    border-width: 1px 1px 1px 1px;
+    border-radius: 4px;
+}
+
+.conquerLeft2 {
+    border: 1px solid #ebebeb;
+    padding: 10px 5px 10px 10px;
+    background: #fff;
+    border-radius: 0 4px 0 0;
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .conquerLeft {
     border: 1px solid #ebebeb;
     padding: 15px 5px 15px 15px;
     background: #fff;
-    border-radius: 4px;
+    border-radius: 0 4px 4px 4px;
     display: flex;
     flex-direction: column;
     width: 25%;
@@ -292,7 +344,8 @@
     height: 145px;
 }
 
-.conquerLeft button {
+.conquerLeft button,
+.conquerLeft2 button {
     display: inline-block;
     color: #6d6f71;
     text-align: left;
@@ -311,11 +364,25 @@
     padding: 0 4px 0 4px;
     color: #fff;
     border-radius: 4px;
+    transition: all 0.2s;
 }
 
-.conquerLeft button:hover {
-    color: #fff;
+.plusPlusDe:hover {
+    background-color: #e08f15;
+}
+
+.conquerLeft button:hover,
+.conquerLeft2 button:hover {
+    color: #fff !important;
     background-color: #959595;
+}
+
+.conquerRight2 {
+    border: solid #ebebeb;
+    border-width: 0 1px 0 1px;
+    border-radius: 0 0 4px 4px;
+    padding: 10px 5px 10px 10px;
+    background: #fff;
 }
 
 .conquerRight {
@@ -326,12 +393,21 @@
     width: 72%;
 }
 
-.conquerRight .KickTitleJK {
-
+.conquerRight .KickTitleJK,
+.conquerRight2.KickTitleJK {
     text-transform: uppercase;
     color: #6d6f71;
     padding: 5px 0 0;
     margin: 10px 0 20px;
+}
+
+.cutTextRightNow {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
 }
 
 .product-info-tabs .nav-tabs .nav-link {
@@ -339,14 +415,14 @@
     color: #323232;
 }
 
-.product-info-tabs .nav-tabs .nav-item .nav-link:hover {
-    border: none;
+.HeroDecadeAF {
+    border: solid #ebebeb;
+    border-width: 1px 1px 1px 1px;
 }
 
 .product-info-tabs .nav-tabs .nav-item.show .nav-link,
 .product-info-tabs .nav-tabs .nav-link.active,
 .product-info-tabs .nav-tabs .nav-link.active:hover {
-    border-bottom: 1px solid #FEA116;
     font-weight: bold;
 }
 
@@ -533,6 +609,12 @@
 .thisImageRespon {
     width: 500px;
     height: 333px;
+}
+
+.thisImageRespon2 {
+    width: 100%;
+    height: 300px;
+    object-fit: fill;
 }
 
 @media (max-width: 991.98px) {

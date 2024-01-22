@@ -2,6 +2,7 @@ import { NavLink } from "react-router-dom";
 import { useEffect, useReducer } from "react";
 import Layout from "../Layout";
 import "../css/Cart.css";
+import Header from "../component/Header";
 
 function Cart() {
     const val = JSON.parse(localStorage.getItem('cart'))
@@ -115,6 +116,7 @@ function Cart() {
 
     return (
         <Layout>
+            <Header type={"Yes"} />
             <div className="bg-white">
                 <div className="container">
                     <div className="py-5 text-center businessWay">

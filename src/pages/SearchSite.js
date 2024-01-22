@@ -5,6 +5,7 @@ import $ from 'jquery';
 import axios from "axios";
 import ReactPaginate from 'react-paginate';
 import Layout from '../Layout';
+import Header from "../component/Header";
 
 function SearchSite() {
     let appler = useParams()
@@ -15,12 +16,28 @@ function SearchSite() {
         searchdata: [],
         pageCount: 6,
         callAlert: false,
+        classify: false,
+        countChoose: null
     })
     const currentPage = useRef();
-    const limit = 9
+    const limit = 15
     // Get Search Data
     useEffect(() => {
         currentPage.current = 1;
+        var countPro = 0
+        if (appler.cate.includes("Meat")) {
+            countPro++
+        }
+        if (appler.cate.includes("Vegetables")) {
+            countPro++
+        }
+        if (appler.cate.includes("Drink")) {
+            countPro++
+        }
+        if (appler.cate.includes("Main")) {
+            countPro++
+        }
+        setSearchState({ countChoose: countPro })
         getPagination();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
@@ -37,6 +54,7 @@ function SearchSite() {
             url: "https://eatcom.onrender.com/GetSearch",
             params: {
                 foodSearch: appler.id,
+                category: appler.cate,
                 page: currentPage.current,
                 limit: limit,
                 filter: appler.fil
@@ -55,16 +73,54 @@ function SearchSite() {
 
     const Filter = (e) => {
         if (e === "lpf") {
-            window.location.href = `/SearchSite/${appler.id}/lpf`
+            window.location.href = `/SearchSite/${appler.id}/${appler.cate}/lpf`
         } if (e === "hpf") {
-            window.location.href = `/SearchSite/${appler.id}/hpf`
+            window.location.href = `/SearchSite/${appler.id}/${appler.cate}/hpf`
         } if (e === "nto") {
-            window.location.href = `/SearchSite/${appler.id}/nto`
+            window.location.href = `/SearchSite/${appler.id}/${appler.cate}/nto`
         } if (e === "otn") {
-            window.location.href = `/SearchSite/${appler.id}/otn`
+            window.location.href = `/SearchSite/${appler.id}/${appler.cate}/otn`
         } if (e === "atz") {
-            window.location.href = `/SearchSite/${appler.id}/atz`
+            window.location.href = `/SearchSite/${appler.id}/${appler.cate}/atz`
         }
+    }
+
+    function changeMain(e) {
+        if (!e.target.checked) {
+            appler.cate = appler.cate.replace(",Main", "")
+        } else if (e.target.checked) {
+            appler.cate += ",Main"
+        }
+    }
+    function changeMeat(e) {
+        if (!e.target.checked) {
+            appler.cate = appler.cate.replace(",Meat", "")
+        } else if (e.target.checked) {
+            appler.cate += ",Meat"
+        }
+    }
+    function changeVege(e) {
+        if (!e.target.checked) {
+            appler.cate = appler.cate.replace(",Vegetables", "")
+        } else if (e.target.checked) {
+            appler.cate += ",Vegetables"
+        }
+    }
+    function changeDrink(e) {
+        if (!e.target.checked) {
+            appler.cate = appler.cate.replace(",Drink", "")
+        } else if (e.target.checked) {
+            appler.cate += ",Drink"
+        }
+    }
+
+    function clearCate() {
+        appler.cate = "Menu"
+        window.location.href = `/SearchSite/${appler.id}/${appler.cate}/nto`
+    }
+
+    function changeCate() {
+        window.location.href = `/SearchSite/${appler.id}/${appler.cate}/nto`
     }
 
     function addToCart(name, quantity) {
@@ -95,7 +151,7 @@ function SearchSite() {
     }
 
     $(function () {
-        $("#select2").val(appler.fil);
+        $("#select").val(appler.fil);
     })
 
     const VND = new Intl.NumberFormat('vi-VN', {
@@ -108,79 +164,91 @@ function SearchSite() {
     }
     return (
         <Layout>
-            {searchState.callAlert ? (
-                <div className="d-flex justify-content-end danguru">
-                    <div class='alertNow'>
-                        <i className="fas fa-check-circle alert__icon"></i>
-                        <p class='m-0'>Add to cart success!</p>
-                    </div>
-                </div>
-            ) : null}
-            <div className='bg-white'>
-                <div className='container'>
-                    <div className='ruler pt-3'>
-                        <p style={{ margin: 0 }}><NavLink className="textNavlink" to="/">Home</NavLink> / <b>Search result for : "{appler.id}"</b></p>
-                        <div className='ThirdRow'>
-                            <p style={{ margin: 0, width: 100 + "%", marginBottom: 5 }}>Display all {searchState.Count} results</p>
-                            <select id='select2' onChange={(e) => Filter(e.target.value)} className='FilterDrop'>
-                                <option value={"nto"}>New to old</option>
-                                <option value={"otn"}>Old to new</option>
-                                <option value={"hpf"}>High price first</option>
-                                <option value={"lpf"}>Low price first</option>
-                                <option value={"atz"}>A to Z</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div className='ruler pt-4'>
-                        <div className='FirstRow'>
-                            <div className='nOthing'>
-                                <h5>Product Category</h5>
-                                <hr style={{ width: 15 + "%", height: 3 + "px" }} />
-                                <NavLink reloadDocument to={`/CategorySite/Meat/${appler.fil}`} activeclassname='active' className="text-black"><p>Meat</p></NavLink>
-                                <NavLink reloadDocument to={`/CategorySite/Drink/${appler.fil}`} className="text-black" ><p>Drink</p></NavLink>
-                                <NavLink reloadDocument to={`/CategorySite/Vegetables/${appler.fil}`} className="text-black"><p>Vegetables</p></NavLink>
+            <Header type={"Yes"} />
+            <div style={{ backgroundColor: "#f2f2f2", paddingTop: 20, paddingBottom: 22 }}>
+                <div className='containerNephew'>
+                    <div className='pt-4'>
+                        <div className="row">
+                            <div className='Jkaem'>
+                                <div className='ownerOfX'>
+                                    <button style={searchState.classify ? { backgroundColor: "#fff", fontWeight: "bold" } : null} onClick={() => searchState.classify ? setSearchState({ classify: false }) : setSearchState({ classify: true })} className='AigButton'>Categories</button>
+                                    {searchState.classify ? (
+                                        <div className='CatuRespon'>
+                                            <div className='fatherCheckMuck'>
+                                                <div className='checkMuck'>
+                                                    <input onClick={(e) => changeMain(e)} defaultChecked={appler.cate.includes("Main") ? "checked" : null} type="checkbox" id="Main" value="Main" />
+                                                    <label htmlFor="Main" className='text-nowrap'>Main dishes</label>
+                                                </div>
+                                                <div className='checkMuck'>
+                                                    <input onClick={(e) => changeMeat(e)} defaultChecked={appler.cate.includes("Meat") ? "checked" : null} type="checkbox" id="Main" value="Main" />
+                                                    <label htmlFor="Main" className='text-nowrap'>Meat</label>
+                                                </div>
+                                                <div className='checkMuck'>
+                                                    <input onClick={(e) => changeVege(e)} defaultChecked={appler.cate.includes("Vegetables") ? "checked" : null} type="checkbox" id="Main" value="Main" />
+                                                    <label htmlFor="Main" className='text-nowrap'>Vegetables</label>
+                                                </div>
+                                                <div className='checkMuck'>
+                                                    <input onClick={(e) => changeDrink(e)} defaultChecked={appler.cate.includes("Drink") ? "checked" : null} type="checkbox" id="Main" value="Main" />
+                                                    <label htmlFor="Main" className='text-nowrap'>Drink</label>
+                                                </div>
+                                            </div>
+                                            <hr className='m-0' />
+                                            <div className='d-flex' style={{ gap: "10px", marginTop: 15 }}>
+                                                <button onClick={() => changeCate()} className='greekBas' style={{ backgroundColor: "#239839" }}>Confirm</button>
+                                                <button onClick={() => setSearchState({ classify: false })} className='greekBas' style={{ backgroundColor: "gray" }}>Cancel</button>
+                                            </div>
+                                        </div>
+                                    ) : null}
+                                </div>
+                                <div className='ThirdRow'>
+                                    <p className='allover3'>Display all {searchState.Count} results</p>
+                                    <select id='select' onChange={(e) => Filter(e.target.value)} className='FilterDrop'>
+                                        <option value={"nto"}>New to old</option>
+                                        <option value={"otn"}>Old to new</option>
+                                        <option value={"hpf"}>High price first</option>
+                                        <option value={"lpf"}>Low price first</option>
+                                        <option value={"atz"}>A to Z</option>
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-                        <div className="row SecondRow">
-                            {Object.values(searchState.searchdata).map(i => {
-                                var quantity = 1
-                                return (
-                                    <div className="product-box column p-0 CateColumn" key={i._id}>
-                                        <div className="product-item">
-                                            <NavLink reloadDocument to={`/DetailMenuPage/${i.foodname}/${i.foodcategory}`}>
+                            {searchState.countChoose > 0 ? (
+                                <div className='hasCateX'>
+                                    <p className='m-0'>Categories <b>{`(${searchState.countChoose})`}</b></p>
+                                    <button onClick={() => clearCate()} className='deleteTagX'>x</button>
+                                </div>
+                            ) : null}
+                            <div className='row pb-2'>
+                                {Object.values(searchState.searchdata).map(i => {
+                                    return (
+                                        <NavLink className="product-box p-0 CateColumn col-6 col-md-2" key={i._id} reloadDocument to={`/DetailMenuPage/${i.foodname}/${i.foodcategory}`}>
+                                            <div className='coolerStatus' style={{ backgroundColor: i.foodquantity > 0 ? "#239839" : "tomato" }}></div>
+                                            <div className="product-item">
                                                 <div className="product-item-image">
                                                     <img loading='lazy' src={i.foodimage} alt="" />
                                                     <div className="product-item-image-hover">
                                                     </div>
                                                 </div>
-                                            </NavLink>
-                                            <div className="product-item-content">
-                                                <div className="product-item-category">
-                                                    {i.foodcategory}
-                                                </div>
-                                                <NavLink reloadDocument to={`/DetailMenuPage/${i.foodname}/${i.foodcategory}`} className="product-item-title text-nowrap">{i.foodname}</NavLink>
-                                                <div className="product-item-price">
-                                                    {VND.format(i.foodprice)}
+                                                <div className="product-item-content">
+                                                    <div className="product-item-title text-nowrap">{i.foodname} </div>
+                                                    <div className="product-item-category">
+                                                        {i.foodcategory}
+                                                    </div>
+                                                    <div className="product-item-price">
+                                                        {VND.format(i.foodprice)}
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div className='liutiudiu'>
-                                                {i.foodquantity > 0 ? (
-                                                    <button onClick={() => addToCart(i.foodname, quantity)} className='btn btn-primary'>Add to cart</button>
-                                                ) : (
-                                                    <button style={{ pointerEvents: "none", opacity: 0.5 }} className='btn btn-primary'>Add to cart</button>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </div>
-                                )
-                            })}
+                                        </NavLink>
+                                    )
+                                })}
+                            </div>
                             <ReactPaginate
                                 breakLabel="..."
-                                nextLabel="next >"
+                                nextLabel="Next >"
                                 onPageChange={handlePageClick}
                                 pageRangeDisplayed={5}
                                 pageCount={searchState.pageCount}
-                                previousLabel="< previous"
+                                previousLabel="< Previous"
                                 renderOnZeroPageCount={null}
                                 marginPagesDisplayed={2}
                                 containerClassName="pagination justify-content-center"

@@ -6,6 +6,7 @@ import { useEffect, useRef, useReducer } from "react";
 import { NavLink } from "react-router-dom";
 import socketIOClient from "socket.io-client";
 import "../css/Cart.css";
+import Header from "../component/Header";
 
 function OrderComplete() {
     const socketRef = useRef();
@@ -140,6 +141,7 @@ function OrderComplete() {
 
     return (
         <Layout>
+            <Header type={"Yes"} />
             <div className="bg-white">
                 <div style={{ height: 50 + "vh" }}>
                     <div className="container text-center">

@@ -7,6 +7,7 @@ import Cookies from "universal-cookie";
 import NotFound from '../../component/outOfBorder/NotFound';
 import Layout from '../../Layout';
 import { useGoogleLogin } from '@react-oauth/google';
+import Header from '../../component/Header';
 
 function LoginSite() {
     const cookies = new Cookies();
@@ -184,6 +185,7 @@ function LoginSite() {
 
     return (
         <Layout>
+            <Header type={"Yes"} />
             <div className="limiter">
                 <div className="container-login100">
                     <div className="wrap-login100">

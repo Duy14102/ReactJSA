@@ -30,6 +30,7 @@ function Header({ type }) {
     if (token) {
         candecode = jwtDecode(token);
     }
+
     useEffect(() => {
         if (token) {
             const decoded = jwtDecode(token);
@@ -75,13 +76,15 @@ function Header({ type }) {
 
     $(function () {
         // Sticky Navbar
-        $(window).on("scroll", function () {
-            if ($(this).scrollTop() > 45) {
-                $('.navbar').addClass('sticky-top shadow-sm');
-            } else {
-                $('.navbar').removeClass('sticky-top shadow-sm');
-            }
-        });
+        if (!type) {
+            $(window).on("scroll", function () {
+                if ($(this).scrollTop() > 45) {
+                    $('.navbar').addClass('magicTechNav');
+                } else {
+                    $('.navbar').removeClass('magicTechNav');
+                }
+            });
+        }
 
         // Dropdown on mouse hover
         const $dropdown = $(".Move1");
@@ -98,10 +101,6 @@ function Header({ type }) {
             $dropdownToggle.attr("aria-expanded", "false");
             $dropdownMenu.removeClass(showClass3);
         })
-
-        if (type) {
-            $('.GroundW').addClass('SpecialHeader')
-        }
     })
     const SearchType = (e) => {
         e.preventDefault();
@@ -109,12 +108,13 @@ function Header({ type }) {
             method: "get",
             url: "https://eatcom.onrender.com/GetSearch",
             params: {
-                foodSearch: headerState.search
+                foodSearch: headerState.search,
+                category: "Menu"
             }
         };
         axios(configuration)
             .then(() => {
-                window.location.href = `/SearchSite/${headerState.search}/nto`
+                window.location.href = `/SearchSite/${headerState.search}/Menu/nto`
             })
             .catch((error) => {
                 console.log(error);
@@ -162,7 +162,7 @@ function Header({ type }) {
     }
     return (
         <>
-            <nav className="navbar navbar-expand-lg GroundW navbar-dark px-4 px-lg-5 py-3 py-lg-0">
+            <nav style={{ backgroundColor: type ? "#0F172B" : "transparent", position: type ? "static" : "fixed", width: "100%" }} className={"navbar navbar-expand-lg navbar-dark px-4 px-lg-5 py-3 py-lg-0"}>
                 <a href="/" className="navbar-brand p-0">
                     <h1 className="text-primary thisTextH1 m-0"><svg style={{ fill: "#FEA116" }} className="me-3" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><path d="M416 0C400 0 288 32 288 176V288c0 35.3 28.7 64 64 64h32V480c0 17.7 14.3 32 32 32s32-14.3 32-32V352 240 32c0-17.7-14.3-32-32-32zM64 16C64 7.8 57.9 1 49.7 .1S34.2 4.6 32.4 12.5L2.1 148.8C.7 155.1 0 161.5 0 167.9c0 45.9 35.1 83.6 80 87.7V480c0 17.7 14.3 32 32 32s32-14.3 32-32V255.6c44.9-4.1 80-41.8 80-87.7c0-6.4-.7-12.8-2.1-19.1L191.6 12.5c-1.8-8-9.3-13.3-17.4-12.4S160 7.8 160 16V150.2c0 5.4-4.4 9.8-9.8 9.8c-5.1 0-9.3-3.9-9.8-9L127.9 14.6C127.2 6.3 120.3 0 112 0s-15.2 6.3-15.9 14.6L83.7 151c-.5 5.1-4.7 9-9.8 9c-5.4 0-9.8-4.4-9.8-9.8V16zm48.3 152l-.3 0-.3 0 .3-.7 .3 .7z" /></svg>EatCom</h1>
                 </a>
@@ -233,7 +233,7 @@ function Header({ type }) {
                         <NavLink reloadDocument to="/Announcement" className="nav-item nav-link Wrinked">Announcement</NavLink>
                         <NavLink reloadDocument to="/TrackOrder" className="nav-item nav-link Wrinked">Track Order</NavLink>
                         <NavLink reloadDocument to="/BookingSite" className="nav-item nav-link Wrinked">Booking</NavLink>
-                        <NavLink reloadDocument to="/ContactSite" className="nav-item nav-link Wrinked">Contact</NavLink>
+                        <NavLink reloadDocument to="/ContactSite" className="nav-item nav-link Wrinked">About</NavLink>
                         <div className="fatherSvgCart1">
                             <NavLink reloadDocument to="/Cart" className="nav-item nav-link Wrinked responSearch">
                                 <svg className="svgCart1" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512"><path d="M0 24C0 10.7 10.7 0 24 0H69.5c22 0 41.5 12.8 50.6 32h411c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3H170.7l5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5H488c13.3 0 24 10.7 24 24s-10.7 24-24 24H199.7c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5H24C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z" /></svg>
@@ -308,7 +308,8 @@ function Header({ type }) {
                 isOpen={headerState.logout} onRequestClose={() => setHeaderState({ logout: false })} ariaHideApp={false}
                 style={{
                     overlay: {
-                        backgroundColor: 'rgb(33 33 33 / 75%)'
+                        backgroundColor: 'rgb(33 33 33 / 75%)',
+                        zIndex: 999
                     },
                     content: {
                         border: "none",

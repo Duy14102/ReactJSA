@@ -10,6 +10,7 @@ import Layout from "../Layout";
 import Cookies from "universal-cookie";
 import { jwtDecode } from "jwt-decode";
 import socketIOClient from "socket.io-client";
+import Header from "../component/Header";
 // import "../css/CategoryCss.css";
 
 function QrCodeTable() {
@@ -308,6 +309,7 @@ function QrCodeTable() {
                         </div>
                     </Modal>
                     <Layout>
+                        <Header type={"Yes"} />
                         {sidebar ? (
                             <>
                                 <button onClick={() => setSidebar(false)} className="sideTick">

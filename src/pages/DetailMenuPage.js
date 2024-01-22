@@ -10,8 +10,7 @@ import Cookies from "universal-cookie";
 import ReactPaginate from 'react-paginate';
 import Layout from '../Layout';
 import "../css/DetailMenuPage.css";
-window.jQuery = jQuery
-require('owl.carousel')
+import Header from '../component/Header';
 
 function DetailMenuPage() {
     var candecode = null
@@ -25,7 +24,6 @@ function DetailMenuPage() {
         ...prev, ...next
     }), {
         detail: [],
-        menu: [],
         imgF: "",
         reviewMessage: null,
         getUserW: [],
@@ -40,32 +38,15 @@ function DetailMenuPage() {
     })
     var [reviewName, setReviewName] = useState()
     var [quantity, setQuantity] = useState(1)
+    const Meatref = useRef(null);
+    const Vegeref = useRef(null);
+    const Drinkref = useRef(null);
     const currentPage = useRef();
     jQuery(function ($) {
         // Variables
         const $tabLink = $('#myTab .nav-link');
         const $tabBody = $('#myTabContent .tab-pane');
         let timerOpacity;
-        $(".testimonial-carousel2").owlCarousel({
-            smartSpeed: 1000,
-            autoplay: true,
-            center: true,
-            margin: 15,
-            loop: true,
-            dots: false,
-            nav: true,
-            responsive: {
-                0: {
-                    items: 1
-                },
-                768: {
-                    items: 2
-                },
-                992: {
-                    items: 3
-                },
-            }
-        });
 
         // Toggle Class
         const init = () => {
@@ -140,12 +121,6 @@ function DetailMenuPage() {
                 setDetailState({ topping: menu.data });
             })
         }
-
-        fetch(`https://eatcom.onrender.com/GetSimilarP?Name=${appler.cate}`, {
-            method: "get",
-        }).then((res) => res.json()).then((menu) => {
-            setDetailState({ menu: menu.data });
-        })
 
         fetch(`https://eatcom.onrender.com/GetDetailMenu?foodid=${appler.id}`, {
             method: "get",
@@ -334,11 +309,18 @@ function DetailMenuPage() {
     }
     return (
         <Layout>
+            <Header type={"Yes"} />
             {detailState.callAlert ? (
-                <div className="d-flex justify-content-end danguru">
-                    <div class='alertNow'>
-                        <i className="fas fa-check-circle alert__icon"></i>
-                        <p class='m-0'>Add to cart success!</p>
+                <div className="danguru">
+                    <div className='alertNow'>
+                        <div className='kikuny'>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" /></svg>
+                        </div>
+                        <div className='d-flex' style={{ flexDirection: "column", marginRight: 25 }}>
+                            <p className='m-0'><b>Success</b></p>
+                            <p className='m-0'>Cart have new item!</p>
+                        </div>
+                        <button onClick={() => setDetailState({ callAlert: false })} className='closeAlertKikuny'></button>
                     </div>
                 </div>
             ) : null}
@@ -403,294 +385,272 @@ function DetailMenuPage() {
                             <div className='container py-4 mt-5'>
                                 <div className="product-info-tabs">
                                     <ul className="nav nav-tabs" id="myTab" role="tablist">
+                                        {i.foodcategory === "Main" ? (
+                                            <li className="nav-item">
+                                                <a className="active activeThis nav-link" id="description-tab" href="#description">Topping</a>
+                                            </li>
+                                        ) : null}
                                         <li className="nav-item">
-                                            <a className="nav-link active activeThis" id="description-tab" href="#description">Topping</a>
-                                        </li>
-                                        <li className="nav-item">
-                                            <a className="nav-link" id="review-tab" href="#review">Reviews ({i.review?.length})</a>
+                                            <a className={[i.foodcategory !== "Main" ? "active activeThis nav-link" : "nav-link"]} id="review-tab" href="#review">Reviews ({i.review?.length})</a>
                                         </li>
                                     </ul>
-                                    <div className="tab-content mt-5" id="myTabContent">
-                                        <div className="tab-pane active activeThis" id="description">
-                                            <div className='d-flex justify-content-between w-100'>
-                                                <div className='conquerLeft'>
-                                                    <button>Meat</button>
-                                                    <button>Vegetables</button>
-                                                    <button>Drink</button>
-                                                </div>
-                                                <div className='conquerRight'>
-                                                    {detailState.topping.length > 0 && appler.cate === "Main" ? (
-                                                        <>
-                                                            <p className='KickTitleJK'>Meat</p>
-                                                            <div className='py-3'>
-                                                                {detailState.topping?.map((z) => {
-                                                                    return (
-                                                                        z.foodcategory === "Meat" ? (
-                                                                            <Fragment key={z._id}>
-                                                                                <div className='d-flex justify-content-between w-100'>
-                                                                                    <div style={{ width: "10%" }}>
-                                                                                        <img src={z.foodimage} width={62} height={60} alt='' />
-                                                                                    </div>
-                                                                                    <div style={{ width: "70%" }}>
-                                                                                        <p className='m-0'><b>{z.foodname}</b></p>
-                                                                                        <p style={{ fontSize: 15, color: "gray" }}>{z.fooddescription}</p>
-                                                                                    </div>
-                                                                                    <p style={{ width: "10%", textAlign: "center" }}>{VND.format(z.foodprice)}</p>
-                                                                                    <div style={{ width: "10%", textAlign: "center" }}>
-                                                                                        <button className='plusPlusDe'>+</button>
-                                                                                    </div>
-                                                                                </div>
-                                                                                <hr style={{ color: "lightgray", marginTop: 0 }} />
-                                                                            </Fragment>
-                                                                        ) : null
-                                                                    )
-                                                                })}
-                                                            </div>
-                                                            <p className='KickTitleJK'>Vegetables</p>
-                                                            <div className='py-3'>
-                                                                {detailState.topping?.map((z) => {
-                                                                    return (
-                                                                        z.foodcategory === "Vegetables" ? (
-                                                                            <Fragment key={z._id}>
-                                                                                <div className='d-flex justify-content-between w-100'>
-                                                                                    <div style={{ width: "10%" }}>
-                                                                                        <img src={z.foodimage} width={62} height={60} alt='' />
-                                                                                    </div>
-                                                                                    <div style={{ width: "70%" }}>
-                                                                                        <p className='m-0'><b>{z.foodname}</b></p>
-                                                                                        <p style={{ fontSize: 15, color: "gray" }}>{z.fooddescription}</p>
-                                                                                    </div>
-                                                                                    <p style={{ width: "10%", textAlign: "center" }}>{VND.format(z.foodprice)}</p>
-                                                                                    <div style={{ width: "10%", textAlign: "center" }}>
-                                                                                        <button className='plusPlusDe'>+</button>
-                                                                                    </div>
-                                                                                </div>
-                                                                                <hr style={{ color: "lightgray", marginTop: 0 }} />
-                                                                            </Fragment>
-                                                                        ) : null
-                                                                    )
-                                                                })}
-                                                            </div>
-                                                            <p className='KickTitleJK'>Drink</p>
-                                                            <div className='py-3'>
-                                                                {detailState.topping?.map((z) => {
-                                                                    return (
-                                                                        z.foodcategory === "Drink" ? (
-                                                                            <Fragment key={z._id}>
-                                                                                <div className='d-flex justify-content-between w-100'>
-                                                                                    <div style={{ width: "10%" }}>
-                                                                                        <img src={z.foodimage} width={62} height={60} alt='' />
-                                                                                    </div>
-                                                                                    <div style={{ width: "70%" }}>
-                                                                                        <p className='m-0'><b>{z.foodname}</b></p>
-                                                                                        <p style={{ fontSize: 15, color: "gray" }}>{z.fooddescription}</p>
-                                                                                    </div>
-                                                                                    <p style={{ width: "10%", textAlign: "center" }}>{VND.format(z.foodprice)}</p>
-                                                                                    <div style={{ width: "10%", textAlign: "center" }}>
-                                                                                        <button className='plusPlusDe'>+</button>
-                                                                                    </div>
-                                                                                </div>
-                                                                                <hr style={{ color: "lightgray", marginTop: 0 }} />
-                                                                            </Fragment>
-                                                                        ) : null
-                                                                    )
-                                                                })}
-                                                            </div>
-                                                        </>
-                                                    ) : null}
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="tab-pane" id="review">
-                                            {token ? (
-                                                i.review?.length <= 0 ? (
-                                                    <>
-                                                        <div className="review-heading">REVIEWS</div>
-                                                        <p className="mb-20">There are no reviews yet.</p>
-                                                        <form onSubmit={(e) => addreview(e, i._id)} className="review-form">
-                                                            <div className="form-group">
-                                                                <div className='d-flex' style={{ gap: 3 + "%" }}>
-                                                                    <div>
-                                                                        <label>Your rating</label>
-                                                                        <div className="reviews-counter">
-                                                                            <div className="rate">
-                                                                                <input type='radio' style={{ display: "none" }} required />
-                                                                                <input type="radio" onChange={(e) => setDetailState({ reviewStar: e.target.value })} id="star5" name="rate" value="5" />
-                                                                                <label title="text" htmlFor='star5'>5 stars</label>
-                                                                                <input type="radio" onChange={(e) => setDetailState({ reviewStar: e.target.value })} id="star4" name="rate" value="4" />
-                                                                                <label title="text" htmlFor='star4'>4 stars</label>
-                                                                                <input type="radio" onChange={(e) => setDetailState({ reviewStar: e.target.value })} id="star3" name="rate" value="3" />
-                                                                                <label title="text" htmlFor='star3'>3 stars</label>
-                                                                                <input type="radio" onChange={(e) => setDetailState({ reviewStar: e.target.value })} id="star2" name="rate" value="2" />
-                                                                                <label title="text" htmlFor='star2'>2 stars</label>
-                                                                                <input type="radio" onChange={(e) => setDetailState({ reviewStar: e.target.value })} id="star1" name="rate" value="1" />
-                                                                                <label title="text" htmlFor='star1'>1 star</label>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    {detailState.checkStar ? (
-                                                                        <p className='text-danger'>Choose star for this item !</p>
-                                                                    ) : null}
-                                                                </div>
-                                                            </div>
-                                                            {token ? null : (
-                                                                <div className="form-group">
-                                                                    <label>Your name</label>
-                                                                    <input onChange={(e) => setReviewName(e.target.value)} type="text" name="" className="form-control" required />
-                                                                </div>
-                                                            )}
-                                                            <div className="form-group pt-4">
-                                                                <label>Your message</label>
-                                                                <textarea onChange={(e) => setDetailState({ reviewMessage: e.target.value })} className="form-control" rows="10" required />
-                                                            </div>
-                                                            <button type='submit' className="round-black-btn">Submit Review</button>
-                                                        </form>
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <div className='d-flex justify-content-between w-100'>
-                                                            <div style={{ width: 58 + "%" }}>
-                                                                {detailState.wowreview.map((r) => {
-                                                                    return (
-                                                                        <Fragment key={r.date}>
-                                                                            <div className='gutton'>
-                                                                                {r.image ? (
-                                                                                    <img alt='' height={50} width={50} src={r.image} />
-                                                                                ) : (
-                                                                                    <img alt='' height={50} width={50} src="https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg" />
-                                                                                )}
-                                                                                <div>
-                                                                                    <div style={{ color: "#FEA116" }}>{rating(r.star)}</div>
-                                                                                    <p className='m-0'><b>{r.name}</b> - {r.date}</p>
-                                                                                    <p className='m-0'>{r.message}</p>
-                                                                                </div>
-                                                                            </div>
-                                                                            <hr />
-                                                                        </Fragment>
-                                                                    )
-                                                                })}
-                                                                <ReactPaginate
-                                                                    breakLabel="..."
-                                                                    nextLabel="Next >"
-                                                                    onPageChange={(e) => handlePageClick(e.selected, i)}
-                                                                    pageRangeDisplayed={5}
-                                                                    pageCount={detailState.pageCount}
-                                                                    previousLabel="< Prev"
-                                                                    renderOnZeroPageCount={null}
-                                                                    marginPagesDisplayed={2}
-                                                                    containerClassName="pagination justify-content-center"
-                                                                    pageClassName="page-item"
-                                                                    pageLinkClassName="page-link"
-                                                                    previousClassName="page-item"
-                                                                    previousLinkClassName="page-link"
-                                                                    nextClassName="page-item"
-                                                                    nextLinkClassName="page-link"
-                                                                    activeClassName="active"
-                                                                    forcePage={currentPage.current - 1}
-                                                                />
-                                                            </div>
-                                                            <div className='holdTall' style={{ width: 40 + "%" }}>
-                                                                {detailState.checkKiu ? (
-                                                                    <>
-                                                                        <div className='text-center'>
-                                                                            <div className="review-heading">REVIEWS</div>
-                                                                            <p>You have review this item!</p>
-                                                                        </div>
-                                                                        <div className='gutton'>
-                                                                            <img alt='' height={50} width={50} src={detailState.gotReview.image ? detailState.gotReview.image : "https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg"} />
-                                                                            <div>
-                                                                                <div style={{ color: "#FEA116" }}>{rating(detailState.gotReview.star)}</div>
-                                                                                <p className='m-0'><b>{detailState.gotReview.name}</b> - {detailState.gotReview.date}</p>
-                                                                                <p className='m-0'>{detailState.gotReview.message}</p>
-                                                                            </div>
-                                                                        </div>
-                                                                    </>
-                                                                ) : (
-                                                                    <>
-                                                                        <div className="review-heading">REVIEWS</div>
-                                                                        <form onSubmit={(e) => addreview(e, i._id)} className="review-form">
-                                                                            <div className="form-group">
-                                                                                <div className='d-flex' style={{ gap: 3 + "%" }}>
-                                                                                    <div>
-                                                                                        <label>Your rating</label>
-                                                                                        <div className="reviews-counter">
-                                                                                            <div className="rate">
-                                                                                                <input type='radio' style={{ display: "none" }} required />
-                                                                                                <input type="radio" onChange={(e) => setDetailState({ reviewStar: e.target.value })} id="star5" name="rate" value="5" />
-                                                                                                <label title="text" htmlFor='star5'>5 stars</label>
-                                                                                                <input type="radio" onChange={(e) => setDetailState({ reviewStar: e.target.value })} id="star4" name="rate" value="4" />
-                                                                                                <label title="text" htmlFor='star4'>4 stars</label>
-                                                                                                <input type="radio" onChange={(e) => setDetailState({ reviewStar: e.target.value })} id="star3" name="rate" value="3" />
-                                                                                                <label title="text" htmlFor='star3'>3 stars</label>
-                                                                                                <input type="radio" onChange={(e) => setDetailState({ reviewStar: e.target.value })} id="star2" name="rate" value="2" />
-                                                                                                <label title="text" htmlFor='star2'>2 stars</label>
-                                                                                                <input type="radio" onChange={(e) => setDetailState({ reviewStar: e.target.value })} id="star1" name="rate" value="1" />
-                                                                                                <label title="text" htmlFor='star1'>1 star</label>
-                                                                                            </div>
+                                    <div className="tab-content" id="myTabContent">
+                                        {i.foodcategory === "Main" ? (
+                                            <div className="tab-pane active activeThis" id="description">
+                                                <div className='d-flex justify-content-between w-100'>
+                                                    <div className='conquerLeft'>
+                                                        <button onClick={() => Meatref.current?.scrollIntoView({ behavior: 'smooth' })}>Meat</button>
+                                                        <button onClick={() => Vegeref.current?.scrollIntoView({ behavior: 'smooth' })}>Vegetables</button>
+                                                        <button onClick={() => Drinkref.current?.scrollIntoView({ behavior: 'smooth' })}>Drink</button>
+                                                    </div>
+                                                    <div className='conquerRight'>
+                                                        {detailState.topping.length > 0 && appler.cate === "Main" ? (
+                                                            <>
+                                                                <p ref={Meatref} className='KickTitleJK'>Meat</p>
+                                                                <div className='py-3'>
+                                                                    {detailState.topping?.map((z) => {
+                                                                        return (
+                                                                            z.foodcategory === "Meat" ? (
+                                                                                <Fragment key={z._id}>
+                                                                                    <div className='d-flex justify-content-between w-100'>
+                                                                                        <div style={{ width: "10%" }}>
+                                                                                            <img src={z.foodimage} width={62} height={60} alt='' />
+                                                                                        </div>
+                                                                                        <div style={{ width: "70%" }}>
+                                                                                            <p className='m-0'><b>{z.foodname}</b></p>
+                                                                                            <p style={{ fontSize: 15, color: "gray" }}>{z.fooddescription}</p>
+                                                                                        </div>
+                                                                                        <p style={{ width: "10%", textAlign: "center" }}>{VND.format(z.foodprice)}</p>
+                                                                                        <div style={{ width: "10%", textAlign: "center" }}>
+                                                                                            <button onClick={() => addToCart(z.foodname, 1)} className='plusPlusDe'>+</button>
                                                                                         </div>
                                                                                     </div>
-                                                                                    {detailState.checkStar ? (
-                                                                                        <p className='text-danger'>Choose star for this item !</p>
-                                                                                    ) : null}
+                                                                                    <hr style={{ color: "lightgray", marginTop: 0 }} />
+                                                                                </Fragment>
+                                                                            ) : null
+                                                                        )
+                                                                    })}
+                                                                </div>
+                                                                <p ref={Vegeref} className='KickTitleJK'>Vegetables</p>
+                                                                <div className='py-3'>
+                                                                    {detailState.topping?.map((z) => {
+                                                                        return (
+                                                                            z.foodcategory === "Vegetables" ? (
+                                                                                <Fragment key={z._id}>
+                                                                                    <div className='d-flex justify-content-between w-100'>
+                                                                                        <div style={{ width: "10%" }}>
+                                                                                            <img src={z.foodimage} width={62} height={60} alt='' />
+                                                                                        </div>
+                                                                                        <div style={{ width: "70%" }}>
+                                                                                            <p className='m-0'><b>{z.foodname}</b></p>
+                                                                                            <p style={{ fontSize: 15, color: "gray" }}>{z.fooddescription}</p>
+                                                                                        </div>
+                                                                                        <p style={{ width: "10%", textAlign: "center" }}>{VND.format(z.foodprice)}</p>
+                                                                                        <div style={{ width: "10%", textAlign: "center" }}>
+                                                                                            <button onClick={() => addToCart(z.foodname, 1)} className='plusPlusDe'>+</button>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <hr style={{ color: "lightgray", marginTop: 0 }} />
+                                                                                </Fragment>
+                                                                            ) : null
+                                                                        )
+                                                                    })}
+                                                                </div>
+                                                                <p ref={Drinkref} className='KickTitleJK'>Drink</p>
+                                                                <div className='py-3'>
+                                                                    {detailState.topping?.map((z) => {
+                                                                        return (
+                                                                            z.foodcategory === "Drink" ? (
+                                                                                <Fragment key={z._id}>
+                                                                                    <div className='d-flex justify-content-between w-100'>
+                                                                                        <div style={{ width: "10%" }}>
+                                                                                            <img src={z.foodimage} width={62} height={60} alt='' />
+                                                                                        </div>
+                                                                                        <div style={{ width: "70%" }}>
+                                                                                            <p className='m-0'><b>{z.foodname}</b></p>
+                                                                                            <p style={{ fontSize: 15, color: "gray" }}>{z.fooddescription}</p>
+                                                                                        </div>
+                                                                                        <p style={{ width: "10%", textAlign: "center" }}>{VND.format(z.foodprice)}</p>
+                                                                                        <div style={{ width: "10%", textAlign: "center" }}>
+                                                                                            <button onClick={() => addToCart(z.foodname, 1)} className='plusPlusDe'>+</button>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <hr style={{ color: "lightgray", marginTop: 0 }} />
+                                                                                </Fragment>
+                                                                            ) : null
+                                                                        )
+                                                                    })}
+                                                                </div>
+                                                            </>
+                                                        ) : null}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ) : null}
+                                        <div className={[i.foodcategory !== "Main" ? "active activeThis tab-pane" : "tab-pane"]} id="review">
+                                            {i.review?.length < 1 ? (
+                                                <div className='bg-white p-3 HeroDecadeAF'>
+                                                    <p className="mb-20 text-center">There are no reviews yet.</p>
+                                                    {token ? (
+                                                        <>
+                                                            <form onSubmit={(e) => addreview(e, i._id)} className="review-form">
+                                                                <div className="form-group">
+                                                                    <div className='d-flex' style={{ gap: 3 + "%" }}>
+                                                                        <div>
+                                                                            <label>Your rating</label>
+                                                                            <div className="reviews-counter">
+                                                                                <div className="rate">
+                                                                                    <input type='radio' style={{ display: "none" }} required />
+                                                                                    <input type="radio" onChange={(e) => setDetailState({ reviewStar: e.target.value })} id="star5" name="rate" value="5" />
+                                                                                    <label title="text" htmlFor='star5'>5 stars</label>
+                                                                                    <input type="radio" onChange={(e) => setDetailState({ reviewStar: e.target.value })} id="star4" name="rate" value="4" />
+                                                                                    <label title="text" htmlFor='star4'>4 stars</label>
+                                                                                    <input type="radio" onChange={(e) => setDetailState({ reviewStar: e.target.value })} id="star3" name="rate" value="3" />
+                                                                                    <label title="text" htmlFor='star3'>3 stars</label>
+                                                                                    <input type="radio" onChange={(e) => setDetailState({ reviewStar: e.target.value })} id="star2" name="rate" value="2" />
+                                                                                    <label title="text" htmlFor='star2'>2 stars</label>
+                                                                                    <input type="radio" onChange={(e) => setDetailState({ reviewStar: e.target.value })} id="star1" name="rate" value="1" />
+                                                                                    <label title="text" htmlFor='star1'>1 star</label>
                                                                                 </div>
                                                                             </div>
-                                                                            {token ? null : (
-                                                                                <div className="form-group">
-                                                                                    <label>Your name</label>
-                                                                                    <input onChange={(e) => setReviewName(e.target.value)} type="text" name="" className="textDeny" required />
-                                                                                </div>
-                                                                            )}
-                                                                            <div className="form-group pt-4">
-                                                                                <label>Your message</label>
-                                                                                <textarea onChange={(e) => setDetailState({ reviewMessage: e.target.value })} className="textDeny" rows="10" required />
-                                                                            </div>
-                                                                            <button type='submit' className="round-black-btn">Submit Review</button>
-                                                                        </form>
-                                                                    </>
+                                                                        </div>
+                                                                        {detailState.checkStar ? (
+                                                                            <p className='text-danger'>Choose star for this item !</p>
+                                                                        ) : null}
+                                                                    </div>
+                                                                </div>
+                                                                {token ? null : (
+                                                                    <div className="form-group">
+                                                                        <label>Your name</label>
+                                                                        <input onChange={(e) => setReviewName(e.target.value)} type="text" name="" className="form-control" required />
+                                                                    </div>
                                                                 )}
-                                                            </div>
+                                                                <div className="form-group pt-4">
+                                                                    <label>Your message</label>
+                                                                    <textarea onChange={(e) => setDetailState({ reviewMessage: e.target.value })} className="form-control" rows="10" required />
+                                                                </div>
+                                                                <button type='submit' className="round-black-btn">Submit Review</button>
+                                                            </form>
+                                                        </>
+                                                    ) : (
+                                                        <div className='d-flex align-items-center justify-content-center'>
+                                                            <p className='text-center m-0'>You need </p>
+                                                            <NavLink className="nav-link p-0" reloadDocument to="/LoginSite">Login</NavLink>
+                                                            <p className='text-center m-0'> to review!</p>
                                                         </div>
-                                                    </>
-                                                )
+                                                    )}
+                                                </div>
                                             ) : (
-                                                <div className='d-flex align-items-center justify-content-center'>
-                                                    <p className='text-center m-0'>You need </p>
-                                                    <NavLink className="nav-link p-0" reloadDocument to="/LoginSite">Login</NavLink>
-                                                    <p className='text-center m-0'> to review!</p>
+                                                <div className='Mk978'>
+                                                    <div style={{ width: 58 + "%" }}>
+                                                        {detailState.wowreview.map((r) => {
+                                                            return (
+                                                                <Fragment key={r.date}>
+                                                                    <div className='gutton'>
+                                                                        {r.image ? (
+                                                                            <img alt='' height={50} width={50} src={r.image} />
+                                                                        ) : (
+                                                                            <img alt='' height={50} width={50} src="https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg" />
+                                                                        )}
+                                                                        <div>
+                                                                            <div style={{ color: "#FEA116" }}>{rating(r.star)}</div>
+                                                                            <p className='m-0'><b>{r.name}</b> - {r.date}</p>
+                                                                            <p className='m-0'>{r.message}</p>
+                                                                        </div>
+                                                                    </div>
+                                                                    <hr />
+                                                                </Fragment>
+                                                            )
+                                                        })}
+                                                        <ReactPaginate
+                                                            breakLabel="..."
+                                                            nextLabel="Next >"
+                                                            onPageChange={(e) => handlePageClick(e.selected, i)}
+                                                            pageRangeDisplayed={5}
+                                                            pageCount={detailState.pageCount}
+                                                            previousLabel="< Prev"
+                                                            renderOnZeroPageCount={null}
+                                                            marginPagesDisplayed={2}
+                                                            containerClassName="pagination justify-content-center"
+                                                            pageClassName="page-item"
+                                                            pageLinkClassName="page-link"
+                                                            previousClassName="page-item"
+                                                            previousLinkClassName="page-link"
+                                                            nextClassName="page-item"
+                                                            nextLinkClassName="page-link"
+                                                            activeClassName="active"
+                                                            forcePage={currentPage.current - 1}
+                                                        />
+                                                    </div>
+                                                    <div className='holdTall' style={{ width: 40 + "%" }}>
+                                                        {detailState.checkKiu ? (
+                                                            <>
+                                                                <div className='text-center'>
+                                                                    <div className="review-heading">REVIEWS</div>
+                                                                    <p>You have review this item!</p>
+                                                                </div>
+                                                                <div className='gutton'>
+                                                                    <img alt='' height={50} width={50} src={detailState.gotReview.image ? detailState.gotReview.image : "https://static.vecteezy.com/system/resources/previews/008/442/086/non_2x/illustration-of-human-icon-user-symbol-icon-modern-design-on-blank-background-free-vector.jpg"} />
+                                                                    <div>
+                                                                        <div style={{ color: "#FEA116" }}>{rating(detailState.gotReview.star)}</div>
+                                                                        <p className='m-0'><b>{detailState.gotReview.name}</b> - {detailState.gotReview.date}</p>
+                                                                        <p className='m-0'>{detailState.gotReview.message}</p>
+                                                                    </div>
+                                                                </div>
+                                                            </>
+                                                        ) : (
+                                                            token ? (
+                                                                <form onSubmit={(e) => addreview(e, i._id)} className="review-form">
+                                                                    <div className="form-group">
+                                                                        <div className='d-flex' style={{ gap: 3 + "%" }}>
+                                                                            <div>
+                                                                                <label>Your rating</label>
+                                                                                <div className="reviews-counter">
+                                                                                    <div className="rate">
+                                                                                        <input type='radio' style={{ display: "none" }} required />
+                                                                                        <input type="radio" onChange={(e) => setDetailState({ reviewStar: e.target.value })} id="star5" name="rate" value="5" />
+                                                                                        <label title="text" htmlFor='star5'>5 stars</label>
+                                                                                        <input type="radio" onChange={(e) => setDetailState({ reviewStar: e.target.value })} id="star4" name="rate" value="4" />
+                                                                                        <label title="text" htmlFor='star4'>4 stars</label>
+                                                                                        <input type="radio" onChange={(e) => setDetailState({ reviewStar: e.target.value })} id="star3" name="rate" value="3" />
+                                                                                        <label title="text" htmlFor='star3'>3 stars</label>
+                                                                                        <input type="radio" onChange={(e) => setDetailState({ reviewStar: e.target.value })} id="star2" name="rate" value="2" />
+                                                                                        <label title="text" htmlFor='star2'>2 stars</label>
+                                                                                        <input type="radio" onChange={(e) => setDetailState({ reviewStar: e.target.value })} id="star1" name="rate" value="1" />
+                                                                                        <label title="text" htmlFor='star1'>1 star</label>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            {detailState.checkStar ? (
+                                                                                <p className='text-danger'>Choose star for this item !</p>
+                                                                            ) : null}
+                                                                        </div>
+                                                                    </div>
+                                                                    {token ? null : (
+                                                                        <div className="form-group">
+                                                                            <label>Your name</label>
+                                                                            <input onChange={(e) => setReviewName(e.target.value)} type="text" name="" className="textDeny" required />
+                                                                        </div>
+                                                                    )}
+                                                                    <div className="form-group pt-4">
+                                                                        <label>Your message</label>
+                                                                        <textarea onChange={(e) => setDetailState({ reviewMessage: e.target.value })} className="textDeny" rows="10" required />
+                                                                    </div>
+                                                                    <button type='submit' className="round-black-btn">Submit Review</button>
+                                                                </form>
+                                                            ) : (
+                                                                <div className='d-flex align-items-center justify-content-center'>
+                                                                    <p className='text-center m-0'>You need </p>
+                                                                    <NavLink className="nav-link p-0" reloadDocument to="/LoginSite">Login</NavLink>
+                                                                    <p className='text-center m-0'> to review!</p>
+                                                                </div>
+                                                            )
+                                                        )}
+                                                    </div>
                                                 </div>
                                             )}
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div className="container-fluid py-5 wow fadeInUp" data-wow-delay="0.1s">
-                                <div className='container'>
-                                    <div className="text-center">
-                                        <h3 className="mb-5">
-                                            Similar product</h3>
-                                    </div>
-                                    {detailState.menu.length > 0 ?
-                                        <div className="owl-carousel testimonial-carousel2">
-                                            {detailState.menu.map(a => {
-                                                return (
-                                                    <Fragment key={a._id}>
-                                                        {a.foodcategory === i.foodcategory && a._id !== i._id ? (
-                                                            <div className="testimonial-item bg-transparent">
-                                                                <NavLink reloadDocument to={`/DetailMenuPage/${a.foodname}/${a.foodcategory}`}>
-                                                                    <img loading="lazy" alt='' height={200} src={a.foodimage} />
-                                                                </NavLink>
-                                                                <p style={{ margin: 0 }} className='text-center'>{a.foodcategory}</p>
-                                                                <NavLink className="text-center" reloadDocument to={`/DetailMenuPage/${a._id}`}>
-                                                                    <p style={{ margin: 0, color: "#FEA116" }}><b>{a.foodname}</b></p>
-                                                                </NavLink>
-                                                                <h6 style={{ margin: 0 }} className='text-center'>{VND.format(a.foodprice)}</h6>
-                                                            </div>
-                                                        ) : null}
-                                                    </Fragment>
-                                                )
-                                            })}
-                                        </div>
-                                        : ""}
                                 </div>
                             </div>
                         </Fragment>
