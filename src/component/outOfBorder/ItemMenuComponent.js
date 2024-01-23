@@ -36,6 +36,7 @@ const ItemMenuComponent = ({ data, start, end, setMainState }) => {
         checkStar: false,
         checkKiu: false,
         callAlert: false,
+        callAlert2: false,
         gotReview: null,
         topping: [],
         pageCount: 6
@@ -71,7 +72,7 @@ const ItemMenuComponent = ({ data, start, end, setMainState }) => {
         }
     }, [modalData])
 
-    function addToCart(name, quantity) {
+    function addToCart(name, quantity, maxQ) {
         var stored = JSON.parse(localStorage.getItem("cart"));
         if (!stored) {
             var students = [];
@@ -83,9 +84,13 @@ const ItemMenuComponent = ({ data, start, end, setMainState }) => {
             var sameItem = JSON.parse(localStorage.getItem("cart")) || [];
             for (var i = 0; i < sameItem.length; i++) {
                 if (name === sameItem[i].name) {
-                    sameItem[i].quantity += quantity;
-                    localStorage.setItem('cart', JSON.stringify(sameItem))
-                    setMainState({ callAlert: true })
+                    if (sameItem[i].quantity + quantity > maxQ) {
+                        setMainState({ callAlert2: true })
+                    } else {
+                        sameItem[i].quantity += quantity;
+                        localStorage.setItem('cart', JSON.stringify(sameItem))
+                        setMainState({ callAlert: true })
+                    }
                 } else if (i === sameItem.length - 1) {
                     var stored2 = JSON.parse(localStorage.getItem("cart"));
                     var student2 = { name: name, quantity: quantity };
@@ -262,13 +267,19 @@ const ItemMenuComponent = ({ data, start, end, setMainState }) => {
                             <div className="d-flex" style={{ gap: 5 }}>
                                 {i.foodquantity < 1 ? (
                                     <button className="btnSonCallingUpperT" style={{ pointerEvents: "none", opacity: 0.5 }}>
-                                        {/* <svg className="sonCallingUpperT" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M0 24C0 10.7 10.7 0 24 0H69.5c22 0 41.5 12.8 50.6 32h411c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3H170.7l5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5H488c13.3 0 24 10.7 24 24s-10.7 24-24 24H199.7c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5H24C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z" /></svg></button> */}
-                                        <p className="m-0" style={{ fontSize: 15, color: "#fff" }}>Out of stock</p>
+                                        {window.innerWidth > 991 ? (
+                                            <p className="m-0" style={{ fontSize: 15, color: "#fff" }}>Out of stock</p>
+                                        ) : (
+                                            <svg className="sonCallingUpperT" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M0 24C0 10.7 10.7 0 24 0H69.5c22 0 41.5 12.8 50.6 32h411c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3H170.7l5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5H488c13.3 0 24 10.7 24 24s-10.7 24-24 24H199.7c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5H24C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z" /></svg>
+                                        )}
                                     </button>
                                 ) : (
-                                    <button onClick={() => addToCart(i.foodname, 1)} className="btnSonCallingUpperT">
-                                        {/* <svg className="sonCallingUpperT" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M0 24C0 10.7 10.7 0 24 0H69.5c22 0 41.5 12.8 50.6 32h411c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3H170.7l5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5H488c13.3 0 24 10.7 24 24s-10.7 24-24 24H199.7c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5H24C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z" /></svg></button> */}
-                                        <p className="m-0" style={{ fontSize: 15, color: "#fff" }}>Order</p>
+                                    <button onClick={() => addToCart(i.foodname, 1, i.foodquantity)} className="btnSonCallingUpperT">
+                                        {window.innerWidth > 991 ? (
+                                            <p className="m-0" style={{ fontSize: 15, color: "#fff" }}>Order</p>
+                                        ) : (
+                                            <svg className="sonCallingUpperT" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M0 24C0 10.7 10.7 0 24 0H69.5c22 0 41.5 12.8 50.6 32h411c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3H170.7l5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5H488c13.3 0 24 10.7 24 24s-10.7 24-24 24H199.7c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5H24C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z" /></svg>
+                                        )}
                                     </button>
                                 )}
                                 <button onClick={() => { setOpenModal(true); setmodalData(i); outshin(i) }} className="btnSonCallingUpperT">
@@ -294,8 +305,8 @@ const ItemMenuComponent = ({ data, start, end, setMainState }) => {
                         marginRight: "-50%",
                         transform: "translate(-50%, -50%)",
                         backgroundColor: "white",
-                        width: "80vw",
-                        height: "80%",
+                        width: window.innerWidth > 991 ? "70vw" : "90vw",
+                        height: window.innerWidth > 991 ? "80%" : "85%",
                         zIndex: 999,
                         overflow: "hidden"
                     },
@@ -339,7 +350,7 @@ const ItemMenuComponent = ({ data, start, end, setMainState }) => {
                                         )}
                                     </div>
                                     {modalData?.foodquantity > 0 ? (
-                                        <button onClick={() => addToCart(modalData?.foodname, quantitys)} className="round-black-btn">Add to Cart</button>
+                                        <button onClick={() => addToCart(modalData?.foodname, quantitys, modalData?.foodquantity)} className="round-black-btn">Add to Cart</button>
                                     ) : (
                                         <button style={{ pointerEvents: "none", opacity: 0.5 }} className="round-black-btn">Out of stock</button>
                                     )}
@@ -444,6 +455,13 @@ const ItemMenuComponent = ({ data, start, end, setMainState }) => {
                                         </div>
                                     ) : (
                                         <div className='Mk9782'>
+                                            {!token ? (
+                                                <div className='d-flex align-items-center justify-content-center'>
+                                                    <p className='text-center m-0'>You need </p>
+                                                    <NavLink className="nav-link p-0" reloadDocument to="/LoginSite">Login</NavLink>
+                                                    <p className='text-center m-0'> to review!</p>
+                                                </div>
+                                            ) : null}
                                             {wantTo ? (
                                                 <div className='holdTall mb-3'>
                                                     {detailState.checkKiu ? (
@@ -462,52 +480,44 @@ const ItemMenuComponent = ({ data, start, end, setMainState }) => {
                                                             </div>
                                                         </>
                                                     ) : (
-                                                        token ? (
-                                                            <form onSubmit={(e) => addreview(e, modalData._id)} className="review-form">
-                                                                <div className="form-group">
-                                                                    <div className='d-flex' style={{ gap: 3 + "%" }}>
-                                                                        <div>
-                                                                            <label>Your rating</label>
-                                                                            <div className="reviews-counter">
-                                                                                <div className="rate">
-                                                                                    <input type='radio' style={{ display: "none" }} required />
-                                                                                    <input type="radio" onChange={(e) => setDetailState({ reviewStar: e.target.value })} id="star5" name="rate" value="5" />
-                                                                                    <label title="text" htmlFor='star5'>5 stars</label>
-                                                                                    <input type="radio" onChange={(e) => setDetailState({ reviewStar: e.target.value })} id="star4" name="rate" value="4" />
-                                                                                    <label title="text" htmlFor='star4'>4 stars</label>
-                                                                                    <input type="radio" onChange={(e) => setDetailState({ reviewStar: e.target.value })} id="star3" name="rate" value="3" />
-                                                                                    <label title="text" htmlFor='star3'>3 stars</label>
-                                                                                    <input type="radio" onChange={(e) => setDetailState({ reviewStar: e.target.value })} id="star2" name="rate" value="2" />
-                                                                                    <label title="text" htmlFor='star2'>2 stars</label>
-                                                                                    <input type="radio" onChange={(e) => setDetailState({ reviewStar: e.target.value })} id="star1" name="rate" value="1" />
-                                                                                    <label title="text" htmlFor='star1'>1 star</label>
-                                                                                </div>
+                                                        <form onSubmit={(e) => addreview(e, modalData._id)} className="review-form">
+                                                            <div className="form-group">
+                                                                <div className='d-flex' style={{ gap: 3 + "%" }}>
+                                                                    <div>
+                                                                        <label>Your rating</label>
+                                                                        <div className="reviews-counter">
+                                                                            <div className="rate">
+                                                                                <input type='radio' style={{ display: "none" }} required />
+                                                                                <input type="radio" onChange={(e) => setDetailState({ reviewStar: e.target.value })} id="star5" name="rate" value="5" />
+                                                                                <label title="text" htmlFor='star5'>5 stars</label>
+                                                                                <input type="radio" onChange={(e) => setDetailState({ reviewStar: e.target.value })} id="star4" name="rate" value="4" />
+                                                                                <label title="text" htmlFor='star4'>4 stars</label>
+                                                                                <input type="radio" onChange={(e) => setDetailState({ reviewStar: e.target.value })} id="star3" name="rate" value="3" />
+                                                                                <label title="text" htmlFor='star3'>3 stars</label>
+                                                                                <input type="radio" onChange={(e) => setDetailState({ reviewStar: e.target.value })} id="star2" name="rate" value="2" />
+                                                                                <label title="text" htmlFor='star2'>2 stars</label>
+                                                                                <input type="radio" onChange={(e) => setDetailState({ reviewStar: e.target.value })} id="star1" name="rate" value="1" />
+                                                                                <label title="text" htmlFor='star1'>1 star</label>
                                                                             </div>
                                                                         </div>
-                                                                        {detailState.checkStar ? (
-                                                                            <p className='text-danger'>Choose star for this item !</p>
-                                                                        ) : null}
                                                                     </div>
+                                                                    {detailState.checkStar ? (
+                                                                        <p className='text-danger'>Choose star for this item !</p>
+                                                                    ) : null}
                                                                 </div>
-                                                                {token ? null : (
-                                                                    <div className="form-group">
-                                                                        <label>Your name</label>
-                                                                        <input onChange={(e) => setReviewName(e.target.value)} type="text" name="" className="textDeny" required />
-                                                                    </div>
-                                                                )}
-                                                                <div className="form-group pt-4">
-                                                                    <label>Your message</label>
-                                                                    <textarea onChange={(e) => setDetailState({ reviewMessage: e.target.value })} className="textDeny" rows="10" required />
-                                                                </div>
-                                                                <button type='submit' className="round-black-btn">Submit Review</button>
-                                                            </form>
-                                                        ) : (
-                                                            <div className='d-flex align-items-center justify-content-center'>
-                                                                <p className='text-center m-0'>You need </p>
-                                                                <NavLink className="nav-link p-0" reloadDocument to="/LoginSite">Login</NavLink>
-                                                                <p className='text-center m-0'> to review!</p>
                                                             </div>
-                                                        )
+                                                            {token ? null : (
+                                                                <div className="form-group">
+                                                                    <label>Your name</label>
+                                                                    <input onChange={(e) => setReviewName(e.target.value)} type="text" name="" className="textDeny" required />
+                                                                </div>
+                                                            )}
+                                                            <div className="form-group pt-4">
+                                                                <label>Your message</label>
+                                                                <textarea onChange={(e) => setDetailState({ reviewMessage: e.target.value })} className="textDeny" rows="10" required />
+                                                            </div>
+                                                            <button type='submit' className="round-black-btn">Submit Review</button>
+                                                        </form>
                                                     )}
                                                 </div>
                                             ) : null}

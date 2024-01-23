@@ -96,6 +96,7 @@ function BestSeller() {
                                         </div>
                                         <div className="product-item-content" style={{ position: "relative" }}>
                                             <div className="product-item-title text-nowrap">{i.foodname} </div>
+                                            <div className="product-item-category">{i.fooddescription} </div>
                                             <div className="py-1">
                                                 <div className="product-item-price">
                                                     {VND.format(i.foodprice)}

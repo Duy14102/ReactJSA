@@ -17,7 +17,8 @@ function Menu({ dataX, CategoryRespon, handleX, pCount, curP }) {
         menu: [],
         kakadu: null,
         spacekaka: null,
-        callAlert: false
+        callAlert: false,
+        callAlert2: false
     })
     const socketRef = useRef();
 
@@ -73,8 +74,13 @@ function Menu({ dataX, CategoryRespon, handleX, pCount, curP }) {
                 setMenuState({ callAlert: false })
             }, 2000)
         }
+        if (menuState.callAlert2) {
+            setTimeout(() => {
+                setMenuState({ callAlert2: false })
+            }, 1500)
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [menuState.callAlert])
+    }, [menuState.callAlert, menuState.callAlert2])
 
     useEffect(() => {
         Object.values(menuState.menu).map((i) => {
@@ -166,21 +172,22 @@ function Menu({ dataX, CategoryRespon, handleX, pCount, curP }) {
 
     const pageButton = (count) => {
         return Array.from(Array(count), (e, i) => {
+            const base = window.innerWidth > 991 ? 5 : 4
             return (
                 <section key={i} className="paged d-none">
                     <div className="front" style={menuState.spacekaka}>
                         <div className='p-5' style={{ position: "relative", width: "100%", height: "100%" }}>
                             <div className='moveToNextPage'></div>
-                            <div className='mt-5'>
-                                <ItemMenuComponent data={dataX} start={(5 * i) * 2} end={(5 * (i + 1)) * 2 - 5} setMainState={setMenuState} />
+                            <div className={window.innerWidth > 991 ? 'mt-5' : null}>
+                                <ItemMenuComponent data={dataX} start={(base * i) * 2} end={(base * (i + 1)) * 2 - base} setMainState={setMenuState} />
                             </div>
                         </div>
                     </div>
                     <div className="back" style={menuState.spacekaka}>
                         <div className='p-5' style={{ position: "relative", width: "100%", height: "100%" }}>
                             <div className='moveToPrevPage'></div>
-                            <div className='mt-5'>
-                                <ItemMenuComponent data={dataX} start={(5 * (i + 1)) * 2 - 5} end={(5 * (i + 2)) * 2 - 10} setMainState={setMenuState} />
+                            <div className={window.innerWidth > 991 ? 'mt-5' : null}>
+                                <ItemMenuComponent data={dataX} start={(base * (i + 1)) * 2 - base} end={(base * (i + 2)) * 2 - base * 2} setMainState={setMenuState} />
                             </div>
                         </div>
                     </div>
@@ -195,17 +202,25 @@ function Menu({ dataX, CategoryRespon, handleX, pCount, curP }) {
     });
     return (
         <>
-            {menuState.callAlert ? (
+            {menuState.callAlert || menuState.callAlert2 ? (
                 <div className="danguru">
-                    <div className='alertNow'>
+                    <div className={menuState.callAlert ? 'alertNow' : menuState.callAlert2 ? 'alertNow2' : null}>
                         <div className='kikuny'>
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" /></svg>
+                            {menuState.callAlert2 ? (
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
+                            ) : menuState.callAlert ? (
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" /></svg>
+                            ) : null}
                         </div>
                         <div className='d-flex' style={{ flexDirection: "column", marginRight: 25 }}>
-                            <p className='m-0'><b>Success</b></p>
-                            <p className='m-0'>Cart have new item!</p>
+                            <p className='m-0'><b>{menuState.callAlert ? "Success" : menuState.callAlert2 ? "Failed" : null}</b></p>
+                            <p className='m-0'>{menuState.callAlert ? "Cart have new item!" : menuState.callAlert2 ? "Add to cart failed!" : null}</p>
                         </div>
-                        <button onClick={() => setMenuState({ callAlert: false })} className='closeAlertKikuny'></button>
+                        {menuState.callAlert ? (
+                            <button onClick={() => setMenuState({ callAlert: false })} className='closeAlertKikuny'></button>
+                        ) : menuState.callAlert2 ? (
+                            <button onClick={() => setMenuState({ callAlert2: false })} className='closeAlertKikuny'></button>
+                        ) : null}
                     </div>
                 </div>
             ) : null}

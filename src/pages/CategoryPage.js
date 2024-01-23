@@ -19,7 +19,7 @@ function CategoryPage() {
         countChoose: null
     })
     const currentPage = useRef();
-    const limit = 10
+    const limit = window.innerWidth > 991 ? 10 : 8
     //Get Detail
     useEffect(() => {
         currentPage.current = 1;

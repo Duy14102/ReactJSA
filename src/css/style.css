@@ -813,6 +813,35 @@ iframe {
     color: black;
 }
 
+.buttonDownL {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border: 1px solid lightgray;
+    padding: 10px;
+    border-radius: 4px;
+    transition: all 0.25s;
+}
+
+.buttonDownL:hover svg {
+    fill: #fff;
+}
+
+.buttonDownL:hover {
+    border-color: #FEA116;
+    background-color: #FEA116;
+    color: #fff;
+}
+
+.cutTextRightNow {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
 .cutOut:focus {
     outline: none;
     border: 1px solid #FEA116;
@@ -1094,10 +1123,30 @@ iframe {
     inherits: false;
 }
 
+.billX {
+    width: 50%;
+    padding: 20px;
+    border: 1px solid lightgray;
+    border-radius: 4px;
+}
+
 .Move1:hover .imgUser {
     background-image: conic-gradient(from var(--angle), red, yellow, lime, aqua, blue, magenta, red);
     background-origin: border-box;
     animation: 10s rotate linear infinite;
+}
+
+.mixingAce {
+    padding-bottom: 5px;
+    font-size: 16px;
+}
+
+.mixingAce .edgeAce p {
+    color: #666565;
+}
+
+.mixingAce svg {
+    fill: #0f172b;
 }
 
 .footerTel {
@@ -1114,7 +1163,7 @@ iframe {
 .footerTel:active,
 .footerTel2:hover,
 .footerTel2:active {
-    color: #FEA116;
+    color: #FEA116 !important;
     transition: all 0.2s;
 }
 
@@ -1321,8 +1370,12 @@ iframe {
     }
 
     .upPerTown img {
-        width: 80px;
+        width: 50px;
         height: 45px;
+    }
+
+    .upPerTown span {
+        font-size: 13px;
     }
 
     .scene {
@@ -1590,6 +1643,22 @@ iframe {
     animation: appearOKB 0.4s ease forwards;
 }
 
+.alertNow2 {
+    z-index: 1000;
+    top: 10%;
+    padding: 10px 15px;
+    border-radius: 4px;
+    color: #fff;
+    text-wrap: nowrap;
+    gap: 10px;
+    display: flex;
+    align-items: center;
+    position: fixed;
+    background-color: rgb(255, 108, 82);
+    border: 1px solid rgb(255, 60, 25);
+    animation: appearOKB 0.4s ease forwards;
+}
+
 @keyframes appearOKB {
     from {
         opacity: 0;
@@ -1637,7 +1706,8 @@ iframe {
     transform: rotate(-45deg);
 }
 
-.alertNow p {
+.alertNow p,
+.alertNow2 p {
     font-size: 15px;
 }
 
@@ -1647,7 +1717,14 @@ iframe {
     padding: 6px 8px;
 }
 
-.alertNow .kikuny svg {
+.alertNow2 .kikuny {
+    border-radius: 50%;
+    background-color: rgb(255, 60, 25);
+    padding: 6px 8px;
+}
+
+.alertNow .kikuny svg,
+.alertNow2 .kikuny svg {
     width: 20px;
     height: 20px;
     fill: #fff;
@@ -2703,6 +2780,12 @@ iframe {
 }
 
 .product-item .product-item-category {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    -webkit-box-orient: vertical;
     font-size: .875rem;
     color: gray;
 }

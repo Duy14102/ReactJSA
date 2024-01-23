@@ -32,6 +32,7 @@ function DetailMenuPage() {
         checkStar: false,
         checkKiu: false,
         callAlert: false,
+        callAlert2: false,
         gotReview: null,
         topping: [],
         pageCount: 6
@@ -130,7 +131,7 @@ function DetailMenuPage() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [appler.id, appler.cate, token])
 
-    function addToCart(name, quantity) {
+    function addToCart(name, quantity, maxQ) {
         var stored = JSON.parse(localStorage.getItem("cart"));
         if (!stored) {
             var students = [];
@@ -142,9 +143,13 @@ function DetailMenuPage() {
             var sameItem = JSON.parse(localStorage.getItem("cart")) || [];
             for (var i = 0; i < sameItem.length; i++) {
                 if (name === sameItem[i].name) {
-                    sameItem[i].quantity += quantity;
-                    localStorage.setItem('cart', JSON.stringify(sameItem))
-                    setDetailState({ callAlert: true })
+                    if (sameItem[i].quantity + quantity > maxQ) {
+                        setDetailState({ callAlert2: true })
+                    } else {
+                        sameItem[i].quantity += quantity;
+                        localStorage.setItem('cart', JSON.stringify(sameItem))
+                        setDetailState({ callAlert: true })
+                    }
                 } else if (i === sameItem.length - 1) {
                     var stored2 = JSON.parse(localStorage.getItem("cart"));
                     var student2 = { name: name, quantity: quantity };
@@ -194,8 +199,13 @@ function DetailMenuPage() {
                 setDetailState({ callAlert: false })
             }, 1500)
         }
+        if (detailState.callAlert2) {
+            setTimeout(() => {
+                setDetailState({ callAlert2: false })
+            }, 1500)
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [detailState.callAlert])
+    }, [detailState.callAlert, detailState.callAlert2])
 
     useEffect(() => {
         currentPage.current = 1;
@@ -310,17 +320,25 @@ function DetailMenuPage() {
     return (
         <Layout>
             <Header type={"Yes"} />
-            {detailState.callAlert ? (
+            {detailState.callAlert || detailState.callAlert2 ? (
                 <div className="danguru">
-                    <div className='alertNow'>
+                    <div className={detailState.callAlert ? 'alertNow' : detailState.callAlert2 ? 'alertNow2' : null}>
                         <div className='kikuny'>
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" /></svg>
+                            {detailState.callAlert2 ? (
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M342.6 150.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L192 210.7 86.6 105.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L146.7 256 41.4 361.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0L192 301.3 297.4 406.6c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L237.3 256 342.6 150.6z" /></svg>
+                            ) : detailState.callAlert ? (
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z" /></svg>
+                            ) : null}
                         </div>
                         <div className='d-flex' style={{ flexDirection: "column", marginRight: 25 }}>
-                            <p className='m-0'><b>Success</b></p>
-                            <p className='m-0'>Cart have new item!</p>
+                            <p className='m-0'><b>{detailState.callAlert ? "Success" : detailState.callAlert2 ? "Failed" : null}</b></p>
+                            <p className='m-0'>{detailState.callAlert ? "Cart have new item!" : detailState.callAlert2 ? "Add to cart failed!" : null}</p>
                         </div>
-                        <button onClick={() => setDetailState({ callAlert: false })} className='closeAlertKikuny'></button>
+                        {detailState.callAlert ? (
+                            <button onClick={() => setDetailState({ callAlert: false })} className='closeAlertKikuny'></button>
+                        ) : detailState.callAlert2 ? (
+                            <button onClick={() => setDetailState({ callAlert2: false })} className='closeAlertKikuny'></button>
+                        ) : null}
                     </div>
                 </div>
             ) : null}
@@ -360,19 +378,19 @@ function DetailMenuPage() {
                                                         {i.foodquantity > 0 ? (
                                                             <div className='d-flex'>
                                                                 <button onClick={() => handleDecrement()} className="btn btn-secondary">-</button>
-                                                                <input type="number" min={1} max={i.foodquantity} value={quantity} className='qty mx-1' readOnly />
+                                                                <input type="numeric" min={1} max={i.foodquantity} value={quantity} className='qty mx-1' readOnly />
                                                                 <button onClick={() => handleIncrement(i.foodquantity)} className="btn btn-secondary">+</button>
                                                             </div>
                                                         ) : (
                                                             <div style={{ pointerEvents: "none", opacity: 0.5 }} className='d-flex'>
                                                                 <button className="btn btn-secondary">-</button>
-                                                                <input type="number" value={0} className='qty mx-1' />
+                                                                <input type="numeric" value={0} className='qty mx-1' />
                                                                 <button className="btn btn-secondary">+</button>
                                                             </div>
                                                         )}
                                                     </div>
                                                     {i.foodquantity > 0 ? (
-                                                        <button onClick={() => addToCart(i.foodname, quantity)} className="round-black-btn">Add to Cart</button>
+                                                        <button onClick={() => addToCart(i.foodname, quantity, i.foodquantity)} className="round-black-btn">Add to Cart</button>
                                                     ) : (
                                                         <button style={{ pointerEvents: "none", opacity: 0.5 }} className="round-black-btn">Out of stock</button>
                                                     )}
@@ -414,15 +432,18 @@ function DetailMenuPage() {
                                                                                 <Fragment key={z._id}>
                                                                                     <div className='d-flex justify-content-between w-100'>
                                                                                         <div style={{ width: "10%" }}>
-                                                                                            <img src={z.foodimage} width={62} height={60} alt='' />
+                                                                                            <img src={z.foodimage} width={window.innerWidth > 991 ? 75 : 62} height={65} alt='' />
                                                                                         </div>
-                                                                                        <div style={{ width: "70%" }}>
+                                                                                        <div style={{ width: window.innerWidth > 991 ? "70%" : "50%" }}>
                                                                                             <p className='m-0'><b>{z.foodname}</b></p>
-                                                                                            <p style={{ fontSize: 15, color: "gray" }}>{z.fooddescription}</p>
+                                                                                            <p className='cutTextRightNow' style={{ fontSize: 15, color: "gray" }}>{z.fooddescription}</p>
                                                                                         </div>
                                                                                         <p style={{ width: "10%", textAlign: "center" }}>{VND.format(z.foodprice)}</p>
                                                                                         <div style={{ width: "10%", textAlign: "center" }}>
-                                                                                            <button onClick={() => addToCart(z.foodname, 1)} className='plusPlusDe'>+</button>
+                                                                                            <button style={{ opacity: z.foodquantity < 1 ? 0.5 : 1, pointerEvents: z.foodquantity < 1 ? "none" : "auto" }} onClick={() => addToCart(z.foodname, 1, z.foodquantity)} className='plusPlusDe'>+</button>
+                                                                                            {z.foodquantity < 1 ? (
+                                                                                                <p className='m-0 pt-2 text-danger'>Out of stock</p>
+                                                                                            ) : null}
                                                                                         </div>
                                                                                     </div>
                                                                                     <hr style={{ color: "lightgray", marginTop: 0 }} />
@@ -439,15 +460,18 @@ function DetailMenuPage() {
                                                                                 <Fragment key={z._id}>
                                                                                     <div className='d-flex justify-content-between w-100'>
                                                                                         <div style={{ width: "10%" }}>
-                                                                                            <img src={z.foodimage} width={62} height={60} alt='' />
+                                                                                            <img src={z.foodimage} width={window.innerWidth > 991 ? 75 : 62} height={65} alt='' />
                                                                                         </div>
-                                                                                        <div style={{ width: "70%" }}>
+                                                                                        <div style={{ width: window.innerWidth > 991 ? "70%" : "50%" }}>
                                                                                             <p className='m-0'><b>{z.foodname}</b></p>
-                                                                                            <p style={{ fontSize: 15, color: "gray" }}>{z.fooddescription}</p>
+                                                                                            <p className='cutTextRightNow' style={{ fontSize: 15, color: "gray" }}>{z.fooddescription}</p>
                                                                                         </div>
                                                                                         <p style={{ width: "10%", textAlign: "center" }}>{VND.format(z.foodprice)}</p>
                                                                                         <div style={{ width: "10%", textAlign: "center" }}>
-                                                                                            <button onClick={() => addToCart(z.foodname, 1)} className='plusPlusDe'>+</button>
+                                                                                            <button style={{ opacity: z.foodquantity < 1 ? 0.5 : 1, pointerEvents: z.foodquantity < 1 ? "none" : "auto" }} onClick={() => addToCart(z.foodname, 1, z.foodquantity)} className='plusPlusDe'>+</button>
+                                                                                            {z.foodquantity < 1 ? (
+                                                                                                <p className='m-0 pt-2 text-danger'>Out of stock</p>
+                                                                                            ) : null}
                                                                                         </div>
                                                                                     </div>
                                                                                     <hr style={{ color: "lightgray", marginTop: 0 }} />
@@ -464,15 +488,18 @@ function DetailMenuPage() {
                                                                                 <Fragment key={z._id}>
                                                                                     <div className='d-flex justify-content-between w-100'>
                                                                                         <div style={{ width: "10%" }}>
-                                                                                            <img src={z.foodimage} width={62} height={60} alt='' />
+                                                                                            <img src={z.foodimage} width={window.innerWidth > 991 ? 75 : 62} height={65} alt='' />
                                                                                         </div>
-                                                                                        <div style={{ width: "70%" }}>
+                                                                                        <div style={{ width: window.innerWidth > 991 ? "70%" : "50%" }}>
                                                                                             <p className='m-0'><b>{z.foodname}</b></p>
-                                                                                            <p style={{ fontSize: 15, color: "gray" }}>{z.fooddescription}</p>
+                                                                                            <p className='cutTextRightNow' style={{ fontSize: 15, color: "gray" }}>{z.fooddescription}</p>
                                                                                         </div>
                                                                                         <p style={{ width: "10%", textAlign: "center" }}>{VND.format(z.foodprice)}</p>
                                                                                         <div style={{ width: "10%", textAlign: "center" }}>
-                                                                                            <button onClick={() => addToCart(z.foodname, 1)} className='plusPlusDe'>+</button>
+                                                                                            <button style={{ opacity: z.foodquantity < 1 ? 0.5 : 1, pointerEvents: z.foodquantity < 1 ? "none" : "auto" }} onClick={() => addToCart(z.foodname, 1, z.foodquantity)} className='plusPlusDe'>+</button>
+                                                                                            {z.foodquantity < 1 ? (
+                                                                                                <p className='m-0 pt-2 text-danger'>Out of stock</p>
+                                                                                            ) : null}
                                                                                         </div>
                                                                                     </div>
                                                                                     <hr style={{ color: "lightgray", marginTop: 0 }} />

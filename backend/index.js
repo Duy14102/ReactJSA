@@ -1823,10 +1823,21 @@ app.get("/GetSearchAutoComplete", async (req, res) => {
     }
 })
 
+//Get Order
+app.get("/GetOrder4Complete", async (req, res) => {
+    try {
+        const getIt = await getThisOrder.findOne({ _id: req.query.id })
+        res.send({ data: getIt })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
 // Get Topping
 app.get("/GetTopping", async (req, res) => {
     try {
-        const getIt = await getThisMenu.find({ foodcategory: { $in: ["Meat", "Vegetables", "Drink"] } })
+        const sort = { foodquantity: -1 }
+        const getIt = await getThisMenu.find({ foodcategory: { $in: ["Meat", "Vegetables", "Drink"] } }).sort(sort)
         res.send({ data: getIt })
     } catch (e) {
         console.log(e);
@@ -1836,7 +1847,8 @@ app.get("/GetTopping", async (req, res) => {
 // Get Topping by Cate
 app.get("/GetToppingByCate", async (req, res) => {
     try {
-        const getIt = await getThisMenu.find({ foodcategory: req.query.cate });
+        const sort = { foodquantity: -1 }
+        const getIt = await getThisMenu.find({ foodcategory: req.query.cate }).sort(sort);
 
         const page = parseInt(req.query.page)
         const limit = parseInt(req.query.limit)

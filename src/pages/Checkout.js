@@ -22,6 +22,7 @@ function Checkout() {
         SaveAddress: false,
         AccountAddress: false,
         paypalState: null,
+        checkCardReal: false,
         vnpay: false,
         paypal: false,
         Firstname: "",
@@ -71,7 +72,6 @@ function Checkout() {
         }
     }, [checkoutState.AccountAddress, token, candecode?.userRole])
 
-
     useEffect(() => {
         let pre = ""
         Object.values(checkoutState.LoadAddress).map((k) => {
@@ -94,7 +94,7 @@ function Checkout() {
                     phonenumber: checkoutState.phonenumber,
                     address: checkoutState.address,
                     paymentmethod,
-                    shippingfee,
+                    shippingfee: parseInt(localStorage.getItem("shippingFee")),
                     orderitems
                 }
             }
@@ -174,34 +174,8 @@ function Checkout() {
     });
 
     const locationMap = location.state.valid
-    const shippingfee = location.state.shippingFee
     var total2 = 0
     var fulltotal = 0
-
-    const mero = (i) => {
-        var total = i.quantity * i.data.foodprice
-        total2 += total
-        fulltotal = total2 + shippingfee
-        const allpush = { data: i.data, quantity: i.quantity }
-        orderitems.push(allpush)
-        return (
-            <li key={i.data._id} className="list-group-item d-flex justify-content-between lh-condensed">
-                <div>
-                    <div style={{ gap: 13 + "%" }} className="d-flex justify-content-between align-items-center">
-                        <div className="d-flex">
-                            <p>{i.quantity} </p>
-                            <p>x</p>
-                        </div>
-                        <div>
-                            <h6 className="my-0 text-nowrap">{i.data.foodname}</h6>
-                            <small className="text-muted">{i.data.foodcategory}</small>
-                        </div>
-                    </div>
-                </div>
-                <span className="text-muted">{VND.format(i.data.foodprice)}</span>
-            </li>
-        )
-    }
 
     const VnpayCheckout = (data) => {
         const configuration = {
@@ -245,8 +219,14 @@ function Checkout() {
                 phonenumber: checkoutState.phonenumber,
                 address: checkoutState.address,
                 paymentmethod,
-                shippingfee,
+                shippingfee: parseInt(localStorage.getItem("shippingFee")),
                 orderitems
+            }
+        }
+        if (checkoutState.Card) {
+            if (!checkoutState.vnpay && !checkoutState.paypal) {
+                setCheckoutState({ checkCardReal: true })
+                return false
             }
         }
         axios(configuration)
@@ -303,6 +283,23 @@ function Checkout() {
             setCheckoutState({ SaveAddress: false })
         }
     }
+
+    const mero = (i, index) => {
+        var total = i.quantity * i.data.foodprice
+        total2 += total
+        fulltotal = total2 + parseInt(localStorage.getItem("shippingFee"))
+        const allpush = { data: i.data, quantity: i.quantity }
+        orderitems.push(allpush)
+        const indexPlus = index + 1
+        return (
+            <tr key={i.data._id}>
+                <td style={{ textAlign: "center" }}>{indexPlus}</td>
+                <td>{i.data.foodname}</td>
+                <td style={{ textAlign: "center" }}>{i.quantity}</td>
+                <td style={{ textAlign: "center" }}>{VND.format(i.data.foodprice)}</td>
+            </tr>
+        )
+    }
     return (
         <Layout>
             <Header type={"Yes"} />
@@ -312,33 +309,80 @@ function Checkout() {
                         <NavLink className="joiboy" to="/Cart"> Shopping Cart</NavLink> <span className='slash'>˃</span> <NavLink className="joiboy" to="/Checkout" >Checkout Details</NavLink> <span className='slash'>˃</span> {ahoe ? (<NavLink className="joiboy" to="/">Order Complete</NavLink>) : (<NavLink className="joiboy" style={{ pointerEvents: "none" }} to="/">Order Complete</NavLink>)}
                     </div>
 
-                    <div className="flexAble2">
-                        <div className="takeSecondUI">
+                    <form className="flexAble2" onSubmit={(e) => handleSubmit(e)}>
+                        <div style={{ borderLeftWidth: window.innerWidth > 991 ? 1 : null, borderLeftColor: window.innerWidth > 991 ? "lightgray" : null, borderLeftStyle: window.innerWidth > 991 ? "solid" : null }} className="takeSecondUI">
                             <h4 className="d-flex justify-content-between align-items-center mb-3">
-                                <span className="text-muted">Your cart</span>
-                                <span className="badge badge-secondary badge-pill">3</span>
+                                <span>Your order</span>
                             </h4>
                             <ul className="list-group mb-3">
-                                {locationMap.map((i) => {
-                                    return (
-                                        mero(i)
-                                    )
-                                })}
-                                <li className="list-group-item d-flex justify-content-between">
-                                    <span>Total</span>
-                                    <span className="text-muted">{VND.format(total2)}</span>
-                                </li>
-                                <li className="list-group-item d-flex justify-content-between">
-                                    <span>Shipping</span>
-                                    <span className="text-muted">{VND.format(shippingfee)}</span>
-                                </li>
-                                <li className="list-group-item d-flex justify-content-between">
-                                    <span>Fulltotal</span>
-                                    <strong>{VND.format(fulltotal)}</strong>
-                                </li>
+                                {/* <li className="list-group-item">
+                                    <div className="navbar-brand p-0 text-center">
+                                        <h2 className="text-primary thisTextH1 m-0"><svg style={{ fill: "#FEA116" }} className="me-3" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><path d="M416 0C400 0 288 32 288 176V288c0 35.3 28.7 64 64 64h32V480c0 17.7 14.3 32 32 32s32-14.3 32-32V352 240 32c0-17.7-14.3-32-32-32zM64 16C64 7.8 57.9 1 49.7 .1S34.2 4.6 32.4 12.5L2.1 148.8C.7 155.1 0 161.5 0 167.9c0 45.9 35.1 83.6 80 87.7V480c0 17.7 14.3 32 32 32s32-14.3 32-32V255.6c44.9-4.1 80-41.8 80-87.7c0-6.4-.7-12.8-2.1-19.1L191.6 12.5c-1.8-8-9.3-13.3-17.4-12.4S160 7.8 160 16V150.2c0 5.4-4.4 9.8-9.8 9.8c-5.1 0-9.3-3.9-9.8-9L127.9 14.6C127.2 6.3 120.3 0 112 0s-15.2 6.3-15.9 14.6L83.7 151c-.5 5.1-4.7 9-9.8 9c-5.4 0-9.8-4.4-9.8-9.8V16zm48.3 152l-.3 0-.3 0 .3-.7 .3 .7z" /></svg>EatCom</h2>
+                                    </div>
+                                    <div className="d-flex justify-content-around align-items-center mixingAce">
+                                        <div className="d-flex align-items-center edgeAce"><svg className="me-3" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 384 512"><path d="M215.7 499.2C267 435 384 279.4 384 192C384 86 298 0 192 0S0 86 0 192c0 87.4 117 243 168.3 307.2c12.3 15.3 35.1 15.3 47.4 0zM192 128a64 64 0 1 1 0 128 64 64 0 1 1 0-128z" /></svg><p className="m-0">18 Tam Trinh, Ha Noi, Viet Nam</p></div>
+                                        <a className="footerTel2" href={"+012 345 67890"}><p className="mb-2"><svg className="me-3" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 512 512"><path d="M280 0C408.1 0 512 103.9 512 232c0 13.3-10.7 24-24 24s-24-10.7-24-24c0-101.6-82.4-184-184-184c-13.3 0-24-10.7-24-24s10.7-24 24-24zm8 192a32 32 0 1 1 0 64 32 32 0 1 1 0-64zm-32-72c0-13.3 10.7-24 24-24c75.1 0 136 60.9 136 136c0 13.3-10.7 24-24 24s-24-10.7-24-24c0-48.6-39.4-88-88-88c-13.3 0-24-10.7-24-24zM117.5 1.4c19.4-5.3 39.7 4.6 47.4 23.2l40 96c6.8 16.3 2.1 35.2-11.6 46.3L144 207.3c33.3 70.4 90.3 127.4 160.7 160.7L345 318.7c11.2-13.7 30-18.4 46.3-11.6l96 40c18.6 7.7 28.5 28 23.2 47.4l-24 88C481.8 499.9 466 512 448 512C200.6 512 0 311.4 0 64C0 46 12.1 30.2 29.5 25.4l88-24z" /></svg>+012 345 67890</p></a>
+                                    </div>
+                                </li> */}
+                                <table className="table table-bordered solotable m-0">
+                                    <thead className="thead-dark">
+                                        <tr style={{ color: "#0F172B", backgroundColor: "gray" }}>
+                                            <th style={{ width: "10%", textAlign: "center", color: "#fff" }}>No</th>
+                                            <th style={{ width: "55%", color: "#fff" }}>Name</th>
+                                            <th style={{ width: "15%", textAlign: "center", color: "#fff" }}>Quantity</th>
+                                            <th style={{ width: "20%", textAlign: "center", color: "#fff" }}>Price</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {locationMap.map((i, index) => {
+                                            return (
+                                                mero(i, index)
+                                            )
+                                        })}
+                                        <tr style={{ textAlign: "center", fontWeight: "bold", color: "#0F172B" }}>
+                                            <td colSpan={3}>Fulltotal</td>
+                                            <td>{VND.format(fulltotal)}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                {parseInt(localStorage.getItem("shippingFee")) !== 0 ? (
+                                    <p style={{ color: "gray", textAlign: "start", fontSize: 14 }}>This order already contain {VND.format(parseInt(localStorage.getItem("shippingFee")))} shipping fee!</p>
+                                ) : null}
+                                <h4 className="mb-1">Payment</h4>
+                                <div className="d-block my-1">
+                                    <div className="custom-control custom-radio">
+                                        <input onInput={() => setCheckoutState({ Card: true })} id="credit" name="paymentMethod" type="radio" className="custom-control-input" required />
+                                        <label className="custom-control-label" htmlFor="credit"> ATM</label>
+                                    </div>
+                                    <div className="custom-control custom-radio">
+                                        <input onInput={() => setCheckoutState({ Card: false })} id="debit" name="paymentMethod" type="radio" className="custom-control-input" required />
+                                        <label className="custom-control-label" htmlFor="debit"> COD</label>
+                                    </div>
+                                </div>
+                                {checkoutState.Card ? (
+                                    <>
+                                        <div className="d-flex" style={{ gap: 15 + "px" }}>
+                                            <button className="buttonAtm" type="button" onClick={() => setCheckoutState({ vnpay: true, paypal: false })}><img alt="" height={30} width={90} src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-VNPAY-QR-1.png" /></button>
+                                            <button className="buttonAtm" type="button" onClick={() => setCheckoutState({ vnpay: false, paypal: true })}><img alt="" height={30} width={90} src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/PayPal_logo.svg/2560px-PayPal_logo.svg.png" /></button>
+                                        </div>
+                                        {checkoutState.checkCardReal ? (
+                                            <p className="m-0 text-danger pt-2">Payment method is needed!</p>
+                                        ) : null}
+                                        {checkoutState.vnpay ? (
+                                            <select onChange={(e) => setCheckoutState({ bankCode: e.target.value })} name="bankcode" id="bankcode" className="form-control bg-white mt-4" required>
+                                                <option value="">Không chọn</option>
+                                                {checkoutState.bankList?.map((j) => {
+                                                    return (
+                                                        <option key={j.id} value={j.code}>{j.shortName}</option>
+                                                    )
+                                                })}
+                                            </select>
+                                        ) : null}
+                                    </>
+                                ) : null}
                             </ul>
                             {checkoutState.paypal ? null : (
-                                <button form="checkoutForm" className="btn btn-primary w-100 p-2 resCheckoutB" type="submit">Confirm</button>
+                                <button className="btn btn-primary w-100 p-2 resCheckoutB" type="submit">Confirm</button>
                             )}
                             {checkoutState.paypal ? (
                                 <div className="mt-4 resCheckoutB">
@@ -357,7 +401,7 @@ function Checkout() {
                         </div>
                         <div className="takeFirstUI">
                             <h4 className="mb-3">Address</h4>
-                            <form onSubmit={(e) => handleSubmit(e)} className="needs-validation" id="checkoutForm">
+                            <div className="needs-validation" id="checkoutForm">
                                 {token ? null : (
                                     <>
                                         <div className="row">
@@ -454,35 +498,6 @@ function Checkout() {
                                         <hr className="mb-4" />
                                     </>
                                 ) : null}
-                                <h4 className="mb-3">Payment</h4>
-                                <div className="d-block my-3">
-                                    <div className="custom-control custom-radio">
-                                        <input onInput={() => setCheckoutState({ Card: true })} id="credit" name="paymentMethod" type="radio" className="custom-control-input" required />
-                                        <label className="custom-control-label" htmlFor="credit"> ATM</label>
-                                    </div>
-                                    <div className="custom-control custom-radio">
-                                        <input onInput={() => setCheckoutState({ Card: false })} id="debit" name="paymentMethod" type="radio" className="custom-control-input" required />
-                                        <label className="custom-control-label" htmlFor="debit"> COD</label>
-                                    </div>
-                                </div>
-                                {checkoutState.Card ? (
-                                    <>
-                                        <div className="d-flex" style={{ gap: 15 + "px" }}>
-                                            <button className="buttonAtm" type="button" onClick={() => setCheckoutState({ vnpay: true, paypal: false })}><img alt="" height={30} width={90} src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-VNPAY-QR-1.png" /></button>
-                                            <button className="buttonAtm" type="button" onClick={() => setCheckoutState({ vnpay: false, paypal: true })}><img alt="" height={30} width={90} src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/PayPal_logo.svg/2560px-PayPal_logo.svg.png" /></button>
-                                        </div>
-                                        {checkoutState.vnpay ? (
-                                            <select onChange={(e) => setCheckoutState({ bankCode: e.target.value })} name="bankcode" id="bankcode" className="form-control bg-white mt-4" required>
-                                                <option value="">Không chọn</option>
-                                                {checkoutState.bankList?.map((j) => {
-                                                    return (
-                                                        <option key={j.id} value={j.code}>{j.shortName}</option>
-                                                    )
-                                                })}
-                                            </select>
-                                        ) : null}
-                                    </>
-                                ) : null}
                                 {checkoutState.paypal ? null : (
                                     <button form="checkoutForm" className="btn btn-primary w-100 p-2 resCheckoutB2 mt-4" type="submit">Confirm</button>
                                 )}
@@ -501,9 +516,9 @@ function Checkout() {
                                         />
                                     </div>
                                 ) : null}
-                            </form>
+                            </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </Layout>

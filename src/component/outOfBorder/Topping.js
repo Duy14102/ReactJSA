@@ -45,7 +45,7 @@ function Topping({ cate, setDetailState, modalData }) {
         currency: 'VND',
     });
 
-    function addToCart(name, quantity) {
+    function addToCart(name, quantity, maxQ) {
         var stored = JSON.parse(localStorage.getItem("cart"));
         if (!stored) {
             var students = [];
@@ -57,9 +57,13 @@ function Topping({ cate, setDetailState, modalData }) {
             var sameItem = JSON.parse(localStorage.getItem("cart")) || [];
             for (var i = 0; i < sameItem.length; i++) {
                 if (name === sameItem[i].name) {
-                    sameItem[i].quantity += quantity;
-                    localStorage.setItem('cart', JSON.stringify(sameItem))
-                    setDetailState({ callAlert: true })
+                    if (sameItem[i].quantity + quantity > maxQ) {
+                        setDetailState({ callAlert2: true })
+                    } else {
+                        sameItem[i].quantity += quantity;
+                        localStorage.setItem('cart', JSON.stringify(sameItem))
+                        setDetailState({ callAlert: true })
+                    }
                 } else if (i === sameItem.length - 1) {
                     var stored2 = JSON.parse(localStorage.getItem("cart"));
                     var student2 = { name: name, quantity: quantity };
@@ -86,8 +90,13 @@ function Topping({ cate, setDetailState, modalData }) {
                                     <p className="cutTextRightNow" style={{ fontSize: 15, color: "gray" }}>{z.fooddescription}</p>
                                 </div>
                                 <p style={{ width: "10%", textAlign: "center" }}>{VND.format(z.foodprice)}</p>
-                                <div style={{ width: "10%", textAlign: "center" }}>
-                                    <button onClick={() => addToCart(z.foodname, 1)} className='plusPlusDe'>+</button>
+                                <div style={{ width: "10%", textAlign: "center", position: "relative" }}>
+                                    <button style={{ opacity: z.foodquantity < 1 ? 0.5 : 1, pointerEvents: z.foodquantity < 1 ? "none" : "auto" }} onClick={() => addToCart(z.foodname, 1, z.foodquantity)} className='plusPlusDe'>+</button>
+                                    {z.foodquantity < 1 ? (
+                                        <div style={{ position: "absolute", bottom: 5, right: 5 }}>
+                                            <p className='m-0 text-danger text-nowrap'>Out of stock</p>
+                                        </div>
+                                    ) : null}
                                 </div>
                             </div>
                             <hr style={{ color: "lightgray", marginTop: 0 }} />
