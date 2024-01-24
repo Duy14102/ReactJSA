@@ -306,7 +306,7 @@ const ItemMenuComponent = ({ data, start, end, setMainState }) => {
                         transform: "translate(-50%, -50%)",
                         backgroundColor: "white",
                         width: window.innerWidth > 991 ? "70vw" : "90vw",
-                        height: window.innerWidth > 991 ? "80%" : "85%",
+                        height: "750px",
                         zIndex: 999,
                         overflow: "hidden"
                     },
