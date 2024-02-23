@@ -27,7 +27,7 @@ function LoginSite() {
     const socketRef = useRef();
     document.title = "EatCom - Signup";
     useEffect(() => {
-        socketRef.current = socketIOClient.connect("https://eatcom.onrender.com")
+        socketRef.current = socketIOClient.connect("http://localhost:3000")
 
         socketRef.current.on('RegisterSuccess', dataGot => {
             if (dataGot.email === localStorage.getItem("CheckEmail")) {

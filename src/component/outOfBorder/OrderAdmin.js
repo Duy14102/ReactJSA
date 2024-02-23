@@ -54,7 +54,7 @@ function OrderAdmin({ Data }) {
     }
 
     useEffect(() => {
-        socketRef.current = socketIOClient.connect("https://eatcom.onrender.com")
+        socketRef.current = socketIOClient.connect("http://localhost:3000")
 
         socketRef.current.on('UpdateStatusOrderSuccess', dataGot => {
             if (dataGot?.emp === decode.userId) {
@@ -132,7 +132,7 @@ function OrderAdmin({ Data }) {
     const denyOrderKun = (id, date, amount, reason) => {
         const configuration = {
             method: "post",
-            url: "https://eatcom.onrender.com/VnpayRefund",
+            url: "http://localhost:3000/VnpayRefund",
             data: {
                 orderId: id,
                 transDate: date,

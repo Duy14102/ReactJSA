@@ -19,7 +19,7 @@ function MainUiux() {
     const called = () => {
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/GetHeroManager",
+            url: "http://localhost:3000/GetHeroManager",
         }
         axios(configuration)
             .then((res) => {
@@ -32,7 +32,7 @@ function MainUiux() {
         document.getElementById("defaultOpen9").click();
         called()
 
-        socketRef.current = socketIOClient.connect("https://eatcom.onrender.com")
+        socketRef.current = socketIOClient.connect("http://localhost:3000")
 
         socketRef.current.on('ChangeHeroImageSuccess', dataGot => {
             if (dataGot.mag !== decode.userId) {

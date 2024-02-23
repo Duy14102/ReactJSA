@@ -842,6 +842,24 @@ iframe {
     -webkit-box-orient: vertical;
 }
 
+.cutTextRightNow3 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+
+.cutTextRightNow2 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+    -webkit-box-orient: vertical;
+}
+
 .cutOut:focus {
     outline: none;
     border: 1px solid #FEA116;
@@ -999,8 +1017,9 @@ iframe {
 .btnSonCallingUpperT {
     border-radius: 3px;
     background-color: #fea116;
-    padding: 2px 5px 2px 5px;
+    padding: 4px 7px;
     transition: all 0.2s;
+    height: 30px;
 }
 
 .btnSonCallingUpperT:hover {

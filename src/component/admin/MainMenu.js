@@ -50,7 +50,7 @@ function MainMenu() {
         e.preventDefault();
         const configuration = {
             method: "post",
-            url: "https://eatcom.onrender.com/UploadMenu",
+            url: "http://localhost:3000/UploadMenu",
             data: {
                 foodname,
                 foodprice,
@@ -90,7 +90,7 @@ function MainMenu() {
         e?.preventDefault()
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/GetSearch",
+            url: "http://localhost:3000/GetSearch",
             params: {
                 foodSearch: nameInput,
                 page: currentPage.current,

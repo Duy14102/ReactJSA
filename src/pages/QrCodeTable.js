@@ -59,7 +59,7 @@ function QrCodeTable() {
         currentPage.current = 1;
         getPagination();
 
-        socketRef.current = socketIOClient.connect("https://eatcom.onrender.com")
+        socketRef.current = socketIOClient.connect("http://localhost:3000")
 
         socketRef.current.on('AddItemToTableSuccess', dataGot => {
             console.log(dataGot);
@@ -69,7 +69,7 @@ function QrCodeTable() {
                 setTimeout(() => {
                     const configuration2 = {
                         method: "post",
-                        url: "https://eatcom.onrender.com/UpdateItemQrStatus",
+                        url: "http://localhost:3000/UpdateItemQrStatus",
                         data: {
                             tableid: dataGot.tableid,
                             foodname: dataGot.foodname,
@@ -133,7 +133,7 @@ function QrCodeTable() {
     const getTable4 = useCallback(() => {
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/QrCodeItemTB",
+            url: "http://localhost:3000/QrCodeItemTB",
             params: {
                 id: appler.id
             }
@@ -161,7 +161,7 @@ function QrCodeTable() {
     function getPagination() {
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/GetCategoryMenu",
+            url: "http://localhost:3000/GetCategoryMenu",
             params: {
                 category: appler.cate,
                 page: currentPage.current,

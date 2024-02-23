@@ -16,7 +16,7 @@ function TaskHandle({ id, name, decode }) {
     }
 
     useEffect(() => {
-        socketRef.current = socketIOClient.connect("https://eatcom.onrender.com")
+        socketRef.current = socketIOClient.connect("http://localhost:3000")
 
         socketRef.current.on('FinishTaskSuccess', dataGot => {
             if (dataGot.emp === decode.userId) {

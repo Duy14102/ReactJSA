@@ -23,7 +23,7 @@ function Topping({ cate, setDetailState, modalData }) {
     function getPagination() {
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/GetToppingByCate",
+            url: "http://localhost:3000/GetToppingByCate",
             params: {
                 cate: cate,
                 page: currentPage.current,
@@ -104,25 +104,30 @@ function Topping({ cate, setDetailState, modalData }) {
                     ) : null
                 )
             })}
-            <ReactPaginate
-                breakLabel="..."
-                nextLabel="Next >"
-                onPageChange={handlePageClick}
-                pageRangeDisplayed={5}
-                pageCount={pageCount}
-                previousLabel="< Previous"
-                renderOnZeroPageCount={null}
-                marginPagesDisplayed={2}
-                containerClassName="pagination justify-content-center"
-                pageClassName="page-item"
-                pageLinkClassName="page-link"
-                previousClassName="page-item"
-                previousLinkClassName="page-link"
-                nextClassName="page-item"
-                nextLinkClassName="page-link"
-                activeClassName="active"
-                forcePage={currentPage.current - 1}
-            />
+            <div className="d-flex align-items-center justify-content-between">
+                <ReactPaginate
+                    breakLabel="..."
+                    nextLabel=">"
+                    onPageChange={handlePageClick}
+                    pageRangeDisplayed={5}
+                    pageCount={pageCount}
+                    previousLabel="<"
+                    renderOnZeroPageCount={null}
+                    marginPagesDisplayed={2}
+                    containerClassName="pagination justify-content-center m-0"
+                    pageClassName="page-item"
+                    pageLinkClassName="page-link"
+                    previousClassName="page-item"
+                    previousLinkClassName="page-link"
+                    nextClassName="page-item"
+                    nextLinkClassName="page-link"
+                    activeClassName="active"
+                    forcePage={currentPage.current - 1}
+                />
+                <button onClick={() => addToCart(modalData?.foodname, 1, modalData?.foodquantity)} className="btnSonCallingUpperT">
+                    <p className="m-0 text-white">Order</p>
+                </button>
+            </div>
         </>
     )
 }

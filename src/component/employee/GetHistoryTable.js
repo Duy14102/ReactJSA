@@ -19,7 +19,7 @@ function GetHistoryTable() {
         currentPage.current = 1;
         getPagination()
 
-        socketRef.current = socketIOClient.connect("https://eatcom.onrender.com")
+        socketRef.current = socketIOClient.connect("http://localhost:3000")
 
         socketRef.current.on('CheckoutNormalSuccess', dataGot => {
             getPagination()
@@ -43,7 +43,7 @@ function GetHistoryTable() {
     function getPagination() {
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/GetHistoryTable",
+            url: "http://localhost:3000/GetHistoryTable",
             params: {
                 page: currentPage.current,
                 limit: limit

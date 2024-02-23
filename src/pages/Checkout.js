@@ -50,7 +50,7 @@ function Checkout() {
             const decoded = jwtDecode(token);
             const configuration = {
                 method: "get",
-                url: "https://eatcom.onrender.com/GetDetailUser",
+                url: "http://localhost:3000/GetDetailUser",
                 params: {
                     userid: decoded.userId
                 }
@@ -88,7 +88,7 @@ function Checkout() {
         if (checkoutState.paypalState === "COMPLETED") {
             const configuration = {
                 method: "post",
-                url: "https://eatcom.onrender.com/UploadOrder",
+                url: "http://localhost:3000/UploadOrder",
                 data: {
                     user: user,
                     phonenumber: checkoutState.phonenumber,
@@ -104,7 +104,7 @@ function Checkout() {
                         const decode = jwtDecode(token);
                         const configuration = {
                             method: "post",
-                            url: "https://eatcom.onrender.com/AddAddressUser",
+                            url: "http://localhost:3000/AddAddressUser",
                             data: {
                                 id: decode.userId,
                                 address: havePhone
@@ -180,7 +180,7 @@ function Checkout() {
     const VnpayCheckout = (data) => {
         const configuration = {
             method: "post",
-            url: "https://eatcom.onrender.com/VnpayCheckout",
+            url: "http://localhost:3000/VnpayCheckout",
             data: {
                 amount: fulltotal,
                 bankCode: checkoutState.bankCode,
@@ -213,7 +213,7 @@ function Checkout() {
         e.preventDefault();
         const configuration = {
             method: "post",
-            url: "https://eatcom.onrender.com/UploadOrder",
+            url: "http://localhost:3000/UploadOrder",
             data: {
                 user: user,
                 phonenumber: checkoutState.phonenumber,
@@ -235,7 +235,7 @@ function Checkout() {
                     const decode = jwtDecode(token);
                     const configuration = {
                         method: "post",
-                        url: "https://eatcom.onrender.com/AddAddressUser",
+                        url: "http://localhost:3000/AddAddressUser",
                         data: {
                             id: decode.userId,
                             address: havePhone

@@ -28,7 +28,7 @@ function DetailSearchMenu({ i }) {
         e.preventDefault();
         const configuration = {
             method: "post",
-            url: "https://eatcom.onrender.com/UpdateMenu",
+            url: "http://localhost:3000/UpdateMenu",
             data: {
                 updateid: id,
                 updatename,
@@ -62,7 +62,7 @@ function DetailSearchMenu({ i }) {
     const DeleteMenu = (id) => {
         const configuration = {
             method: "post",
-            url: "https://eatcom.onrender.com/DeleteMenu",
+            url: "http://localhost:3000/DeleteMenu",
             params: {
                 deleteid: id
             }

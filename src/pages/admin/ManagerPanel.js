@@ -76,7 +76,7 @@ function ManagerPanel() {
             setCountSix(localStorage.getItem("CountNewTable"))
         }
 
-        socketRef.current = socketIOClient.connect("https://eatcom.onrender.com")
+        socketRef.current = socketIOClient.connect("http://localhost:3000")
 
         //Count one
         socketRef.current.on('AddContactSuccess', dataGot => {
@@ -253,7 +253,7 @@ function ManagerPanel() {
     useEffect(() => {
         const configuration2 = {
             method: "get",
-            url: 'https://eatcom.onrender.com/GetDetailUser',
+            url: 'http://localhost:3000/GetDetailUser',
             params: {
                 userid: name.userId
             }
@@ -418,7 +418,7 @@ function ManagerPanel() {
         e.preventDefault()
         const configuration = {
             method: "post",
-            url: "https://eatcom.onrender.com/ChangeImageAdmin",
+            url: "http://localhost:3000/ChangeImageAdmin",
             data: {
                 id: id,
                 base64: UserImage

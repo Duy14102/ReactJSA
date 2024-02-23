@@ -5,7 +5,7 @@ function RevenueMonth() {
     const [CountData, setCountData] = useState()
     const [total, setTotal] = useState()
     useEffect(() => {
-        fetch("https://eatcom.onrender.com/GetIncomeMonth", {
+        fetch("http://localhost:3000/GetIncomeMonth", {
             method: "get",
         }).then((res) => res.json()).then((data) => {
             setCountData(data.data)

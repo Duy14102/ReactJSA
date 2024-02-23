@@ -28,7 +28,7 @@ function MainGiveTask({ modalOpenAdmin, setModalOpenAdmin, decode }) {
         currentPage.current = 1;
         getPagination()
 
-        socketRef.current = socketIOClient.connect("https://eatcom.onrender.com")
+        socketRef.current = socketIOClient.connect("http://localhost:3000")
 
         socketRef.current.on('GiveTaskSuccess', dataGot => {
             if (dataGot.mag === decode.userId) {
@@ -75,7 +75,7 @@ function MainGiveTask({ modalOpenAdmin, setModalOpenAdmin, decode }) {
     const getPagination = () => {
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/GetEmploy4Mana",
+            url: "http://localhost:3000/GetEmploy4Mana",
             params: {
                 page: currentPage.current,
                 limit: limit

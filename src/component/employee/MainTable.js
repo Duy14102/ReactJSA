@@ -59,7 +59,7 @@ function MainTable() {
         const countTabs = localStorage.getItem('tabs')
         document.getElementById("defaultOpen3").click();
 
-        socketRef.current = socketIOClient.connect("https://eatcom.onrender.com")
+        socketRef.current = socketIOClient.connect("http://localhost:3000")
 
         socketRef.current.on('AddTableByHandSuccess', dataGot => {
             if (dataGot?.mag === decode.userId) {

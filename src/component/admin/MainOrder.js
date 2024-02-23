@@ -50,7 +50,7 @@ function MainOrder() {
     }
 
     useEffect(() => {
-        socketRef.current = socketIOClient.connect("https://eatcom.onrender.com")
+        socketRef.current = socketIOClient.connect("http://localhost:3000")
         if (openTable) {
 
             socketRef.current.on('UpdateStatusOrderSuccess', dataGot => {
@@ -121,7 +121,7 @@ function MainOrder() {
         e?.preventDefault()
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/SearchAllOrder",
+            url: "http://localhost:3000/SearchAllOrder",
             params: {
                 date: DateInput,
                 page: currentPage.current,
@@ -142,7 +142,7 @@ function MainOrder() {
     const appoveOrder = (e, yolo) => {
         const configuration = {
             method: 'post',
-            url: 'https://eatcom.onrender.com/UpdateStatusOrder',
+            url: 'http://localhost:3000/UpdateStatusOrder',
             data: {
                 id: e,
                 status: 2,
@@ -174,7 +174,7 @@ function MainOrder() {
         e.preventDefault();
         const configuration = {
             method: "post",
-            url: "https://eatcom.onrender.com/DenyOrder",
+            url: "http://localhost:3000/DenyOrder",
             params: {
                 id: id,
                 reason: DenyReason,
@@ -205,7 +205,7 @@ function MainOrder() {
     const completeOrder = (type) => {
         const configuration = {
             method: "post",
-            url: "https://eatcom.onrender.com/CompleteOrderByEmp",
+            url: "http://localhost:3000/CompleteOrderByEmp",
             data: {
                 id: ModalData._id,
                 date: Date.now(),

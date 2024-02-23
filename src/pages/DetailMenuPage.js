@@ -102,28 +102,28 @@ function DetailMenuPage() {
     useEffect(() => {
         if (token && candecode.userRole !== 1.5) {
             const decode = jwtDecode(token)
-            fetch(`https://eatcom.onrender.com/GetDetailUser?userid=${decode.userId}`, {
+            fetch(`http://localhost:3000/GetDetailUser?userid=${decode.userId}`, {
                 method: "get",
             }).then((res) => res.json()).then((menu) => {
                 setDetailState({ getUserW: menu });
             })
         }
 
-        fetch(`https://eatcom.onrender.com/GetSimilarP?Name=${appler.cate}`, {
+        fetch(`http://localhost:3000/GetSimilarP?Name=${appler.cate}`, {
             method: "get",
         }).then((res) => res.json()).then((menu) => {
             setDetailState({ menu: menu.data });
         })
 
         if (appler.cate === "Main") {
-            fetch(`https://eatcom.onrender.com/GetTopping`, {
+            fetch(`http://localhost:3000/GetTopping`, {
                 method: "get",
             }).then((res) => res.json()).then((menu) => {
                 setDetailState({ topping: menu.data });
             })
         }
 
-        fetch(`https://eatcom.onrender.com/GetDetailMenu?foodid=${appler.id}`, {
+        fetch(`http://localhost:3000/GetDetailMenu?foodid=${appler.id}`, {
             method: "get",
         }).then((res) => res.json()).then((data) => {
             setDetailState({ detail: data })
@@ -240,7 +240,7 @@ function DetailMenuPage() {
         e.preventDefault()
         const configuration = {
             method: "post",
-            url: "https://eatcom.onrender.com/AddReview",
+            url: "http://localhost:3000/AddReview",
             data: {
                 id: ids,
                 review: takeReview

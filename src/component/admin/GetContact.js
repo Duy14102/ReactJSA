@@ -20,7 +20,7 @@ function GetContact({ decode }) {
         currentPage.current = 1;
         getPagination()
 
-        socketRef.current = socketIOClient.connect("https://eatcom.onrender.com")
+        socketRef.current = socketIOClient.connect("http://localhost:3000")
 
         socketRef.current.on('AddContactSuccess', dataGot => {
             getPagination()
@@ -90,7 +90,7 @@ function GetContact({ decode }) {
     function getPagination() {
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/GetContact",
+            url: "http://localhost:3000/GetContact",
             params: {
                 page: currentPage.current,
                 limit: limit

@@ -16,7 +16,7 @@ function HeroBanner() {
     const calledUI = () => {
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/GetHeroUI",
+            url: "http://localhost:3000/GetHeroUI",
             params: {
                 name: "oh2rwdomomeno4sgguhf"
             }
@@ -34,7 +34,7 @@ function HeroBanner() {
 
         const configuration2 = {
             method: "get",
-            url: "https://eatcom.onrender.com/GetHeroText",
+            url: "http://localhost:3000/GetHeroText",
         }
         axios(configuration2)
             .then((res) => {
@@ -47,7 +47,7 @@ function HeroBanner() {
     const calledBG = () => {
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/GetHeroUI",
+            url: "http://localhost:3000/GetHeroUI",
             params: {
                 name: "e4onxrx7hmgzmrbel9jk"
             }
@@ -69,7 +69,7 @@ function HeroBanner() {
         calledUI()
         calledText()
         calledBG()
-        socketRef.current = socketIOClient.connect("https://eatcom.onrender.com")
+        socketRef.current = socketIOClient.connect("http://localhost:3000")
 
         socketRef.current.on('ChangeHeroImageSuccess', dataGot => {
             if (dataGot.title === "Hero") {

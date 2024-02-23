@@ -20,7 +20,7 @@ function UserBookingPanel({ id, decode }) {
     const limit = 8
 
     useEffect(() => {
-        socketRef.current = socketIOClient.connect("https://eatcom.onrender.com")
+        socketRef.current = socketIOClient.connect("http://localhost:3000")
 
         socketRef.current.on('AddNewBookingSuccess', dataGot => {
             if (dataGot?.data === decode.userId) {
@@ -86,7 +86,7 @@ function UserBookingPanel({ id, decode }) {
     }, [])
 
     const miller = () => {
-        fetch(`https://eatcom.onrender.com/GetTokenBooking?id=${id}`, {
+        fetch(`http://localhost:3000/GetTokenBooking?id=${id}`, {
             method: "get",
         }).then((res) => res.json()).then((data) => {
             setBooking(data);
@@ -109,7 +109,7 @@ function UserBookingPanel({ id, decode }) {
     function getPagination() {
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/GetBookingHistory",
+            url: "http://localhost:3000/GetBookingHistory",
             params: {
                 page: currentPage.current,
                 limit: limit

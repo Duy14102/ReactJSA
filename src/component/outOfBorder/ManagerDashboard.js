@@ -21,7 +21,7 @@ function ManagerDashboard({ decode }) {
 
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/GetData4Admin",
+            url: "http://localhost:3000/GetData4Admin",
         }
         axios(configuration)
             .then((res) => {

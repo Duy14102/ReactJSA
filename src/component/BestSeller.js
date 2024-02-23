@@ -10,7 +10,7 @@ function BestSeller() {
         const called = () => {
             const configuration = {
                 method: "get",
-                url: "https://eatcom.onrender.com/GetHomeMenu"
+                url: "http://localhost:3000/GetHomeMenu"
             }
             axios(configuration)
                 .then((res) => {

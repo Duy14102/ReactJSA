@@ -74,7 +74,7 @@ function GetOrder() {
         const countTabs = localStorage.getItem('tabs')
         currentPage.current = 1;
         getPagination()
-        socketRef.current = socketIOClient.connect("https://eatcom.onrender.com")
+        socketRef.current = socketIOClient.connect("http://localhost:3000")
 
         socketRef.current.on('UpdateStatusOrderSuccess', dataGot => {
             if (dataGot.emp !== decode.userId) {
@@ -193,7 +193,7 @@ function GetOrder() {
     function getPagination() {
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/GetAllOrderActive",
+            url: "http://localhost:3000/GetAllOrderActive",
             params: {
                 page: currentPage.current,
                 limit: limit

@@ -37,7 +37,7 @@ function Header({ type }) {
             if (decoded.userRole !== 1.5) {
                 const configuration = {
                     method: "get",
-                    url: "https://eatcom.onrender.com/GetDetailUser",
+                    url: "http://localhost:3000/GetDetailUser",
                     params: {
                         userid: decoded.userId
                     }
@@ -106,7 +106,7 @@ function Header({ type }) {
         e.preventDefault();
         const configuration = {
             method: "get",
-            url: "https://eatcom.onrender.com/GetSearch",
+            url: "http://localhost:3000/GetSearch",
             params: {
                 foodSearch: headerState.search,
                 category: "Menu"
@@ -127,7 +127,7 @@ function Header({ type }) {
                 setHeaderState({ spinner: true })
                 const configuration = {
                     method: "get",
-                    url: "https://eatcom.onrender.com/GetDebounce",
+                    url: "http://localhost:3000/GetDebounce",
                     params: {
                         foodSearch: headerState.search
                     }

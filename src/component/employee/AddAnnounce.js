@@ -14,7 +14,7 @@ function AddAnnounce() {
         e.preventDefault()
         const configuration = {
             method: "post",
-            url: "https://eatcom.onrender.com/AddNews",
+            url: "http://localhost:3000/AddNews",
             data: {
                 title: title,
                 message: message
