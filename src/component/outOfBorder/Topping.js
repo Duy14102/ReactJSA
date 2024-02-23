@@ -2,7 +2,7 @@ import axios from "axios";
 import { Fragment, useEffect, useState, useRef } from "react";
 import ReactPaginate from "react-paginate";
 
-function Topping({ cate, setDetailState, modalData }) {
+function Topping({ cate, setDetailState, modalData,setOpen }) {
     const [topping, setTopping] = useState([])
     const [pageCount, setPageCount] = useState(6)
     const currentPage = useRef();
@@ -124,7 +124,7 @@ function Topping({ cate, setDetailState, modalData }) {
                     activeClassName="active"
                     forcePage={currentPage.current - 1}
                 />
-                <button onClick={() => addToCart(modalData?.foodname, 1, modalData?.foodquantity)} className="btnSonCallingUpperT">
+                <button onClick={() => {addToCart(modalData?.foodname, 1, modalData?.foodquantity);setOpen(false)}} className="btnSonCallingUpperT">
                     <p className="m-0 text-white">Order</p>
                 </button>
             </div>

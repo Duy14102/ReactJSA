@@ -74,7 +74,7 @@ function Cart() {
                 if (name === stored2[k].name) {
                     if (value > maxQ || value < 1) {
                         setCartState({ failedCart: true, successCart: false })
-                    } else if (value < maxQ && value > 1) {
+                    } else if (value < maxQ && value >= 1) {
                         setCartState({ successCart: true, failedCart: false })
                         stored2[k].quantity = value
                         localStorage.setItem("cart", JSON.stringify(stored2));
@@ -94,12 +94,16 @@ function Cart() {
         pushData.push(dataToPush)
         return (
             <tr key={i._id}>
-                <td className="Xtd"><button title="Delete item" onClick={() => removeItem(i.foodname)} className="insideXtd">×</button></td>
-                <td style={{ width: 10 + "%" }}><img alt="" src={i.foodimage} width={70} height={60} /></td>
-                <td>{i.foodname}<span className="jackass"><br />{VND.format(i.foodprice)}</span></td>
-                <td className="thhuhu">{VND.format(i.foodprice)}</td>
-                <td><input style={{ width: 100 + "%" }} id="edValue" type="number" min={1} max={i.foodquantity} defaultValue={e} onInput={(e) => changeInput(e, i.foodname, i.foodquantity)} /></td>
-                <td className="thhuhu">{VND.format(total)}</td>
+                <td className="Xtd">
+                    <button title="Delete item" onClick={() => removeItem(i.foodname)} className="insideXtd">×</button>
+                </td>
+                <td className="d-flex align-items-center" style={{ gap: 10 }}>
+                    <img alt="" src={i.foodimage} width={70} height={60} />
+                    <div>{i.foodname}<span className="jackass"><br />{VND.format(i.foodprice)}</span></div>
+                </td>
+                <td style={{ textAlign: "center" }} className="thhuhu">{VND.format(i.foodprice)}</td>
+                <td style={{ textAlign: "center" }}><input style={{ width: 70 + "%", textAlign: "center" }} id="edValue" type="number" min={1} max={i.foodquantity} defaultValue={e} onInput={(e) => changeInput(e, i.foodname, i.foodquantity)} /></td>
+                <td style={{ textAlign: "center" }} className="thhuhu">{VND.format(total)}</td>
             </tr>
         )
     }
@@ -174,13 +178,13 @@ function Cart() {
                     ) : (
                         <div className="flexAble pt-4 pb-4">
                             <div className="Numberone">
-                                <table className="table CartTa" width="100%">
-                                    <thead>
-                                        <tr>
-                                            <th colSpan={3}>Items</th>
-                                            <th className="thhuhu">Price</th>
-                                            <th style={{ width: 10 + "%" }}>Amount</th>
-                                            <th className="thhuhu">Total</th>
+                                <table className="table table-bordered solotable m-0">
+                                    <thead className="thead-dark">
+                                        <tr style={{ color: "#0F172B", backgroundColor: "gray" }}>
+                                            <th colSpan={2} style={{ textAlign: "center", color: "#fff" }}>Items</th>
+                                            <th style={{ textAlign: "center", color: "#fff" }}>Price</th>
+                                            <th style={{ textAlign: "center", color: "#fff" }}>Amount</th>
+                                            <th style={{ textAlign: "center", color: "#fff" }}>Total</th>
                                         </tr>
                                     </thead>
                                     <tbody style={{ verticalAlign: "middle" }}>
@@ -191,52 +195,48 @@ function Cart() {
                                         })}
                                     </tbody>
                                 </table>
-                                <div className="buttonN1">
-                                    <NavLink reloadDocument to="/" className="btnFirst">← Continue Shoppping</NavLink>
+                                <div className="buttonN1 mt-2">
+                                    <NavLink reloadDocument to="/CategorySite/Menu/nto" className="btnFirst">← Continue Shoppping</NavLink>
                                     <button onClick={() => updateXCart()} className="btnSecond">Update Cart</button>
                                 </div>
                             </div>
-                            <table className="table CartTa Numbertwo">
-                                <thead>
-                                    <tr>
-                                        <th colSpan={2}>Cart Total</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Total</td>
-                                        <td className="text-end">{VND.format(total2)}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Shipping</td>
-                                        <td className="text-end">{VND.format(parseInt(localStorage.getItem("shippingFee")))}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><b>Full Total</b></td>
-                                        <td className="text-end">{VND.format(fulltotal)}</td>
-                                    </tr>
-                                    <tr>
-                                        <td colSpan={2}>
-                                            <NavLink to="/Checkout" state={{ valid: pushData }} className="btnCheckout"><b>Checkout</b></NavLink>
-                                            {parseInt(localStorage.getItem("shippingFee")) === 30000 ? (
-                                                <p className="pt-3" style={{ margin: 0 }}> <svg style={{ fill: "#777" }} xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><path d="M0 80V229.5c0 17 6.7 33.3 18.7 45.3l176 176c25 25 65.5 25 90.5 0L418.7 317.3c25-25 25-65.5 0-90.5l-176-176c-12-12-28.3-18.7-45.3-18.7H48C21.5 32 0 53.5 0 80zm112 32a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" /></svg> Coupon</p>
-                                            ) : null}
-                                        </td>
-                                    </tr>
-                                    {parseInt(localStorage.getItem("shippingFee")) === 30000 ? (
-                                        <tr>
-                                            <td colSpan={2} className="inputC">
-                                                <form onSubmit={(e) => applyCoupon(e)}>
-                                                    <input onInput={(e) => setCartState({ checkCoupon: e.target.value })} type="text" placeholder="Coupon Code...." required />
-                                                    <div className="text-center pt-3">
-                                                        <button type="submit" className="btnCoupon">Apply</button>
-                                                    </div>
-                                                </form>
-                                            </td>
+                            <div className="Numbertwo">
+                                <table className="table table-bordered">
+                                    <thead className="thead-dark">
+                                        <tr style={{ color: "#0F172B", backgroundColor: "gray" }}>
+                                            <th colSpan={2} style={{ textAlign: "center", color: "#fff" }}>Cart Total</th>
                                         </tr>
-                                    ) : null}
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody style={{ verticalAlign: "middle" }}>
+                                        <tr>
+                                            <td width="30%">Total</td>
+                                            <td className="text-end">{VND.format(total2)}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Shipping</td>
+                                            <td className="text-end">{VND.format(parseInt(localStorage.getItem("shippingFee")))}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Full Total</b></td>
+                                            <td className="text-end">{VND.format(fulltotal)}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <NavLink to="/Checkout" state={{ valid: pushData }} className="btnCheckout"><b>Checkout</b></NavLink>
+                                {parseInt(localStorage.getItem("shippingFee")) === 30000 ? (
+                                    <>
+                                        <p className="pt-3" style={{ margin: 0 }}> <svg style={{ fill: "#777" }} xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><path d="M0 80V229.5c0 17 6.7 33.3 18.7 45.3l176 176c25 25 65.5 25 90.5 0L418.7 317.3c25-25 25-65.5 0-90.5l-176-176c-12-12-28.3-18.7-45.3-18.7H48C21.5 32 0 53.5 0 80zm112 32a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" /></svg> Coupon</p>
+                                        <div className="inputC">
+                                            <form onSubmit={(e) => applyCoupon(e)}>
+                                                <input onInput={(e) => setCartState({ checkCoupon: e.target.value })} type="text" placeholder="Coupon Code...." required />
+                                                <div className="text-center pt-3">
+                                                    <button type="submit" className="btnCoupon">Apply</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </>
+                                ) : null}
+                            </div>
                         </div>
                     )}
                 </div>
