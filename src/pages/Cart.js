@@ -36,7 +36,7 @@ function Cart() {
                 nameCount.push(fort)
             }
             for (const arrist of nameCount) {
-                const res = await fetch(`http://localhost:3000/GetCartItem?name=${arrist.name}&quantity=${arrist.quantity}`)
+                const res = await fetch(`https://eatcom.onrender.com/GetCartItem?name=${arrist.name}&quantity=${arrist.quantity}`)
                 const resD = await res.json()
                 overCount.push(resD)
             }

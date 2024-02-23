@@ -60,7 +60,7 @@ function SearchSite() {
     function getPagination() {
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/GetSearch",
+            url: "https://eatcom.onrender.com/GetSearch",
             params: {
                 foodSearch: appler.id,
                 category: appler.cate,

@@ -32,7 +32,7 @@ function CancelRequest({ ModalData, fulltotal, setmodal }) {
     }
 
     useEffect(() => {
-        socketRef.current = socketIOClient.connect("http://localhost:3000")
+        socketRef.current = socketIOClient.connect("https://eatcom.onrender.com")
 
         socketRef.current.on('totaldenyNormalSuccess', dataGot => {
             if (decode.userId === dataGot.emp) {
@@ -60,7 +60,7 @@ function CancelRequest({ ModalData, fulltotal, setmodal }) {
     const denyOrderKin = (id, date, amountq) => {
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/VnpayRefund",
+            url: "https://eatcom.onrender.com/VnpayRefund",
             data: {
                 orderId: id,
                 transDate: date,

@@ -17,7 +17,7 @@ function TableItems({ ModalData, decode }) {
         currentPage.current = 1;
         getAdminMenu()
 
-        socketRef.current = socketIOClient.connect("http://localhost:3000")
+        socketRef.current = socketIOClient.connect("https://eatcom.onrender.com")
 
         socketRef.current.on('AddItemToTableSuccess', dataGot => {
             if (dataGot.mag === decode.userId && dataGot.type === "Normal") {
@@ -53,7 +53,7 @@ function TableItems({ ModalData, decode }) {
     function getAdminMenu() {
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/GetItemCanTable",
+            url: "https://eatcom.onrender.com/GetItemCanTable",
             params: {
                 page: currentPage.current,
                 limit: limit

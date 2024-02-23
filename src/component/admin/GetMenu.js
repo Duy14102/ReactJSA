@@ -38,7 +38,7 @@ function GetMenu({ cate }) {
     function getPagination() {
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/GetAdminMenu",
+            url: "https://eatcom.onrender.com/GetAdminMenu",
             params: {
                 cate: cate,
                 page: currentPage.current,
@@ -59,7 +59,7 @@ function GetMenu({ cate }) {
     const DeleteMenu = (id) => {
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/DeleteMenu",
+            url: "https://eatcom.onrender.com/DeleteMenu",
             params: {
                 deleteid: id
             }
@@ -104,7 +104,7 @@ function GetMenu({ cate }) {
         e.preventDefault();
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/UpdateMenu",
+            url: "https://eatcom.onrender.com/UpdateMenu",
             data: {
                 updateid: id,
                 updatename,
@@ -139,7 +139,7 @@ function GetMenu({ cate }) {
     const deleteReview = () => {
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/DeleteReviewByMag",
+            url: "https://eatcom.onrender.com/DeleteReviewByMag",
             data: {
                 itemid: ModalData._id,
                 reviewid: reviewData.id

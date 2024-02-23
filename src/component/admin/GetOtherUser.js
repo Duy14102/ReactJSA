@@ -31,7 +31,7 @@ function GetOtherUser({ type, pipe, hype }) {
     function getPagination() {
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/GetAllUser",
+            url: "https://eatcom.onrender.com/GetAllUser",
             params: {
                 type: type,
                 pipe: pipe,
@@ -56,7 +56,7 @@ function GetOtherUser({ type, pipe, hype }) {
         e.preventDefault();
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/UpdateUser",
+            url: "https://eatcom.onrender.com/UpdateUser",
             data: {
                 updateid: id,
                 updateemail,

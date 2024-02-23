@@ -52,7 +52,7 @@ function Reservation() {
     }
 
     useEffect(() => {
-        socketRef.current = socketIOClient.connect("http://localhost:3000")
+        socketRef.current = socketIOClient.connect("https://eatcom.onrender.com")
 
         socketRef.current.on('AddNewBookingSuccess', dataGot => {
             if (dataGot.check === localStorage.getItem("CheckBook")) {
@@ -111,7 +111,7 @@ function Reservation() {
     }, []);
 
     const called = () => {
-        fetch(`http://localhost:3000/GetTokenBooking?id=${candecode?.userId}`, {
+        fetch(`https://eatcom.onrender.com/GetTokenBooking?id=${candecode?.userId}`, {
             method: "get",
         }).then((res) => res.json()).then((data) => {
             setReservationState({ bookingBook: data })
@@ -122,7 +122,7 @@ function Reservation() {
         if (token) {
             const decode = jwtDecode(token)
             if (decode.userRole !== 1.5) {
-                fetch(`http://localhost:3000/GetDetailUser?userid=${decode.userId}`, {
+                fetch(`https://eatcom.onrender.com/GetDetailUser?userid=${decode.userId}`, {
                     method: "get",
                 }).then((res) => res.json()).then((data) => {
                     setReservationState({ getUser: data })

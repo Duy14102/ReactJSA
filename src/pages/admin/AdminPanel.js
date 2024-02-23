@@ -17,7 +17,7 @@ function AdminPanel() {
     const [spinner, setSpinner] = useState(false)
 
     useEffect(() => {
-        fetch(`http://localhost:3000/GetDetailUser?userid=${name.userId}`, {
+        fetch(`https://eatcom.onrender.com/GetDetailUser?userid=${name.userId}`, {
             method: "get",
         }).then((res) => res.json()).then((data) => {
             setGetUser(data)
@@ -124,7 +124,7 @@ function AdminPanel() {
         e.preventDefault()
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/ChangeImageAdmin",
+            url: "https://eatcom.onrender.com/ChangeImageAdmin",
             data: {
                 id: id,
                 base64: UserImage

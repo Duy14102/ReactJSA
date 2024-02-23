@@ -23,7 +23,7 @@ function Topping({ cate, setDetailState, modalData }) {
     function getPagination() {
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/GetToppingByCate",
+            url: "https://eatcom.onrender.com/GetToppingByCate",
             params: {
                 cate: cate,
                 page: currentPage.current,

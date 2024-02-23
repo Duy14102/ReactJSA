@@ -54,7 +54,7 @@ const ItemMenuComponent = ({ data, start, end, setMainState }) => {
     useEffect(() => {
         if (token && candecode?.userRole !== 1.5) {
             const decode = jwtDecode(token)
-            fetch(`http://localhost:3000/GetDetailUser?userid=${decode.userId}`, {
+            fetch(`https://eatcom.onrender.com/GetDetailUser?userid=${decode.userId}`, {
                 method: "get",
             }).then((res) => res.json()).then((menu) => {
                 setDetailState({ getUserW: menu });
@@ -179,7 +179,7 @@ const ItemMenuComponent = ({ data, start, end, setMainState }) => {
         e.preventDefault()
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/AddReview",
+            url: "https://eatcom.onrender.com/AddReview",
             data: {
                 id: ids,
                 review: takeReview

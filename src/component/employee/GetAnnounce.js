@@ -51,7 +51,7 @@ function GetAnnounce({ decode }) {
         currentPage.current = 1;
         Pagination()
 
-        socketRef.current = socketIOClient.connect("http://localhost:3000")
+        socketRef.current = socketIOClient.connect("https://eatcom.onrender.com")
 
         socketRef.current.on('UpdateNewsSuccess', dataGot => {
             if (dataGot.mag === decode.userId) {
@@ -83,7 +83,7 @@ function GetAnnounce({ decode }) {
     function Pagination() {
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/GetAllNews",
+            url: "https://eatcom.onrender.com/GetAllNews",
             params: {
                 page: currentPage.current,
                 limit: limit

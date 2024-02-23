@@ -50,7 +50,7 @@ function CategoryPage() {
     function getPagination() {
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/GetCategoryMenu",
+            url: "https://eatcom.onrender.com/GetCategoryMenu",
             params: {
                 category: appler.id,
                 page: currentPage.current,

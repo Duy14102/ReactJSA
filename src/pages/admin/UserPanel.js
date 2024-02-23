@@ -53,7 +53,7 @@ function UserPanel() {
     const getOrder = () => {
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/GetOrderUserPanel",
+            url: "https://eatcom.onrender.com/GetOrderUserPanel",
             params: {
                 id: appler.id
             }
@@ -82,7 +82,7 @@ function UserPanel() {
     }
 
     useEffect(() => {
-        socketRef.current = socketIOClient.connect("http://localhost:3000")
+        socketRef.current = socketIOClient.connect("https://eatcom.onrender.com")
 
         socketRef.current.on('CancelVnpaySuccess', dataGot => {
             if (dataGot?.data === name.userId) {
@@ -254,7 +254,7 @@ function UserPanel() {
 
     useEffect(() => {
         if (name.userRole !== 1.5) {
-            fetch(`http://localhost:3000/GetDetailUser?userid=${appler.id}`, {
+            fetch(`https://eatcom.onrender.com/GetDetailUser?userid=${appler.id}`, {
                 method: "get",
             }).then((res) => res.json()).then((data) => {
                 setUpdateState({ GetUser: data })
@@ -351,7 +351,7 @@ function UserPanel() {
         }
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/UpdateUser",
+            url: "https://eatcom.onrender.com/UpdateUser",
             data: {
                 updateid: id,
                 updateemail: emailX,

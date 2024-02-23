@@ -100,7 +100,7 @@ function LoginSite() {
         e.preventDefault();
         const configuration = {
             method: "post",
-            url: "http://localhost:3000/Login",
+            url: "https://eatcom.onrender.com/Login",
             data: {
                 email: loginState.email,
                 password: loginState.password,
@@ -155,7 +155,7 @@ function LoginSite() {
             }).then((res) => {
                 const configuration9 = {
                     method: "get",
-                    url: "http://localhost:3000/LoginWithGoogle",
+                    url: "https://eatcom.onrender.com/LoginWithGoogle",
                     params: {
                         id: res.data.id,
                         name: res.data.name,

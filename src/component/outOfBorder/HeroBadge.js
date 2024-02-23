@@ -7,7 +7,7 @@ function HeroBadge({ word }) {
     useEffect(() => {
         const configuration = {
             method: "get",
-            url: "http://localhost:3000/GetHeroUI",
+            url: "https://eatcom.onrender.com/GetHeroUI",
             params: {
                 name: "e4onxrx7hmgzmrbel9jk"
             }
