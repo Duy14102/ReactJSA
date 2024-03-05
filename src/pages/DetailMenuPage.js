@@ -39,6 +39,7 @@ function DetailMenuPage() {
     })
     var [reviewName, setReviewName] = useState()
     var [quantity, setQuantity] = useState(1)
+    const [topWrap, setTopWrap] = useState([])
     const Meatref = useRef(null);
     const Vegeref = useRef(null);
     const Drinkref = useRef(null);
@@ -131,33 +132,94 @@ function DetailMenuPage() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [appler.id, appler.cate, token])
 
-    function addToCart(name, quantity, maxQ) {
-        var stored = JSON.parse(localStorage.getItem("cart"));
+    function chooseTopping(e, id) {
+        const anyWhat = topWrap
+        if (e.target.checked && !topWrap.includes(id)) {
+            anyWhat.push(id)
+            const mixingE = [...anyWhat]
+            setTopWrap(mixingE)
+        } else if (!e.target.checked && topWrap.includes(id)) {
+            anyWhat.pop(id)
+            const mixingE = [...anyWhat]
+            setTopWrap(mixingE)
+        }
+    }
+
+    function Success() {
+        Swal.fire(
+            'Successfully!',
+            '',
+            'success'
+        ).then(function () {
+            window.location.reload()
+        })
+    }
+
+    async function addToCart(name, quantity, maxQ) {
+        var stored = await JSON.parse(localStorage.getItem("cart"));
         if (!stored) {
             var students = [];
-            var student1 = { name: name, quantity: quantity };
+            var student1 = { name: name, quantity: quantity, topping: topWrap };
             students.push(student1);
             localStorage.setItem("cart", JSON.stringify(students));
-            setDetailState({ callAlert: true })
+            Success()
         } else {
-            var sameItem = JSON.parse(localStorage.getItem("cart")) || [];
+            var sameItem = await JSON.parse(localStorage.getItem("cart")) || [];
+            var storedX = await JSON.parse(localStorage.getItem("cart"));
+            for (var element of sameItem) {
+                if (topWrap.length > 0) {
+                    if (element.topping?.every((item) => topWrap?.includes(item))) {
+                        if (element.topping?.every((item) => topWrap?.includes(item))) {
+                            var studentX = { name: name, quantity: quantity, topping: topWrap };
+                            storedX.push(studentX);
+                            localStorage.setItem("cart", JSON.stringify(storedX));
+                            Success()
+                            break
+                        }
+                    }
+                }
+            };
             for (var i = 0; i < sameItem.length; i++) {
                 if (name === sameItem[i].name) {
                     if (sameItem[i].quantity + quantity > maxQ) {
                         setDetailState({ callAlert2: true })
                     } else {
-                        sameItem[i].quantity += quantity;
-                        localStorage.setItem('cart', JSON.stringify(sameItem))
-                        setDetailState({ callAlert: true })
+                        if (sameItem[i].topping?.every((item) => topWrap?.includes(item)) && sameItem[i].topping.length > 0 && sameItem[i].topping?.length === topWrap?.length && topWrap?.length > 0) {
+                            sameItem[i].quantity += quantity;
+                            localStorage.setItem('cart', JSON.stringify(sameItem))
+                            Success()
+                            break
+                        }
+                        else if (!sameItem[i].topping?.every((item) => topWrap?.includes(item)) && sameItem[i].topping.length > 0 && topWrap?.length > 0) {
+                            var studentH = { name: name, quantity: quantity, topping: topWrap };
+                            storedX.push(studentH);
+                            localStorage.setItem("cart", JSON.stringify(storedX));
+                            Success()
+                        }
+                        if (topWrap.length === 0) {
+                            if (sameItem.find(e => e.topping.length === 0)) {
+                                if (sameItem[i].topping.length === 0) {
+                                    sameItem[i].quantity += quantity;
+                                    localStorage.setItem('cart', JSON.stringify(sameItem))
+                                    Success()
+                                }
+                            } else {
+                                var studentK = { name: name, quantity: quantity, topping: topWrap };
+                                storedX.push(studentK);
+                                localStorage.setItem("cart", JSON.stringify(storedX));
+                                Success()
+                                break
+                            }
+                        }
                     }
                 } else if (i === sameItem.length - 1) {
                     var stored2 = JSON.parse(localStorage.getItem("cart"));
-                    var student2 = { name: name, quantity: quantity };
+                    var student2 = { name: name, quantity: quantity, topping: topWrap };
                     stored2.push(student2);
                     localStorage.setItem("cart", JSON.stringify(stored2));
-                    setDetailState({ callAlert: true })
+                    Success()
                 }
-            }
+            };
         }
     }
 
@@ -440,8 +502,11 @@ function DetailMenuPage() {
                                                                                         </div>
                                                                                         <p style={{ width: "10%", textAlign: "center" }}>{VND.format(z.foodprice)}</p>
                                                                                         <div style={{ width: "10%", textAlign: "center" }}>
-                                                                                            <button style={{ opacity: z.foodquantity < 1 ? 0.5 : 1, pointerEvents: z.foodquantity < 1 ? "none" : "auto" }} onClick={() => addToCart(z.foodname, 1, z.foodquantity)} className='plusPlusDe'>+</button>
-                                                                                            {z.foodquantity < 1 ? (
+                                                                                            {topWrap.includes(z._id) ? (
+                                                                                                <input defaultChecked id="checkHut" onClick={(e) => chooseTopping(e, z._id)} style={{ opacity: z.foodquantity < 1 ? 0.5 : 1, pointerEvents: z.foodquantity < 1 ? "none" : "auto", width: 20, height: 20, accentColor: "#FEA116" }} type="checkbox" />
+                                                                                            ) : (
+                                                                                                <input id="checkHut" onClick={(e) => chooseTopping(e, z._id)} style={{ opacity: z.foodquantity < 1 ? 0.5 : 1, pointerEvents: z.foodquantity < 1 ? "none" : "auto", width: 20, height: 20, accentColor: "#FEA116" }} type="checkbox" />
+                                                                                            )}                                                                                            {z.foodquantity < 1 ? (
                                                                                                 <p className='m-0 pt-2 text-danger'>Out of stock</p>
                                                                                             ) : null}
                                                                                         </div>
@@ -468,8 +533,11 @@ function DetailMenuPage() {
                                                                                         </div>
                                                                                         <p style={{ width: "10%", textAlign: "center" }}>{VND.format(z.foodprice)}</p>
                                                                                         <div style={{ width: "10%", textAlign: "center" }}>
-                                                                                            <button style={{ opacity: z.foodquantity < 1 ? 0.5 : 1, pointerEvents: z.foodquantity < 1 ? "none" : "auto" }} onClick={() => addToCart(z.foodname, 1, z.foodquantity)} className='plusPlusDe'>+</button>
-                                                                                            {z.foodquantity < 1 ? (
+                                                                                            {topWrap.includes(z._id) ? (
+                                                                                                <input defaultChecked id="checkHut" onClick={(e) => chooseTopping(e, z._id)} style={{ opacity: z.foodquantity < 1 ? 0.5 : 1, pointerEvents: z.foodquantity < 1 ? "none" : "auto", width: 20, height: 20, accentColor: "#FEA116" }} type="checkbox" />
+                                                                                            ) : (
+                                                                                                <input id="checkHut" onClick={(e) => chooseTopping(e, z._id)} style={{ opacity: z.foodquantity < 1 ? 0.5 : 1, pointerEvents: z.foodquantity < 1 ? "none" : "auto", width: 20, height: 20, accentColor: "#FEA116" }} type="checkbox" />
+                                                                                            )}                                                                                             {z.foodquantity < 1 ? (
                                                                                                 <p className='m-0 pt-2 text-danger'>Out of stock</p>
                                                                                             ) : null}
                                                                                         </div>
@@ -496,8 +564,11 @@ function DetailMenuPage() {
                                                                                         </div>
                                                                                         <p style={{ width: "10%", textAlign: "center" }}>{VND.format(z.foodprice)}</p>
                                                                                         <div style={{ width: "10%", textAlign: "center" }}>
-                                                                                            <button style={{ opacity: z.foodquantity < 1 ? 0.5 : 1, pointerEvents: z.foodquantity < 1 ? "none" : "auto" }} onClick={() => addToCart(z.foodname, 1, z.foodquantity)} className='plusPlusDe'>+</button>
-                                                                                            {z.foodquantity < 1 ? (
+                                                                                            {topWrap.includes(z._id) ? (
+                                                                                                <input defaultChecked id="checkHut" onClick={(e) => chooseTopping(e, z._id)} style={{ opacity: z.foodquantity < 1 ? 0.5 : 1, pointerEvents: z.foodquantity < 1 ? "none" : "auto", width: 20, height: 20, accentColor: "#FEA116" }} type="checkbox" />
+                                                                                            ) : (
+                                                                                                <input id="checkHut" onClick={(e) => chooseTopping(e, z._id)} style={{ opacity: z.foodquantity < 1 ? 0.5 : 1, pointerEvents: z.foodquantity < 1 ? "none" : "auto", width: 20, height: 20, accentColor: "#FEA116" }} type="checkbox" />
+                                                                                            )}                                                                                             {z.foodquantity < 1 ? (
                                                                                                 <p className='m-0 pt-2 text-danger'>Out of stock</p>
                                                                                             ) : null}
                                                                                         </div>

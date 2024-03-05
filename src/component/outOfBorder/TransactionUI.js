@@ -108,7 +108,7 @@ function TransactionUI({ responseCode, ahoe, amount, date, order }) {
                 <>
                     <div className="py-5">
                         <div className="pb-3 businessWay">
-                            <NavLink className="joiboy" to="/Cart"> Shopping Cart</NavLink> <span className='slash'>˃</span> <NavLink className="joiboy" to="/CheckOut">Checkout Details</NavLink> <span className='slash'>˃</span> <NavLink className="joiboy" to="/OrderComplete">Order Complete</NavLink>
+                            <NavLink className="joiboy" to="/Cart"> Shopping Cart</NavLink> <span className='slash'>˃</span> <NavLink className="joiboy" to="/OrderComplete">Complete</NavLink>
                         </div>
                         <h2 className="mb-3">Transaction Failed!</h2>
                         <p><b>Reason</b> : {kakao}</p>
@@ -158,7 +158,7 @@ function TransactionUI({ responseCode, ahoe, amount, date, order }) {
                                                 </tbody>
                                             </table>
                                             {i.shippingfee !== 0 ? (
-                                                <p style={{ color: "gray", textAlign: "start", fontSize: 14 }}>This order already contain {VND.format(i.shippingfee)} shipping fee!</p>
+                                                <p style={{ color: "gray", textAlign: "start", fontSize: 14 }}>This price has already contain {VND.format(i.shippingfee)} shipping fee !</p>
                                             ) : null}
                                         </div>
                                     )

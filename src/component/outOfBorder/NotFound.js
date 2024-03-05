@@ -1,11 +1,12 @@
 import { useNavigate } from 'react-router-dom';
 import '../../css/NotFound.css'
+import '../../css/style.css'
 
 function NotFound() {
     const navigate = useNavigate();
     return (
         <section className="page_404">
-            <div className="container-fluid">
+            <div className="container">
                 <div className="onNoff text-center d-flex justify-content-center">
                     <div>
                         <div className="four_zero_four_bg">

@@ -85,14 +85,29 @@ const ItemMenuComponent = ({ data, start, end, setMainState }) => {
             var sameItem = JSON.parse(localStorage.getItem("cart")) || [];
             for (var i = 0; i < sameItem.length; i++) {
                 if (name === sameItem[i].name) {
-                    if (sameItem[i].quantity + quantity > maxQ) {
-                        setMainState({ callAlert2: true })
+                    if (!sameItem.every(item => item.hasOwnProperty("topping"))) {
+                        if (sameItem[i].quantity + quantity > maxQ) {
+                            setMainState({ callAlert2: true })
+                        } else {
+                            sameItem[i].quantity += quantity;
+                            localStorage.setItem('cart', JSON.stringify(sameItem))
+                            setMainState({ callAlert: true })
+                            break
+                        }
                     } else {
-                        sameItem[i].quantity += quantity;
-                        localStorage.setItem('cart', JSON.stringify(sameItem))
-                        setMainState({ callAlert: true })
+                        if (sameItem[i].quantity + quantity > maxQ) {
+                            setMainState({ callAlert2: true })
+                        } else {
+                            var stored3 = JSON.parse(localStorage.getItem("cart"));
+                            var student3 = { name: name, quantity: quantity };
+                            stored3.push(student3);
+                            localStorage.setItem("cart", JSON.stringify(stored3));
+                            setMainState({ callAlert: true })
+                            break
+                        }
                     }
-                } else if (i === sameItem.length - 1) {
+                }
+                else if (i === sameItem.length - 1) {
                     var stored2 = JSON.parse(localStorage.getItem("cart"));
                     var student2 = { name: name, quantity: quantity };
                     stored2.push(student2);
@@ -318,7 +333,7 @@ const ItemMenuComponent = ({ data, start, end, setMainState }) => {
                     <div className="product-info-tabs">
                         <ul className="nav nav-tabs" id="myTab" role="tablist">
                             <li className="nav-item">
-                            <button style={toppingCate ? { marginBottom: -2 } : null} className="active activeThis nav-link" id="description-tab">Topping</button>
+                                <button style={toppingCate ? { marginBottom: -2 } : null} className="active activeThis nav-link" id="description-tab">Topping</button>
                             </li>
                         </ul>
                     </div>
@@ -331,11 +346,11 @@ const ItemMenuComponent = ({ data, start, end, setMainState }) => {
                         {modalData?.foodcategory === "Main" ? (
                             <div className='py-3'>
                                 {meat ? (
-                                    <Topping cate={"Meat"} setDetailState={setMainState} modalData={modalData} setOpen={setOpenModal2} />
+                                    <Topping cate={"Meat"} setDetailState={setMainState} modalData={modalData} setOpen={setOpenModal} />
                                 ) : vege ? (
-                                    <Topping cate={"Vegetables"} setDetailState={setMainState} modalData={modalData} setOpen={setOpenModal2} />
+                                    <Topping cate={"Vegetables"} setDetailState={setMainState} modalData={modalData} setOpen={setOpenModal} />
                                 ) : drink ? (
-                                    <Topping cate={"Drink"} setDetailState={setMainState} modalData={modalData} setOpen={setOpenModal2} />
+                                    <Topping cate={"Drink"} setDetailState={setMainState} modalData={modalData} setOpen={setOpenModal} />
                                 ) : null}
                             </div>
                         ) : null}

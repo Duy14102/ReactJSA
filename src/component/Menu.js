@@ -21,6 +21,7 @@ function Menu({ dataX, CategoryRespon, handleX, pCount, curP }) {
         callAlert2: false
     })
     const socketRef = useRef();
+    const scrollRef = useRef();
 
     const called = () => {
         const configuration = {
@@ -35,6 +36,7 @@ function Menu({ dataX, CategoryRespon, handleX, pCount, curP }) {
             })
     }
     useEffect(() => {
+        scrollRef.current?.scrollIntoView({ behavior: 'smooth' })
         called()
         socketRef.current = socketIOClient.connect("https://eatcom.onrender.com")
 
@@ -224,7 +226,7 @@ function Menu({ dataX, CategoryRespon, handleX, pCount, curP }) {
                     </div>
                 </div>
             ) : null}
-            <div className="tab-className text-center wow fadeInUp pt-1" data-wow-delay="0.1s">
+            <div ref={scrollRef} className="tab-className text-center wow fadeInUp pt-1" data-wow-delay="0.1s">
                 <div className='pb-2 perKnow'>
                     <div className='row'>
                         {Object.values(CategoryRespon).map(i => {

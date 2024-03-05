@@ -2,11 +2,16 @@
     404 page
 =======================*/
 
+body {
+    overflow: hidden;
+}
+
 .page_404 {
     background: #fff;
     position: absolute;
     width: 100%;
     height: 100%;
+    text-align: center;
 }
 
 .page_404 img {
@@ -22,6 +27,7 @@
     height: 400px;
     background-position: center;
     width: 700px;
+    margin: 0 auto;
 }
 
 .four_zero_four_bg h1 {
@@ -38,6 +44,16 @@
     background: #39ac31;
     margin: 20px 0;
     display: inline-block;
+    border-radius: 3px;
+}
+
+.link_404:hover {
+    background: #309229;
+    transition: all 0.2s;
+}
+
+.link_404:active {
+    scale: 0.8;
 }
 
 .contant_box_404 {

@@ -22,7 +22,10 @@ function OrderComplete() {
         order: []
     })
     const ahoe = localStorage.getItem("complete")
-    const ahoeGuys = JSON.parse(ahoe)
+    if (!ahoe) {
+        NotFound()
+    }
+    const ahoeGuys = JSON.parse(localStorage.getItem("complete"))
     const queryParameters = new URLSearchParams(window.location.search)
 
     useEffect(() => {
@@ -160,27 +163,44 @@ function OrderComplete() {
         setCompleteState({ remove: true })
     }, 60000);
 
-    var total2 = 0
-    var fulltotal = 0
+    var total2 = 0, enTotal = 0, inTotal = 0, fulltotal = 0
     const mero = (i, index, s) => {
-        var total = i.quantity * i.data.foodprice
-        total2 += total
+        var countTotal = 0
+        inTotal = i.topping?.reduce((acc, o) => acc + parseInt(o.foodprice), 0)
+        enTotal = s.orderitems?.reduce((acc, o) => acc + parseInt(o.data.foodprice), 0)
+        if (inTotal) {
+            countTotal = (inTotal + enTotal) * i.quantity
+        } else {
+            countTotal = enTotal * i.quantity
+        }
+        total2 += countTotal
         fulltotal = total2 + s.shippingfee
         const indexPlus = index + 1
         return (
-            <tr key={i.data._id}>
+            <tr key={i.data._id} style={{ verticalAlign: "middle" }}>
                 <td>{indexPlus}</td>
                 <td>
-                    <div className="d-flex" style={{ gap: 10 }}>
-                        <img crossOrigin="anonymous" alt="" src={i.data.foodimage} width={55} height={55} />
-                        <div className="text-start">
-                            <b>{i.data.foodname}</b>
-                            <p className="m-0 cutTextRightNow">{i.data.fooddescription}</p>
+                    <div className="d-flex align-items-center" style={{ gap: 10 }}>
+                        <img alt="" src={i.data.foodimage} width={70} height={60} />
+                        <div>
+                            <p className="m-0">{i.data.foodname}</p>
+                            <p className="m-0 text-start" style={{ fontSize: 14, color: "#FEA116" }}><b>{VND.format(i.data.foodprice)}</b></p>
                         </div>
                     </div>
+                    {i.topping?.map((p) => {
+                        return (
+                            <div key={p._id} className="d-flex align-items-center" style={{ gap: 10, marginLeft: 25, marginTop: 10 }}>
+                                <img alt="" src={p.foodimage} width={45} height={40} />
+                                <div>
+                                    <p className="m-0" style={{ fontSize: 14 }}>{p.foodname}</p>
+                                    <p className="m-0 text-start" style={{ color: "#FEA116", fontSize: 12 }}><b>{VND.format(p.foodprice)}</b></p>
+                                </div>
+                            </div>
+                        )
+                    })}
                 </td>
                 <td>{i.quantity}</td>
-                <td>{VND.format(i.data.foodprice)}</td>
+                <td>{VND.format(countTotal)}</td>
             </tr>
         )
     }
@@ -205,12 +225,12 @@ function OrderComplete() {
     return (
         <Layout>
             <Header type={"Yes"} />
-            <div className="bg-white py-5">
+            <div className="bg-white py-4">
                 <div className="container text-center">
                     {completeState.data ? (
                         <>
                             <div className="pb-3 businessWay">
-                                <NavLink className="joiboy" to="/Cart"> Shopping Cart</NavLink> <span className='slash'>˃</span> <NavLink className="joiboy" to="/CheckOut">Checkout Details</NavLink> <span className='slash'>˃</span> <NavLink className="joiboy" to="/OrderComplete">Order Complete</NavLink>
+                                <NavLink className="joiboy" to="/Cart"> Shopping Cart</NavLink> <span className='slash'>˃</span> <NavLink className="joiboy" to="/OrderComplete">Complete</NavLink>
                             </div>
                             <h2 className="thankYou" data-text="Thankyou!">Thankyou!</h2>
                             <div className="d-flex justify-content-center">
@@ -235,10 +255,8 @@ function OrderComplete() {
                                                     <p className="m-0"><b>Id</b> : {i._id}</p>
                                                     <p className="m-0"><b>Date</b> : {date + " - " + time}</p>
                                                 </div>
-                                                <div className="d-flex justify-content-between align-items-center">
-                                                    <p><b>Customer</b> : {i.user[0].fullname}</p>
-                                                    <p><b>Phone number</b> : {i.phonenumber}</p>
-                                                </div>
+                                                <p className="text-start mb-2"><b>Customer</b> : {i.user[0].fullname} - {i.phonenumber}</p>
+                                                <p className="text-start"><b>Address</b> : {i.address}</p>
                                                 <table className="table-bordered table solotable m-0">
                                                     <thead>
                                                         <tr style={{ color: "#0F172B", backgroundColor: "gray" }}>
@@ -256,12 +274,12 @@ function OrderComplete() {
                                                         })}
                                                         <tr>
                                                             <td colSpan={3}><b>Full total</b></td>
-                                                            <td><b>{VND.format(fulltotal)}</b></td>
+                                                            <td style={{ color: "#FEA116" }}><b>{VND.format(fulltotal)}</b></td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
                                                 {i.shippingfee !== 0 ? (
-                                                    <p style={{ color: "gray", textAlign: "start", fontSize: 14 }}>This order already contain {VND.format(i.shippingfee)} shipping fee!</p>
+                                                    <p style={{ color: "gray", textAlign: "start", fontSize: 14 }}>This price has already contain <b>{VND.format(i.shippingfee)}</b> shipping fee !</p>
                                                 ) : null}
                                             </div>
                                         )

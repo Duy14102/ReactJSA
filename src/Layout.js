@@ -7,6 +7,17 @@ import "./css/bootstrap.min.css";
 import "./lib/animate/animateAnimate.min.css";
 
 function Layout({ children }) {
+    var stored = localStorage.getItem("complete")
+    useEffect(() => {
+        if (stored) {
+            setTimeout(() => {
+                localStorage.removeItem("complete")
+                if (window.location.pathname === "/OrderComplete") {
+                    window.location.href = "/"
+                }
+            }, 60000);
+        }
+    })
     const [offline, setOffline] = useState(false)
     const [online, setOnline] = useState(false)
     function reloadIt() {

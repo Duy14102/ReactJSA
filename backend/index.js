@@ -1640,7 +1640,11 @@ app.get("/GetSimilarP", async (req, res) => {
 app.get("/GetCartItem", async (req, res) => {
     try {
         const getIt = await getThisMenu.find({ foodname: req.query.name });
-        res.send({ data: getIt, quantity: req.query.quantity });
+        var getTa = null
+        if (req.query.id !== "undefined") {
+            getTa = await getThisMenu.find({ _id: JSON.parse(req.query.id) }).exec()
+        }
+        res.send({ data: getIt, quantity: req.query.quantity, topping: getTa });
     } catch (e) {
         console.log(e);
     }

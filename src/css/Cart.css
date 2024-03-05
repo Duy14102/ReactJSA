@@ -22,6 +22,11 @@
 
 .Numbertwo {
     width: 30%;
+    border: 1px solid lightgray;
+}
+
+.needThisTable {
+    padding: 15px;
 }
 
 .CartTa th {
@@ -74,7 +79,8 @@
     transform: scaleX(-1);
 }
 
-.inputC input[type="text"] {
+.inputC input,
+.inputC textarea {
     width: 100%;
     color: gray;
     border: 1px solid #ddd;
@@ -82,9 +88,11 @@
     box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-.inputC input[type="text"]:focus {
+.inputC input:focus,
+.inputC textarea:focus {
     box-shadow: 0 0 5px #ccc;
     outline: none;
+    border: 1px solid #ddd;
 }
 
 .holeInWall .tab-body {
@@ -125,6 +133,11 @@
 
 .btnCoupon:hover {
     background: rgba(215, 215, 215, 1);
+}
+
+.SwitchInBtnCoupon {
+    width: 20% !important;
+    font-size: 18px;
 }
 
 .btnCheckout {
@@ -170,6 +183,7 @@
     width: 100%;
     text-align: center;
     transition: all 0.2s;
+    border-radius: 4px;
 }
 
 .ReturnH:hover {
