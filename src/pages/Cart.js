@@ -1,32 +1,17 @@
 import { NavLink } from "react-router-dom";
-import { useEffect, useReducer, useState, Fragment } from "react";
+import { useEffect, useReducer, useState } from "react";
 import Layout from "../Layout";
 import "../css/Cart.css";
 import "../css/DetailMenuPage.css";
 import Header from "../component/Header";
 import Modal from 'react-modal';
 import ToppingCart from "../component/outOfBorder/ToppingCart";
-import { PayPalButton } from "react-paypal-button-v2";
-import axios from "axios";
-import { jwtDecode } from "jwt-decode";
-import Cookies from "universal-cookie";
 
 function Cart() {
-    var paymentmethod = 0
-    var fullname = ""
-    const orderitems = []
-    const havePhone = []
-    const user = []
-    const ahoe = localStorage.getItem("complete")
     const [meat, setMeat] = useState(true)
     const [vege, setVege] = useState(false)
     const [drink, setDrink] = useState(false)
-    const cookies = new Cookies();
-    var candecode = null
-    const token = cookies.get("TOKEN");
-    if (token) {
-        candecode = jwtDecode(token)
-    }
+    const ahoe = localStorage.getItem("complete")
     const [cartState, setCartState] = useReducer((prev, next) => ({
         ...prev, ...next
     }), {
@@ -34,26 +19,12 @@ function Cart() {
         successCart: false,
         failedCart: false,
         appearSuccess: false,
-        AccountAddress: false,
-        SaveAddress: false,
-        checkCardReal: false,
         appearFail: false,
         wantEdit: null,
-        paypalState: null,
-        openModal: false,
-        Card: false,
-        vnpay: false,
-        paypal: false,
-        bankCode: null,
         Cart: [],
-        LoadAddress: [],
         checkCoupon: "",
-        Fullname: "",
-        FullnameToken: "",
-        Phonenumber: "",
-        Address: "",
     })
-    havePhone.push(cartState.Address)
+    const pushData = []
     useEffect(() => {
         dataHandler()
         if (!localStorage.getItem("shippingFee")) {
@@ -61,144 +32,6 @@ function Cart() {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
-
-    //Call bank list api
-    useEffect(() => {
-        if (cartState.vnpay) {
-            const configurationX = {
-                method: "get",
-                url: "https://api.vietqr.io/v2/banks"
-            }
-            axios(configurationX)
-                .then((res) => {
-                    setCartState({ bankList: res.data.data })
-                }).catch((er) => {
-                    console.log(er);
-                })
-        }
-    }, [cartState.vnpay])
-
-    useEffect(() => {
-        const getDetailUser = () => {
-            const decoded = jwtDecode(token);
-            const configuration = {
-                method: "get",
-                url: "https://eatcom.onrender.com/GetDetailUser",
-                params: {
-                    userid: decoded.userId
-                }
-            };
-            axios(configuration)
-                .then((result) => {
-                    setCartState({ LoadAddress: result.data })
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
-        }
-
-        if (cartState.AccountAddress) {
-            getDetailUser()
-        }
-        if (token && candecode?.userRole !== 1.5) {
-            getDetailUser()
-        }
-    }, [cartState.AccountAddress, token, candecode?.userRole])
-
-    useEffect(() => {
-        let pre = ""
-        Object.values(cartState.LoadAddress).map((k) => {
-            pre = k.phonenumber
-            return null
-        })
-        setCartState({ FullnameToken: candecode?.userName })
-        setCartState({ Phonenumber: pre })
-    }, [cartState.LoadAddress, candecode?.userName])
-
-    useEffect(() => {
-        if (cartState.paypalState === "COMPLETED") {
-            const configuration = {
-                method: "post",
-                url: "https://eatcom.onrender.com/UploadOrder",
-                data: {
-                    user: user,
-                    phonenumber: cartState.Phonenumber,
-                    address: cartState.Address,
-                    paymentmethod,
-                    shippingfee: parseInt(localStorage.getItem("shippingFee")),
-                    orderitems
-                }
-            }
-            axios(configuration)
-                .then((result) => {
-                    if (cartState.SaveAddress) {
-                        const decode = jwtDecode(token);
-                        const configuration = {
-                            method: "post",
-                            url: "https://eatcom.onrender.com/AddAddressUser",
-                            data: {
-                                id: decode.userId,
-                                address: havePhone
-                            }
-                        }
-                        axios(configuration)
-                            .then(() => {
-                                console.log("success");
-                            }).catch((e) => {
-                                console.log(e);
-                            })
-                    }
-                    var data = null
-                    if (candecode) {
-                        data = { orderid: result.data.message, userid: candecode.userId }
-                    } else {
-                        data = { orderid: result.data.message }
-                    }
-                    localStorage.removeItem("cart")
-                    paypalCheckout(data)
-                })
-                .catch((e) => {
-                    console.log(e);
-                });
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [cartState.paypalState])
-
-    if (token) {
-        const decode3 = jwtDecode(token)
-        fullname = cartState.FullnameToken
-        const nit = { id: decode3.userId, fullname: fullname }
-        user.push(nit)
-    } else {
-        fullname = cartState.Fullname
-        const nat = { id: "none", fullname: fullname }
-        user.push(nat)
-    }
-
-    const VnpayCheckout = (data) => {
-        const configuration = {
-            method: "post",
-            url: "https://eatcom.onrender.com/VnpayCheckout",
-            data: {
-                amount: fulltotal,
-                bankCode: cartState.bankCode,
-                orderId: data.orderid
-            }
-        }
-        axios(configuration)
-            .then((res) => {
-                localStorage.setItem("complete", JSON.stringify(data))
-                window.location.href = `${res.data}`
-            })
-            .catch((err) => console.log(err))
-    }
-
-    const paypalCheckout = (data) => {
-        localStorage.setItem("complete", JSON.stringify(data))
-        if (cartState.Card && cartState.paypalState) {
-            window.location.href = `/OrderComplete?status=${cartState.paypalState}`;
-        }
-    }
 
     const dataHandler = async () => {
         const val = JSON.parse(localStorage.getItem('cart'))
@@ -227,18 +60,36 @@ function Cart() {
         currency: 'VND',
     });
 
-    function changeInput(e, name, maxQ) {
-        var value = parseInt(e.target.value)
+    function plusX(index, maxQ) {
         var stored2 = JSON.parse(localStorage.getItem("cart"));
         if (stored2) {
             for (var k = 0; k < stored2.length; k++) {
-                if (name === stored2[k].name) {
-                    if (value > maxQ || value < 1) {
+                if (k === index) {
+                    stored2[k].quantity++
+                    if (stored2[k].quantity > maxQ) {
                         setCartState({ failedCart: true, successCart: false })
-                    } else if (value < maxQ && value >= 1) {
-                        setCartState({ successCart: true, failedCart: false })
-                        stored2[k].quantity = value
+                    } else if (stored2[k].quantity <= maxQ) {
                         localStorage.setItem("cart", JSON.stringify(stored2));
+                        dataHandler()
+                        setCartState({ appearSuccess: true, successCart: false })
+                    }
+                }
+            }
+        }
+    }
+
+    function minusX(index) {
+        var stored2 = JSON.parse(localStorage.getItem("cart"));
+        if (stored2) {
+            for (var k = 0; k < stored2.length; k++) {
+                if (k === index) {
+                    stored2[k].quantity--
+                    if (stored2[k].quantity < 1) {
+                        setCartState({ failedCart: true, successCart: false })
+                    } else if (stored2[k].quantity >= 1) {
+                        localStorage.setItem("cart", JSON.stringify(stored2));
+                        dataHandler()
+                        setCartState({ appearSuccess: true, successCart: false })
                     }
                 }
             }
@@ -249,7 +100,7 @@ function Cart() {
     const mero = (i, e, index, topping, dataX) => {
         var countTotal = 0
         const dataToPush = { data: i, quantity: e, topping: topping }
-        orderitems.push(dataToPush)
+        pushData.push(dataToPush)
         inTotal = topping?.reduce((acc, o) => acc + parseInt(o.foodprice), 0)
         enTotal = dataX.reduce((acc, o) => acc + parseInt(o.foodprice), 0)
         if (inTotal) {
@@ -262,7 +113,7 @@ function Cart() {
         fulltotal = totalX + parseInt(localStorage.getItem("shippingFee"))
         return (
             <tr key={index}>
-                <td className="text-center">
+                <td className="text-center" style={{ width: window.innerWidth > 575 ? null : "10%" }}>
                     {cartState.openModal ? (
                         <button className="Tyach" onClick={() => setCartState({ wantEdit: null, openModal: false })}>
                             <svg fill="#666565" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z" /></svg>
@@ -273,12 +124,12 @@ function Cart() {
                         </button>
                     )}
                 </td>
-                <td>
+                <td colSpan={window.innerWidth > 575 ? null : 3}>
                     <div className="d-flex align-items-center" style={{ gap: 10 }}>
                         <img alt="" src={i.foodimage} width={70} height={60} />
                         <div>
-                            <p className="m-0">{i.foodname}</p>
-                            <p className="m-0 text-start" style={{ fontSize: 14, color: "#FEA116" }}><b>{VND.format(i.foodprice)}</b></p>
+                            <p className="m-0" style={{ fontSize: 17 }}>{i.foodname}</p>
+                            <p className="m-0 text-start" style={{ fontSize: 15, color: "#FEA116" }}><b>{VND.format(i.foodprice)}</b></p>
                         </div>
                     </div>
                     {topping?.map((p) => {
@@ -286,29 +137,38 @@ function Cart() {
                             <div key={p._id} className="d-flex align-items-center" style={{ gap: 10, marginLeft: 25, marginTop: 10 }}>
                                 <img alt="" src={p.foodimage} width={45} height={40} />
                                 <div>
-                                    <p className="m-0" style={{ fontSize: 14 }}>{p.foodname}</p>
-                                    <p className="m-0 text-start" style={{ color: "#FEA116", fontSize: 12 }}><b>{VND.format(p.foodprice)}</b></p>
+                                    <p className="m-0" style={{ fontSize: 15 }}>{p.foodname}</p>
+                                    <p className="m-0 text-start" style={{ color: "#FEA116", fontSize: 13 }}><b>{VND.format(p.foodprice)}</b></p>
                                 </div>
                             </div>
                         )
                     })}
+                    {window.innerWidth > 575 ? null : (
+                        <div className="d-flex justify-content-between align-items-center mt-3">
+                            <div className="Loppel" style={{ justifyContent: "flex-start", height: 30, width: 130 }}>
+                                <button onClick={() => minusX(index)} style={{ fontSize: 16 }}>-</button>
+                                <input id="edValue" type="number" min={1} max={i.foodquantity} value={e} readOnly />
+                                <button onClick={() => plusX(index, i.foodquantity)} style={{ fontSize: 16 }}>+</button>
+                            </div>
+                            <p className="m-0">{VND.format(inTotal ? inTotal + enTotal : enTotal)}</p>
+                        </div>
+                    )}
                 </td>
-                <td style={{ textAlign: "center" }} className="thhuhu">{VND.format(inTotal ? inTotal + enTotal : enTotal)}</td>
-                <td style={{ textAlign: "center" }}><input style={{ width: 70 + "%", textAlign: "center" }} id="edValue" type="number" min={1} max={i.foodquantity} defaultValue={e} onInput={(e) => changeInput(e, i.foodname, i.foodquantity)} /></td>
-                <td style={{ textAlign: "center" }} className="thhuhu">{VND.format(countTotal)}</td>
+                {window.innerWidth > 575 ? (
+                    <>
+                        <td style={{ textAlign: "center", fontSize: 17 }}>{VND.format(inTotal ? inTotal + enTotal : enTotal)}</td>
+                        <td style={{ textAlign: "center" }}>
+                            <div className="Loppel">
+                                <button onClick={() => minusX(index)}>-</button>
+                                <input id="edValue" type="number" min={1} max={i.foodquantity} value={e} readOnly />
+                                <button onClick={() => plusX(index, i.foodquantity)}>+</button>
+                            </div>
+                        </td>
+                        <td style={{ textAlign: "center", fontSize: 17 }}>{VND.format(countTotal)}</td>
+                    </>
+                ) : null}
             </tr>
         )
-    }
-
-    function updateXCart() {
-        if (cartState.failedCart) {
-            setCartState({ appearFail: true, failedCart: false })
-            dataHandler()
-        }
-        if (cartState.successCart) {
-            setCartState({ appearSuccess: true, successCart: false })
-            dataHandler()
-        }
     }
 
     useEffect(() => {
@@ -330,86 +190,6 @@ function Cart() {
             localStorage.setItem("shippingFee", 0)
             setCartState({ appearSuccess: true })
         }
-    }
-
-    const handleCheckbox = (e) => {
-        if (e.target.checked) {
-            setCartState({ AccountAddress: true })
-        } else if (!e.target.checked) {
-            setCartState({ AccountAddress: false })
-        }
-    }
-
-    const handleCheckbox2 = (e) => {
-        if (e.target.checked) {
-            setCartState({ SaveAddress: true })
-        } else if (!e.target.checked) {
-            setCartState({ SaveAddress: false })
-        }
-    }
-
-    if (cartState.Card) {
-        paymentmethod = 1
-    } else {
-        paymentmethod = 2
-    }
-    const handleSubmit = (e) => {
-        // prevent the form from refreshing the whole page
-        e.preventDefault();
-        const configuration = {
-            method: "post",
-            url: "https://eatcom.onrender.com/UploadOrder",
-            data: {
-                user: user,
-                phonenumber: cartState.Phonenumber,
-                address: cartState.Address,
-                paymentmethod,
-                shippingfee: parseInt(localStorage.getItem("shippingFee")),
-                orderitems
-            }
-        }
-        if (cartState.Card) {
-            if (!cartState.vnpay && !cartState.paypal) {
-                setCartState({ checkCardReal: true })
-                return false
-            }
-        }
-        axios(configuration)
-            .then((result) => {
-                if (cartState.SaveAddress) {
-                    const decode = jwtDecode(token);
-                    const configuration = {
-                        method: "post",
-                        url: "https://eatcom.onrender.com/AddAddressUser",
-                        data: {
-                            id: decode.userId,
-                            address: havePhone
-                        }
-                    }
-                    axios(configuration)
-                        .then(() => {
-                            console.log("success");
-                        }).catch((e) => {
-                            console.log(e);
-                        })
-                }
-                var data = null
-                if (candecode) {
-                    data = { orderid: result.data.message, userid: candecode.userId }
-                } else {
-                    data = { orderid: result.data.message }
-                }
-                localStorage.removeItem("cart")
-                if (cartState.Card && cartState.vnpay) {
-                    VnpayCheckout(data)
-                } else {
-                    localStorage.setItem("complete", JSON.stringify(data))
-                    window.location.href = "/OrderComplete";
-                }
-            })
-            .catch((e) => {
-                console.log(e);
-            });
     }
 
     return (
@@ -440,7 +220,8 @@ function Cart() {
             <div className="bg-white">
                 <div className="container">
                     <div className="pt-4 text-center businessWay">
-                        <NavLink className="joiboy" to="/Cart">Shopping Cart</NavLink> <span className='slash'>˃</span> <NavLink style={ahoe ? null : { pointerEvents: "none" }} className="joiboy" to="/OrderComplete">Complete</NavLink>
+
+                        <NavLink className="joiboy" to="/Cart">Shopping Cart</NavLink> <span className='slash'>˃</span> <NavLink className="joiboy" to="/Checkout" state={{ valid: pushData }}>Checkout Details</NavLink> <span className='slash'>˃</span> <NavLink style={ahoe ? null : { pointerEvents: "none" }} className="joiboy" to="/OrderComplete">Complete</NavLink>
                     </div>
                     {cartState.checkVal ? (
                         <div style={{ height: 45 + "vh" }} className="pt-4 pb-4 text-center">
@@ -448,174 +229,50 @@ function Cart() {
                             <NavLink to="/" className="ReturnH"><b>Return to homepage</b></NavLink>
                         </div>
                     ) : (
-                        <div className="flexAble pt-4 pb-4">
-                            <div className="Numberone">
-                                <table className="table table-bordered solotable m-0">
-                                    <thead className="thead-dark">
-                                        <tr style={{ color: "#0F172B", backgroundColor: "gray" }}>
-                                            <th colSpan={2} style={{ textAlign: "center", color: "#fff" }}>Items</th>
-                                            <th style={{ textAlign: "center", color: "#fff" }}>Price</th>
-                                            <th style={{ textAlign: "center", color: "#fff" }}>Amount</th>
-                                            <th style={{ textAlign: "center", color: "#fff" }}>Total</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody style={{ verticalAlign: "middle" }}>
-                                        {cartState.Cart.map((i, index) => {
-                                            return (
-                                                mero(...i.data, i.quantity, index, i.topping, i.data)
-                                            )
-                                        })}
-                                        <tr className="text-center">
-                                            <td colSpan={4}><b>Fulltotal</b></td>
-                                            <td style={{ color: "#FEA116" }}><b>{VND.format(fulltotal)}</b></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                {parseInt(localStorage.getItem("shippingFee")) === 30000 ? (
-                                    <p style={{ margin: 0, fontSize: 14 }}>This price has already contain <b>{VND.format(parseInt(localStorage.getItem("shippingFee")))}</b> shipping fee !</p>
-                                ) : null}
-                                <div className="d-flex align-items-center justify-content-between mt-3">
-                                    <div className="buttonN1">
-                                        <NavLink reloadDocument to="/CategorySite/Menu/nto" className="btnFirst text-nowrap p-2">← Continue Shoppping</NavLink>
-                                        <button onClick={() => updateXCart()} className="btnSecond text-nowrap">Update Cart</button>
-                                    </div>
-                                    {parseInt(localStorage.getItem("shippingFee")) === 30000 ? (
-                                        <div className="inputC">
-                                            <form onSubmit={(e) => applyCoupon(e)} className="d-flex" style={{ gap: 7 }}>
-                                                <input className="p-2" onInput={(e) => setCartState({ checkCoupon: e.target.value })} type="text" placeholder="🏷️ Coupon Code...." required />
-                                                <button type="submit" className="btnCoupon SwitchInBtnCoupon">✔</button>
-                                            </form>
-                                        </div>
-                                    ) : null}
-                                </div>
-                            </div>
-                            <div className="Numbertwo">
-                                <table className="table m-0 table-bordered">
-                                    <thead className="thead-dark">
-                                        <tr style={{ color: "#0F172B", backgroundColor: "gray", border: "none" }}>
-                                            <th colSpan={2} style={{ textAlign: "center", color: "#fff", border: "none" }}>Information</th>
-                                        </tr>
-                                    </thead>
-                                </table>
-                                <form className="needThisTable" onSubmit={(e) => handleSubmit(e)}>
-                                    {token ? null : (
-                                        <>
-                                            <div className="mb-3 inputC">
-                                                <label htmlFor="firstName">Fullname</label>
-                                                <input onInput={(e) => setCartState({ Fullname: e.target.value })} type="text" className="form-control" id="Fullname" required />
-                                            </div>
-                                            <div className="mb-3 inputC">
-                                                <label htmlFor="phonenumber">Phone Number</label>
-                                                <input value={cartState.Phonenumber} onInput={(e) => setCartState({ Phonenumber: e.target.value })} type="number" name="phonenumber" className="form-control" id="phonenumber" required />
-                                            </div>
-                                        </>
-                                    )}
-                                    {candecode?.userRole === 1.5 ? (
-                                        <div className="mb-3 inputC">
-                                            <label htmlFor="phonenumber">Phone Number</label>
-                                            <input value={cartState.Phonenumber} onInput={(e) => setCartState({ Phonenumber: e.target.value })} type="number" name="phonenumber" className="form-control" id="phonenumber" required />
-                                        </div>
-                                    ) : null}
-                                    <div className="mb-3">
-                                        {cartState.AccountAddress ? (
-                                            <div className="inputC">
-                                                <label htmlFor="address">Address</label><br />
-                                                <select name="address" onChange={(e) => setCartState({ Address: e.target.value })} className="selectA" id="address" required>
-                                                    <option selected disabled hidden>Select your address</option>
-                                                    {Object.values(cartState.LoadAddress).map((i) => {
-                                                        return (
-                                                            <Fragment key={i._id}>
-                                                                {i.address.map((a) => {
-                                                                    return (
-                                                                        <Fragment key={a}>
-                                                                            <option value={a}>{a}</option>
-                                                                        </Fragment>
-                                                                    )
-                                                                })}
-                                                            </Fragment>
-                                                        )
-                                                    })}
-                                                </select>
-                                            </div>
+                        <div className="pt-4 pb-4">
+                            <table className="table table-bordered solotable m-0">
+                                <thead className="thead-dark">
+                                    <tr style={{ color: "#0F172B", backgroundColor: "gray", fontSize: 17 }}>
+                                        <th colSpan={window.innerWidth > 575 ? 2 : 4} style={{ textAlign: "center", color: "#fff" }}>Items</th>
+                                        {window.innerWidth > 575 ? (
+                                            <>
+                                                <th style={{ textAlign: "center", color: "#fff" }}>Price</th>
+                                                <th style={{ textAlign: "center", color: "#fff" }}>Amount</th>
+                                                <th style={{ textAlign: "center", color: "#fff" }}>Total</th>
+                                            </>
+                                        ) : null}
+                                    </tr>
+                                </thead>
+                                <tbody style={{ verticalAlign: "middle" }}>
+                                    {cartState.Cart.map((i, index) => {
+                                        return (
+                                            mero(...i.data, i.quantity, index, i.topping, i.data)
+                                        )
+                                    })}
+                                    <tr className="text-center text-nowrap" style={{ fontSize: 17 }}>
+                                        <td colSpan={window.innerWidth > 575 ? 4 : 3}><b>Shipping</b></td>
+                                        {parseInt(localStorage.getItem("shippingFee")) === 30000 ? (
+                                            <td colSpan={window.innerWidth > 575 ? 4 : 3}>{VND.format(30000)}</td>
                                         ) : (
-                                            <div className="inputC">
-                                                <label htmlFor="address">Address</label>
-                                                <textarea value={cartState.Address} onChange={(e) => setCartState({ Address: e.target.value })} type="text" name="address" className="form-control" id="address" required />
-                                            </div>
+                                            <td colSpan={window.innerWidth > 575 ? 4 : 3}><del>{VND.format(30000)}</del> - <b style={{ color: "#FEA116" }}>{VND.format(0)}</b></td>
                                         )}
+                                    </tr>
+                                    <tr className="text-center text-nowrap" style={{ fontSize: 17 }}>
+                                        <td colSpan={window.innerWidth > 575 ? 4 : 3}><b>Fulltotal</b></td>
+                                        <td style={{ color: "#FEA116" }}><b>{VND.format(fulltotal)}</b></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div className="d-flex align-items-center justify-content-between mt-3">
+                                {parseInt(localStorage.getItem("shippingFee")) === 30000 ? (
+                                    <div className="inputC">
+                                        <form onSubmit={(e) => applyCoupon(e)} className="d-flex" style={{ gap: 7 }}>
+                                            <input className="p-2" onInput={(e) => setCartState({ checkCoupon: e.target.value })} type="text" placeholder="🏷️ Coupon Code...." required />
+                                            <button type="submit" className="btnCoupon SwitchInBtnCoupon">Apply</button>
+                                        </form>
                                     </div>
-                                    {token && candecode?.userRole !== 1.5 ? (
-                                        <div className="mb-3">
-                                            {cartState.SaveAddress ? (
-                                                <div style={{ pointerEvents: "none", opacity: 0.4 }} className="custom-control custom-checkbox">
-                                                    <input onClick={(e) => handleCheckbox(e)} type="checkbox" className="custom-control-input" id="same-address" />
-                                                    <label className="custom-control-label" htmlFor="same-address"> Use the account address</label>
-                                                </div>
-                                            ) : (
-                                                <div className="custom-control custom-checkbox">
-                                                    <input onClick={(e) => handleCheckbox(e)} type="checkbox" className="custom-control-input" id="same-address" />
-                                                    <label className="custom-control-label" htmlFor="same-address"> Use the account address</label>
-                                                </div>
-                                            )}
-                                            {cartState.AccountAddress ? (
-                                                <div style={{ pointerEvents: "none", opacity: 0.4 }} className="custom-control custom-checkbox">
-                                                    <input onInput={(e) => handleCheckbox2(e)} type="checkbox" className="custom-control-input" id="save-address" />
-                                                    <label className="custom-control-label" htmlFor="save-address"> Save this address</label>
-                                                </div>
-                                            ) : (
-                                                <div className="custom-control custom-checkbox">
-                                                    <input onInput={(e) => handleCheckbox2(e)} type="checkbox" className="custom-control-input" id="save-address" />
-                                                    <label className="custom-control-label" htmlFor="save-address"> Save this address</label>
-                                                </div>
-                                            )}
-                                        </div>
-                                    ) : null}
-                                    <div className="d-flex align-items-center justify-content-evenly mb-3">
-                                        <div className="custom-control custom-radio">
-                                            <input onInput={() => setCartState({ Card: true })} id="credit" name="paymentMethod" type="radio" className="custom-control-input" required />
-                                            <label className="custom-control-label" htmlFor="credit"> ATM</label>
-                                        </div>
-                                        <div className="custom-control custom-radio">
-                                            <input onInput={() => setCartState({ Card: false })} id="debit" name="paymentMethod" type="radio" className="custom-control-input" required />
-                                            <label className="custom-control-label" htmlFor="debit"> COD</label>
-                                        </div>
-                                    </div>
-                                    {cartState.Card ? (
-                                        <div className="mb-3">
-                                            <div className="d-flex align-items-center justify-content-evenly">
-                                                <button className="buttonAtm" type="button" onClick={() => setCartState({ vnpay: true, paypal: false })}><img alt="" height={30} width={90} src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-VNPAY-QR-1.png" /></button>
-                                                <button className="buttonAtm" type="button" onClick={() => setCartState({ vnpay: false, paypal: true })}><img alt="" height={30} width={90} src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/PayPal_logo.svg/2560px-PayPal_logo.svg.png" /></button>
-                                            </div>
-                                            {cartState.checkCardReal ? (
-                                                <p className="m-0 text-danger pt-2">Payment method is needed!</p>
-                                            ) : null}
-                                            {cartState.vnpay ? (
-                                                <select onChange={(e) => setCartState({ bankCode: e.target.value })} name="bankcode" id="bankcode" className="form-control bg-white mt-4" required>
-                                                    <option value="">Not choosing</option>
-                                                    {cartState.bankList?.map((j) => {
-                                                        return (
-                                                            <option key={j.id} value={j.code}>{j.shortName}</option>
-                                                        )
-                                                    })}
-                                                </select>
-                                            ) : null}
-                                        </div>
-                                    ) : null}
-                                    {cartState.paypal ? (
-                                        <PayPalButton
-                                            amount={fulltotal / 25000}
-                                            // shippingPreference="NO_SHIPPING" // default is "GET_FROM_FILE"
-                                            onSuccess={(details) => {
-                                                setCartState({ paypalState: details.status })
-                                            }}
-                                            onError={(err) => {
-                                                console.log(err);
-                                            }}
-                                        />
-                                    ) : (
-                                        <button className="btnCheckout" type="submit"><b>Checkout</b></button>
-                                    )}
-                                </form>
+                                ) : null}
+                                <NavLink to="/Checkout" state={{ valid: pushData }} className="btnCheckout"><b>Checkout</b></NavLink>
                             </div>
                         </div>
                     )}

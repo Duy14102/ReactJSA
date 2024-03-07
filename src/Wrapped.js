@@ -11,6 +11,7 @@ const mainPnT = lazy(() => import("./pages/PrivacyAndTerm"))
 const mainLogin = lazy(() => import("./pages/admin/LoginSite"))
 const mainSignup = lazy(() => import("./pages/admin/Register"))
 const mainCart = lazy(() => import("./pages/Cart"))
+const mainCheckout = lazy(() => import("./pages/Checkout"))
 const mainOrderComplete = lazy(() => import("./pages/OrderComplete"))
 const mainDetail = lazy(() => import("./pages/DetailMenuPage"))
 const mainQr = lazy(() => import("./pages/QrCodeTable"))
@@ -36,6 +37,7 @@ function Wrapped() {
                 <Route path="LoginSite" Component={mainLogin} />
                 <Route path="SignupSite" Component={mainSignup} />
                 <Route path="Cart" Component={mainCart} />
+                <Route path="Checkout" Component={mainCheckout} />
                 <Route path="OrderComplete" Component={mainOrderComplete} />
                 <Route path="DetailMenuPage/:id/:cate" Component={mainDetail} />
                 <Route path="QrCodeTable/:id/:qr/:cate/:fil" Component={mainQr} />

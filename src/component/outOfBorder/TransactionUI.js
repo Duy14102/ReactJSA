@@ -108,7 +108,7 @@ function TransactionUI({ responseCode, ahoe, amount, date, order }) {
                 <>
                     <div className="py-5">
                         <div className="pb-3 businessWay">
-                            <NavLink className="joiboy" to="/Cart"> Shopping Cart</NavLink> <span className='slash'>˃</span> <NavLink className="joiboy" to="/OrderComplete">Complete</NavLink>
+                            <NavLink className="joiboy" to="/Cart"> Shopping Cart</NavLink> <span className='slash'>˃</span> <NavLink className="joiboy" to="/CheckOut">Checkout Details</NavLink> <span className='slash'>˃</span> <NavLink className="joiboy" to="/OrderComplete">Order Complete</NavLink>
                         </div>
                         <h2 className="mb-3">Transaction Failed!</h2>
                         <p><b>Reason</b> : {kakao}</p>

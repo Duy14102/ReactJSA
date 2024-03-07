@@ -136,8 +136,7 @@
 }
 
 .SwitchInBtnCoupon {
-    width: 20% !important;
-    font-size: 18px;
+    width: 30% !important;
 }
 
 .btnCheckout {
@@ -145,8 +144,8 @@
     border: 1px solid #FEA116;
     color: white;
     background: #FEA116;
-    width: 100%;
-    padding: 1.5%;
+    width: 20%;
+    padding: 7px 0;
     text-align: center;
     transition: all 0.2s;
 }
@@ -174,6 +173,37 @@
 .Xtd .insideXtd:hover {
     border: 2px solid black;
     color: black;
+}
+
+.Loppel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 40px;
+}
+
+.Loppel button {
+    font-weight: bolder;
+    border: 1px solid lightgray;
+    font-size: 25px;
+    width: 30px;
+    height: 100%;
+    text-align: center;
+    color: gray;
+}
+
+.Loppel button:hover {
+    color: #0F172B;
+    transition: all 0.25s;
+}
+
+.Loppel input {
+    border: solid lightgray;
+    pointer-events: none;
+    width: 35%;
+    text-align: center;
+    border-width: 1px 0 1px 0;
+    height: 100%;
 }
 
 .ReturnH {

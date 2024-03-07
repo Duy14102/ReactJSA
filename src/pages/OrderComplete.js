@@ -230,7 +230,7 @@ function OrderComplete() {
                     {completeState.data ? (
                         <>
                             <div className="pb-3 businessWay">
-                                <NavLink className="joiboy" to="/Cart"> Shopping Cart</NavLink> <span className='slash'>˃</span> <NavLink className="joiboy" to="/OrderComplete">Complete</NavLink>
+                                <NavLink className="joiboy" to="/Cart"> Shopping Cart</NavLink> <span className='slash'>˃ <NavLink className="joiboy" to="/CheckOut">Checkout Details</NavLink> <span className='slash'>˃</span> </span> <NavLink className="joiboy" to="/OrderComplete">Complete</NavLink>
                             </div>
                             <h2 className="thankYou" data-text="Thankyou!">Thankyou!</h2>
                             <div className="d-flex justify-content-center">
