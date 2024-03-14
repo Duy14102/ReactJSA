@@ -36,6 +36,52 @@ function Tracking() {
         currency: 'VND',
     });
 
+    var total2 = 0, enTotal = 0, inTotal = 0, fulltotal = 0
+    const mero = (i, index, s) => {
+        var countTotal = 0
+        inTotal = i.topping?.reduce((acc, o) => acc + parseInt(o.foodprice), 0)
+        enTotal = s.orderitems?.reduce((acc, o) => acc + parseInt(o.data.foodprice), 0)
+        if (inTotal) {
+            countTotal = (inTotal + enTotal) * i.quantity
+        } else {
+            countTotal = enTotal * i.quantity
+        }
+        total2 += countTotal
+        fulltotal = total2 + s.shippingfee
+        const indexPlus = index + 1
+        return (
+            <tr key={i.data._id} style={{ verticalAlign: "middle" }}>
+                <td className='text-center'>{window.innerWidth > 575 ? indexPlus : i.quantity + " x "}</td>
+                <td colSpan={window.innerWidth > 575 ? null : 2}>
+                    <div className="d-flex align-items-center" style={{ gap: 10 }}>
+                        <img alt="" src={i.data.foodimage} width={70} height={60} />
+                        <div>
+                            <p className="m-0">{i.data.foodname}</p>
+                            <p className="m-0 text-start" style={{ fontSize: 14, color: "#FEA116" }}><b>{VND.format(i.data.foodprice)}</b></p>
+                        </div>
+                    </div>
+                    {i.topping?.map((p) => {
+                        return (
+                            <div key={p._id} className="d-flex align-items-center" style={{ gap: 10, marginLeft: 25, marginTop: 10 }}>
+                                <img alt="" src={p.foodimage} width={45} height={40} />
+                                <div>
+                                    <p className="m-0" style={{ fontSize: 14 }}>{p.foodname}</p>
+                                    <p className="m-0 text-start" style={{ color: "#FEA116", fontSize: 12 }}><b>{VND.format(p.foodprice)}</b></p>
+                                </div>
+                            </div>
+                        )
+                    })}
+                </td>
+                {window.innerWidth > 575 ? (
+                    <>
+                        <td className='text-center'>{i.quantity}</td>
+                        <td className='text-center'>{VND.format(countTotal)}</td>
+                    </>
+                ) : null}
+            </tr>
+        )
+    }
+
     return (
         <>
             <div style={{ height: 45 + "vh" }} className="container">
@@ -53,13 +99,13 @@ function Tracking() {
                 </div>
                 <div className='pt-4'>
                     {trackingState.Displaytable ? (
-                        <table className='table text-center'>
-                            <thead>
-                                <tr style={{ whiteSpace: "nowrap" }}>
-                                    <th>Fullname</th>
-                                    <th className='thhuhu'>Phone Number</th>
-                                    <th className='thhuhu'>Date</th>
-                                    <th>Status</th>
+                        <table className='table table-bordered solotable m-0 text-center'>
+                            <thead className="thead-dark">
+                                <tr style={{ color: "#0F172B", backgroundColor: "gray" }}>
+                                    <th className='text-white'>Fullname</th>
+                                    <th className='thhuhu text-white'>Phone Number</th>
+                                    <th className='thhuhu text-white'>Date</th>
+                                    <th className='text-white'>Status</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -69,14 +115,6 @@ function Tracking() {
                                     const time = new Date(i.createdAt).toLocaleTimeString()
                                     const datetime = date + " - " + time
                                     var statusCheck = ""
-                                    var paymentCheck = ""
-                                    var total2 = 0
-                                    var fulltotal = 0
-                                    if (i.paymentmethod === 1) {
-                                        paymentCheck = "ATM"
-                                    } else if (i.paymentmethod === 2) {
-                                        paymentCheck = "COD"
-                                    }
                                     if (i.status === 1) {
                                         statusCheck = "Pending"
                                     }
@@ -104,6 +142,8 @@ function Tracking() {
                                             <Modal isOpen={trackingState.modalOpenDetail} onRequestClose={() => setTrackingState({ modalOpenDetail: false })} ariaHideApp={false}
                                                 style={{
                                                     overlay: {
+                                                        position: 'fixed',
+                                                        zIndex: 998,
                                                         backgroundColor: 'rgb(33 33 33 / 75%)'
                                                     },
                                                     content: {
@@ -114,8 +154,10 @@ function Tracking() {
                                                         marginRight: "-50%",
                                                         transform: "translate(-50%, -50%)",
                                                         backgroundColor: "white",
-                                                        width: "70vw",
+                                                        width: window.innerWidth > 575 ? "50vw" : "350px",
+                                                        height: "auto",
                                                         overflow: "hidden",
+                                                        zIndex: 999
                                                     },
                                                 }}>
                                                 <h2 className='text-center'>Order Detail</h2>
@@ -126,63 +168,51 @@ function Tracking() {
                                                 <hr />
                                                 <div className='hugeImpace'>
                                                     {i.user.map((t) => {
-                                                        var textSp = "( visisting guests )"
+                                                        var textSp = "( guests )"
                                                         return (
                                                             <Fragment key={t}>
                                                                 {t.id === "none" ? (
-                                                                    <p><b>Fullname</b> : {t.fullname} {textSp}</p>
+                                                                    <p className='d-flex flex-wrap'><b>Customer</b> : {t.fullname} {textSp} - {i.phonenumber}</p>
                                                                 ) : (
-                                                                    <p><b>Fullname</b> : {t.fullname}</p>
+                                                                    <p className='d-flex flex-wrap'><b>Customer</b> : {t.fullname} - {i.phonenumber}</p>
                                                                 )}
                                                             </Fragment>
                                                         )
                                                     })}
-
-                                                    <p><b>Phone number</b> : {i.phonenumber}</p>
                                                     <p><b>Address</b> : {i.address}</p>
-                                                    <p><b>Payment method</b> : {paymentCheck}</p>
+                                                    <p><b>Payment method</b> : {i.paymentmethod.type}</p>
                                                     <p><b>Status</b> : {statusCheck}</p>
                                                 </div>
-                                                <table className='table table-bordered solotable'>
+                                                <table className="table-bordered table solotable m-0">
                                                     <thead>
-                                                        <tr>
-                                                            <th>Name</th>
-                                                            <th className='thhuhu'>Category</th>
-                                                            <th>Quantity</th>
-                                                            <th>Price</th>
+                                                        <tr style={{ color: "#0F172B", backgroundColor: "gray" }}>
+                                                            <th style={{ textAlign: "center", color: "#fff" }}>{window.innerWidth > 575 ? "No" : "Quantity"}</th>
+                                                            <th colSpan={window.innerWidth > 575 ? null : 2} style={{ color: "#fff" }}>Items</th>
+                                                            {window.innerWidth > 575 ? (
+                                                                <>
+                                                                    <th style={{ textAlign: "center", color: "#fff" }}>Quantity</th>
+                                                                    <th style={{ textAlign: "center", color: "#fff" }}>Price</th>
+                                                                </>
+                                                            ) : null}
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        {i.orderitems.map((a) => {
-                                                            var total = a.quantity * a.data.foodprice
-                                                            total2 += total
-                                                            fulltotal = total2 + i.shippingfee
+                                                        {i.orderitems?.map((a, index) => {
                                                             return (
-                                                                <tr key={a.data._id}>
-                                                                    <td>{a.data.foodname}</td>
-                                                                    <td className='thhuhu'>{a.data.foodcategory}</td>
-                                                                    <td>{a.quantity}</td>
-                                                                    <td>{VND.format(a.data.foodprice)}</td>
-                                                                </tr>
+                                                                mero(a, index, i)
                                                             )
                                                         })}
-                                                        <tr className='thhuhu'>
-                                                            <td colSpan={3}>Shipping</td>
-                                                            <td>{VND.format(i.shippingfee)}</td>
+                                                        <tr className="text-center text-nowrap">
+                                                            <td colSpan={window.innerWidth > 575 ? 3 : 2}><b>Shipping</b></td>
+                                                            {i.shippingfee === 30000 ? (
+                                                                <td >{VND.format(30000)}</td>
+                                                            ) : (
+                                                                <td><del>{VND.format(30000)}</del> - <b style={{ color: "#FEA116" }}>{VND.format(0)}</b></td>
+                                                            )}
                                                         </tr>
-                                                        <tr className='thhuhu'>
-                                                            <th colSpan={3}>Fulltotal</th>
-                                                            <th>{VND.format(fulltotal)}</th>
-                                                        </tr>
-                                                    </tbody>
-                                                    <tbody className='jackass'>
-                                                        <tr >
-                                                            <td colSpan={2}>Shipping</td>
-                                                            <td>{VND.format(i.shippingfee)}</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th colSpan={2}>Fulltotal</th>
-                                                            <th>{VND.format(fulltotal)}</th>
+                                                        <tr className="text-center text-nowrap">
+                                                            <td colSpan={window.innerWidth > 575 ? 3 : 2}><b>Fulltotal</b></td>
+                                                            <td style={{ color: "#FEA116" }}><b>{VND.format(fulltotal)}</b></td>
                                                         </tr>
                                                     </tbody>
                                                 </table>

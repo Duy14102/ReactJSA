@@ -178,8 +178,8 @@ function OrderComplete() {
         const indexPlus = index + 1
         return (
             <tr key={i.data._id} style={{ verticalAlign: "middle" }}>
-                <td>{indexPlus}</td>
-                <td>
+                <td className='text-center'>{window.innerWidth > 575 ? indexPlus : i.quantity + " x "}</td>
+                <td colSpan={window.innerWidth > 575 ? null : 2}>
                     <div className="d-flex align-items-center" style={{ gap: 10 }}>
                         <img alt="" src={i.data.foodimage} width={70} height={60} />
                         <div>
@@ -199,8 +199,12 @@ function OrderComplete() {
                         )
                     })}
                 </td>
-                <td>{i.quantity}</td>
-                <td>{VND.format(countTotal)}</td>
+                {window.innerWidth > 575 ? (
+                    <>
+                        <td className='text-center'>{i.quantity}</td>
+                        <td className='text-center'>{VND.format(countTotal)}</td>
+                    </>
+                ) : null}
             </tr>
         )
     }
@@ -234,7 +238,7 @@ function OrderComplete() {
                             </div>
                             <h2 className="thankYou" data-text="Thankyou!">Thankyou!</h2>
                             <div className="d-flex justify-content-center">
-                                <div id="orderDownload" className="billX">
+                                <div id="orderDownload" className="billX" style={{ width: window.innerWidth > 575 ? "50%" : "100%" }}>
                                     <div className="navbar-brand p-0 text-center">
                                         <h2 className="text-primary thisTextH1 m-0"><svg style={{ fill: "#FEA116" }} className="me-3" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512"><path d="M416 0C400 0 288 32 288 176V288c0 35.3 28.7 64 64 64h32V480c0 17.7 14.3 32 32 32s32-14.3 32-32V352 240 32c0-17.7-14.3-32-32-32zM64 16C64 7.8 57.9 1 49.7 .1S34.2 4.6 32.4 12.5L2.1 148.8C.7 155.1 0 161.5 0 167.9c0 45.9 35.1 83.6 80 87.7V480c0 17.7 14.3 32 32 32s32-14.3 32-32V255.6c44.9-4.1 80-41.8 80-87.7c0-6.4-.7-12.8-2.1-19.1L191.6 12.5c-1.8-8-9.3-13.3-17.4-12.4S160 7.8 160 16V150.2c0 5.4-4.4 9.8-9.8 9.8c-5.1 0-9.3-3.9-9.8-9L127.9 14.6C127.2 6.3 120.3 0 112 0s-15.2 6.3-15.9 14.6L83.7 151c-.5 5.1-4.7 9-9.8 9c-5.4 0-9.8-4.4-9.8-9.8V16zm48.3 152l-.3 0-.3 0 .3-.7 .3 .7z" /></svg>EatCom</h2>
                                     </div>
@@ -260,10 +264,14 @@ function OrderComplete() {
                                                 <table className="table-bordered table solotable m-0">
                                                     <thead>
                                                         <tr style={{ color: "#0F172B", backgroundColor: "gray" }}>
-                                                            <th style={{ width: "10%", textAlign: "center", color: "#fff" }}>No</th>
-                                                            <th style={{ width: "60%", color: "#fff" }}>Items</th>
-                                                            <th style={{ width: "15%", textAlign: "center", color: "#fff" }}>Quantity</th>
-                                                            <th style={{ width: "15%", textAlign: "center", color: "#fff" }}>Price</th>
+                                                            <th style={{ textAlign: "center", color: "#fff" }}>{window.innerWidth > 575 ? "No" : "Quantity"}</th>
+                                                            <th colSpan={window.innerWidth > 575 ? null : 2} style={{ color: "#fff" }}>Items</th>
+                                                            {window.innerWidth > 575 ? (
+                                                                <>
+                                                                    <th style={{ textAlign: "center", color: "#fff" }}>Quantity</th>
+                                                                    <th style={{ textAlign: "center", color: "#fff" }}>Price</th>
+                                                                </>
+                                                            ) : null}
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -272,15 +280,20 @@ function OrderComplete() {
                                                                 mero(a, index, i)
                                                             )
                                                         })}
-                                                        <tr>
-                                                            <td colSpan={3}><b>Full total</b></td>
+                                                        <tr className="text-center text-nowrap">
+                                                            <td colSpan={window.innerWidth > 575 ? 3 : 2}><b>Shipping</b></td>
+                                                            {i.shippingfee === 30000 ? (
+                                                                <td >{VND.format(30000)}</td>
+                                                            ) : (
+                                                                <td><del>{VND.format(30000)}</del> - <b style={{ color: "#FEA116" }}>{VND.format(0)}</b></td>
+                                                            )}
+                                                        </tr>
+                                                        <tr className="text-center text-nowrap">
+                                                            <td colSpan={window.innerWidth > 575 ? 3 : 2}><b>Fulltotal</b></td>
                                                             <td style={{ color: "#FEA116" }}><b>{VND.format(fulltotal)}</b></td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
-                                                {i.shippingfee !== 0 ? (
-                                                    <p style={{ color: "gray", textAlign: "start", fontSize: 14 }}>This price has already contain <b>{VND.format(i.shippingfee)}</b> shipping fee !</p>
-                                                ) : null}
                                             </div>
                                         )
                                     })}
