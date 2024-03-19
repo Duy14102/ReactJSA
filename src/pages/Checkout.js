@@ -281,23 +281,21 @@ function Checkout() {
             setCheckoutState({ SaveAddress: false })
         }
     }
-    var total2 = 0, enTotal = 0, inTotal = 0, fulltotal = 0
+    var total2 = 0, inTotal = 0, fulltotal = 0
     const mero = (i, index) => {
         var countTotal = 0
         inTotal = i.topping?.reduce((acc, o) => acc + parseInt(o.foodprice), 0)
-        enTotal = locationMap.reduce((acc, o) => acc + parseInt(o.data.foodprice), 0)
         if (inTotal) {
-            countTotal = (inTotal + enTotal) * i.quantity
+            countTotal = (inTotal + i.data.foodprice) * i.quantity
         } else {
-            countTotal = enTotal * i.quantity
+            countTotal = i.data.foodprice * i.quantity
         }
         total2 += countTotal
-        fulltotal = total2 + parseInt(localStorage.getItem("shippingFee"))
         const indexPlus = index + 1
         const allpush = { data: i.data, quantity: i.quantity, topping: i.topping }
         orderitems.push(allpush)
         return (
-            <tr key={i.data._id} style={{ verticalAlign: "middle" }}>
+            <tr key={index} style={{ verticalAlign: "middle" }}>
                 <td className="text-center">{indexPlus}</td>
                 <td>
                     <div className="d-flex align-items-center" style={{ gap: 10 }}>
@@ -373,7 +371,7 @@ function Checkout() {
                                         </tr>
                                         <tr style={{ textAlign: "center", fontWeight: "bold" }}>
                                             <td colSpan={3}>Fulltotal</td>
-                                            <td style={{ color: "#FEA116" }}>{VND.format(fulltotal)}</td>
+                                            <td style={{ color: "#FEA116" }}>{VND.format(total2)}</td>
                                         </tr>
                                     </tbody>
                                 </table>

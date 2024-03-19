@@ -539,11 +539,11 @@ function QrCodeTable() {
                                         </table>
                                         <ReactPaginate
                                             breakLabel="..."
-                                            nextLabel="Next >"
+                                            nextLabel=">"
                                             onPageChange={handlePageClick}
                                             pageRangeDisplayed={5}
                                             pageCount={pageCount}
-                                            previousLabel="< Previous"
+                                            previousLabel="<"
                                             renderOnZeroPageCount={null}
                                             marginPagesDisplayed={2}
                                             containerClassName="pagination justify-content-center"

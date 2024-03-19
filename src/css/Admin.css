@@ -418,6 +418,26 @@
     padding: 0 40px;
 }
 
+.seeMoreInOrder {
+    margin: 8px 0 0 25px;
+    font-weight: bold;
+    display: inline-block;
+}
+
+.seeMoreInOrder:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.inforItKK svg {
+    fill: #fff;
+    width: 20px;
+}
+
+.JKoliver {
+    width: 47%;
+}
+
 .subOver .content .page .grid .card-verticle {
     position: relative;
     width: 38vw;

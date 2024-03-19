@@ -151,11 +151,11 @@ function MainGiveTask({ modalOpenAdmin, setModalOpenAdmin, decode }) {
                 </table>
                 <ReactPaginate
                     breakLabel="..."
-                    nextLabel="next >"
+                    nextLabel=">"
                     onPageChange={handlePageClick}
                     pageRangeDisplayed={5}
                     pageCount={pageCount}
-                    previousLabel="< previous"
+                    previousLabel="<"
                     renderOnZeroPageCount={null}
                     marginPagesDisplayed={2}
                     containerClassName="pagination justify-content-center text-nowrap"

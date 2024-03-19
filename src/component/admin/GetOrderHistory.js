@@ -5,13 +5,16 @@ import Modal from 'react-modal';
 import ReactPaginate from "react-paginate";
 import Cookies from "universal-cookie";
 import socketIOClient from "socket.io-client";
+import OrderHistoryHandle from "../outOfBorder/OrderHistoryHandle";
 
-function GetOrderHistory() {
+function GetOrderHistory({ DateInput, filter }) {
     const cookies = new Cookies()
     const token = cookies.get("TOKEN")
     const decode = jwtDecode(token)
     const [Order, setOrder] = useState([])
     const [ModalData, setModalData] = useState([])
+    const [seeMore, setSeeMore] = useState()
+    const [checkBack, setCheckBack] = useState(false)
     const [modalOpenDetail, setModalOpenDetail] = useState(false);
     const socketRef = useRef();
     const [pageCount, setPageCount] = useState(6);
@@ -72,7 +75,9 @@ function GetOrderHistory() {
             url: "https://eatcom.onrender.com/GetAllOrderHistory",
             params: {
                 page: currentPage.current,
-                limit: limit
+                limit: limit,
+                date: DateInput,
+                filter: filter
             }
         };
         axios(configuration)
@@ -85,10 +90,17 @@ function GetOrderHistory() {
             });
     }
 
-    var statusCheck = ""
+    useEffect(() => {
+        setCheckBack(true)
+        setTimeout(() => {
+            getPagination()
+            setCheckBack(false)
+        }, 1000);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [DateInput, filter])
+
     var kakaCheck = ""
-    var total2 = 0
-    var fulltotal = 0
+    var inTotal = 0, maxTotal = 0, fulltotal2 = 0
     if (ModalData.paymentmethod?.status === 1) {
         kakaCheck = "( Unpaid )"
     } else if (ModalData.paymentmethod?.status === 2) {
@@ -107,75 +119,45 @@ function GetOrderHistory() {
     });
     return (
         <>
-            <table className='table table-bordered text-center solotable'>
-                <thead>
-                    <tr className="text-white" style={{ background: "#374148" }}>
-                        <th>Fullname</th>
-                        <th className="thhuhu">Phone Number</th>
-                        <th className="thhuhu">Date</th>
-                        <th>Status</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {Order.map((i) => {
-                        const date = new Date(i.createdAt).toLocaleDateString()
-                        const time = new Date(i.createdAt).toLocaleTimeString()
-                        const datetime = date + " - " + time
-                        if (i.status === 3) {
-                            statusCheck = "Deny"
-                        }
-                        else if (i.status === 6) {
-                            statusCheck = "Cancel"
-                        }
-                        else if (i.status === 5) {
-                            statusCheck = "Complete"
-                        }
-                        return (
-                            <Fragment key={i._id}>
-                                {i.employee?.map((a) => {
-                                    if (a.id === decode.userId && decode.userRole === 2) {
-                                        return (
-                                            <tr style={{ background: "#2C343A", color: "lightgray", verticalAlign: "middle" }}>
-                                                {i.user.map((z) => {
-                                                    return (
-                                                        <td key={z}>{z.fullname}</td>
-                                                    )
-                                                })}
-                                                <td className="thhuhu">{i.phonenumber}</td>
-                                                <td className="thhuhu">{datetime}</td>
-                                                <td>{statusCheck}</td>
-                                                <td><button onClick={() => { setModalData(i); setModalOpenDetail(true) }} className='btn btn-success'>Detail</button></td>
-                                            </tr>
-                                        )
-                                    }
-                                    return null
-                                })}
-                                {decode.userRole === 3 ? (
-                                    <tr style={{ background: "#2C343A", color: "lightgray", verticalAlign: "middle" }}>
-                                        {i.user.map((z) => {
-                                            return (
-                                                <td key={z}>{z.fullname}</td>
-                                            )
-                                        })}
-                                        <td className="thhuhu">{i.phonenumber}</td>
-                                        <td className="thhuhu">{datetime}</td>
-                                        <td>{statusCheck}</td>
-                                        <td><button onClick={() => { setModalData(i); setModalOpenDetail(true) }} className='btn btn-success'>Detail</button></td>
-                                    </tr>
-                                ) : null}
-                            </Fragment>
-                        )
-                    })}
-                </tbody>
-            </table>
+            {checkBack ? (
+                <div id="spinner" className="show position-fixed translate-middle w-100 vh-100 top-30 start-50 d-flex align-items-center justify-content-center">
+                    <div className="spinner-border text-primary" style={{ width: 3 + "rem", height: 3 + "rem" }} role="status">
+                        <span className="sr-only"></span>
+                    </div>
+                </div>
+            ) : null}
+            <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", marginBottom: 25 }}>
+                {Order.map((i, index) => {
+                    const date = new Date(i.createdAt).toLocaleDateString()
+                    const time = new Date(i.createdAt).toLocaleTimeString()
+                    const datetime = date + " - " + time
+                    let toppingArray = i.orderitems.reduce(function (accumulator, curValue) {
+                        return accumulator.concat(curValue.topping)
+                    }, [])
+                    return (
+                        <Fragment key={i._id}>
+                            {i.employee?.map((a) => {
+                                if (a.id === decode.userId && decode.userRole === 2) {
+                                    return (
+                                        <OrderHistoryHandle i={i} datetime={datetime} seeMore={seeMore} setSeeMore={setSeeMore} index={index} toppingArray={toppingArray} setModalOpenDetail={setModalOpenDetail} setModalData={setModalData} checkBack={checkBack} />
+                                    )
+                                }
+                                return null
+                            })}
+                            {decode.userRole === 3 ? (
+                                <OrderHistoryHandle i={i} datetime={datetime} seeMore={seeMore} setSeeMore={setSeeMore} index={index} toppingArray={toppingArray} setModalOpenDetail={setModalOpenDetail} setModalData={setModalData} checkBack={checkBack} />
+                            ) : null}
+                        </Fragment>
+                    )
+                })}
+            </div>
             <ReactPaginate
                 breakLabel="..."
-                nextLabel="next >"
+                nextLabel=">"
                 onPageChange={handlePageClick}
                 pageRangeDisplayed={5}
                 pageCount={pageCount}
-                previousLabel="< previous"
+                previousLabel="<"
                 renderOnZeroPageCount={null}
                 marginPagesDisplayed={2}
                 containerClassName="pagination justify-content-center text-nowrap"
@@ -203,8 +185,8 @@ function GetOrderHistory() {
                         marginRight: "-50%",
                         transform: "translate(-50%, -50%)",
                         backgroundColor: "white",
-                        width: "70vw",
-                        height: "70vh",
+                        width: window.innerWidth > 575 ? "40vw" : "80vw",
+                        height: "auto",
                         zIndex: 999
                     },
                 }}>
@@ -236,56 +218,82 @@ function GetOrderHistory() {
                             </div>
                         )
                     })}
-                    <p><b>Phone number</b> : {ModalData.phonenumber}</p>
-                    <p><b>Address</b> : {ModalData.address}</p>
+                    <div className="coverNOut">
+                        <p><b>Phone number</b> : {ModalData.phonenumber}</p>
+                        <p><b>Address</b> : {ModalData.address}</p>
+                    </div>
                     <p><b>Payment method</b> : {ModalData.paymentmethod?.type} {kakaCheck}</p>
-                    <p><b>Status</b> : {statusCheck}</p>
                 </div>
-                <table className='table table-bordered solotable'>
+                <table className="table-bordered table solotable">
                     <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th className="thhuhu">Category</th>
-                            <th>Quantity</th>
-                            <th>Price</th>
+                        <tr style={{ color: "#0F172B", backgroundColor: "gray" }}>
+                            <th style={{ textAlign: "center", color: "#fff" }}>{window.innerWidth > 575 ? "No" : "Quantity"}</th>
+                            <th colSpan={window.innerWidth > 575 ? null : 2} style={{ color: "#fff" }}>Items</th>
+                            {window.innerWidth > 575 ? (
+                                <>
+                                    <th style={{ textAlign: "center", color: "#fff" }}>Quantity</th>
+                                    <th style={{ textAlign: "center", color: "#fff" }}>Price</th>
+                                </>
+                            ) : null}
                         </tr>
                     </thead>
                     <tbody>
-                        {ModalData.orderitems?.map((a) => {
-                            var total = a.quantity * a.data.foodprice
-                            total2 += total
-                            fulltotal = total2 + ModalData.shippingfee
+                        {ModalData.orderitems?.map((a, indexK) => {
+                            var countTotal2 = 0
+                            inTotal = a.topping?.reduce((acc, o) => acc + parseInt(o.foodprice), 0)
+                            if (inTotal) {
+                                countTotal2 = (inTotal + a.data.foodprice) * a.quantity
+                            } else {
+                                countTotal2 = a.data.foodprice * a.quantity
+                            }
+                            maxTotal += countTotal2
+                            fulltotal2 = maxTotal + ModalData.shippingfee
                             return (
-                                <tr key={a.data._id}>
-                                    <td>{a.data.foodname}</td>
-                                    <td className="thhuhu">{a.data.foodcategory}</td>
-                                    <td>{a.quantity}</td>
-                                    <td>{VND.format(a.data.foodprice)}</td>
+                                <tr key={a.data._id} style={{ verticalAlign: "middle" }}>
+                                    <td className='text-center'>{window.innerWidth > 575 ? indexK + 1 : a.quantity + " x "}</td>
+                                    <td colSpan={window.innerWidth > 575 ? null : 2}>
+                                        <div className="d-flex align-items-center" style={{ gap: 10 }}>
+                                            <img alt="" src={a.data.foodimage} width={70} height={60} />
+                                            <div>
+                                                <p className="m-0">{a.data.foodname}</p>
+                                                <p className="m-0 text-start" style={{ fontSize: 14, color: "#FEA116" }}><b>{VND.format(a.data.foodprice)}</b></p>
+                                            </div>
+                                        </div>
+                                        {a.topping?.map((p) => {
+                                            return (
+                                                <div key={p._id} className="d-flex align-items-center" style={{ gap: 10, marginLeft: 25, marginTop: 10 }}>
+                                                    <img alt="" src={p.foodimage} width={45} height={40} />
+                                                    <div>
+                                                        <p className="m-0" style={{ fontSize: 14 }}>{p.foodname}</p>
+                                                        <p className="m-0 text-start" style={{ color: "#FEA116", fontSize: 12 }}><b>{VND.format(p.foodprice)}</b></p>
+                                                    </div>
+                                                </div>
+                                            )
+                                        })}
+                                    </td>
+                                    {window.innerWidth > 575 ? (
+                                        <>
+                                            <td className='text-center'>{a.quantity}</td>
+                                            <td className='text-center'>{VND.format(countTotal2)}</td>
+                                        </>
+                                    ) : null}
                                 </tr>
                             )
                         })}
-                        <tr className='thhuhu'>
-                            <td colSpan={3}>Shipping</td>
-                            <td>{VND.format(ModalData.shippingfee)}</td>
+                        <tr className="text-center text-nowrap">
+                            <td colSpan={window.innerWidth > 575 ? 3 : 2}><b>Shipping</b></td>
+                            {ModalData.shippingfee === 30000 ? (
+                                <td >{VND.format(30000)}</td>
+                            ) : (
+                                <td><del>{VND.format(30000)}</del> - <b style={{ color: "#FEA116" }}>{VND.format(0)}</b></td>
+                            )}
                         </tr>
-                        <tr className='thhuhu'>
-                            <th colSpan={3}>Fulltotal</th>
-                            <th>{VND.format(fulltotal)}</th>
-                        </tr>
-                    </tbody>
-                    <tbody className='jackass'>
-                        <tr >
-                            <td colSpan={2}>Shipping</td>
-                            <td>{VND.format(ModalData.shippingfee)}</td>
-                        </tr>
-                        <tr>
-                            <th colSpan={2}>Fulltotal</th>
-                            <th>{VND.format(fulltotal)}</th>
+                        <tr className="text-center text-nowrap">
+                            <td colSpan={window.innerWidth > 575 ? 3 : 2}><b>Fulltotal</b></td>
+                            <td style={{ color: "#FEA116" }}><b>{VND.format(fulltotal2)}</b></td>
                         </tr>
                     </tbody>
                 </table>
-                <h5 className="text-center pt-2">Order Processing</h5>
-                <hr />
                 {ModalData.status === 3 ? (
                     <>
                         <p>❌ Order has been <b>Denied</b></p>

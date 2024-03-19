@@ -9,8 +9,9 @@ import Cookies from "universal-cookie";
 import CancelByMag from "../admin/CancelByMag";
 import CancelRequest from "../admin/CancelRequest";
 import socketIOClient from "socket.io-client";
+import OrderDisplayHandle from "./OrderDisplayHandle";
 
-function OrderAdmin({ Data }) {
+function OrderAdmin({ Data, checkBack }) {
     const cookies = new Cookies()
     const token = cookies.get("TOKEN")
     const decode = jwtDecode(token)
@@ -24,6 +25,9 @@ function OrderAdmin({ Data }) {
         spinner: false,
         modalOpenDetail3: false,
         modalOpenDetail4: false,
+        secondDoor: false,
+        secondDoorState: null,
+        seeMore: null,
         reject: false,
     })
     const socketRef = useRef();
@@ -110,16 +114,7 @@ function OrderAdmin({ Data }) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-
-    const appoveOrder = (e, yolo) => {
-        const data = { id: e, userid: orderAdminState.ModalData?.user[0].id, status: 2, employee: deliverEmployee, orderitems: yolo, empid: decode.userId }
-        socketRef.current.emit('UpdateStatusOrderSocket', data)
-    }
-
-    var statusCheck = ""
     var kakaCheck = ""
-    var total2 = 0
-    var fulltotal = 0
     if (orderAdminState.ModalData.paymentmethod?.status === 1) {
         kakaCheck = "( Unpaid )"
     } else if (orderAdminState.ModalData.paymentmethod?.status === 2) {
@@ -128,6 +123,11 @@ function OrderAdmin({ Data }) {
     const date = new Date(orderAdminState.ModalData.createdAt).toLocaleDateString()
     const time = new Date(orderAdminState.ModalData.createdAt).toLocaleTimeString()
     const datemodal = date + " - " + time
+
+    const appoveOrder = (e, yolo) => {
+        const data = { id: e, userid: orderAdminState.ModalData?.user[0].id, status: 2, employee: deliverEmployee, orderitems: yolo, empid: decode.userId }
+        socketRef.current.emit('UpdateStatusOrderSocket', data)
+    }
 
     const denyOrderKun = (id, date, amount, reason) => {
         const configuration = {
@@ -177,65 +177,50 @@ function OrderAdmin({ Data }) {
         style: 'currency',
         currency: 'VND',
     });
+
+    var fulltotal = 0, inTotal = 0, enTotal = 0, countTotal = 0, fulltotal2 = 0, maxTotal = 0
     return (
         <>
-            {Data.map(i => {
+            {checkBack ? (
+                <div id="spinner" className="show position-fixed translate-middle w-100 vh-100 top-30 start-50 d-flex align-items-center justify-content-center">
+                    <div className="spinner-border text-primary" style={{ width: 3 + "rem", height: 3 + "rem" }} role="status">
+                        <span className="sr-only"></span>
+                    </div>
+                </div>
+            ) : null}
+            {Data.map((i, index) => {
                 const date = new Date(i.createdAt).toLocaleDateString()
                 const time = new Date(i.createdAt).toLocaleTimeString()
                 const datetime = date + " - " + time
-                if (i.status === 1) {
-                    statusCheck = "Pending"
-                } else if (i.status === 2) {
-                    statusCheck = "Accept"
+                enTotal = i.orderitems.reduce((acc, o) => acc + parseInt(o.data.foodprice), 0)
+                let quantityArray = i.orderitems.reduce(function (accumulator, curValue) {
+                    return curValue.quantity
+                }, [])
+                let toppingArray = i.orderitems.reduce(function (accumulator, curValue) {
+                    return accumulator.concat(curValue.topping)
+                }, [])
+                if (toppingArray) {
+                    inTotal = toppingArray.reduce((acc, o) => acc + parseInt(o.foodprice), 0)
+                    countTotal = (inTotal + enTotal) * parseInt(quantityArray)
+                } else {
+                    countTotal = enTotal * parseInt(quantityArray)
                 }
-                else if (i.status === 4) {
-                    statusCheck = "🕒 Pending cancel"
-                }
+                fulltotal = countTotal + i.shippingfee
                 return (
-                    <Fragment key={i._id}>
+                    <Fragment key={index}>
                         {i.employee?.map((a) => {
                             if (decode.userRole === 2 && a.id === decode.userId && i.status === 2) {
                                 return (
-                                    <tr style={{ verticalAlign: "middle", background: "#2C343A", color: "lightgray" }}>
-                                        {i.user.map((z) => {
-                                            return (
-                                                <td key={z}>{z.fullname}</td>
-                                            )
-                                        })}
-                                        <td className="thhuhu">{i.phonenumber}</td>
-                                        <td className="thhuhu">{datetime}</td>
-                                        <td>{statusCheck}</td>
-                                        <td><button onClick={() => { setOrderAdminState({ ModalData: i }); setModalOpenDetail2(true) }} className='btn btn-success'>Detail</button></td>
-                                    </tr>
+                                    <OrderDisplayHandle i={i} datetime={datetime} father={orderAdminState} setFather={setOrderAdminState} index={index} decode={decode} socketRef={socketRef} setModalOpenDetail2={setModalOpenDetail2} toppingArray={toppingArray} fulltotal={fulltotal} checkBack={checkBack} />
                                 )
                             }
                             return null
                         })}
                         {decode.userRole === 2 && i.status === 1 ? (
-                            <tr style={{ verticalAlign: "middle", background: "#2C343A", color: "lightgray" }}>
-                                {i.user.map((z) => {
-                                    return (
-                                        <td key={z}>{z.fullname}</td>
-                                    )
-                                })}
-                                <td className="thhuhu">{i.phonenumber}</td>
-                                <td className="thhuhu">{datetime}</td>
-                                <td>{statusCheck}</td>
-                                <td><button onClick={() => { setOrderAdminState({ ModalData: i }); setModalOpenDetail2(true) }} className='btn btn-success'>Detail</button></td>
-                            </tr>
+                            <OrderDisplayHandle i={i} datetime={datetime} father={orderAdminState} setFather={setOrderAdminState} index={index} decode={decode} socketRef={socketRef} setModalOpenDetail2={setModalOpenDetail2} toppingArray={toppingArray} fulltotal={fulltotal} checkBack={checkBack} />
                         ) : null}
                         {decode.userRole === 3 ? (
-                            <tr style={{ verticalAlign: "middle", background: "#2C343A", color: "lightgray" }}>
-                                {i.user.map((z) => {
-                                    return (
-                                        <td key={z}>{z.fullname}</td>
-                                    )
-                                })}
-                                <td className="thhuhu">{i.phonenumber}</td>
-                                <td className="thhuhu">{datetime}</td>
-                                <td>{statusCheck}</td>
-                                <td><button onClick={() => { setOrderAdminState({ ModalData: i }); setModalOpenDetail2(true) }} className='btn btn-success'>Detail</button></td>
-                            </tr>
+                            <OrderDisplayHandle i={i} datetime={datetime} father={orderAdminState} setFather={setOrderAdminState} index={index} decode={decode} socketRef={socketRef} setModalOpenDetail2={setModalOpenDetail2} toppingArray={toppingArray} fulltotal={fulltotal} checkBack={checkBack} />
                         ) : null}
                     </Fragment>
                 )
@@ -255,8 +240,8 @@ function OrderAdmin({ Data }) {
                         marginRight: "-50%",
                         transform: "translate(-50%, -50%)",
                         backgroundColor: "white",
-                        width: "70vw",
-                        height: "70vh",
+                        width: window.innerWidth > 575 ? "40vw" : "80vw",
+                        height: "auto",
                         zIndex: 999
                     },
                 }}>
@@ -295,56 +280,82 @@ function OrderAdmin({ Data }) {
                             </div>
                         )
                     })}
-                    <p><b>Phone number</b> : {orderAdminState.ModalData.phonenumber}</p>
-                    <p><b>Address</b> : {orderAdminState.ModalData.address}</p>
+                    <div className="coverNOut">
+                        <p><b>Phone number</b> : {orderAdminState.ModalData.phonenumber}</p>
+                        <p><b>Address</b> : {orderAdminState.ModalData.address}</p>
+                    </div>
                     <p><b>Payment method</b> : {orderAdminState.ModalData.paymentmethod?.type} {kakaCheck}</p>
-                    <p><b>Status</b> : {statusCheck}</p>
                 </div>
-                <table className='table table-bordered solotable'>
+                <table className="table-bordered table solotable">
                     <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th className="thhuhu">Category</th>
-                            <th>Quantity</th>
-                            <th>Price</th>
+                        <tr style={{ color: "#0F172B", backgroundColor: "gray" }}>
+                            <th style={{ textAlign: "center", color: "#fff" }}>{window.innerWidth > 575 ? "No" : "Quantity"}</th>
+                            <th colSpan={window.innerWidth > 575 ? null : 2} style={{ color: "#fff" }}>Items</th>
+                            {window.innerWidth > 575 ? (
+                                <>
+                                    <th style={{ textAlign: "center", color: "#fff" }}>Quantity</th>
+                                    <th style={{ textAlign: "center", color: "#fff" }}>Price</th>
+                                </>
+                            ) : null}
                         </tr>
                     </thead>
                     <tbody>
-                        {orderAdminState.ModalData.orderitems?.map((a) => {
-                            var total = a.quantity * a.data.foodprice
-                            total2 += total
-                            fulltotal = total2 + orderAdminState.ModalData.shippingfee
+                        {orderAdminState.ModalData.orderitems?.map((a, indexK) => {
+                            var countTotal2 = 0
+                            inTotal = a.topping?.reduce((acc, o) => acc + parseInt(o.foodprice), 0)
+                            if (inTotal) {
+                                countTotal2 = (inTotal + a.data.foodprice) * a.quantity
+                            } else {
+                                countTotal2 = a.data.foodprice * a.quantity
+                            }
+                            maxTotal += countTotal2
+                            fulltotal2 = maxTotal + orderAdminState.ModalData.shippingfee
                             return (
-                                <tr key={a.data._id}>
-                                    <td>{a.data.foodname}</td>
-                                    <td className="thhuhu">{a.data.foodcategory}</td>
-                                    <td>{a.quantity}</td>
-                                    <td>{VND.format(a.data.foodprice)}</td>
+                                <tr key={a.data._id} style={{ verticalAlign: "middle" }}>
+                                    <td className='text-center'>{window.innerWidth > 575 ? indexK + 1 : a.quantity + " x "}</td>
+                                    <td colSpan={window.innerWidth > 575 ? null : 2}>
+                                        <div className="d-flex align-items-center" style={{ gap: 10 }}>
+                                            <img alt="" src={a.data.foodimage} width={70} height={60} />
+                                            <div>
+                                                <p className="m-0">{a.data.foodname}</p>
+                                                <p className="m-0 text-start" style={{ fontSize: 14, color: "#FEA116" }}><b>{VND.format(a.data.foodprice)}</b></p>
+                                            </div>
+                                        </div>
+                                        {a.topping?.map((p) => {
+                                            return (
+                                                <div key={p._id} className="d-flex align-items-center" style={{ gap: 10, marginLeft: 25, marginTop: 10 }}>
+                                                    <img alt="" src={p.foodimage} width={45} height={40} />
+                                                    <div>
+                                                        <p className="m-0" style={{ fontSize: 14 }}>{p.foodname}</p>
+                                                        <p className="m-0 text-start" style={{ color: "#FEA116", fontSize: 12 }}><b>{VND.format(p.foodprice)}</b></p>
+                                                    </div>
+                                                </div>
+                                            )
+                                        })}
+                                    </td>
+                                    {window.innerWidth > 575 ? (
+                                        <>
+                                            <td className='text-center'>{a.quantity}</td>
+                                            <td className='text-center'>{VND.format(countTotal2)}</td>
+                                        </>
+                                    ) : null}
                                 </tr>
                             )
                         })}
-                        <tr className='thhuhu'>
-                            <td colSpan={3}>Shipping</td>
-                            <td>{VND.format(orderAdminState.ModalData.shippingfee)}</td>
+                        <tr className="text-center text-nowrap">
+                            <td colSpan={window.innerWidth > 575 ? 3 : 2}><b>Shipping</b></td>
+                            {orderAdminState.ModalData.shippingfee === 30000 ? (
+                                <td >{VND.format(30000)}</td>
+                            ) : (
+                                <td><del>{VND.format(30000)}</del> - <b style={{ color: "#FEA116" }}>{VND.format(0)}</b></td>
+                            )}
                         </tr>
-                        <tr className='thhuhu'>
-                            <th colSpan={3}>Fulltotal</th>
-                            <th>{VND.format(fulltotal)}</th>
-                        </tr>
-                    </tbody>
-                    <tbody className='jackass'>
-                        <tr >
-                            <td colSpan={2}>Shipping</td>
-                            <td>{VND.format(orderAdminState.ModalData.shippingfee)}</td>
-                        </tr>
-                        <tr>
-                            <th colSpan={2}>Fulltotal</th>
-                            <th>{VND.format(fulltotal)}</th>
+                        <tr className="text-center text-nowrap">
+                            <td colSpan={window.innerWidth > 575 ? 3 : 2}><b>Fulltotal</b></td>
+                            <td style={{ color: "#FEA116" }}><b>{VND.format(fulltotal2)}</b></td>
                         </tr>
                     </tbody>
                 </table>
-                <h5 className="text-center pt-2">Order Processing</h5>
-                <hr />
                 {orderAdminState.ModalData.status === 2 ? (
                     <>
                         <div className="d-flex justify-content-between">

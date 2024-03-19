@@ -585,7 +585,7 @@ const ItemMenuComponent = ({ data, start, end, setMainState }) => {
                                         })}
                                         <ReactPaginate
                                             breakLabel="..."
-                                            nextLabel="Next >"
+                                            nextLabel=">"
                                             onPageChange={(e) => handlePageClick(e.selected, modalData)}
                                             pageRangeDisplayed={5}
                                             pageCount={detailState.pageCount}

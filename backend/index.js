@@ -1383,7 +1383,68 @@ app.get("/SearchAllOrder", async (req, res) => {
 app.get("/GetAllOrderHistory", async (req, res) => {
     const filter = { datetime: -1 }
     try {
-        const getOrder = await getThisOrder.find({ status: { $in: [3, 5, 6] } }).sort(filter)
+        var getOrder = await getThisOrder.find({ status: { $in: [3, 5, 6] } }).sort(filter)
+        if (req.query.date) {
+            const dateHa = new Date(req.query.date)
+            let today = new Date(dateHa)
+            let tomorrow = new Date(dateHa)
+            today.setHours(today.getHours() - 7)
+            tomorrow.setHours(tomorrow.getHours() - 7 + 23)
+            tomorrow.setMinutes(tomorrow.getMinutes() + 59)
+            getOrder = await getThisOrder.find({ status: { $in: [3, 5, 6] }, createdAt: { $gte: today, $lte: tomorrow } }).sort(filter)
+        }
+        if (req.query.filter) {
+            switch (req.query.filter) {
+                case "3":
+                    getOrder = await getThisOrder.find({ status: { $in: [3] } }).sort(filter)
+                    if (req.query.date) {
+                        const dateHa = new Date(req.query.date)
+                        let today = new Date(dateHa)
+                        let tomorrow = new Date(dateHa)
+                        today.setHours(today.getHours() - 7)
+                        tomorrow.setHours(tomorrow.getHours() - 7 + 23)
+                        tomorrow.setMinutes(tomorrow.getMinutes() + 59)
+                        getOrder = await getThisOrder.find({ status: { $in: [3] }, createdAt: { $gte: today, $lte: tomorrow } }).sort(filter)
+                    }
+                    break;
+                case "5":
+                    getOrder = await getThisOrder.find({ status: { $in: [5] } }).sort(filter)
+                    if (req.query.date) {
+                        const dateHa = new Date(req.query.date)
+                        let today = new Date(dateHa)
+                        let tomorrow = new Date(dateHa)
+                        today.setHours(today.getHours() - 7)
+                        tomorrow.setHours(tomorrow.getHours() - 7 + 23)
+                        tomorrow.setMinutes(tomorrow.getMinutes() + 59)
+                        getOrder = await getThisOrder.find({ status: { $in: [5] }, createdAt: { $gte: today, $lte: tomorrow } }).sort(filter)
+                    }
+                    break;
+                case "6":
+                    getOrder = await getThisOrder.find({ status: { $in: [6] } }).sort(filter)
+                    if (req.query.date) {
+                        const dateHa = new Date(req.query.date)
+                        let today = new Date(dateHa)
+                        let tomorrow = new Date(dateHa)
+                        today.setHours(today.getHours() - 7)
+                        tomorrow.setHours(tomorrow.getHours() - 7 + 23)
+                        tomorrow.setMinutes(tomorrow.getMinutes() + 59)
+                        getOrder = await getThisOrder.find({ status: { $in: [6] }, createdAt: { $gte: today, $lte: tomorrow } }).sort(filter)
+                    }
+                    break;
+                default:
+                    getOrder = await getThisOrder.find({ status: { $in: [3, 5, 6] } }).sort(filter)
+                    if (req.query.date) {
+                        const dateHa = new Date(req.query.date)
+                        let today = new Date(dateHa)
+                        let tomorrow = new Date(dateHa)
+                        today.setHours(today.getHours() - 7)
+                        tomorrow.setHours(tomorrow.getHours() - 7 + 23)
+                        tomorrow.setMinutes(tomorrow.getMinutes() + 59)
+                        getOrder = await getThisOrder.find({ status: { $in: [3, 5, 6] }, createdAt: { $gte: today, $lte: tomorrow } }).sort(filter)
+                    }
+                    break;
+            }
+        }
         const page = parseInt(req.query.page)
         const limit = parseInt(req.query.limit)
 
@@ -1415,7 +1476,68 @@ app.get("/GetAllOrderHistory", async (req, res) => {
 app.get("/GetAllOrderActive", async (req, res) => {
     const filter = { status: -1, datetime: -1 }
     try {
-        const getOrder = await getThisOrder.find({ status: { $in: [1, 2, 4] } }).sort(filter)
+        var getOrder = await getThisOrder.find({ status: { $in: [1, 2, 4] } }).sort(filter)
+        if (req.query.date) {
+            const dateHa = new Date(req.query.date)
+            let today = new Date(dateHa)
+            let tomorrow = new Date(dateHa)
+            today.setHours(today.getHours() - 7)
+            tomorrow.setHours(tomorrow.getHours() - 7 + 23)
+            tomorrow.setMinutes(tomorrow.getMinutes() + 59)
+            getOrder = await getThisOrder.find({ status: { $in: [1, 2, 4] }, createdAt: { $gte: today, $lte: tomorrow } }).sort(filter)
+        }
+        if (req.query.filter) {
+            switch (req.query.filter) {
+                case "1":
+                    getOrder = await getThisOrder.find({ status: { $in: [1] } }).sort(filter)
+                    if (req.query.date) {
+                        const dateHa = new Date(req.query.date)
+                        let today = new Date(dateHa)
+                        let tomorrow = new Date(dateHa)
+                        today.setHours(today.getHours() - 7)
+                        tomorrow.setHours(tomorrow.getHours() - 7 + 23)
+                        tomorrow.setMinutes(tomorrow.getMinutes() + 59)
+                        getOrder = await getThisOrder.find({ status: { $in: [1] }, createdAt: { $gte: today, $lte: tomorrow } }).sort(filter)
+                    }
+                    break;
+                case "2":
+                    getOrder = await getThisOrder.find({ status: { $in: [2] } }).sort(filter)
+                    if (req.query.date) {
+                        const dateHa = new Date(req.query.date)
+                        let today = new Date(dateHa)
+                        let tomorrow = new Date(dateHa)
+                        today.setHours(today.getHours() - 7)
+                        tomorrow.setHours(tomorrow.getHours() - 7 + 23)
+                        tomorrow.setMinutes(tomorrow.getMinutes() + 59)
+                        getOrder = await getThisOrder.find({ status: { $in: [2] }, createdAt: { $gte: today, $lte: tomorrow } }).sort(filter)
+                    }
+                    break;
+                case "4":
+                    getOrder = await getThisOrder.find({ status: { $in: [4] } }).sort(filter)
+                    if (req.query.date) {
+                        const dateHa = new Date(req.query.date)
+                        let today = new Date(dateHa)
+                        let tomorrow = new Date(dateHa)
+                        today.setHours(today.getHours() - 7)
+                        tomorrow.setHours(tomorrow.getHours() - 7 + 23)
+                        tomorrow.setMinutes(tomorrow.getMinutes() + 59)
+                        getOrder = await getThisOrder.find({ status: { $in: [4] }, createdAt: { $gte: today, $lte: tomorrow } }).sort(filter)
+                    }
+                    break;
+                default:
+                    getOrder = await getThisOrder.find({ status: { $in: [1, 2, 4] } }).sort(filter)
+                    if (req.query.date) {
+                        const dateHa = new Date(req.query.date)
+                        let today = new Date(dateHa)
+                        let tomorrow = new Date(dateHa)
+                        today.setHours(today.getHours() - 7)
+                        tomorrow.setHours(tomorrow.getHours() - 7 + 23)
+                        tomorrow.setMinutes(tomorrow.getMinutes() + 59)
+                        getOrder = await getThisOrder.find({ status: { $in: [1, 2, 4] }, createdAt: { $gte: today, $lte: tomorrow } }).sort(filter)
+                    }
+                    break;
+            }
+        }
         const page = parseInt(req.query.page)
         const limit = parseInt(req.query.limit)
 

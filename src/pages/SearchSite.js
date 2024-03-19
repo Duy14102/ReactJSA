@@ -272,11 +272,11 @@ function SearchSite() {
                             </div>
                             <ReactPaginate
                                 breakLabel="..."
-                                nextLabel="Next >"
+                                nextLabel=">"
                                 onPageChange={handlePageClick}
                                 pageRangeDisplayed={5}
                                 pageCount={searchState.pageCount}
-                                previousLabel="< Previous"
+                                previousLabel="<"
                                 renderOnZeroPageCount={null}
                                 marginPagesDisplayed={2}
                                 containerClassName="pagination justify-content-center"

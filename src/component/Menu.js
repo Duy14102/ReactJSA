@@ -255,11 +255,11 @@ function Menu({ dataX, CategoryRespon, handleX, pCount, curP }) {
                     </div>
                     <ReactPaginate
                         breakLabel="..."
-                        nextLabel="Next >"
+                        nextLabel=">"
                         onPageChange={handleX}
                         pageRangeDisplayed={5}
                         pageCount={pCount}
-                        previousLabel="< Previous"
+                        previousLabel="<"
                         renderOnZeroPageCount={null}
                         marginPagesDisplayed={2}
                         containerClassName="pagination justify-content-center"

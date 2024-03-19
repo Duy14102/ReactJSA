@@ -112,11 +112,11 @@ function TableItems({ ModalData, decode }) {
             </table>
             <ReactPaginate
                 breakLabel="..."
-                nextLabel="next >"
+                nextLabel=">"
                 onPageChange={handlePageClick2}
                 pageRangeDisplayed={5}
                 pageCount={pageCount2}
-                previousLabel="< previous"
+                previousLabel="<"
                 renderOnZeroPageCount={null}
                 marginPagesDisplayed={2}
                 containerClassName="pagination justify-content-center text-nowrap"

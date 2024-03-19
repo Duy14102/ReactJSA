@@ -6,7 +6,7 @@ import socketIOClient from "socket.io-client";
 import { jwtDecode } from "jwt-decode";
 import Cookies from "universal-cookie";
 
-function GetOrder() {
+function GetOrder({ DateInput, filter }) {
     const cookies = new Cookies()
     const token = cookies.get("TOKEN")
     const decode = jwtDecode(token)
@@ -17,6 +17,7 @@ function GetOrder() {
     const [cancelOrder, setCancelOrder] = useState(false)
     const [cancelRemove, setCancelRemove] = useState(false)
     const [pendingCancelOrder, setPendingCancelOrder] = useState(false)
+    const [checkBack, setCheckBack] = useState(false)
     const socketRef = useRef();
     const [pageCount, setPageCount] = useState(6);
     const currentPage = useRef();
@@ -196,7 +197,9 @@ function GetOrder() {
             url: "https://eatcom.onrender.com/GetAllOrderActive",
             params: {
                 page: currentPage.current,
-                limit: limit
+                limit: limit,
+                date: DateInput,
+                filter: filter
             }
         };
         axios(configuration)
@@ -208,6 +211,15 @@ function GetOrder() {
                 console.log(error);
             });
     }
+
+    useEffect(() => {
+        setCheckBack(true)
+        setTimeout(() => {
+            getPagination()
+            setCheckBack(false)
+        }, 1000);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [DateInput, filter])
 
     return (
         <>
@@ -243,27 +255,16 @@ function GetOrder() {
                     </div>
                 ) : null}
             </div>
-            <table className='table table-bordered text-center solotable'>
-                <thead>
-                    <tr className="text-white" style={{ background: "#374148" }}>
-                        <th>Fullname</th>
-                        <th className="thhuhu">Phone Number</th>
-                        <th className="thhuhu">Date</th>
-                        <th>Status</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <OrderAdmin Data={Order} />
-                </tbody>
-            </table>
+            <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", marginBottom: 25 }}>
+                <OrderAdmin Data={Order} checkBack={checkBack} />
+            </div>
             <ReactPaginate
                 breakLabel="..."
-                nextLabel="next >"
+                nextLabel=">"
                 onPageChange={handlePageClick}
                 pageRangeDisplayed={5}
                 pageCount={pageCount}
-                previousLabel="< previous"
+                previousLabel="<"
                 renderOnZeroPageCount={null}
                 marginPagesDisplayed={2}
                 containerClassName="pagination justify-content-center text-nowrap"

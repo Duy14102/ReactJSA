@@ -163,15 +163,14 @@ function OrderComplete() {
         setCompleteState({ remove: true })
     }, 60000);
 
-    var total2 = 0, enTotal = 0, inTotal = 0, fulltotal = 0
+    var total2 = 0, inTotal = 0, fulltotal = 0
     const mero = (i, index, s) => {
         var countTotal = 0
         inTotal = i.topping?.reduce((acc, o) => acc + parseInt(o.foodprice), 0)
-        enTotal = s.orderitems?.reduce((acc, o) => acc + parseInt(o.data.foodprice), 0)
         if (inTotal) {
-            countTotal = (inTotal + enTotal) * i.quantity
+            countTotal = (inTotal + i.data.foodprice) * i.quantity
         } else {
-            countTotal = enTotal * i.quantity
+            countTotal = i.data.foodprice * i.quantity
         }
         total2 += countTotal
         fulltotal = total2 + s.shippingfee

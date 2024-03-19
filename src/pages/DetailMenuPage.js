@@ -662,7 +662,7 @@ function DetailMenuPage() {
                                                         })}
                                                         <ReactPaginate
                                                             breakLabel="..."
-                                                            nextLabel="Next >"
+                                                            nextLabel=">"
                                                             onPageChange={(e) => handlePageClick(e.selected, i)}
                                                             pageRangeDisplayed={5}
                                                             pageCount={detailState.pageCount}
