@@ -200,7 +200,7 @@ function OrderAdmin({ Data, checkBack }) {
                     return accumulator.concat(curValue.topping)
                 }, [])
                 if (toppingArray) {
-                    inTotal = toppingArray.reduce((acc, o) => acc + parseInt(o.foodprice), 0)
+                    inTotal = toppingArray.reduce((acc, o) => acc + parseInt(o?.foodprice), 0)
                     countTotal = (inTotal + enTotal) * parseInt(quantityArray)
                 } else {
                     countTotal = enTotal * parseInt(quantityArray)

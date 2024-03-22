@@ -31,8 +31,9 @@ function OrderDisplayHandle({ i, datetime, father, setFather, index, decode, soc
         const data = { id: id, userid: i?.user[0].id, reason: father.DenyReason, employee: deliverEmployee, status: 3, type: "Paid", fulltotal: Fu, date: i.createdAt, empid: decode.userId }
         socketRef.current.emit('DenyOrderSocket', data)
     }
+
     return (
-        <div className="JKoliver" style={{ opacity: checkBack ? 0.5 : 1, pointerEvents: checkBack ? "none" : null }}>
+        <div className="JKoliver" style={{ opacity: checkBack ? 0.5 : 1, pointerEvents: checkBack ? "none" : null, marginTop: index > 1 ? 30 : null }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "#374148", color: "#fff", padding: 15 }}>
                 <p className="m-0">Id : {i._id}</p>
                 <p className="m-0">Date : {datetime}</p>
@@ -50,36 +51,40 @@ function OrderDisplayHandle({ i, datetime, father, setFather, index, decode, soc
                                             <p className="m-0 text-start" style={{ fontSize: 15, color: "#FEA116" }}><b>{VND.format(a.data.foodprice)}</b></p>
                                         </div>
                                     </div>
-                                    {a.topping?.map((p) => {
-                                        return (
-                                            <div key={p._id} className="d-flex align-items-center" style={{ gap: 10, marginLeft: 25, marginTop: 10 }}>
-                                                <img alt="" src={p.foodimage} width={45} height={40} />
-                                                <div>
-                                                    <p className="m-0" style={{ fontSize: 15 }}>{p.foodname}</p>
-                                                    <p className="m-0 text-start" style={{ color: "#FEA116", fontSize: 13 }}><b>{VND.format(p.foodprice)}</b></p>
+                                    {a.topping ? (
+                                        a.topping.map((p) => {
+                                            return (
+                                                <div key={p._id} className="d-flex align-items-center" style={{ gap: 10, marginLeft: 25, marginTop: 10 }}>
+                                                    <img alt="" src={p.foodimage} width={45} height={40} />
+                                                    <div>
+                                                        <p className="m-0" style={{ fontSize: 15 }}>{p.foodname}</p>
+                                                        <p className="m-0 text-start" style={{ color: "#FEA116", fontSize: 13 }}><b>{VND.format(p.foodprice)}</b></p>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        )
-                                    })}
+                                            )
+                                        })
+                                    ) : null}
                                 </div>
                             )
                         })
                     ) : (
                         <div>
                             <div className="d-flex align-items-center" style={{ gap: 10 }}>
-                                <img alt="" src={i.orderitems[0].data.foodimage} width={70} height={60} />
+                                <img alt="" src={i.orderitems[0]?.data.foodimage} width={70} height={60} />
                                 <div>
                                     <p className="m-0" style={{ fontSize: 17 }}>{i.orderitems[0].data.foodname}</p>
-                                    <p className="m-0 text-start" style={{ fontSize: 15, color: "#FEA116" }}><b>{VND.format(i.orderitems[0].data.foodprice)}</b></p>
+                                    <p className="m-0 text-start" style={{ fontSize: 15, color: "#FEA116" }}><b>{VND.format(i.orderitems[0]?.data.foodprice)}</b></p>
                                 </div>
                             </div>
-                            <div className="d-flex align-items-center" style={{ gap: 10, marginLeft: 25, marginTop: 10 }}>
-                                <img alt="" src={i.orderitems[0].topping[0]?.foodimage} width={45} height={40} />
-                                <div>
-                                    <p className="m-0" style={{ fontSize: 15 }}>{i.orderitems[0].topping[0]?.foodname}</p>
-                                    <p className="m-0 text-start" style={{ color: "#FEA116", fontSize: 13 }}><b>{VND.format(i.orderitems[0].topping[0]?.foodprice)}</b></p>
+                            {i?.orderitems[0]?.topping[0] ? (
+                                <div className="d-flex align-items-center" style={{ gap: 10, marginLeft: 25, marginTop: 10 }}>
+                                    <img alt="" src={i?.orderitems[0]?.topping[0]?.foodimage} width={45} height={40} />
+                                    <div>
+                                        <p className="m-0" style={{ fontSize: 15 }}>{i.orderitems[0]?.topping[0]?.foodname}</p>
+                                        <p className="m-0 text-start" style={{ color: "#FEA116", fontSize: 13 }}><b>{VND.format(i.orderitems[0]?.topping[0]?.foodprice)}</b></p>
+                                    </div>
                                 </div>
-                            </div>
+                            ) : null}
                         </div>
                     )}
                     {i.orderitems?.length > 1 && father?.seeMore !== index ? (

@@ -13,7 +13,6 @@ function MainOrder() {
     const [activeFilter, setActiveFilter] = useState()
     const [historyFilter, setHistoryFilter] = useState()
     const [detectChange, setDetectChange] = useState(true)
-    console.log(historyFilter);
 
     useEffect(() => {
         document.getElementById("defaultOpen2").click();
