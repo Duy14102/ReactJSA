@@ -12,10 +12,10 @@ function OrderDisplayHandle({ i, datetime, father, setFather, index, decode, soc
         const data = { id: e, userid: i?.user[0].id, status: 2, employee: deliverEmployee, orderitems: yolo, empid: decode.userId }
         socketRef.current.emit('UpdateStatusOrderSocket', data)
     }
-    const completeOrder = (type) => {
-        const data = { id: i._id, userid: i?.user[0].id, date: Date.now('vi'), status: 5, type: type, empid: decode.userId }
-        socketRef.current.emit('CompleteOrderByEmpSocket', data)
-    }
+    // const completeOrder = (type) => {
+    //     const data = { id: i._id, userid: i?.user[0].id, date: Date.now('vi'), status: 5, type: type, empid: decode.userId }
+    //     socketRef.current.emit('CompleteOrderByEmpSocket', data)
+    // }
     const denyOrderWait = (id) => {
         const data = { id: id, userid: i?.user[0].id, employee: deliverEmployee, status: 6, empid: decode.userId }
         socketRef.current.emit('DenyOrderWaitingSocket', data)
@@ -30,6 +30,12 @@ function OrderDisplayHandle({ i, datetime, father, setFather, index, decode, soc
         e.preventDefault();
         const data = { id: id, userid: i?.user[0].id, reason: father.DenyReason, employee: deliverEmployee, status: 3, type: "Paid", fulltotal: Fu, date: i.createdAt, empid: decode.userId }
         socketRef.current.emit('DenyOrderSocket', data)
+    }
+
+    const cancelOrder = (e, id) => {
+        e.preventDefault()
+        const data = { id: id, kitchenreason: father.kitchenreason, mag: decode.userId, status: 2 }
+        socketRef.current.emit('ChefWantCancelSocket', data)
     }
 
     return (
@@ -97,15 +103,8 @@ function OrderDisplayHandle({ i, datetime, father, setFather, index, decode, soc
                     ) : null}
                 </div>
                 <div>
-                    <p>Status : {i.status === 1 ? "🔵( pending )" : i.status === 2 ? "🟢( accept )" : i.status === 4 ? "⚪( cancel pending )" : null}</p>
+                    <p>Status : {i.status === 1 ? "🔵( pending )" : i.status === 2 ? "🟢( Chef is preparing )" : i.status === 2.1 ? "🟠( Chef canceled )" : i.status === 2.3 ? "🟢( Order ready )" : i.status === 4 ? "⚪( cancel pending )" : null}</p>
                     <p>Payment : {i.paymentmethod.method === 1 ? "e-wallet" : i.paymentmethod.method === 2 ? "COD" : null}</p>
-                    {i.employee?.length > 0 ? (
-                        i.employee?.map((z) => {
-                            return (
-                                <p key={z}>Employee : {z.email}</p>
-                            )
-                        })
-                    ) : null}
                     {i.status === 1 ? (
                         <div className="d-flex align-items-center" style={{ gap: 10 }}>
                             {father.Accept ? (
@@ -120,26 +119,32 @@ function OrderDisplayHandle({ i, datetime, father, setFather, index, decode, soc
                         </div>
                     ) : null}
                     {i.status === 2 ? (
+                        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+                            {decode.userRole === 3 && i.paymentmethod?.type !== "Paypal" ? (
+                                <button onClick={() => setFather({ secondDoor: true, secondDoorState: 2 })} className="btn btn-danger">Cancel</button>
+                            ) : null}
+                            <button onClick={() => { setModalOpenDetail2(true); setFather({ ModalData: i }) }} className="btn btn-warning inforItKK"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" /></svg></button>
+                        </div>
+                    ) : null}
+                    {i.status === 2.1 ? (
                         <>
+                            {i.kitchenreason ? (
+                                <p>Note : {i.kitchenreason}</p>
+                            ) : null}
                             <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-                                {decode.userRole === 3 && i.paymentmethod?.type !== "Paypal" ? (
-                                    <button onClick={() => setFather({ secondDoor: true, secondDoorState: 2 })} className="btn btn-danger">Cancel</button>
+                                <button onClick={() => setFather({ secondDoor: true, secondDoorState: 6 })} className="btn btn-info">to chef</button>
+                                {decode.userRole === 3 && (i.paymentmethod.type === "Vnpay" || i.paymentmethod.type === "COD") ? (
+                                    <button onClick={() => setFather({ secondDoor: true, secondDoorState: 1 })} className="btn btn-danger">Deny</button>
                                 ) : null}
-                                {i.employee?.map((i) => {
-                                    if (i.id === decode.userId) {
-                                        return (
-                                            i.paymentmethod?.status === 1 ? (
-                                                <button onClick={() => completeOrder(2)} className="btn btn-primary">Complete</button>
-                                            ) : (
-                                                <button onClick={() => completeOrder(1)} className="btn btn-primary">Complete</button>
-                                            )
-                                        )
-                                    }
-                                    return null
-                                })}
                                 <button onClick={() => { setModalOpenDetail2(true); setFather({ ModalData: i }) }} className="btn btn-warning inforItKK"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" /></svg></button>
                             </div>
                         </>
+                    ) : null}
+                    {i.status === 2.3 ? (
+                        <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+                            <button className="btn btn-success">Shipping</button>
+                            <button onClick={() => { setModalOpenDetail2(true); setFather({ ModalData: i }) }} className="btn btn-warning inforItKK"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" /></svg></button>
+                        </div>
                     ) : null}
                     {i.status === 4 ? (
                         <>
@@ -172,7 +177,7 @@ function OrderDisplayHandle({ i, datetime, father, setFather, index, decode, soc
                         transform: "translate(-50%, -50%)",
                         backgroundColor: "white",
                         width: window.innerWidth > 575 ? "30vw" : "90vw",
-                        height: father.secondDoorState !== 1 ? "25vh" : "40vh",
+                        height: father.secondDoorState === 1 ? "38vh" : father.secondDoorState === 6 ? "38vh" : "25vh",
                         zIndex: 999
                     },
                 }}>
@@ -210,6 +215,17 @@ function OrderDisplayHandle({ i, datetime, father, setFather, index, decode, soc
                         </div>
                     ) : father.secondDoorState === 3 ? (
                         <CancelRequest fulltotal={fulltotal} ModalData={father.ModalData} setmodal={setFather} />
+                    ) : father.secondDoorState === 6 ? (
+                        <>
+                            <p>Give chef reason : </p>
+                            <form onSubmit={(e) => cancelOrder(e, i._id)}>
+                                <textarea style={{ height: 165, resize: "none" }} value={father.kitchenreason} onChange={(e) => setFather({ kitchenreason: e.target.value })} className="textDeny" required />
+                                <div style={{ gap: 1 + "%" }} className="d-flex mt-2">
+                                    <button type="submit" className="btn btn-primary ">Comfirm</button>
+                                    <button onClick={() => setFather({ secondDoor: false })} className="btn btn-secondary ">Cancel</button>
+                                </div>
+                            </form>
+                        </>
                     ) : null}
                 </div>
                 <button className='closeModal' onClick={() => setFather({ secondDoor: false })}>x</button>

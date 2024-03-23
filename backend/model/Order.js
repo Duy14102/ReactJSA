@@ -43,6 +43,11 @@ const OrderSchema = new mongoose.Schema({
         type: String
     },
 
+    kitchenreason: {
+        default: null,
+        type: String
+    },
+
     status: {
         type: Number
     },

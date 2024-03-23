@@ -24,6 +24,7 @@ function OrderAdmin({ Data, checkBack }) {
         ModalData: [],
         spinner: false,
         modalOpenDetail3: false,
+        kitchenreason: null,
         modalOpenDetail4: false,
         secondDoor: false,
         secondDoorState: null,
@@ -168,10 +169,10 @@ function OrderAdmin({ Data, checkBack }) {
         socketRef.current.emit('DenyOrderSocket', data)
     }
 
-    const completeOrder = (type) => {
-        const data = { id: orderAdminState.ModalData._id, userid: orderAdminState.ModalData?.user[0].id, date: Date.now('vi'), status: 5, type: type, empid: decode.userId }
-        socketRef.current.emit('CompleteOrderByEmpSocket', data)
-    }
+    // const completeOrder = (type) => {
+    //     const data = { id: orderAdminState.ModalData._id, userid: orderAdminState.ModalData?.user[0].id, date: Date.now('vi'), status: 5, type: type, empid: decode.userId }
+    //     socketRef.current.emit('CompleteOrderByEmpSocket', data)
+    // }
 
     const VND = new Intl.NumberFormat('vi-VN', {
         style: 'currency',
@@ -208,20 +209,7 @@ function OrderAdmin({ Data, checkBack }) {
                 fulltotal = countTotal + i.shippingfee
                 return (
                     <Fragment key={index}>
-                        {i.employee?.map((a) => {
-                            if (decode.userRole === 2 && a.id === decode.userId && i.status === 2) {
-                                return (
-                                    <OrderDisplayHandle i={i} datetime={datetime} father={orderAdminState} setFather={setOrderAdminState} index={index} decode={decode} socketRef={socketRef} setModalOpenDetail2={setModalOpenDetail2} toppingArray={toppingArray} fulltotal={fulltotal} checkBack={checkBack} />
-                                )
-                            }
-                            return null
-                        })}
-                        {decode.userRole === 2 && i.status === 1 ? (
-                            <OrderDisplayHandle i={i} datetime={datetime} father={orderAdminState} setFather={setOrderAdminState} index={index} decode={decode} socketRef={socketRef} setModalOpenDetail2={setModalOpenDetail2} toppingArray={toppingArray} fulltotal={fulltotal} checkBack={checkBack} />
-                        ) : null}
-                        {decode.userRole === 3 ? (
-                            <OrderDisplayHandle i={i} datetime={datetime} father={orderAdminState} setFather={setOrderAdminState} index={index} decode={decode} socketRef={socketRef} setModalOpenDetail2={setModalOpenDetail2} toppingArray={toppingArray} fulltotal={fulltotal} checkBack={checkBack} />
-                        ) : null}
+                        <OrderDisplayHandle i={i} datetime={datetime} father={orderAdminState} setFather={setOrderAdminState} index={index} decode={decode} socketRef={socketRef} setModalOpenDetail2={setModalOpenDetail2} toppingArray={toppingArray} fulltotal={fulltotal} checkBack={checkBack} />
                     </Fragment>
                 )
             })}
@@ -357,28 +345,19 @@ function OrderAdmin({ Data, checkBack }) {
                     </tbody>
                 </table>
                 {orderAdminState.ModalData.status === 2 ? (
-                    <>
-                        <div className="d-flex justify-content-between">
-                            <p>✅ Order has been <b>Accepted</b></p>
-                            <div style={{ display: "flex", gap: 10 }}>
-                                {decode.userRole === 3 && orderAdminState.ModalData.paymentmethod?.type !== "Paypal" ? (
-                                    <button onClick={() => setOrderAdminState({ modalOpenDetail3: true })} className="btn btn-danger">Cancel</button>
-                                ) : null}
-                                {orderAdminState.ModalData.employee?.map((i) => {
-                                    if (i.id === decode.userId) {
-                                        return (
-                                            orderAdminState.ModalData.paymentmethod.status === 1 ? (
-                                                <button onClick={() => completeOrder(2)} className="btn btn-primary">Complete Order</button>
-                                            ) : (
-                                                <button onClick={() => completeOrder(1)} className="btn btn-primary">Complete Order</button>
-                                            )
-                                        )
-                                    }
-                                    return null
-                                })}
-                            </div>
+                    <div className="d-flex justify-content-between">
+                        <p>✅ Order has been <b>Accepted</b></p>
+                        <div style={{ display: "flex", gap: 10 }}>
+                            {decode.userRole === 3 && orderAdminState.ModalData.paymentmethod?.type !== "Paypal" ? (
+                                <button onClick={() => setOrderAdminState({ modalOpenDetail3: true })} className="btn btn-danger">Cancel</button>
+                            ) : null}
                         </div>
-                    </>
+                    </div>
+                ) : null}
+                {orderAdminState.ModalData.status === 2.3 ? (
+                    <button className="btn btn-success">Shipping</button>
+                ) : orderAdminState.ModalData.status === 2.1 ? (
+                    <button onClick={() => { setOrderAdminState({ secondDoor: true, secondDoorState: 6 }); setModalOpenDetail2(false) }} className="btn btn-info">to chef</button>
                 ) : null}
                 <div className="d-flex justify-content-around">
                     {orderAdminState.ModalData.status === 1 ? (

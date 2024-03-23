@@ -731,6 +731,29 @@ socketIo.on("connection", (socket) => {
             .catch(() => socketIo.emit("DeleteContactFail", { mag: data.mag }))
     })
 
+    //Cancel by chef
+    socket.on("ChefWantCancelSocket", function (data) {
+        getThisOrder.updateOne({ _id: data.id }, {
+            status: data.status,
+            kitchenreason: data.kitchenreason
+        }).then(() => {
+            if (data.status === 2.1) {
+                socketIo.emit("ChefWantCancelSuccess", { mag: data.mag })
+            } else if (data.status === 2) {
+                socketIo.emit("ChefWantCancelSuccess2", { mag: data.mag })
+            }
+        })
+    })
+
+    //Ready by chef
+    socket.on("ChefReadySocket", function (data) {
+        getThisOrder.updateOne({ _id: data.id }, {
+            status: 2.3,
+        }).then(() => {
+            socketIo.emit("ChefReadySuccess", { mag: data.mag })
+        })
+    })
+
 });
 
 // Refresh server
@@ -1104,7 +1127,7 @@ app.post("/RemoveAddressUser", (req, res) => {
 app.get("/GetAllUser", async (req, res) => {
     const sort = { role: -1 }
     try {
-        const getuser = await getUserD.find({ role: { $in: [req.query.type, req.query.pipe, req.query.hype] } }).sort(sort);
+        const getuser = await getUserD.find({ role: { $in: [req.query.type, req.query.type2, req.query.pipe, req.query.hype] } }).sort(sort);
         const page = parseInt(req.query.page)
         const limit = parseInt(req.query.limit)
 
@@ -1476,7 +1499,7 @@ app.get("/GetAllOrderHistory", async (req, res) => {
 app.get("/GetAllOrderActive", async (req, res) => {
     const filter = { status: -1, datetime: -1 }
     try {
-        var getOrder = await getThisOrder.find({ status: { $in: [1, 2, 4] } }).sort(filter)
+        var getOrder = await getThisOrder.find({ status: { $in: [1, 2, 2.1, 2.3, 4] } }).sort(filter)
         if (req.query.date) {
             const dateHa = new Date(req.query.date)
             let today = new Date(dateHa)
@@ -1741,6 +1764,54 @@ app.get("/GetCategoryMenu", async (req, res) => {
             }
         }
 
+        results.result = getIta.slice(start, end)
+        res.send({ results });
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+app.post("/ChefWantCancel", (req, res) => {
+    try {
+        console.log(req.body);
+        getThisOrder.updateOne({ _id: req.body.id }, {
+            status: 2.1,
+            kitchenreason: req.body.kitchenreason
+        }).then(() => {
+            res.send("Success")
+        }).catch((err) => {
+            console.log(err);
+        })
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+app.get("/GetChefOrder", async (req, res) => {
+    const filter = { status: -1 }
+    try {
+        const getIta = await getThisOrder.find({ status: { $in: [2, 2.1] } }).sort(filter);
+        const page = parseInt(req.query.page)
+        const limit = parseInt(req.query.limit)
+
+        const start = (page - 1) * limit
+        const end = page * limit
+
+        const results = {}
+        results.allMatch = getIta
+        results.total = getIta.length
+        results.pageCount = Math.ceil(getIta.length / limit)
+
+        if (end < getIta.length) {
+            results.next = {
+                page: page + 1
+            }
+        }
+        if (start > 0) {
+            results.prev = {
+                page: page - 1
+            }
+        }
         results.result = getIta.slice(start, end)
         res.send({ results });
     } catch (e) {

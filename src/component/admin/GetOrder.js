@@ -5,6 +5,7 @@ import axios from "axios";
 import socketIOClient from "socket.io-client";
 import { jwtDecode } from "jwt-decode";
 import Cookies from "universal-cookie";
+import Swal from "sweetalert2";
 
 function GetOrder({ DateInput, filter }) {
     const cookies = new Cookies()
@@ -14,6 +15,7 @@ function GetOrder({ DateInput, filter }) {
     const [newOrder, setNewOrder] = useState(false)
     const [orderComplete, setOrderComplete] = useState(false)
     const [cancelByMag, setCancelByMag] = useState(false)
+    const [cancelByChef, setCancelByChef] = useState(false)
     const [cancelOrder, setCancelOrder] = useState(false)
     const [cancelRemove, setCancelRemove] = useState(false)
     const [pendingCancelOrder, setPendingCancelOrder] = useState(false)
@@ -71,6 +73,14 @@ function GetOrder({ DateInput, filter }) {
         setCancelByMag(true)
     }
 
+    function HandleCancelByChef(countTabs) {
+        if (countTabs === "about") {
+            localStorage.removeItem("CountNewCart")
+        }
+        getPagination()
+        setCancelByChef(true)
+    }
+
     useEffect(() => {
         const countTabs = localStorage.getItem('tabs')
         currentPage.current = 1;
@@ -79,6 +89,22 @@ function GetOrder({ DateInput, filter }) {
 
         socketRef.current.on('UpdateStatusOrderSuccess', dataGot => {
             if (dataGot.emp !== decode.userId) {
+                getPagination()
+            }
+        })
+
+        socketRef.current.on('ChefWantCancelSuccess', dataGot => {
+            HandleCancelByChef(countTabs)
+        })
+
+        socketRef.current.on('ChefWantCancelSuccess2', dataGot => {
+            if (dataGot.mag === decode.userId) {
+                Swal.fire(
+                    'Send to chef success!',
+                    "",
+                    'success'
+                ).then(() => window.location.reload())
+            } else {
                 getPagination()
             }
         })
@@ -159,6 +185,11 @@ function GetOrder({ DateInput, filter }) {
                 setNewOrder(false)
             }, 1500);
         }
+        if (cancelByChef) {
+            setTimeout(() => {
+                setCancelByChef(false)
+            }, 1500);
+        }
         if (cancelOrder) {
             setTimeout(() => {
                 setCancelOrder(false)
@@ -184,7 +215,7 @@ function GetOrder({ DateInput, filter }) {
                 setCancelByMag(false)
             }, 1500);
         }
-    }, [newOrder, cancelOrder, pendingCancelOrder, cancelRemove, orderComplete, cancelByMag])
+    }, [newOrder, cancelOrder, pendingCancelOrder, cancelRemove, orderComplete, cancelByMag, cancelByChef])
 
     function handlePageClick(e) {
         currentPage.current = e.selected + 1
@@ -252,6 +283,11 @@ function GetOrder({ DateInput, filter }) {
                 {cancelByMag ? (
                     <div className="newUserNoti" style={{ backgroundColor: "tomato" }}>
                         <h6>X Order progress canceled by manager!</h6>
+                    </div>
+                ) : null}
+                {cancelByChef ? (
+                    <div className="newUserNoti" style={{ backgroundColor: "tomato" }}>
+                        <h6>X Order canceled by chef!</h6>
                     </div>
                 ) : null}
             </div>

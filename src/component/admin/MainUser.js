@@ -136,7 +136,7 @@ function MainUser() {
 
             <div id="Other" className="tabcontent4">
                 <div className="pt-4">
-                    <GetOtherUser type={2} pipe={3} hype={4} />
+                    <GetOtherUser type={2} type2={2.5} pipe={3} hype={4} />
                 </div>
             </div>
 
@@ -193,23 +193,11 @@ function MainUser() {
                             </thead>
                             <tbody>
                                 {Object.values(dataafter).map((i) => {
-                                    var tookRole = ""
-                                    if (i.role === 1) {
-                                        tookRole = "User"
-                                    } else if (i.role === 2) {
-                                        tookRole = "Employee"
-                                    }
-                                    else if (i.role === 3) {
-                                        tookRole = "Manager"
-                                    }
-                                    else if (i.role === 4) {
-                                        tookRole = "Admin"
-                                    }
                                     return (
                                         <tr key={i._id}>
                                             <td>{i.email}</td>
                                             <td className='thhuhu'>{i.fullname}</td>
-                                            <td className='thhuhu'>{tookRole}</td>
+                                            <td className='thhuhu'>{i.role === 1 ? "User" : i.role === 2 ? "Order coordinator" : i.role === 2.5 ? "Chef" : i.role === 3 ? "Manager" : i.role === 4 ? "Admin" : null}</td>
                                             <td><button className='btn btn-success'>Detail</button></td>
                                         </tr>
                                     )
@@ -305,7 +293,8 @@ function MainUser() {
                                 <select className={navigator.userAgent.indexOf('Safari') !== -1 && navigator.userAgent.indexOf('Chrome') === -1 ? "cutSaf" : "textDeny"} onChange={(e) => setRole(e.target.value)}>
                                     <option disabled hidden selected>Choose Role</option>
                                     <option value={3}>Manager</option>
-                                    <option value={2}>Employee</option>
+                                    <option value={2}>Order coordinator</option>
+                                    <option value={2.5}>Chef</option>
                                 </select>
                             </div>
                         </div>

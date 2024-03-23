@@ -4,7 +4,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import ReactPaginate from 'react-paginate';
 
-function GetOtherUser({ type, pipe, hype }) {
+function GetOtherUser({ type, type2, pipe, hype }) {
     const [data, setData] = useState([]);
     const [ModalData, setModalData] = useState([]);
     const [modalOpenDetail, setModalOpenDetail] = useState(false);
@@ -34,6 +34,7 @@ function GetOtherUser({ type, pipe, hype }) {
             url: "https://eatcom.onrender.com/GetAllUser",
             params: {
                 type: type,
+                type2: type2,
                 pipe: pipe,
                 hype: hype,
                 page: currentPage.current,
@@ -100,13 +101,7 @@ function GetOtherUser({ type, pipe, hype }) {
                             <tr style={{ background: "#2C343A", color: "lightgray", verticalAlign: "middle" }}>
                                 <td>{i.email}</td>
                                 <td className="thhuhu">{i.fullname}</td>
-                                {i.role === 4 ? (
-                                    <td className="thhuhu">Admin</td>
-                                ) : i.role === 2 ? (
-                                    <td className="thhuhu">Employee</td>
-                                ) : i.role === 3 ? (
-                                    <td className="thhuhu">Manager</td>
-                                ) : null}
+                                <td className="thhuhu">{i.role === 1 ? "User" : i.role === 2 ? "Order coordinator" : i.role === 2.5 ? "Chef" : i.role === 3 ? "Manager" : i.role === 4 ? "Admin" : null}</td>
                                 <td><button onClick={() => { setModalData(i); setModalOpenDetail(true) }} className="btn btn-success">Detail</button></td>
                             </tr>
                         </tbody>
