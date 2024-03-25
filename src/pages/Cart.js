@@ -294,7 +294,7 @@ function Cart() {
                         marginRight: "-50%",
                         transform: "translate(-50%, -50%)",
                         backgroundColor: "white",
-                        width: "500px",
+                        width: window.innerWidth > 575 ? "500px" : "85vw",
                         height: "auto",
                         zIndex: 999,
                         overflow: "hidden"
