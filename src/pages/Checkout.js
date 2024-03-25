@@ -379,7 +379,7 @@ function Checkout() {
                                 <div className="d-block mb-1">
                                     <div className="custom-control custom-radio">
                                         <input onInput={() => setCheckoutState({ Card: true })} id="credit" name="paymentMethod" type="radio" className="custom-control-input" required />
-                                        <label className="custom-control-label" htmlFor="credit"> ATM</label>
+                                        <label className="custom-control-label" htmlFor="credit"> E-wallet</label>
                                     </div>
                                     <div className="custom-control custom-radio">
                                         <input onInput={() => setCheckoutState({ Card: false })} id="debit" name="paymentMethod" type="radio" className="custom-control-input" required />
@@ -510,7 +510,7 @@ function Checkout() {
                                     </>
                                 ) : null}
                                 {checkoutState.paypal ? null : (
-                                    <button form="checkoutForm" className="btn btn-primary w-100 p-2 resCheckoutB2 mt-4" type="submit">Confirm</button>
+                                    <button className="btn btn-primary w-100 p-2 resCheckoutB2 mt-4" type="submit">Confirm</button>
                                 )}
                                 {checkoutState.paypal ? (
                                     <div className="mt-4 resCheckoutB2 w-100">
