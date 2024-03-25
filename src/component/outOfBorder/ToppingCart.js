@@ -107,15 +107,15 @@ function ToppingCart({ cate, indexMain }) {
                     z.foodcategory === cate ? (
                         <Fragment key={z._id}>
                             <div className='d-flex justify-content-between w-100' style={{ gap: 20 }}>
-                                <div style={{ width: "15%" }}>
+                                <div style={{ width: window.innerWidth > 575 ? "15%" : "30%" }}>
                                     <img src={z.foodimage} width={"100%"} height={"65%"} alt='' />
                                 </div>
                                 <div style={{ width: "65%" }}>
-                                    <p className='m-0'><b>{z.foodname}</b></p>
+                                    <p className='m-0 cutTextRightNow0'><b>{z.foodname}</b></p>
                                     <p className="cutTextRightNow" style={{ fontSize: 15, color: "gray" }}>{z.fooddescription}</p>
                                 </div>
-                                <p style={{ width: "10%", textAlign: "center" }}>{VND.format(z.foodprice)}</p>
-                                <div style={{ width: "10%", textAlign: "center", position: "relative" }}>
+                                <p style={{ width: window.innerWidth > 575 ? "10%" : "15%", textAlign: "center" }}>{VND.format(z.foodprice)}</p>
+                                <div style={{ width: window.innerWidth > 575 ? "10%" : "15%", textAlign: "center", position: "relative" }}>
                                     {topWrap?.includes(z._id) ? (
                                         <input defaultChecked id="checkHut" onClick={(e) => chooseTopping(e, z._id)} style={{ opacity: z.foodquantity < 1 ? 0.5 : 1, pointerEvents: z.foodquantity < 1 ? "none" : "auto", width: 20, height: 20, accentColor: "#FEA116" }} type="checkbox" />
                                     ) : (
