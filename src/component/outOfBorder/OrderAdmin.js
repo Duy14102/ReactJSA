@@ -28,7 +28,11 @@ function OrderAdmin({ Data, checkBack }) {
         modalOpenDetail4: false,
         secondDoor: false,
         secondDoorState: null,
+        deliverState: null,
+        driverInfo: {},
         seeMore: null,
+        changeMerge: null,
+        changeMerge2: null,
         reject: false,
     })
     const socketRef = useRef();
@@ -109,6 +113,10 @@ function OrderAdmin({ Data, checkBack }) {
             }
         })
 
+        socketRef.current.on('ShippingReadySuccess', dataGot => {
+            setOrderAdminState({ changeMerge: null, changeMerge2: null })
+        })
+
         return () => {
             socketRef.current.disconnect();
         };
@@ -169,10 +177,11 @@ function OrderAdmin({ Data, checkBack }) {
         socketRef.current.emit('DenyOrderSocket', data)
     }
 
-    // const completeOrder = (type) => {
-    //     const data = { id: orderAdminState.ModalData._id, userid: orderAdminState.ModalData?.user[0].id, date: Date.now('vi'), status: 5, type: type, empid: decode.userId }
-    //     socketRef.current.emit('CompleteOrderByEmpSocket', data)
-    // }
+    const shippingOrder = (id, address, phonenumber, name) => {
+        setOrderAdminState({ changeMerge2: id })
+        const data = { id: id, mag: decode.userId, address: address, phonenumber: phonenumber, name: name }
+        socketRef.current.emit('ShippingReadySocket', data)
+    }
 
     const VND = new Intl.NumberFormat('vi-VN', {
         style: 'currency',
@@ -233,7 +242,7 @@ function OrderAdmin({ Data, checkBack }) {
                         zIndex: 999
                     },
                 }}>
-                {orderAdminState.spinner ? (
+                {orderAdminState.spinner || orderAdminState.changeMerge2 === orderAdminState.ModalData._id ? (
                     <div style={{ background: "rgba(255, 255, 255, 0.6)" }} id="spinner" className="show position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
                         <div className="spinner-border text-primary" style={{ width: 3 + "rem", height: 3 + "rem" }} role="status">
                             <span className="sr-only"></span>
@@ -355,7 +364,7 @@ function OrderAdmin({ Data, checkBack }) {
                     </div>
                 ) : null}
                 {orderAdminState.ModalData.status === 2.3 ? (
-                    <button className="btn btn-success">Shipping</button>
+                    <button onClick={() => shippingOrder(orderAdminState.ModalData._id, orderAdminState.ModalData.address, orderAdminState.ModalData.phonenumber, orderAdminState.ModalData.user[0].fullname)} className="btn btn-success">Shipping</button>
                 ) : orderAdminState.ModalData.status === 2.1 ? (
                     <button onClick={() => { setOrderAdminState({ secondDoor: true, secondDoorState: 6 }); setModalOpenDetail2(false) }} className="btn btn-info">to chef</button>
                 ) : null}
@@ -385,6 +394,25 @@ function OrderAdmin({ Data, checkBack }) {
                             ) : null}
                         </div>
                         <p>Reason : {orderAdminState.ModalData.denyreason}</p>
+                    </>
+                ) : null}
+                {orderAdminState.ModalData.status === 5.1 ? (
+                    <>
+                        <p>🕒 Driver is coming to picked up items</p>
+                        <div className="d-flex justify-content-between align-items-center">
+                            <p>Name: {orderAdminState?.driverInfo.name}</p>
+                            <p>Phone: {orderAdminState?.driverInfo.phone}</p>
+                        </div>
+                        <div className="d-flex justify-content-between align-items-center">
+                            <p>Status: {orderAdminState?.deliverState}</p>
+                            <p>Plate: {orderAdminState?.driverInfo.plateNumber}</p>
+                        </div>
+                        <div className="d-flex justify-content-center my-3">
+                            <div className="xvRange">
+                                <div style={{ left: orderAdminState.deliverState === "Driver is coming" ? "22.5%" : orderAdminState.deliverState === "Driver picked items" ? "65.5%" : null }} className="sonXvRange">🚴</div>
+                                <div style={{ width: orderAdminState.deliverState === "Driver is coming" ? "27%" : orderAdminState.deliverState === "Driver picked items" ? "70%" : null }} className="sonXvRange2"></div>
+                            </div>
+                        </div>
                     </>
                 ) : null}
                 {orderAdminState.Accept ? (

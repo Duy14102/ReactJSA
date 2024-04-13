@@ -58,6 +58,10 @@ function GetOrderHistory({ DateInput, filter }) {
             }
         })
 
+        socketRef.current.on('CancelOrderTransSuccess', dataGot => {
+            HandleCancel()
+        })
+
         return () => {
             socketRef.current.disconnect();
         };

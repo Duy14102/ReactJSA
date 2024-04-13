@@ -2,6 +2,9 @@
 const express = require('express');
 const http = require("http");
 const https = require("https")
+const NodeGeocoder = require('node-geocoder');
+const axios = require("axios");
+const CryptoJS = require("crypto-js");
 const app = express();
 const server = http.createServer(app);
 // Connect to MongoDB
@@ -272,20 +275,12 @@ socketIo.on("connection", (socket) => {
 
     //Complete Order
     socket.on("CompleteOrderByEmpSocket", function (data) {
-        if (data.type === 1) {
-            getThisOrder.updateOne({ _id: data.id }, {
-                completeAt: data.date,
-                status: data.status,
-            }).then(() => socketIo.emit("CompleteOrderSuccess", { data: data?.userid, emp: data?.empid }))
-                .catch(() => socketIo.emit("CompleteOrderFail", { emp: data?.empid }))
-        } else if (data.type === 2) {
-            getThisOrder.updateOne({ _id: data.id }, {
-                completeAt: data.date,
-                status: data.status,
-                "paymentmethod.status": 2
-            }).then(() => socketIo.emit("CompleteOrderSuccess", { data: data?.userid, emp: data?.empid }))
-                .catch(() => socketIo.emit("CompleteOrderFail", { emp: data?.empid }))
-        }
+        getThisOrder.updateOne({ _id: data.id }, {
+            completeAt: data.date,
+            status: data.status,
+            "paymentmethod.status": 2
+        }).then(() => socketIo.emit("CompleteOrderSuccess", { data: data?.userid, emp: data?.empid }))
+            .catch(() => socketIo.emit("CompleteOrderFail", { emp: data?.empid }))
     })
 
     //Deny Order status
@@ -754,7 +749,130 @@ socketIo.on("connection", (socket) => {
         })
     })
 
+    //Ready to shipping
+    socket.on("ShippingReadySocket", async function (data) {
+        // Get coordinate
+        const options = {
+            provider: 'opencage',
+            fetch: null, // Optional depending on the providers
+            apiKey: process.env.REACT_APP_opencageKey, // for Mapquest, OpenCage, APlace, Google Premier
+            formatter: null // 'gpx', 'string', ...
+        };
+        const geocoder = NodeGeocoder(options);
+        const coorRes = await geocoder.geocode({
+            address: `${data.address}`,
+            countryCode: 'Vietnam',
+            limit: 1
+        });
+
+        // Lalamove handling
+        const API_KEY = process.env.REACT_APP_lalamoveKey;
+        const SECRET = process.env.REACT_APP_lalamoveSecret;
+
+        axios.defaults.baseURL = "https://rest.sandbox.lalamove.com"; // URL to Lalamove Sandbox API
+        const time = new Date().getTime().toString();
+        const region = "VN";
+        const method = "POST";
+        const path = "/v3/quotations";
+
+        const body = JSON.stringify({
+            data: {
+                serviceType: "MOTORCYCLE",
+                specialRequests: [],
+                language: "en_VN",
+                stops: [
+                    {
+                        coordinates: {
+                            lat: "20.99495",
+                            lng: "105.86195",
+                        },
+                        address: "18 Đ. Tam Trinh, Mai Động, Hai Bà Trưng, Hà Nội, Việt Nam",
+                    },
+                    {
+                        coordinates: {
+                            lat: `${coorRes[0].latitude}`,
+                            lng: `${coorRes[0].longitude}`,
+                        },
+                        address: `${coorRes[0]?.streetName}, ${coorRes[0]?.city}, Việt Nam`,
+                    },
+                ],
+            }
+        });
+
+        const rawSignature = `${time}\r\n${method}\r\n${path}\r\n\r\n${body}`;
+        const SIGNATURE = CryptoJS.HmacSHA256(rawSignature, SECRET).toString();
+
+        axios.post(path, body, {
+            headers: {
+                "Content-type": "application/json; charset=utf-8",
+                "Authorization": `hmac ${API_KEY}:${time}:${SIGNATURE}`,
+                "Accept": "application/json",
+                "Market": region,
+            },
+        }).then(async (result) => {
+            // Order
+            const phoneCut = data.phonenumber.slice(1)
+            const path2 = "/v3/orders";
+            const body2 = JSON.stringify({
+                data: {
+                    quotationId: `${result.data.data.quotationId}`, // Quotation ID from quotation response
+                    sender: {
+                        stopId: `${result.data.data.stops[0].stopId}`, // Stop Id of the pickup point from quotation response
+                        name: "EatCom",
+                        phone: "+84439877985",
+                    },
+                    recipients: [{
+                        stopId: `${result.data.data.stops[1].stopId}`, // Stop Id of dropoff point from quotation response
+                        name: `${data.name}`,
+                        phone: `+84${phoneCut}`,
+                        remarks: "THIS IS SANDBOX TEST, DO NOT TAKE THIS ORDER!"
+                    }],
+                }
+            });
+            const rawSignature2 = `${time}\r\n${method}\r\n${path2}\r\n\r\n${body2}`;
+            const SIGNATURE2 = CryptoJS.HmacSHA256(rawSignature2, SECRET).toString();
+            axios.post(path2, body2, {
+                headers: {
+                    "Content-type": "application/json; charset=utf-8",
+                    "Authorization": `hmac ${API_KEY}:${time}:${SIGNATURE2}`,
+                    "Accept": "application/json",
+                    "Market": region,
+                },
+            }).then((result) => {
+                getThisOrder.updateOne({ _id: data.id }, {
+                    status: 5.1,
+                    transportation: {
+                        order: result.data.data.orderId,
+                        quotation: result.data.data.quotationId
+                    }
+                }).then(() => {
+                    socketIo.emit("ShippingReadySuccess", { mag: data.mag })
+                })
+            });
+        });
+    })
+
+    //Expired order
+    socket.on("ExpiredOrderSocket", function (data) {
+        getThisOrder.updateOne({ _id: data.id }, {
+            status: 2.3,
+            transportation: null
+        }).then(() => {
+            socketIo.emit("ExpiredOrderSuccess")
+        })
+    })
+
+    //cancel order
+    socket.on("CancelOrderTransSocket", function (data) {
+        getThisOrder.updateOne({ _id: data.id }, {
+            status: 6,
+            denyreason: data.reason
+        }).then(() => {
+            socketIo.emit("CancelOrderTransSuccess")
+        })
+    })
 });
+
 
 // Refresh server
 setInterval(() => {
@@ -762,6 +880,83 @@ setInterval(() => {
         console.log("Refresh");
     })
 }, 600000);
+
+app.post("/CheckAddressOpenCage", async (req, res) => {
+    // Get coordinate
+    const options = {
+        provider: 'opencage',
+        fetch: null, // Optional depending on the providers
+        apiKey: process.env.REACT_APP_opencageKey, // for Mapquest, OpenCage, APlace, Google Premier
+        formatter: null // 'gpx', 'string', ...
+    };
+    const geocoder = NodeGeocoder(options);
+    const coorRes = await geocoder.geocode({
+        address: `${req.body.address}`,
+        countryCode: 'Vietnam',
+        limit: 1
+    });
+    if (coorRes[0].country !== "Vietnam" || coorRes[0].city !== "Hà Nội") {
+        res.status(500).send({
+            message: "Incorrect"
+        })
+    } else {
+        res.status(201).send({
+            message: "Correct"
+        })
+    }
+})
+
+app.post("/CheckOrderInLalamove", (req, res) => {
+    const API_KEY = process.env.REACT_APP_lalamoveKey;
+    const SECRET = process.env.REACT_APP_lalamoveSecret;
+
+    axios.defaults.baseURL = "https://rest.sandbox.lalamove.com"; // URL to Lalamove Sandbox API
+    const time = new Date().getTime().toString();
+    const region = "VN";
+    const method = "GET";
+    const path = `/v3/orders/${req.body.id}`;
+    const rawSignature = `${time}\r\n${method}\r\n${path}\r\n\r\n`;
+    const SIGNATURE = CryptoJS.HmacSHA256(rawSignature, SECRET).toString();
+
+    axios.get(path, {
+        headers: {
+            "Content-type": "application/json; charset=utf-8",
+            "Authorization": `hmac ${API_KEY}:${time}:${SIGNATURE}`,
+            "Accept": "application/json",
+            "Market": region,
+        }, body: {
+            "isPODEnabled": true
+        }
+    }).then(async (result) => {
+        res.send(result.data.data)
+    })
+})
+
+app.post("/CheckDriverInLalamove", (req, res) => {
+    const API_KEY = process.env.REACT_APP_lalamoveKey;
+    const SECRET = process.env.REACT_APP_lalamoveSecret;
+
+    axios.defaults.baseURL = "https://rest.sandbox.lalamove.com"; // URL to Lalamove Sandbox API
+    const time = new Date().getTime().toString();
+    const region = "VN";
+    const method = "GET";
+    const path = `/v3/orders/${req.body.id}/drivers/${req.body.driverId}`;
+    const rawSignature = `${time}\r\n${method}\r\n${path}\r\n\r\n`;
+    const SIGNATURE = CryptoJS.HmacSHA256(rawSignature, SECRET).toString();
+
+    axios.get(path, {
+        headers: {
+            "Content-type": "application/json; charset=utf-8",
+            "Authorization": `hmac ${API_KEY}:${time}:${SIGNATURE}`,
+            "Accept": "application/json",
+            "Market": region,
+        }, body: {
+            "isPODEnabled": true
+        }
+    }).then(async (result) => {
+        res.send(result.data.data)
+    })
+})
 
 //GetBgHero
 app.get("/GetHeroUI", async (req, res) => {
@@ -1499,7 +1694,7 @@ app.get("/GetAllOrderHistory", async (req, res) => {
 app.get("/GetAllOrderActive", async (req, res) => {
     const filter = { status: -1, datetime: -1 }
     try {
-        var getOrder = await getThisOrder.find({ status: { $in: [1, 2, 2.1, 2.3, 4] } }).sort(filter)
+        var getOrder = await getThisOrder.find({ status: { $in: [1, 2, 2.1, 2.3, 4, 5.1] } }).sort(filter)
         if (req.query.date) {
             const dateHa = new Date(req.query.date)
             let today = new Date(dateHa)
@@ -3246,8 +3441,6 @@ app.post('/VnpayRefund', function (req, res, next) {
         'vnp_IpAddr': vnp_IpAddr,
         'vnp_SecureHash': vnp_SecureHash
     };
-
-    console.log(dataObj);
 
     try {
         request({

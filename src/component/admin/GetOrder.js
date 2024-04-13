@@ -18,6 +18,7 @@ function GetOrder({ DateInput, filter }) {
     const [cancelByChef, setCancelByChef] = useState(false)
     const [cancelOrder, setCancelOrder] = useState(false)
     const [cancelRemove, setCancelRemove] = useState(false)
+    const [expiredOrder, setExpiredOrder] = useState(false)
     const [pendingCancelOrder, setPendingCancelOrder] = useState(false)
     const [checkBack, setCheckBack] = useState(false)
     const socketRef = useRef();
@@ -25,60 +26,39 @@ function GetOrder({ DateInput, filter }) {
     const currentPage = useRef();
     const limit = 9
 
-    function HandleNew(countTabs) {
+    function HandleThings(countTabs, handle) {
         if (countTabs === "about") {
             localStorage.removeItem("CountNewCart")
         }
-        getPagination()
-        setNewOrder(true)
-    }
-
-    function HandleComplete(countTabs) {
-        if (countTabs === "about") {
-            localStorage.removeItem("CountNewCart")
+        switch (handle) {
+            case "cancelByChef":
+                setCancelByChef(true)
+                break;
+            case "cancelByMag":
+                setCancelByMag(true)
+                break;
+            case "cancelOrder":
+                setCancelOrder(true)
+                break;
+            case "cancelRemove":
+                setCancelRemove(true)
+                break;
+            case "pendingCancel":
+                setPendingCancelOrder(true)
+                break;
+            case "complete":
+                setOrderComplete(true)
+                break;
+            case "new":
+                setNewOrder(true)
+                break;
+            case "expiredOrder":
+                setExpiredOrder(true)
+                break;
+            default:
+                break;
         }
         getPagination()
-        setOrderComplete(true)
-    }
-
-    function HandlePendingCancel(countTabs) {
-        if (countTabs === "about") {
-            localStorage.removeItem("CountNewCart")
-        }
-        getPagination()
-        setPendingCancelOrder(true)
-    }
-
-    function HandleCancelRemove(countTabs) {
-        if (countTabs === "about") {
-            localStorage.removeItem("CountNewCart")
-        }
-        getPagination()
-        setCancelRemove(true)
-    }
-
-    function HandleCancel(countTabs) {
-        if (countTabs === "about") {
-            localStorage.removeItem("CountNewCart")
-        }
-        getPagination()
-        setCancelOrder(true)
-    }
-
-    function HandleCancelByMag(countTabs) {
-        if (countTabs === "about") {
-            localStorage.removeItem("CountNewCart")
-        }
-        getPagination()
-        setCancelByMag(true)
-    }
-
-    function HandleCancelByChef(countTabs) {
-        if (countTabs === "about") {
-            localStorage.removeItem("CountNewCart")
-        }
-        getPagination()
-        setCancelByChef(true)
     }
 
     useEffect(() => {
@@ -94,7 +74,7 @@ function GetOrder({ DateInput, filter }) {
         })
 
         socketRef.current.on('ChefWantCancelSuccess', dataGot => {
-            HandleCancelByChef(countTabs)
+            HandleThings(countTabs, "cancelByChef")
         })
 
         socketRef.current.on('ChefWantCancelSuccess2', dataGot => {
@@ -110,35 +90,39 @@ function GetOrder({ DateInput, filter }) {
         })
 
         socketRef.current.on('CustomerWantCancel', dataGot => {
-            HandlePendingCancel(countTabs)
+            HandleThings(countTabs, "pendingCancel")
         })
 
         socketRef.current.on('CompleteOrderSuccess', dataGot => {
             if (decode.userRole === 3) {
-                HandleComplete()
+                HandleThings(countTabs, "complete")
             }
         })
 
         socketRef.current.on('CancelRequestFourSuccess', dataGot => {
-            HandleCancelRemove(countTabs)
+            HandleThings(countTabs, "cancelRemove")
         })
 
         socketRef.current.on('PaidCodSuccess', dataGot => {
-            HandleNew(countTabs)
+            HandleThings(countTabs, "new")
         })
 
         socketRef.current.on('PaidPaypalSuccess', dataGot => {
-            HandleNew(countTabs)
+            HandleThings(countTabs, "new")
         })
 
         socketRef.current.on('PaidVnpaySuccess', dataGot => {
-            HandleNew(countTabs)
+            HandleThings(countTabs, "new")
         })
 
         socketRef.current.on('CancelVnpaySuccess', dataGot => {
             if (decode.userRole === 3) {
-                HandleCancel(countTabs)
+                HandleThings(countTabs, "cancelOrder")
             }
+        })
+
+        socketRef.current.on('CancelOrderTransSuccess', dataGot => {
+            HandleThings(countTabs, "cancelOrder")
         })
 
         socketRef.current.on('DenyOrderNormalSuccess', dataGot => {
@@ -163,14 +147,30 @@ function GetOrder({ DateInput, filter }) {
 
         socketRef.current.on('CancelByMagNormalSuccess', dataGot => {
             if (decode.userId === dataGot.emp) {
-                HandleCancelByMag(countTabs)
+                HandleThings(countTabs, "cancelByMag")
             }
         })
 
         socketRef.current.on('CancelByMagPaidSuccess', dataGot => {
             if (decode.userId === dataGot.emp) {
-                HandleCancelByMag(countTabs)
+                HandleThings(countTabs, "cancelByMag")
             }
+        })
+
+        socketRef.current.on('ShippingReadySuccess', dataGot => {
+            if (dataGot.mag === decode.userId) {
+                Swal.fire(
+                    'Sended to transportation!',
+                    "",
+                    'success'
+                ).then(() => window.location.reload())
+            } else {
+                getPagination()
+            }
+        })
+
+        socketRef.current.on('ExpiredOrderSuccess', dataGot => {
+            HandleThings(countTabs, "expiredOrder")
         })
 
         return () => {
@@ -215,7 +215,12 @@ function GetOrder({ DateInput, filter }) {
                 setCancelByMag(false)
             }, 1500);
         }
-    }, [newOrder, cancelOrder, pendingCancelOrder, cancelRemove, orderComplete, cancelByMag, cancelByChef])
+        if (expiredOrder) {
+            setTimeout(() => {
+                setExpiredOrder(false)
+            }, 1500);
+        }
+    }, [newOrder, cancelOrder, pendingCancelOrder, cancelRemove, orderComplete, cancelByMag, cancelByChef, expiredOrder])
 
     function handlePageClick(e) {
         currentPage.current = e.selected + 1
@@ -288,6 +293,11 @@ function GetOrder({ DateInput, filter }) {
                 {cancelByChef ? (
                     <div className="newUserNoti" style={{ backgroundColor: "tomato" }}>
                         <h6>X Order canceled by chef!</h6>
+                    </div>
+                ) : null}
+                {expiredOrder ? (
+                    <div className="newUserNoti" style={{ backgroundColor: "tomato" }}>
+                        <h6>X Order expired!</h6>
                     </div>
                 ) : null}
             </div>

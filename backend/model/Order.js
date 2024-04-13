@@ -1,6 +1,11 @@
 const mongoose = require("mongoose");
 
 const OrderSchema = new mongoose.Schema({
+    transportation: {
+        order: String,
+        quotation: String
+    },
+
     user: {
         default: null,
         type: Array

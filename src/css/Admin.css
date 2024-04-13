@@ -435,7 +435,32 @@
 }
 
 .JKoliver {
+    position: relative;
     width: 47%;
+}
+
+/* range */
+.xvRange {
+    width: 70%;
+    height: 7px;
+    background: #ccc;
+    border-radius: 50px;
+    position: relative;
+}
+
+.sonXvRange {
+    position: absolute;
+    font-size: 35px;
+    top: -22px;
+    transform: scale(-1, 1);
+    left: -10px;
+}
+
+.sonXvRange2 {
+    background: green;
+    width: 3%;
+    height: 100%;
+    border-radius: 50px;
 }
 
 .subOver .content .page .grid .card-verticle {

@@ -15,6 +15,7 @@ function Checkout() {
     const havePhone = []
     const user = []
     const ahoe = localStorage.getItem("complete")
+    const checkPhone = /(((\+|)84)|0)(3|5|7|8|9)+([0-9]{8})\b/
     const [checkoutState, setCheckoutState] = useReducer((prev, next) => ({
         ...prev, ...next
     }), {
@@ -25,6 +26,9 @@ function Checkout() {
         checkCardReal: false,
         vnpay: false,
         paypal: false,
+        phoneWrong: false,
+        addressWrong: false,
+        loadBit: false,
         Firstname: "",
         Lastname: "",
         phonenumber: "",
@@ -209,61 +213,75 @@ function Checkout() {
     const handleSubmit = (e) => {
         // prevent the form from refreshing the whole page
         e.preventDefault();
-        const configuration = {
-            method: "post",
-            url: "https://eatcom.onrender.com/UploadOrder",
-            data: {
-                user: user,
-                phonenumber: checkoutState.phonenumber,
-                address: checkoutState.address,
-                paymentmethod,
-                shippingfee: parseInt(localStorage.getItem("shippingFee")),
-                orderitems
-            }
-        }
         if (checkoutState.Card) {
             if (!checkoutState.vnpay && !checkoutState.paypal) {
                 setCheckoutState({ checkCardReal: true })
                 return false
             }
         }
-        axios(configuration)
-            .then((result) => {
-                if (checkoutState.SaveAddress) {
-                    const decode = jwtDecode(token);
-                    const configuration = {
-                        method: "post",
-                        url: "https://eatcom.onrender.com/AddAddressUser",
-                        data: {
-                            id: decode.userId,
-                            address: havePhone
+        const miniConfiguration = {
+            method: "post",
+            url: "https://eatcom.onrender.com/CheckAddressOpenCage",
+            data: {
+                address: checkoutState.address
+            }
+        }
+        setCheckoutState({ loadBit: true })
+        axios(miniConfiguration).then(() => {
+            const configuration = {
+                method: "post",
+                url: "https://eatcom.onrender.com/UploadOrder",
+                data: {
+                    user: user,
+                    phonenumber: checkoutState.phonenumber,
+                    address: checkoutState.address,
+                    paymentmethod,
+                    shippingfee: parseInt(localStorage.getItem("shippingFee")),
+                    orderitems
+                }
+            }
+            axios(configuration)
+                .then((result) => {
+                    if (checkoutState.SaveAddress) {
+                        const decode = jwtDecode(token);
+                        const configuration = {
+                            method: "post",
+                            url: "https://eatcom.onrender.com/AddAddressUser",
+                            data: {
+                                id: decode.userId,
+                                address: havePhone
+                            }
                         }
+                        axios(configuration)
+                            .then(() => {
+                                console.log("success");
+                            }).catch((e) => {
+                                console.log(e);
+                            })
                     }
-                    axios(configuration)
-                        .then(() => {
-                            console.log("success");
-                        }).catch((e) => {
-                            console.log(e);
-                        })
-                }
-                var data = null
-                if (candecode) {
-                    data = { orderid: result.data.message, userid: candecode.userId }
-                } else {
-                    data = { orderid: result.data.message }
-                }
-                window.history.replaceState({}, document.title)
-                localStorage.removeItem("cart")
-                if (checkoutState.Card && checkoutState.vnpay) {
-                    VnpayCheckout(data)
-                } else {
-                    localStorage.setItem("complete", JSON.stringify(data))
-                    window.location.href = "/OrderComplete";
-                }
-            })
-            .catch((e) => {
-                console.log(e);
-            });
+                    var data = null
+                    if (candecode) {
+                        data = { orderid: result.data.message, userid: candecode.userId }
+                    } else {
+                        data = { orderid: result.data.message }
+                    }
+                    window.history.replaceState({}, document.title)
+                    localStorage.removeItem("cart")
+                    if (checkoutState.Card && checkoutState.vnpay) {
+                        VnpayCheckout(data)
+                    } else {
+                        localStorage.setItem("complete", JSON.stringify(data))
+                        window.location.href = "/OrderComplete";
+                    }
+                })
+                .catch((e) => {
+                    setCheckoutState({ loadBit: true })
+                    console.log(e);
+                });
+        }).catch(() => {
+            setCheckoutState({ loadBit: true })
+            setCheckoutState({ addressWrong: true })
+        })
     }
 
     const handleCheckbox = (e) => {
@@ -330,8 +348,7 @@ function Checkout() {
                     <div className="pb-5 text-center businessWay">
                         <NavLink className="joiboy" to="/Cart"> Shopping Cart</NavLink> <span className='slash'>˃</span> <NavLink className="joiboy" to="/Checkout" >Checkout Details</NavLink> <span className='slash'>˃</span> {ahoe ? (<NavLink className="joiboy" to="/">Order Complete</NavLink>) : (<NavLink className="joiboy" style={{ pointerEvents: "none" }} to="/">Order Complete</NavLink>)}
                     </div>
-
-                    <form className="flexAble2" onSubmit={(e) => handleSubmit(e)}>
+                    <form style={{ position: "relative" }} className="flexAble2" onSubmit={(e) => handleSubmit(e)}>
                         <div style={{ borderLeftWidth: window.innerWidth > 991 ? 1 : null, borderLeftColor: window.innerWidth > 991 ? "lightgray" : null, borderLeftStyle: window.innerWidth > 991 ? "solid" : null }} className="takeSecondUI">
                             <h4 className="d-flex justify-content-between align-items-center mb-3">
                                 <span>Your order</span>
@@ -361,14 +378,6 @@ function Checkout() {
                                                 mero(i, index)
                                             )
                                         })}
-                                        <tr className="text-center text-nowrap">
-                                            <td colSpan={3}><b>Shipping</b></td>
-                                            {parseInt(localStorage.getItem("shippingFee")) === 30000 ? (
-                                                <td>{VND.format(30000)}</td>
-                                            ) : (
-                                                <td><del>{VND.format(30000)}</del> - <b style={{ color: "#FEA116" }}>{VND.format(0)}</b></td>
-                                            )}
-                                        </tr>
                                         <tr style={{ textAlign: "center", fontWeight: "bold" }}>
                                             <td colSpan={3}>Fulltotal</td>
                                             <td style={{ color: "#FEA116" }}>{VND.format(total2)}</td>
@@ -409,7 +418,7 @@ function Checkout() {
                                 ) : null}
                             </ul>
                             {checkoutState.paypal ? null : (
-                                <button className="btn btn-primary w-100 p-2 resCheckoutB" type="submit">Confirm</button>
+                                <button style={checkoutState.phonenumber !== "" && !checkPhone.test(checkoutState.phonenumber) ? { opacity: 0.5, pointerEvents: "none" } : null} className="btn btn-primary w-100 p-2 resCheckoutB" type="submit">Confirm</button>
                             )}
                             {checkoutState.paypal ? (
                                 <div className="mt-4 resCheckoutB">
@@ -444,14 +453,19 @@ function Checkout() {
                                         <div className="mb-3 inputC">
                                             <label htmlFor="email">Phone Number</label>
                                             <input type="number" name="phonenumber" value={checkoutState.phonenumber} onInput={(e) => setCheckoutState({ phonenumber: e.target.value })} className="form-control" id="email" placeholder="0123456789" required />
+                                            {checkoutState.phonenumber !== "" && !checkPhone.test(checkoutState.phonenumber) ? (
+                                                <p className="text-danger">Phone number invalid!</p>
+                                            ) : null}
                                         </div>
                                     </>
                                 )}
-
                                 {candecode?.userRole === 1.5 ? (
                                     <div className="mb-3 inputC">
                                         <label htmlFor="email">Phone Number</label>
                                         <input type="number" name="phonenumber" value={checkoutState.phonenumber} onInput={(e) => setCheckoutState({ phonenumber: e.target.value })} className="form-control" id="email" placeholder="0123456789" required />
+                                        {checkoutState.phonenumber !== "" && !checkPhone.test(checkoutState.phonenumber) ? (
+                                            <p className="text-danger">Phone number invalid!</p>
+                                        ) : null}
                                     </div>
                                 ) : null}
 
@@ -479,6 +493,9 @@ function Checkout() {
                                     <div className="mb-3 inputC">
                                         <label htmlFor="address">Address</label>
                                         <input type="text" name="address" value={checkoutState.address} onChange={(e) => setCheckoutState({ address: e.target.value })} className="form-control" id="address" placeholder="123 - Ha Noi - Vietnam" required />
+                                        {checkoutState.addressWrong ? (
+                                            <p className="text-danger">Address invalid, We only deliver within Hanoi !</p>
+                                        ) : null}
                                     </div>
                                 )}
 
@@ -510,7 +527,7 @@ function Checkout() {
                                     </>
                                 ) : null}
                                 {checkoutState.paypal ? null : (
-                                    <button className="btn btn-primary w-100 p-2 resCheckoutB2 mt-4" type="submit">Confirm</button>
+                                    <button style={checkoutState.phonenumber !== "" && !checkPhone.test(checkoutState.phonenumber) ? { opacity: 0.5, pointerEvents: "none" } : null} className="btn btn-primary w-100 p-2 resCheckoutB2 mt-4" type="submit">Confirm</button>
                                 )}
                                 {checkoutState.paypal ? (
                                     <div className="mt-4 resCheckoutB2 w-100">
@@ -529,6 +546,13 @@ function Checkout() {
                                 ) : null}
                             </div>
                         </div>
+                        {checkoutState.loadBit ? (
+                            <div id="spinner" className="show position-absolute translate-middle top-100 start-50 d-flex align-items-center justify-content-center">
+                                <div className="spinner-border text-primary" style={{ width: 3 + "rem", height: 3 + "rem" }} role="status">
+                                    <span className="sr-only"></span>
+                                </div>
+                            </div>
+                        ) : null}
                     </form>
                 </div>
             </div>

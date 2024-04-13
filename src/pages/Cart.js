@@ -27,9 +27,6 @@ function Cart() {
     const pushData = []
     useEffect(() => {
         dataHandler()
-        if (!localStorage.getItem("shippingFee")) {
-            localStorage.setItem("shippingFee", 30000)
-        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
@@ -96,7 +93,7 @@ function Cart() {
         }
     }
 
-    var fulltotal = 0, inTotal = 0, enTotal = 0, totalX = 0
+    var inTotal = 0, enTotal = 0, totalX = 0
     const mero = (i, e, index, topping, dataX) => {
         var countTotal = 0
         const dataToPush = { data: i, quantity: e, topping: topping }
@@ -110,7 +107,6 @@ function Cart() {
         }
 
         totalX += countTotal
-        fulltotal = totalX + parseInt(localStorage.getItem("shippingFee"))
         return (
             <tr key={index}>
                 <td className="text-center" style={{ width: window.innerWidth > 575 ? null : "10%" }}>
@@ -184,14 +180,6 @@ function Cart() {
         }
     }, [cartState.appearSuccess, cartState.appearFail])
 
-    function applyCoupon(e) {
-        e.preventDefault()
-        if (cartState.checkCoupon === "duydeptrai") {
-            localStorage.setItem("shippingFee", 0)
-            setCartState({ appearSuccess: true })
-        }
-    }
-
     return (
         <Layout>
             <Header type={"Yes"} />
@@ -220,7 +208,6 @@ function Cart() {
             <div className="bg-white">
                 <div className="container">
                     <div className="pt-4 text-center businessWay">
-
                         <NavLink className="joiboy" to="/Cart">Shopping Cart</NavLink> <span className='slash'>˃</span> <NavLink className="joiboy" to="/Checkout" state={{ valid: pushData }}>Checkout Details</NavLink> <span className='slash'>˃</span> <NavLink style={ahoe ? null : { pointerEvents: "none" }} className="joiboy" to="/OrderComplete">Complete</NavLink>
                     </div>
                     {cartState.checkVal ? (
@@ -250,28 +237,12 @@ function Cart() {
                                         )
                                     })}
                                     <tr className="text-center text-nowrap" style={{ fontSize: 17 }}>
-                                        <td colSpan={window.innerWidth > 575 ? 4 : 3}><b>Shipping</b></td>
-                                        {parseInt(localStorage.getItem("shippingFee")) === 30000 ? (
-                                            <td colSpan={window.innerWidth > 575 ? 4 : 3}>{VND.format(30000)}</td>
-                                        ) : (
-                                            <td colSpan={window.innerWidth > 575 ? 4 : 3}><del>{VND.format(30000)}</del> - <b style={{ color: "#FEA116" }}>{VND.format(0)}</b></td>
-                                        )}
-                                    </tr>
-                                    <tr className="text-center text-nowrap" style={{ fontSize: 17 }}>
                                         <td colSpan={window.innerWidth > 575 ? 4 : 3}><b>Fulltotal</b></td>
-                                        <td style={{ color: "#FEA116" }}><b>{VND.format(fulltotal)}</b></td>
+                                        <td style={{ color: "#FEA116" }}><b>{VND.format(totalX)}</b></td>
                                     </tr>
                                 </tbody>
                             </table>
-                            <div className="d-flex align-items-center justify-content-between mt-3">
-                                {parseInt(localStorage.getItem("shippingFee")) === 30000 ? (
-                                    <div className="inputC">
-                                        <form onSubmit={(e) => applyCoupon(e)} className="d-flex" style={{ gap: 7 }}>
-                                            <input className="p-2" onInput={(e) => setCartState({ checkCoupon: e.target.value })} type="text" placeholder="🏷️ Coupon Code...." required />
-                                            <button type="submit" className="btnCoupon SwitchInBtnCoupon">Apply</button>
-                                        </form>
-                                    </div>
-                                ) : null}
+                            <div className="d-flex align-items-center justify-content-end mt-3">
                                 <NavLink to="/Checkout" state={{ valid: pushData }} className="btnCheckout"><b>Checkout</b></NavLink>
                             </div>
                         </div>

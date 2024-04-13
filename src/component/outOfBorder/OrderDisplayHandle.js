@@ -1,6 +1,8 @@
 import Modal from 'react-modal';
 import CancelByMag from '../admin/CancelByMag';
 import CancelRequest from '../admin/CancelRequest';
+import axios from "axios";
+import { useEffect } from 'react';
 
 function OrderDisplayHandle({ i, datetime, father, setFather, index, decode, socketRef, setModalOpenDetail2, toppingArray, fulltotal, checkBack }) {
     const VND = new Intl.NumberFormat('vi-VN', {
@@ -12,10 +14,6 @@ function OrderDisplayHandle({ i, datetime, father, setFather, index, decode, soc
         const data = { id: e, userid: i?.user[0].id, status: 2, employee: deliverEmployee, orderitems: yolo, empid: decode.userId }
         socketRef.current.emit('UpdateStatusOrderSocket', data)
     }
-    // const completeOrder = (type) => {
-    //     const data = { id: i._id, userid: i?.user[0].id, date: Date.now('vi'), status: 5, type: type, empid: decode.userId }
-    //     socketRef.current.emit('CompleteOrderByEmpSocket', data)
-    // }
     const denyOrderWait = (id) => {
         const data = { id: id, userid: i?.user[0].id, employee: deliverEmployee, status: 6, empid: decode.userId }
         socketRef.current.emit('DenyOrderWaitingSocket', data)
@@ -38,8 +36,86 @@ function OrderDisplayHandle({ i, datetime, father, setFather, index, decode, soc
         socketRef.current.emit('ChefWantCancelSocket', data)
     }
 
+    const shippingOrder = (id, address, phonenumber, name) => {
+        setFather({ changeMerge: id })
+        const data = { id: id, mag: decode.userId, address: address, phonenumber: phonenumber, name: name }
+        socketRef.current.emit('ShippingReadySocket', data)
+    }
+
+    useEffect(() => {
+        if (i.status === 5.1) {
+            setInterval(() => {
+                const configuration = {
+                    method: "post",
+                    url: "https://eatcom.onrender.com/CheckOrderInLalamove",
+                    data: { id: i.transportation.order }
+                }
+                axios(configuration).then((result) => {
+                    console.log(result.data);
+                    if (result.data.status === "EXPIRED") {
+                        const data = { id: i._id }
+                        socketRef.current.emit('ExpiredOrderSocket', data)
+                    }
+                    if (result.data.status === "COMPLETED") {
+                        const data = { id: i._id, userid: i?.user[0].id, date: Date.now('vi'), status: 5, empid: decode.userId }
+                        socketRef.current.emit('CompleteOrderByEmpSocket', data)
+                    }
+                    if (result.data.status === "ASSIGNING_DRIVER") {
+                        setFather({ deliverState: "Finding driver" })
+                    }
+                    if (result.data.status === "PICKED_UP") {
+                        setFather({ deliverState: "Driver picked items" })
+                        const configuration2 = {
+                            method: "post",
+                            url: "https://eatcom.onrender.com/CheckDriverInLalamove",
+                            data: {
+                                id: i.transportation.order,
+                                driverId: result.data.driverId
+                            }
+                        }
+                        axios(configuration2).then((result2) => {
+                            setFather({ driverInfo: result2.data })
+                        })
+                    }
+                    if (result.data.status === "ON_GOING") {
+                        setFather({ deliverState: "Driver is coming" })
+                        const configuration2 = {
+                            method: "post",
+                            url: "https://eatcom.onrender.com/CheckDriverInLalamove",
+                            data: {
+                                id: i.transportation.order,
+                                driverId: result.data.driverId
+                            }
+                        }
+                        axios(configuration2).then((result2) => {
+                            setFather({ driverInfo: result2.data })
+                        })
+                    }
+                    if (result.data.status === "CANCELED") {
+                        const data = { id: i._id, reason: "Driver canceled this order" }
+                        socketRef.current.emit('CancelOrderTransSocket', data)
+                    }
+                    if (result.data.status === "REJECTED") {
+                        const data = { id: i._id, reason: "Driver rejected this order" }
+                        socketRef.current.emit('CancelOrderTransSocket', data)
+                    }
+                }).catch((er) => {
+                    console.log(er);
+                })
+            }, 60000);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [i.status])
+
     return (
-        <div className="JKoliver" style={{ opacity: checkBack ? 0.5 : 1, pointerEvents: checkBack ? "none" : null, marginTop: index > 1 ? 30 : null }}>
+        <div className="JKoliver" style={{ opacity: checkBack || father.changeMerge === i._id ? 0.5 : 1, pointerEvents: checkBack || father.changeMerge === i._id ? "none" : null, marginTop: index > 1 ? 30 : null }}>
+            {father.changeMerge === i._id ? (
+                <div id="spinner" className="show position-absolute translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+                    <div className="spinner-border text-primary" style={{ width: 3 + "rem", height: 3 + "rem" }} role="status">
+                        <span className="sr-only"></span>
+                    </div>
+                </div>
+            ) : null}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "#374148", color: "#fff", padding: 15 }}>
                 <p className="m-0">Id : {i._id}</p>
                 <p className="m-0">Date : {datetime}</p>
@@ -103,8 +179,15 @@ function OrderDisplayHandle({ i, datetime, father, setFather, index, decode, soc
                     ) : null}
                 </div>
                 <div>
-                    <p>Status : {i.status === 1 ? "🔵( pending )" : i.status === 2 ? "🟢( Chef is preparing )" : i.status === 2.1 ? "🟠( Chef canceled )" : i.status === 2.3 ? "🟢( Order ready )" : i.status === 4 ? "⚪( cancel pending )" : null}</p>
+                    {i.status === 5.1 ? (
+                        <p>Status : {father?.deliverState}</p>
+                    ) : (
+                        <p>Status : {i.status === 1 ? "🔵( pending )" : i.status === 2 ? "🟢( Chef is preparing )" : i.status === 2.1 ? "🟠( Chef canceled )" : i.status === 2.3 ? "🟢( Order ready )" : i.status === 4 ? "⚪( cancel pending )" : null}</p>
+                    )}
                     <p>Payment : {i.paymentmethod.method === 1 ? "e-wallet" : i.paymentmethod.method === 2 ? "COD" : null}</p>
+                    {i.status === 5.1 ? (
+                        <button onClick={() => { setModalOpenDetail2(true); setFather({ ModalData: i }) }} className="btn btn-warning inforItKK"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" /></svg></button>
+                    ) : null}
                     {i.status === 1 ? (
                         <div className="d-flex align-items-center" style={{ gap: 10 }}>
                             {father.Accept ? (
@@ -142,7 +225,7 @@ function OrderDisplayHandle({ i, datetime, father, setFather, index, decode, soc
                     ) : null}
                     {i.status === 2.3 ? (
                         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-                            <button className="btn btn-success">Shipping</button>
+                            <button onClick={() => shippingOrder(i._id, i.address, i.phonenumber, i.user[0].fullname)} className="btn btn-success">Shipping</button>
                             <button onClick={() => { setModalOpenDetail2(true); setFather({ ModalData: i }) }} className="btn btn-warning inforItKK"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" /></svg></button>
                         </div>
                     ) : null}
