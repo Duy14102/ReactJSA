@@ -42,7 +42,6 @@ function OrderComplete() {
             }).catch((er) => {
                 console.log(er);
             })
-        localStorage.removeItem("shippingFee")
         if (completeState.remove) {
             setCompleteState({ remove: false })
             return NotFound()
@@ -281,11 +280,7 @@ function OrderComplete() {
                                                         })}
                                                         <tr className="text-center text-nowrap">
                                                             <td colSpan={window.innerWidth > 575 ? 3 : 2}><b>Shipping</b></td>
-                                                            {i.shippingfee === 30000 ? (
-                                                                <td >{VND.format(30000)}</td>
-                                                            ) : (
-                                                                <td><del>{VND.format(30000)}</del> - <b style={{ color: "#FEA116" }}>{VND.format(0)}</b></td>
-                                                            )}
+                                                            <td >{VND.format(i.shippingfee)}</td>
                                                         </tr>
                                                         <tr className="text-center text-nowrap">
                                                             <td colSpan={window.innerWidth > 575 ? 3 : 2}><b>Fulltotal</b></td>

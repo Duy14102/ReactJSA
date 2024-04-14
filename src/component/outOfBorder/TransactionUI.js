@@ -152,14 +152,15 @@ function TransactionUI({ responseCode, ahoe, amount, date, order }) {
                                                         )
                                                     })}
                                                     <tr>
+                                                        <td colSpan={3}><b>Shipping</b></td>
+                                                        <td><b>{VND.format(i.shippingfee)}</b></td>
+                                                    </tr>
+                                                    <tr>
                                                         <td colSpan={3}><b>Full total</b></td>
                                                         <td><b>{VND.format(fulltotal)}</b></td>
                                                     </tr>
                                                 </tbody>
                                             </table>
-                                            {i.shippingfee !== 0 ? (
-                                                <p style={{ color: "gray", textAlign: "start", fontSize: 14 }}>This price has already contain {VND.format(i.shippingfee)} shipping fee !</p>
-                                            ) : null}
                                         </div>
                                     )
                                 })}
@@ -222,14 +223,15 @@ function TransactionUI({ responseCode, ahoe, amount, date, order }) {
                                                     )
                                                 })}
                                                 <tr>
+                                                    <td colSpan={3}><b>Shipping</b></td>
+                                                    <td><b>{VND.format(i.shippingfee)}</b></td>
+                                                </tr>
+                                                <tr>
                                                     <td colSpan={3}><b>Full total</b></td>
                                                     <td><b>{VND.format(fulltotal)}</b></td>
                                                 </tr>
                                             </tbody>
                                         </table>
-                                        {i.shippingfee !== 0 ? (
-                                            <p style={{ color: "gray", textAlign: "start", fontSize: 14 }}>This order already contain {VND.format(i.shippingfee)} shipping fee!</p>
-                                        ) : null}
                                     </div>
                                 )
                             })}

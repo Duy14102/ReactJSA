@@ -38,77 +38,81 @@ function OrderDisplayHandle({ i, datetime, father, setFather, index, decode, soc
 
     const shippingOrder = (id, address, phonenumber, name) => {
         setFather({ changeMerge: id })
-        const data = { id: id, mag: decode.userId, address: address, phonenumber: phonenumber, name: name }
+        const data = { id: id, mag: decode.userId, address: address, phonenumber: phonenumber, name: name, user: i.user[0].id }
         socketRef.current.emit('ShippingReadySocket', data)
+    }
+
+    function doingThing() {
+        const configuration = {
+            method: "post",
+            url: "https://eatcom.onrender.com/CheckOrderInLalamove",
+            data: { id: i.transportation.order }
+        }
+        axios(configuration).then((result) => {
+            if (result.data.status === "EXPIRED") {
+                const data = { id: i._id, user: i.user[0].id }
+                socketRef.current.emit('ExpiredOrderSocket', data)
+            }
+            if (result.data.status === "COMPLETED") {
+                const data = { id: i._id, userid: i?.user[0].id, date: Date.now('vi'), status: 5, empid: decode.userId }
+                socketRef.current.emit('CompleteOrderByEmpSocket', data)
+            }
+            if (result.data.status === "ASSIGNING_DRIVER") {
+                setFather({ deliverState: "Finding driver" })
+            }
+            if (result.data.status === "PICKED_UP") {
+                setFather({ deliverState: "Driver picked items" })
+                const configuration2 = {
+                    method: "post",
+                    url: "https://eatcom.onrender.com/CheckDriverInLalamove",
+                    data: {
+                        id: i.transportation.order,
+                        driverId: result.data.driverId
+                    }
+                }
+                axios(configuration2).then((result2) => {
+                    setFather({ driverInfo: result2.data })
+                })
+            }
+            if (result.data.status === "ON_GOING") {
+                setFather({ deliverState: "Driver is coming" })
+                const configuration2 = {
+                    method: "post",
+                    url: "https://eatcom.onrender.com/CheckDriverInLalamove",
+                    data: {
+                        id: i.transportation.order,
+                        driverId: result.data.driverId
+                    }
+                }
+                axios(configuration2).then((result2) => {
+                    setFather({ driverInfo: result2.data })
+                })
+            }
+            if (result.data.status === "CANCELED") {
+                const data = { id: i._id, reason: "Driver canceled this order", user: i.user[0].id }
+                socketRef.current.emit('CancelOrderTransSocket', data)
+            }
+            if (result.data.status === "REJECTED") {
+                const data = { id: i._id, reason: "Driver rejected this order", user: i.user[0].id }
+                socketRef.current.emit('CancelOrderTransSocket', data)
+            }
+        }).catch((er) => {
+            console.log(er);
+        })
     }
 
     useEffect(() => {
         if (i.status === 5.1) {
+            doingThing()
             setInterval(() => {
-                const configuration = {
-                    method: "post",
-                    url: "https://eatcom.onrender.com/CheckOrderInLalamove",
-                    data: { id: i.transportation.order }
-                }
-                axios(configuration).then((result) => {
-                    console.log(result.data);
-                    if (result.data.status === "EXPIRED") {
-                        const data = { id: i._id }
-                        socketRef.current.emit('ExpiredOrderSocket', data)
-                    }
-                    if (result.data.status === "COMPLETED") {
-                        const data = { id: i._id, userid: i?.user[0].id, date: Date.now('vi'), status: 5, empid: decode.userId }
-                        socketRef.current.emit('CompleteOrderByEmpSocket', data)
-                    }
-                    if (result.data.status === "ASSIGNING_DRIVER") {
-                        setFather({ deliverState: "Finding driver" })
-                    }
-                    if (result.data.status === "PICKED_UP") {
-                        setFather({ deliverState: "Driver picked items" })
-                        const configuration2 = {
-                            method: "post",
-                            url: "https://eatcom.onrender.com/CheckDriverInLalamove",
-                            data: {
-                                id: i.transportation.order,
-                                driverId: result.data.driverId
-                            }
-                        }
-                        axios(configuration2).then((result2) => {
-                            setFather({ driverInfo: result2.data })
-                        })
-                    }
-                    if (result.data.status === "ON_GOING") {
-                        setFather({ deliverState: "Driver is coming" })
-                        const configuration2 = {
-                            method: "post",
-                            url: "https://eatcom.onrender.com/CheckDriverInLalamove",
-                            data: {
-                                id: i.transportation.order,
-                                driverId: result.data.driverId
-                            }
-                        }
-                        axios(configuration2).then((result2) => {
-                            setFather({ driverInfo: result2.data })
-                        })
-                    }
-                    if (result.data.status === "CANCELED") {
-                        const data = { id: i._id, reason: "Driver canceled this order" }
-                        socketRef.current.emit('CancelOrderTransSocket', data)
-                    }
-                    if (result.data.status === "REJECTED") {
-                        const data = { id: i._id, reason: "Driver rejected this order" }
-                        socketRef.current.emit('CancelOrderTransSocket', data)
-                    }
-                }).catch((er) => {
-                    console.log(er);
-                })
+                doingThing()
             }, 60000);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [i.status])
 
     return (
-        <div className="JKoliver" style={{ opacity: checkBack || father.changeMerge === i._id ? 0.5 : 1, pointerEvents: checkBack || father.changeMerge === i._id ? "none" : null, marginTop: index > 1 ? 30 : null }}>
+        <div style={{ opacity: checkBack || father.changeMerge === i._id ? 0.5 : 1, pointerEvents: checkBack || father.changeMerge === i._id ? "none" : null, marginTop: window.innerWidth > 991 && index > 1 ? 30 : window.innerWidth <= 991 && index >= 1 ? 30 : null, width: window.innerWidth > 991 ? "47%" : "100%", position: "relative" }}>
             {father.changeMerge === i._id ? (
                 <div id="spinner" className="show position-absolute translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
                     <div className="spinner-border text-primary" style={{ width: 3 + "rem", height: 3 + "rem" }} role="status">

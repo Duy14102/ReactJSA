@@ -5,7 +5,7 @@ function OrderHistoryHandle({ i, datetime, seeMore, setSeeMore, index, toppingAr
     });
 
     return (
-        <div className="JKoliver" style={{ opacity: checkBack ? 0.5 : 1, pointerEvents: checkBack ? "none" : null }}>
+        <div style={{ opacity: checkBack ? 0.5 : 1, pointerEvents: checkBack ? "none" : null, width: window.innerWidth > 991 ? "47%" : "100%", position: "relative", marginTop: window.innerWidth > 991 && index > 1 ? 30 : window.innerWidth <= 991 && index >= 1 ? 30 : null }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "#374148", color: "#fff", padding: 15 }}>
                 <p className="m-0">Id : {i._id}</p>
                 <p className="m-0">Date : {datetime}</p>

@@ -234,7 +234,7 @@ function Header({ type }) {
                             </NavLink>
                         </div>
                     </div>
-                    <div id="headups" className="nav-item dropdown mulHead Wrinked responSearch">
+                    <div id="headups" className="nav-item dropdown mulHead Wrinked responSearch ms-3">
                         {token ? (
                             candecode.userRole !== 1.5 ? (
                                 Object.values(headerState.GetUser).map((i) => {

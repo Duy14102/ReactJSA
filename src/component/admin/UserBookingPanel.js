@@ -159,9 +159,9 @@ function UserBookingPanel({ id, decode }) {
     return (
         <>
             <h6 className="text-center">Your Booking</h6>
-            <div className="d-flex px-4 pb-3 Lunatic" style={{ gap: 1 + "%" }}>
-                <button id="SickSidekick" onClick={(e) => openCity3(e, "Booking1")} className="noPlusElf tabcclink active">Active</button>
-                <button onClick={(e) => openCity3(e, "Booking2")} className="noPlusElf tabcclink">History</button>
+            <div className="d-flex pb-3 Lunatic" style={{ gap: 1 + "%" }}>
+                <button id="SickSidekick" onClick={(e) => openCity3(e, 'Booking1')} className="noPlusElf tabcclink">Active</button>
+                <button onClick={(e) => openCity3(e, 'Booking2')} className="noPlusElf tabcclink">History</button>
             </div>
             <div className="sideKick" id="Booking1">
                 {Booking.data ? (
@@ -220,74 +220,72 @@ function UserBookingPanel({ id, decode }) {
                         })}
                     </>
                 ) : (
-                    <p className="text-center">Your booking is empty!</p>
+                    <p className="text-center">Your active booking is empty!</p>
                 )}
             </div>
             <div className="sideKick" id="Booking2">
-                <div className="p-4">
-                    {BookingHistory.length > 0 ? (
-                        <>
-                            <table className="table table-bordered solotable text-center">
-                                <thead>
-                                    <tr>
-                                        <th >Name</th>
-                                        <th className="thhuhu">Phone number</th>
-                                        <th className="thhuhu">Date</th>
-                                        <th >Status</th>
-                                        <th ></th>
-                                    </tr>
-                                </thead>
-                                {BookingHistory.map(i => {
-                                    const date = new Date(i.createdAt).toLocaleDateString()
-                                    const time = new Date(i.createdAt).toLocaleTimeString()
-                                    const datetime = date + " - " + time
-                                    var stau = ""
-                                    if (i.status === 3) {
-                                        stau = "Completed"
-                                    }
-                                    if (i.status === 4) {
-                                        stau = "Denied"
-                                    }
-                                    if (i.status === 5) {
-                                        stau = "Canceled"
-                                    }
-                                    return (
-                                        <tbody key={i._id}>
-                                            <tr style={{ verticalAlign: "middle" }}>
-                                                <td>{i.customer?.fullname}</td>
-                                                <td className="thhuhu">{i.customer?.phonenumber}</td>
-                                                <td className="thhuhu">{datetime}</td>
-                                                <td>{stau}</td>
-                                                <td><button onClick={() => { setModalData(i); setModalOpenDetail(true) }} className='btn btn-success'>Detail</button></td>
-                                            </tr>
-                                        </tbody>
-                                    )
-                                })}
-                            </table>
-                            <ReactPaginate
-                                breakLabel="..."
-                                nextLabel=">"
-                                onPageChange={handlePageClick}
-                                pageRangeDisplayed={5}
-                                pageCount={pageCount}
-                                previousLabel="<"
-                                renderOnZeroPageCount={null}
-                                marginPagesDisplayed={2}
-                                containerClassName="pagination justify-content-center text-nowrap"
-                                pageClassName="page-item"
-                                pageLinkClassName="page-link"
-                                previousClassName="page-item"
-                                previousLinkClassName="page-link"
-                                nextClassName="page-item"
-                                nextLinkClassName="page-link"
-                                activeClassName="active"
-                                forcePage={currentPage.current - 1}
-                            />
-                        </>
-                    ) : (
-                        <p className="text-center">There's nothing here yet! Go Shopping Now!</p>
-                    )}
-                </div>
+                {BookingHistory.length > 0 ? (
+                    <>
+                        <table className="table table-bordered solotable text-center">
+                            <thead>
+                                <tr>
+                                    <th >Name</th>
+                                    <th className="thhuhu">Phone number</th>
+                                    <th className="thhuhu">Date</th>
+                                    <th >Status</th>
+                                    <th ></th>
+                                </tr>
+                            </thead>
+                            {BookingHistory.map(i => {
+                                const date = new Date(i.createdAt).toLocaleDateString()
+                                const time = new Date(i.createdAt).toLocaleTimeString()
+                                const datetime = date + " - " + time
+                                var stau = ""
+                                if (i.status === 3) {
+                                    stau = "Completed"
+                                }
+                                if (i.status === 4) {
+                                    stau = "Denied"
+                                }
+                                if (i.status === 5) {
+                                    stau = "Canceled"
+                                }
+                                return (
+                                    <tbody key={i._id}>
+                                        <tr style={{ verticalAlign: "middle" }}>
+                                            <td>{i.customer?.fullname}</td>
+                                            <td className="thhuhu">{i.customer?.phonenumber}</td>
+                                            <td className="thhuhu">{datetime}</td>
+                                            <td>{stau}</td>
+                                            <td><button onClick={() => { setModalData(i); setModalOpenDetail(true) }} className='btn btn-success'>Detail</button></td>
+                                        </tr>
+                                    </tbody>
+                                )
+                            })}
+                        </table>
+                        <ReactPaginate
+                            breakLabel="..."
+                            nextLabel=">"
+                            onPageChange={handlePageClick}
+                            pageRangeDisplayed={5}
+                            pageCount={pageCount}
+                            previousLabel="<"
+                            renderOnZeroPageCount={null}
+                            marginPagesDisplayed={2}
+                            containerClassName="pagination justify-content-center text-nowrap"
+                            pageClassName="page-item"
+                            pageLinkClassName="page-link"
+                            previousClassName="page-item"
+                            previousLinkClassName="page-link"
+                            nextClassName="page-item"
+                            nextLinkClassName="page-link"
+                            activeClassName="active"
+                            forcePage={currentPage.current - 1}
+                        />
+                    </>
+                ) : (
+                    <p className="text-center">Your booking history is empty!</p>
+                )}
             </div>
             <Modal isOpen={modalOpenDetail} onRequestClose={() => setModalOpenDetail(false)} ariaHideApp={false}
                 style={{

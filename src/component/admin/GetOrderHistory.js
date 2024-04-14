@@ -189,7 +189,7 @@ function GetOrderHistory({ DateInput, filter }) {
                         marginRight: "-50%",
                         transform: "translate(-50%, -50%)",
                         backgroundColor: "white",
-                        width: window.innerWidth > 575 ? "40vw" : "80vw",
+                        width: window.innerWidth > 991 ? "40vw" : "80vw",
                         height: "auto",
                         zIndex: 999
                     },
@@ -286,11 +286,7 @@ function GetOrderHistory({ DateInput, filter }) {
                         })}
                         <tr className="text-center text-nowrap">
                             <td colSpan={window.innerWidth > 575 ? 3 : 2}><b>Shipping</b></td>
-                            {ModalData.shippingfee === 30000 ? (
-                                <td >{VND.format(30000)}</td>
-                            ) : (
-                                <td><del>{VND.format(30000)}</del> - <b style={{ color: "#FEA116" }}>{VND.format(0)}</b></td>
-                            )}
+                            <td >{VND.format(ModalData.shippingfee)}</td>
                         </tr>
                         <tr className="text-center text-nowrap">
                             <td colSpan={window.innerWidth > 575 ? 3 : 2}><b>Fulltotal</b></td>

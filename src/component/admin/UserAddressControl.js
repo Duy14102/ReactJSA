@@ -7,6 +7,7 @@ function UserAddressControl({ address, edit, userid, user }) {
     const [modalOpenDetail, setModalOpenDetail] = useState(false);
     const [Identity, setIdentity] = useState(false)
     const [CheckNull, setCheckNull] = useState(false)
+    const [spinner, setSpinner] = useState(false)
     const [GetAddress, setGetAddress] = useState([])
     const [ProAddress, setProAddress] = useState("")
     function dropdownThis() {
@@ -40,8 +41,10 @@ function UserAddressControl({ address, edit, userid, user }) {
                 address: e
             }
         }
+        setSpinner(true)
         axios(configuration)
             .then(() => {
+                setSpinner(false)
                 Swal.fire(
                     'Remove Successfully!',
                     '',
@@ -49,13 +52,15 @@ function UserAddressControl({ address, edit, userid, user }) {
                 ).then(function () {
                     window.location.reload();
                 })
-            }).catch((err) => {
-                console.log(err);
+            }).catch(() => {
+                setSpinner(false)
             })
     }
 
     const addAddress = () => {
+        setSpinner(true)
         if (ProAddress === "") {
+            setSpinner(false)
             setCheckNull(true)
         } else {
             const configuration = {
@@ -68,6 +73,7 @@ function UserAddressControl({ address, edit, userid, user }) {
             }
             axios(configuration)
                 .then(() => {
+                    setSpinner(false)
                     Swal.fire(
                         'Added Successfully!',
                         '',
@@ -75,8 +81,9 @@ function UserAddressControl({ address, edit, userid, user }) {
                     ).then(function () {
                         window.location.reload();
                     })
-                }).catch((err) => {
-                    console.log(err);
+                }).catch(() => {
+                    setSpinner(false)
+                    setCheckNull(true)
                 })
         }
     }
@@ -119,11 +126,18 @@ function UserAddressControl({ address, edit, userid, user }) {
                         marginRight: "-50%",
                         transform: "translate(-50%, -50%)",
                         backgroundColor: "white",
-                        width: "70vw",
+                        width: window.innerWidth > 991 ? "40vw" : "90vw",
                         overflow: "hidden",
                     },
                 }}>
                 <h4 className='text-center pt-2'>Address List</h4>
+                {spinner ? (
+                    <div id="spinner" className="show position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+                        <div className="spinner-border text-primary" style={{ width: 3 + "rem", height: 3 + "rem" }} role="status">
+                            <span className="sr-only"></span>
+                        </div>
+                    </div>
+                ) : null}
                 <table className='table'>
                     <thead>
                         <tr className='text-end'>
@@ -141,7 +155,7 @@ function UserAddressControl({ address, edit, userid, user }) {
                                     <td style={{ width: 85 + "%" }}>
                                         <textarea type='text' className='uninput textDeny' onChange={(e) => setProAddress(e.target.value)} required />
                                         {CheckNull ? (
-                                            <p className='text-danger'>Address needed!</p>
+                                            <p className="text-danger">Address invalid, we only deliver within Hanoi !</p>
                                         ) : null}
                                     </td>
                                     <td style={{ background: "gray", padding: 0.1 + "px", opacity: 0.2 }}></td>

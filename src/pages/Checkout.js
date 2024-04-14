@@ -227,7 +227,7 @@ function Checkout() {
             }
         }
         setCheckoutState({ loadBit: true })
-        axios(miniConfiguration).then(() => {
+        axios(miniConfiguration).then((resa) => {
             const configuration = {
                 method: "post",
                 url: "https://eatcom.onrender.com/UploadOrder",
@@ -236,7 +236,7 @@ function Checkout() {
                     phonenumber: checkoutState.phonenumber,
                     address: checkoutState.address,
                     paymentmethod,
-                    shippingfee: parseInt(localStorage.getItem("shippingFee")),
+                    shippingfee: resa.data,
                     orderitems
                 }
             }
@@ -279,7 +279,7 @@ function Checkout() {
                     console.log(e);
                 });
         }).catch(() => {
-            setCheckoutState({ loadBit: true })
+            setCheckoutState({ loadBit: false })
             setCheckoutState({ addressWrong: true })
         })
     }
@@ -406,7 +406,7 @@ function Checkout() {
                                         ) : null}
                                         {checkoutState.vnpay ? (
                                             <select onChange={(e) => setCheckoutState({ bankCode: e.target.value })} name="bankcode" id="bankcode" className="form-control bg-white mt-4" required>
-                                                <option value="">Không chọn</option>
+                                                <option value="">Not choosing</option>
                                                 {checkoutState.bankList?.map((j) => {
                                                     return (
                                                         <option key={j.id} value={j.code}>{j.shortName}</option>
@@ -473,7 +473,7 @@ function Checkout() {
                                     <div className="mb-3">
                                         <label htmlFor="address">Address</label><br />
                                         <select name="address" onChange={(e) => setCheckoutState({ address: e.target.value })} className="selectA" id="address" required>
-                                            <option selected disabled hidden>Select your address</option>
+                                            <option value="">Not choosing</option>
                                             {Object.values(checkoutState.LoadAddress).map((i) => {
                                                 return (
                                                     <Fragment key={i._id}>
@@ -488,13 +488,16 @@ function Checkout() {
                                                 )
                                             })}
                                         </select>
+                                        {checkoutState.addressWrong ? (
+                                            <p className="text-danger">Address invalid, we only deliver within Hanoi !</p>
+                                        ) : null}
                                     </div>
                                 ) : (
                                     <div className="mb-3 inputC">
                                         <label htmlFor="address">Address</label>
                                         <input type="text" name="address" value={checkoutState.address} onChange={(e) => setCheckoutState({ address: e.target.value })} className="form-control" id="address" placeholder="123 - Ha Noi - Vietnam" required />
                                         {checkoutState.addressWrong ? (
-                                            <p className="text-danger">Address invalid, We only deliver within Hanoi !</p>
+                                            <p className="text-danger">Address invalid, we only deliver within Hanoi !</p>
                                         ) : null}
                                     </div>
                                 )}

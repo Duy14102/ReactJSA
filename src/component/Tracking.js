@@ -3,6 +3,7 @@ import '../css/Admin.css'
 import axios from 'axios';
 import Modal from 'react-modal';
 import { Fragment } from 'react';
+import html2canvas from 'html2canvas';
 
 function Tracking() {
     const [trackingState, setTrackingState] = useReducer((prev, next) => ({
@@ -81,6 +82,22 @@ function Tracking() {
             </tr>
         )
     }
+    const downloadOrder = () => {
+        const image = document.getElementById('orderDownload');
+        // const pngUrl = canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream');
+        let downloadLink = document.createElement('a');
+        html2canvas(image, {
+            allowTaint: true,
+            useCORS: true
+        }).then(function (canvas) {
+            const pngUrl = canvas.toDataURL('image/png').replace('image/png', 'image/octet-stream');
+            downloadLink.href = pngUrl
+            downloadLink.download = "Order.png";
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+        }).catch((er) => console.log(er));
+    };
 
     return (
         <>
@@ -114,17 +131,11 @@ function Tracking() {
                                     const date = new Date(i.createdAt).toLocaleDateString()
                                     const time = new Date(i.createdAt).toLocaleTimeString()
                                     const datetime = date + " - " + time
-                                    var statusCheck = ""
-                                    if (i.status === 1) {
-                                        statusCheck = "Pending"
-                                    }
-                                    else if (i.status === 2) {
-                                        statusCheck = "Accept"
-                                    } else if (i.status === 3) {
-                                        statusCheck = "Deny"
-                                    }
-                                    else if (i.status === 4) {
-                                        statusCheck = "Cancel"
+                                    var kakaCheck = ""
+                                    if (i.paymentmethod?.status === 1) {
+                                        kakaCheck = "( Unpaid )"
+                                    } else if (i.paymentmethod?.status === 2) {
+                                        kakaCheck = "( Paid )"
                                     }
                                     return (
                                         <Fragment key={i._id}>
@@ -136,7 +147,7 @@ function Tracking() {
                                                 })}
                                                 <td className='thhuhu'>{i.phonenumber}</td>
                                                 <td className='thhuhu'>{datetime}</td>
-                                                <td>{statusCheck}</td>
+                                                <td>{i.status === 1 ? "Pending" : i.status === 2 ? "Accepted" : i.status === 2.1 ? "Chef is ready" : i.status === 2.3 ? "Order ready to shipping" : i.status === 3 ? "Denied" : i.status === 4 ? "Pending canceled" : i.status === 5 ? "Completed" : i.status === 6 ? "Canceled" : null}</td>
                                                 <td><button onClick={() => setTrackingState({ modalOpenDetail: true })} className='btn btn-success'>Detail</button></td>
                                             </tr>
                                             <Modal isOpen={trackingState.modalOpenDetail} onRequestClose={() => setTrackingState({ modalOpenDetail: false })} ariaHideApp={false}
@@ -154,82 +165,96 @@ function Tracking() {
                                                         marginRight: "-50%",
                                                         transform: "translate(-50%, -50%)",
                                                         backgroundColor: "white",
-                                                        width: window.innerWidth > 575 ? "50vw" : "350px",
+                                                        width: window.innerWidth > 991 ? "40vw" : "80vw",
                                                         height: "auto",
                                                         overflow: "hidden",
-                                                        zIndex: 999
+                                                        zIndex: 999,
+                                                        padding: 0
                                                     },
                                                 }}>
-                                                <h2 className='text-center'>Order Detail</h2>
-                                                <div className="coverNOut">
-                                                    <p className="m-0"><b>Id</b> : {i._id}</p>
-                                                    <p className="m-0"><b>Date</b> : {datetime}</p>
-                                                </div>
-                                                <hr />
-                                                <div className='hugeImpace'>
-                                                    {i.user.map((t) => {
-                                                        var textSp = "( guests )"
-                                                        return (
-                                                            <Fragment key={t}>
-                                                                {t.id === "none" ? (
-                                                                    <p className='d-flex flex-wrap'><b>Customer</b> : {t.fullname} {textSp} - {i.phonenumber}</p>
-                                                                ) : (
-                                                                    <p className='d-flex flex-wrap'><b>Customer</b> : {t.fullname} - {i.phonenumber}</p>
-                                                                )}
-                                                            </Fragment>
-                                                        )
-                                                    })}
-                                                    <p><b>Address</b> : {i.address}</p>
-                                                    <p><b>Payment method</b> : {i.paymentmethod.type}</p>
-                                                    <p><b>Status</b> : {statusCheck}</p>
-                                                </div>
-                                                <table className="table-bordered table solotable m-0">
-                                                    <thead>
-                                                        <tr style={{ color: "#0F172B", backgroundColor: "gray" }}>
-                                                            <th style={{ textAlign: "center", color: "#fff" }}>{window.innerWidth > 575 ? "No" : "Quantity"}</th>
-                                                            <th colSpan={window.innerWidth > 575 ? null : 2} style={{ color: "#fff" }}>Items</th>
-                                                            {window.innerWidth > 575 ? (
-                                                                <>
-                                                                    <th style={{ textAlign: "center", color: "#fff" }}>Quantity</th>
-                                                                    <th style={{ textAlign: "center", color: "#fff" }}>Price</th>
-                                                                </>
-                                                            ) : null}
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {i.orderitems?.map((a, index) => {
+                                                <div style={{ padding: 20 }} id='orderDownload'>
+                                                    <h2 className='text-center'>Order Detail</h2>
+                                                    <div className="coverNOut">
+                                                        <p className="m-0"><b>Id</b> : {i._id}</p>
+                                                        <p className="m-0"><b>Date</b> : {datetime}</p>
+                                                    </div>
+                                                    <hr />
+                                                    <div className="hugeImpace">
+                                                        {i.user?.map((t) => {
+                                                            var textSp = "( visisting guests )"
                                                             return (
-                                                                mero(a, index, i)
+                                                                <div className="coverNOut" key={t}>
+                                                                    {t.id === "none" ? (
+                                                                        <p><b>Fullname</b> : {t.fullname} {textSp}</p>
+                                                                    ) : (
+                                                                        <p><b>Fullname</b> : {t.fullname}</p>
+                                                                    )}
+                                                                    {i.employee?.map((o) => {
+                                                                        return (
+                                                                            i.status !== 1 ? (
+                                                                                <p><b>Employee</b> : {o.email}</p>
+                                                                            ) : null
+                                                                        )
+                                                                    })}
+                                                                </div>
                                                             )
                                                         })}
-                                                        <tr className="text-center text-nowrap">
-                                                            <td colSpan={window.innerWidth > 575 ? 3 : 2}><b>Shipping</b></td>
-                                                            {i.shippingfee === 30000 ? (
-                                                                <td >{VND.format(30000)}</td>
-                                                            ) : (
-                                                                <td><del>{VND.format(30000)}</del> - <b style={{ color: "#FEA116" }}>{VND.format(0)}</b></td>
-                                                            )}
-                                                        </tr>
-                                                        <tr className="text-center text-nowrap">
-                                                            <td colSpan={window.innerWidth > 575 ? 3 : 2}><b>Fulltotal</b></td>
-                                                            <td style={{ color: "#FEA116" }}><b>{VND.format(fulltotal)}</b></td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                                <div className="pt-2">
-                                                    {i.status === 2 ? (
-                                                        <p>✅ Order has been <b>Complete</b></p>
-                                                    ) : i.status === 3 ? (
-                                                        <>
-                                                            <p>❌ Order has been <b>Denied</b></p>
-                                                            <p>Reason : {i.denyreason}</p>
-                                                        </>
-                                                    ) : i.status === 4 ? (
-                                                        <>
-                                                            <p>❌ Order has been <b>Canceled</b></p>
-                                                            <p>Reason : {i.denyreason}</p>
-                                                        </>
-                                                    ) : null}
+                                                        <div className="coverNOut">
+                                                            <p><b>Phone number</b> : {i.phonenumber}</p>
+                                                            <p><b>Address</b> : {i.address}</p>
+                                                        </div>
+                                                        <p><b>Payment method</b> : {i.paymentmethod?.type} {kakaCheck}</p>
+                                                    </div>
+                                                    <table className="table-bordered table solotable m-0">
+                                                        <thead>
+                                                            <tr style={{ color: "#0F172B", backgroundColor: "gray" }}>
+                                                                <th style={{ textAlign: "center", color: "#fff" }}>{window.innerWidth > 575 ? "No" : "Quantity"}</th>
+                                                                <th colSpan={window.innerWidth > 575 ? null : 2} style={{ color: "#fff" }}>Items</th>
+                                                                {window.innerWidth > 575 ? (
+                                                                    <>
+                                                                        <th style={{ textAlign: "center", color: "#fff" }}>Quantity</th>
+                                                                        <th style={{ textAlign: "center", color: "#fff" }}>Price</th>
+                                                                    </>
+                                                                ) : null}
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {i.orderitems?.map((a, index) => {
+                                                                return (
+                                                                    mero(a, index, i)
+                                                                )
+                                                            })}
+                                                            <tr className="text-center text-nowrap">
+                                                                <td colSpan={window.innerWidth > 575 ? 3 : 2}><b>Shipping</b></td>
+                                                                <td >{VND.format(i.shippingfee)}</td>
+                                                            </tr>
+                                                            <tr className="text-center text-nowrap">
+                                                                <td colSpan={window.innerWidth > 575 ? 3 : 2}><b>Fulltotal</b></td>
+                                                                <td style={{ color: "#FEA116" }}><b>{VND.format(fulltotal)}</b></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                    <div className="pt-2">
+                                                        {i.status === 2 ? (
+                                                            <p>✅ Order has been <b>Complete</b></p>
+                                                        ) : i.status === 3 ? (
+                                                            <>
+                                                                <p>❌ Order has been <b>Denied</b></p>
+                                                                <p>Reason : {i.denyreason}</p>
+                                                            </>
+                                                        ) : i.status === 4 ? (
+                                                            <>
+                                                                <p>❌ Order has been <b>Canceled</b></p>
+                                                                <p>Reason : {i.denyreason}</p>
+                                                            </>
+                                                        ) : null}
+                                                    </div>
+                                                </div>
+                                                <div className='d-flex justify-content-center'>
+                                                    <button onClick={() => downloadOrder()} className="buttonDownL mb-4">
+                                                        <svg style={{ width: 20, height: 20 }} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M288 32c0-17.7-14.3-32-32-32s-32 14.3-32 32V274.7l-73.4-73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l128 128c12.5 12.5 32.8 12.5 45.3 0l128-128c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L288 274.7V32zM64 352c-35.3 0-64 28.7-64 64v32c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V416c0-35.3-28.7-64-64-64H346.5l-45.3 45.3c-25 25-65.5 25-90.5 0L165.5 352H64zm368 56a24 24 0 1 1 0 48 24 24 0 1 1 0-48z" /></svg>
+                                                        <p className="m-0">Download order</p>
+                                                    </button>
                                                 </div>
                                                 <button className='closeModal' onClick={() => setTrackingState({ modalOpenDetail: false })}>x</button>
                                             </Modal>

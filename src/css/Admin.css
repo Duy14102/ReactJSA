@@ -434,11 +434,6 @@
     width: 20px;
 }
 
-.JKoliver {
-    position: relative;
-    width: 47%;
-}
-
 /* range */
 .xvRange {
     width: 70%;
@@ -450,10 +445,20 @@
 
 .sonXvRange {
     position: absolute;
-    font-size: 35px;
     top: -22px;
     transform: scale(-1, 1);
     left: -10px;
+}
+
+.sonXvRange span {
+    font-size: 35px;
+    border-radius: 50%;
+    transition: all 0.25s;
+    cursor: pointer;
+}
+
+.sonXvRange span:hover {
+    background: rgb(132, 236, 132);
 }
 
 .sonXvRange2 {
@@ -461,6 +466,16 @@
     width: 3%;
     height: 100%;
     border-radius: 50px;
+    position: relative;
+}
+
+.sonXvRange p {
+    position: absolute;
+    top: 45px;
+    left: -30px;
+    font-size: 15px;
+    transform: scale(-1, 1);
+    text-wrap: nowrap;
 }
 
 .subOver .content .page .grid .card-verticle {
@@ -1002,6 +1017,7 @@
 
 .pic-holder .pic,
 .pic-holder2 .pic {
+    position: absolute;
     height: 100%;
     width: 100%;
     -o-object-fit: cover;

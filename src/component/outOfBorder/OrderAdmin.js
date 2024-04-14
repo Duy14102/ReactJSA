@@ -237,7 +237,7 @@ function OrderAdmin({ Data, checkBack }) {
                         marginRight: "-50%",
                         transform: "translate(-50%, -50%)",
                         backgroundColor: "white",
-                        width: window.innerWidth > 575 ? "40vw" : "80vw",
+                        width: window.innerWidth > 991 ? "40vw" : "80vw",
                         height: "auto",
                         zIndex: 999
                     },
@@ -341,11 +341,7 @@ function OrderAdmin({ Data, checkBack }) {
                         })}
                         <tr className="text-center text-nowrap">
                             <td colSpan={window.innerWidth > 575 ? 3 : 2}><b>Shipping</b></td>
-                            {orderAdminState.ModalData.shippingfee === 30000 ? (
-                                <td >{VND.format(30000)}</td>
-                            ) : (
-                                <td><del>{VND.format(30000)}</del> - <b style={{ color: "#FEA116" }}>{VND.format(0)}</b></td>
-                            )}
+                            <td >{VND.format(orderAdminState.ModalData.shippingfee)}</td>
                         </tr>
                         <tr className="text-center text-nowrap">
                             <td colSpan={window.innerWidth > 575 ? 3 : 2}><b>Fulltotal</b></td>
@@ -403,13 +399,10 @@ function OrderAdmin({ Data, checkBack }) {
                             <p>Name: {orderAdminState?.driverInfo.name}</p>
                             <p>Phone: {orderAdminState?.driverInfo.phone}</p>
                         </div>
-                        <div className="d-flex justify-content-between align-items-center">
-                            <p>Status: {orderAdminState?.deliverState}</p>
-                            <p>Plate: {orderAdminState?.driverInfo.plateNumber}</p>
-                        </div>
-                        <div className="d-flex justify-content-center my-3">
+                        <p>Plate: {orderAdminState?.driverInfo.plateNumber}</p>
+                        <div className="d-flex justify-content-center my-4">
                             <div className="xvRange">
-                                <div style={{ left: orderAdminState.deliverState === "Driver is coming" ? "22.5%" : orderAdminState.deliverState === "Driver picked items" ? "65.5%" : null }} className="sonXvRange">🚴</div>
+                                <div style={{ left: orderAdminState.deliverState === "Driver is coming" ? "22.5%" : orderAdminState.deliverState === "Driver picked items" ? "65.5%" : null }} className="sonXvRange"><span>🚴</span><p>{orderAdminState.deliverState}</p></div>
                                 <div style={{ width: orderAdminState.deliverState === "Driver is coming" ? "27%" : orderAdminState.deliverState === "Driver picked items" ? "70%" : null }} className="sonXvRange2"></div>
                             </div>
                         </div>

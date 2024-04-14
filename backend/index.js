@@ -745,7 +745,11 @@ socketIo.on("connection", (socket) => {
         getThisOrder.updateOne({ _id: data.id }, {
             status: 2.3,
         }).then(() => {
-            socketIo.emit("ChefReadySuccess", { mag: data.mag })
+            if (data.user !== "none") {
+                socketIo.emit("ChefReadySuccess", { user: data.user, mag: data.mag })
+            } else {
+                socketIo.emit("ChefReadySuccess", { mag: data.mag })
+            }
         })
     })
 
@@ -846,7 +850,11 @@ socketIo.on("connection", (socket) => {
                         quotation: result.data.data.quotationId
                     }
                 }).then(() => {
-                    socketIo.emit("ShippingReadySuccess", { mag: data.mag })
+                    if (data.user !== "none") {
+                        socketIo.emit("ShippingReadySuccess", { mag: data.mag, user: data.user })
+                    } else {
+                        socketIo.emit("ShippingReadySuccess", { mag: data.mag })
+                    }
                 })
             });
         });
@@ -858,7 +866,11 @@ socketIo.on("connection", (socket) => {
             status: 2.3,
             transportation: null
         }).then(() => {
-            socketIo.emit("ExpiredOrderSuccess")
+            if (data.user !== "none") {
+                socketIo.emit("ExpiredOrderSuccess", { user: data.user })
+            } else {
+                socketIo.emit("ExpiredOrderSuccess")
+            }
         })
     })
 
@@ -868,7 +880,11 @@ socketIo.on("connection", (socket) => {
             status: 6,
             denyreason: data.reason
         }).then(() => {
-            socketIo.emit("CancelOrderTransSuccess")
+            if (data.user !== "none") {
+                socketIo.emit("CancelOrderTransSuccess", { user: data.user })
+            } else {
+                socketIo.emit("CancelOrderTransSuccess")
+            }
         })
     })
 });
@@ -895,13 +911,92 @@ app.post("/CheckAddressOpenCage", async (req, res) => {
         countryCode: 'Vietnam',
         limit: 1
     });
-    if (coorRes[0].country !== "Vietnam" || coorRes[0].city !== "Hà Nội") {
+
+    if (coorRes.length === 0 || coorRes[0].country !== "Vietnam" || coorRes[0].city !== "Hà Nội") {
         res.status(500).send({
             message: "Incorrect"
         })
     } else {
-        res.status(201).send({
-            message: "Correct"
+        // Lalamove handling
+        const API_KEY = process.env.REACT_APP_lalamoveKey;
+        const SECRET = process.env.REACT_APP_lalamoveSecret;
+
+        axios.defaults.baseURL = "https://rest.sandbox.lalamove.com"; // URL to Lalamove Sandbox API
+        const time = new Date().getTime().toString();
+        const region = "VN";
+        const method = "POST";
+        const path = "/v3/quotations";
+
+        const body = JSON.stringify({
+            data: {
+                serviceType: "MOTORCYCLE",
+                specialRequests: [],
+                language: "en_VN",
+                stops: [
+                    {
+                        coordinates: {
+                            lat: "20.99495",
+                            lng: "105.86195",
+                        },
+                        address: "18 Đ. Tam Trinh, Mai Động, Hai Bà Trưng, Hà Nội, Việt Nam",
+                    },
+                    {
+                        coordinates: {
+                            lat: `${coorRes[0].latitude}`,
+                            lng: `${coorRes[0].longitude}`,
+                        },
+                        address: `${coorRes[0]?.streetName}, ${coorRes[0]?.city}, Việt Nam`,
+                    },
+                ],
+            }
+        });
+        const rawSignature = `${time}\r\n${method}\r\n${path}\r\n\r\n${body}`;
+        const SIGNATURE = CryptoJS.HmacSHA256(rawSignature, SECRET).toString();
+
+        axios.post(path, body, {
+            headers: {
+                "Content-type": "application/json; charset=utf-8",
+                "Authorization": `hmac ${API_KEY}:${time}:${SIGNATURE}`,
+                "Accept": "application/json",
+                "Market": region,
+            },
+        }).then(async (result) => {
+            res.status(201).send(result.data.data.priceBreakdown.total)
+        }).catch(() => {
+            res.status(500).send({
+                message: "Incorrect"
+            })
+        })
+    }
+})
+
+//Add address user cart
+app.post("/AddAddressUser", async (req, res) => {
+    // Get coordinate
+    const options = {
+        provider: 'opencage',
+        fetch: null, // Optional depending on the providers
+        apiKey: process.env.REACT_APP_opencageKey, // for Mapquest, OpenCage, APlace, Google Premier
+        formatter: null // 'gpx', 'string', ...
+    };
+    const geocoder = NodeGeocoder(options);
+    const coorRes = await geocoder.geocode({
+        address: `${req.body.address}`,
+        countryCode: 'Vietnam',
+        limit: 1
+    });
+
+    if (coorRes.length === 0 || coorRes[0].country !== "Vietnam" || coorRes[0].city !== "Hà Nội") {
+        res.status(500).send({
+            message: "Incorrect"
+        })
+    } else {
+        getUserD.updateOne({ _id: req.body.id }, {
+            $push: {
+                address: req.body.address
+            }
+        }).then(() => {
+            res.status(201).send("success")
         })
     }
 })
@@ -928,7 +1023,10 @@ app.post("/CheckOrderInLalamove", (req, res) => {
             "isPODEnabled": true
         }
     }).then(async (result) => {
-        res.send(result.data.data)
+        res.status(201).send(result.data.data)
+    }).catch((er) => {
+        console.log(er);
+        res.status(500).send("Incorrect")
     })
 })
 
@@ -1279,23 +1377,6 @@ app.get("/Find4User", async (req, res) => {
 
         results.result = getIt.slice(start, end)
         res.send({ results });
-    } catch (e) {
-        console.log(e);
-    }
-})
-
-//Add address user cart
-app.post("/AddAddressUser", async (req, res) => {
-    try {
-        getUserD.updateOne({ _id: req.body.id }, {
-            $push: {
-                address: req.body.address
-            }
-        }).then(() => {
-            res.send("success")
-        }).catch((err) => {
-            console.log(err);
-        })
     } catch (e) {
         console.log(e);
     }

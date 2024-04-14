@@ -112,8 +112,8 @@ function ChefOrder({ decode }) {
         socketRef.current.emit('ChefWantCancelSocket', data)
     }
 
-    const readyOrder = (id) => {
-        const data = { id: id, mag: decode.userId }
+    const readyOrder = (id, user) => {
+        const data = { id: id, mag: decode.userId, user: user }
         socketRef.current.emit('ChefReadySocket', data)
     }
 
@@ -147,7 +147,7 @@ function ChefOrder({ decode }) {
                     }, [])
                     return (
                         <Fragment key={index}>
-                            <div className="JKoliver" style={{ opacity: i.status === 2.1 ? 0.5 : null }}>
+                            <div style={{ opacity: i.status === 2.1 ? 0.5 : null, width: window.innerWidth > 991 ? "47%" : "100%", position: "relative" }}>
                                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "#374148", color: "#fff", padding: 15 }}>
                                     <p className="m-0">Id : {i._id}</p>
                                     <p className="m-0">Date : {datetime}</p>
@@ -219,7 +219,7 @@ function ChefOrder({ decode }) {
                                         {i.status === 2 ? (
                                             <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
                                                 <button onClick={() => { setModalOpenDetail(true); setModalData(i) }} className="btn btn-danger">Cancel</button>
-                                                <button onClick={() => readyOrder(i._id)} className="btn btn-success">Ready</button>
+                                                <button onClick={() => readyOrder(i._id, i.user[0].id)} className="btn btn-success">Ready</button>
                                                 <button onClick={() => { setModalOpenDetail2(true); setModalData(i) }} className="btn btn-warning inforItKK"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" /></svg></button>
                                             </div>
                                         ) : null}
@@ -407,7 +407,7 @@ function ChefOrder({ decode }) {
                     <p>✅ Order has been <b>Accepted</b></p>
                     <div style={{ display: "flex", gap: 10 }}>
                         <button onClick={() => { setModalOpenDetail(true); setModalOpenDetail2(false) }} className="btn btn-danger">Cancel</button>
-                        <button onClick={() => readyOrder(ModalData._id)} className="btn btn-success">Ready</button>
+                        <button onClick={() => readyOrder(ModalData._id, ModalData.user[0].id)} className="btn btn-success">Ready</button>
                     </div>
                 </div>
                 <button className='closeModal' onClick={() => setModalOpenDetail2(false)}>x</button>
