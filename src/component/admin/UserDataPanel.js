@@ -283,59 +283,48 @@ function UserDataPanel({ Data, toke, axios }) {
                                                     )
                                                 })
                                             ) : (
-                                                <tr style={{ verticalAlign: "middle", background: "#fff", color: "black" }}>
-                                                    <td className='text-center'>1</td>
-                                                    <td colSpan={window.innerWidth > 575 ? null : 2}>
+                                                <div>
+                                                    <div className="d-flex align-items-center" style={{ gap: 10 }}>
+                                                        <img alt="" src={i.orderitems[0]?.data.foodimage} width={70} height={60} />
                                                         <div>
-                                                            <div className="d-flex align-items-center" style={{ gap: 10 }}>
-                                                                <img alt="" src={i.orderitems[0].data.foodimage} width={70} height={60} />
-                                                                <div>
-                                                                    <p className="m-0" style={{ fontSize: 17 }}>{i.orderitems[0].data.foodname}</p>
-                                                                    <p className="m-0 text-start" style={{ fontSize: 15, color: "#FEA116" }}><b>{VND.format(i.orderitems[0].data.foodprice)}</b></p>
-                                                                </div>
-                                                            </div>
-                                                            {i.orderitems[0]?.topping ? (
-                                                                <div className="d-flex align-items-center" style={{ gap: 10, marginLeft: 25, marginTop: 10 }}>
-                                                                    <img alt="" src={i.orderitems[0]?.topping[0]?.foodimage} width={45} height={40} />
-                                                                    <div>
-                                                                        <p className="m-0" style={{ fontSize: 15 }}>{i.orderitems[0]?.topping[0]?.foodname}</p>
-                                                                        <p className="m-0 text-start" style={{ color: "#FEA116", fontSize: 13 }}><b>{VND.format(i.orderitems[0]?.topping[0]?.foodprice)}</b></p>
-                                                                    </div>
-                                                                </div>
-                                                            ) : null}
+                                                            <p className="m-0" style={{ fontSize: 17 }}>{i.orderitems[0].data.foodname}</p>
+                                                            <p className="m-0 text-start" style={{ fontSize: 15, color: "#FEA116" }}><b>{VND.format(i.orderitems[0]?.data.foodprice)}</b></p>
                                                         </div>
-                                                        {i.orderitems?.length > 1 && !seeMore ? (
-                                                            <p onClick={() => setSeeMore(true)} className="seeMoreInOrder">See more</p>
-                                                        ) : i.orderitems?.length === 1 && toppingArray.length > 0 && !seeMore ? (
-                                                            <p onClick={() => setSeeMore(true)} className="seeMoreInOrder">See more</p>
-                                                        ) : null}
-                                                        {seeMore ? (
-                                                            <p onClick={() => setSeeMore(false)} className="seeMoreInOrder">See less</p>
-                                                        ) : null}
-                                                    </td>
-                                                    {window.innerWidth > 575 ? (
-                                                        <>
-                                                            <td className='text-center'>{i.orderitems[0].quantity}</td>
-                                                            <td className='text-center'>{VND.format(i.orderitems[0].data.foodprice + toppingArray.reduce((acc, o) => { return acc + (parseInt(o?.foodprice || 0)) }, 0))}</td>
-                                                        </>
+                                                    </div>
+                                                    {i?.orderitems[0]?.topping[0] ? (
+                                                        <div className="d-flex align-items-center" style={{ gap: 10, marginLeft: 25, marginTop: 10 }}>
+                                                            <img alt="" src={i?.orderitems[0]?.topping[0]?.foodimage} width={45} height={40} />
+                                                            <div>
+                                                                <p className="m-0" style={{ fontSize: 15 }}>{i.orderitems[0]?.topping[0]?.foodname}</p>
+                                                                <p className="m-0 text-start" style={{ color: "#FEA116", fontSize: 13 }}><b>{VND.format(i.orderitems[0]?.topping[0]?.foodprice)}</b></p>
+                                                            </div>
+                                                        </div>
                                                     ) : null}
-                                                </tr>
+                                                </div>
                                             )}
-                                            <tr className="text-center text-nowrap" style={{ background: "#fff", color: "black" }}>
-                                                <td colSpan={window.innerWidth > 575 ? 3 : 2}><b>Shipping</b></td>
-                                                <td >{VND.format(i.shippingfee)}</td>
-                                            </tr>
-                                            <tr className="text-center text-nowrap" style={{ background: "#fff" }}>
-                                                <td style={{ color: "black" }} colSpan={window.innerWidth > 575 ? 3 : 2}><b>Fulltotal</b></td>
-                                                <td style={{ color: "#FEA116" }}><b>{VND.format(totalMainArray + toppingArray.reduce((acc, o) => { return acc + (parseInt(o?.foodprice || 0)) }, 0) + i.shippingfee)}</b></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                    <div className="d-flex align-items-center justify-content-between" style={{ padding: 5, border: "solid #4285f4", borderWidth: "0 2px 2px 2px" }}>
-                                        {i.status === 1 && i.paymentmethod?.type !== "Paypal" ? (
-                                            <button onClick={() => setModalOpenDetail2(true)} className="btn btn-danger">Cancel</button>
-                                        ) : null}
-                                        <button onClick={() => { setModalData(i); setModalOpenDetail(true) }} className="btn btn-warning inforItKK"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" /></svg></button>
+                                            {i.orderitems?.length > 1 && seeMore !== index ? (
+                                                <p onClick={() => setSeeMore(index)} className="seeMoreInOrder">See more</p>
+                                            ) : i.orderitems?.length === 1 && toppingArray.length > 1 && seeMore !== index ? (
+                                                <p onClick={() => setSeeMore(index)} className="seeMoreInOrder">See more</p>
+                                            ) : null}
+                                            {seeMore === index ? (
+                                                <p onClick={() => setSeeMore(null)} className="seeMoreInOrder">See less</p>
+                                            ) : null}
+                                        </div>
+                                        <div>
+                                            {i.status === 5.1 ? (
+                                                <p>Status : {deliverState ? deliverState : null}</p>
+                                            ) : (
+                                                <p>Status : {i.status === 1 ? "🔵( pending )" : i.status === 2 ? "🟢( Chef is preparing )" : i.status === 2.1 ? "🟠( Chef canceled )" : i.status === 2.3 ? "🟢( Order ready )" : i.status === 4 ? "⚪( cancel pending )" : null}</p>
+                                            )}
+                                            <p>Payment : {i.paymentmethod.method === 1 ? "e-wallet" : i.paymentmethod.method === 2 ? "COD" : null}</p>
+                                            <div className="d-flex align-items-center" style={{ gap: 10 }}>
+                                                {i.status === 1 && i.paymentmethod?.type !== "Paypal" ? (
+                                                    <button onClick={() => setModalOpenDetail2(true)} className="btn btn-danger">Cancel</button>
+                                                ) : null}
+                                                <button onClick={() => { setModalData(i); setModalOpenDetail(true) }} className="btn btn-warning inforItKK"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" /></svg></button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             ) : (
@@ -439,56 +428,39 @@ function UserDataPanel({ Data, toke, axios }) {
                                                     )
                                                 })
                                             ) : (
-                                                <tr style={{ verticalAlign: "middle", background: "#fff", color: "black" }}>
-                                                    <td className='text-center'>1</td>
-                                                    <td colSpan={window.innerWidth > 575 ? null : 2}>
+                                                <div>
+                                                    <div className="d-flex align-items-center" style={{ gap: 10 }}>
+                                                        <img alt="" src={i.orderitems[0]?.data.foodimage} width={70} height={60} />
                                                         <div>
-                                                            <div className="d-flex align-items-center" style={{ gap: 10 }}>
-                                                                <img alt="" src={i.orderitems[0].data.foodimage} width={70} height={60} />
-                                                                <div>
-                                                                    <p className="m-0" style={{ fontSize: 17 }}>{i.orderitems[0].data.foodname}</p>
-                                                                    <p className="m-0 text-start" style={{ fontSize: 15, color: "#FEA116" }}><b>{VND.format(i.orderitems[0].data.foodprice)}</b></p>
-                                                                </div>
-                                                            </div>
-                                                            {i.orderitems[0]?.topping ? (
-                                                                <div className="d-flex align-items-center" style={{ gap: 10, marginLeft: 25, marginTop: 10 }}>
-                                                                    <img alt="" src={i.orderitems[0]?.topping[0]?.foodimage} width={45} height={40} />
-                                                                    <div>
-                                                                        <p className="m-0" style={{ fontSize: 15 }}>{i.orderitems[0]?.topping[0]?.foodname}</p>
-                                                                        <p className="m-0 text-start" style={{ color: "#FEA116", fontSize: 13 }}><b>{VND.format(i.orderitems[0]?.topping[0]?.foodprice)}</b></p>
-                                                                    </div>
-                                                                </div>
-                                                            ) : null}
+                                                            <p className="m-0" style={{ fontSize: 17 }}>{i.orderitems[0].data.foodname}</p>
+                                                            <p className="m-0 text-start" style={{ fontSize: 15, color: "#FEA116" }}><b>{VND.format(i.orderitems[0]?.data.foodprice)}</b></p>
                                                         </div>
-                                                        {i.orderitems?.length > 1 && !seeMore ? (
-                                                            <p onClick={() => setSeeMore(true)} className="seeMoreInOrder">See more</p>
-                                                        ) : i.orderitems?.length === 1 && toppingArray.length > 0 && !seeMore ? (
-                                                            <p onClick={() => setSeeMore(true)} className="seeMoreInOrder">See more</p>
-                                                        ) : null}
-                                                        {seeMore ? (
-                                                            <p onClick={() => setSeeMore(false)} className="seeMoreInOrder">See less</p>
-                                                        ) : null}
-                                                    </td>
-                                                    {window.innerWidth > 575 ? (
-                                                        <>
-                                                            <td className='text-center'>{i.orderitems[0].quantity}</td>
-                                                            <td className='text-center'>{VND.format(i.orderitems[0].data.foodprice + toppingArray.reduce((acc, o) => { return acc + (parseInt(o?.foodprice || 0)) }, 0))}</td>
-                                                        </>
+                                                    </div>
+                                                    {i?.orderitems[0]?.topping[0] ? (
+                                                        <div className="d-flex align-items-center" style={{ gap: 10, marginLeft: 25, marginTop: 10 }}>
+                                                            <img alt="" src={i?.orderitems[0]?.topping[0]?.foodimage} width={45} height={40} />
+                                                            <div>
+                                                                <p className="m-0" style={{ fontSize: 15 }}>{i.orderitems[0]?.topping[0]?.foodname}</p>
+                                                                <p className="m-0 text-start" style={{ color: "#FEA116", fontSize: 13 }}><b>{VND.format(i.orderitems[0]?.topping[0]?.foodprice)}</b></p>
+                                                            </div>
+                                                        </div>
                                                     ) : null}
-                                                </tr>
+                                                </div>
                                             )}
-                                            <tr className="text-center text-nowrap" style={{ background: "#fff", color: "black" }}>
-                                                <td colSpan={window.innerWidth > 575 ? 3 : 2}><b>Shipping</b></td>
-                                                <td >{VND.format(i.shippingfee)}</td>
-                                            </tr>
-                                            <tr className="text-center text-nowrap" style={{ background: "#fff" }}>
-                                                <td style={{ color: "black" }} colSpan={window.innerWidth > 575 ? 3 : 2}><b>Fulltotal</b></td>
-                                                <td style={{ color: "#FEA116" }}><b>{VND.format(totalMainArray + toppingArray.reduce((acc, o) => { return acc + (parseInt(o?.foodprice || 0)) }, 0) + i.shippingfee)}</b></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                    <div style={{ padding: 5, border: "solid #4285f4", borderWidth: "0 2px 2px 2px", textAlign: "end" }}>
-                                        <button onClick={() => { setModalData(i); setModalOpenDetail(true) }} className="btn btn-warning inforItKK"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" /></svg></button>
+                                            {i.orderitems?.length > 1 && seeMore !== index ? (
+                                                <p onClick={() => setSeeMore(index)} className="seeMoreInOrder">See more</p>
+                                            ) : i.orderitems?.length === 1 && toppingArray.length > 1 && seeMore !== index ? (
+                                                <p onClick={() => setSeeMore(index)} className="seeMoreInOrder">See more</p>
+                                            ) : null}
+                                            {seeMore === index ? (
+                                                <p onClick={() => setSeeMore(null)} className="seeMoreInOrder">See less</p>
+                                            ) : null}
+                                        </div>
+                                        <div>
+                                            <p>Status : {i.status === 3 ? "🔴( denied )" : i.status === 5 ? "🟡( completed )" : i.status === 6 ? "🟠( canceled )" : null}</p>
+                                            <p>Payment : {i.paymentmethod.method === 1 ? "e-wallet" : i.paymentmethod.method === 2 ? "COD" : null}</p>
+                                            <button onClick={() => { setModalData(i); setModalOpenDetail(true) }} className="btn btn-warning inforItKK"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" /></svg></button>
+                                        </div>
                                     </div>
                                 </div>
                             ) : (
