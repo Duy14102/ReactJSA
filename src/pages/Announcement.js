@@ -1,4 +1,4 @@
-import AnnounceMe from "../component/AnnounceMe"
+import AnnounceMe from "../component/frontPage/AnnounceMe"
 import Layout from "../Layout"
 import Header from "../component/Header"
 import HeroBadge from "../component/outOfBorder/HeroBadge"

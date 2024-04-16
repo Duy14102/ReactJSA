@@ -4,7 +4,7 @@ import axios from 'axios';
 import $ from 'jquery'
 import Layout from '../Layout';
 import Header from '../component/Header';
-import Menu from '../component/Menu'
+import Menu from '../component/frontPage/Menu'
 
 function CategoryPage() {
     let appler = useParams()

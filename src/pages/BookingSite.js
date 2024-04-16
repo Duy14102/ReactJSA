@@ -1,4 +1,4 @@
-import Reservation from "../component/Reservation";
+import Reservation from "../component/frontPage/Reservation";
 import Layout from "../Layout";
 import Header from "../component/Header";
 import HeroBadge from "../component/outOfBorder/HeroBadge";

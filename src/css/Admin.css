@@ -434,6 +434,11 @@
     width: 20px;
 }
 
+.inforItKK {
+    fill: #fff;
+    height: 45px;
+}
+
 /* range */
 .xvRange {
     width: 70%;

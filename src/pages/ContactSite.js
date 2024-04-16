@@ -1,7 +1,7 @@
-import Contact from "../component/Contact";
+import Contact from "../component/frontPage/Contact";
 import Layout from "../Layout";
-import About from '../component/About'
-import Services from '../component/Services'
+import About from '../component/frontPage/About'
+import Services from '../component/frontPage/Services'
 import HeroBadge from "../component/outOfBorder/HeroBadge";
 import Header from "../component/Header";
 

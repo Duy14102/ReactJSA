@@ -73,22 +73,6 @@ function GetOrder({ DateInput, filter }) {
             }
         })
 
-        socketRef.current.on('ChefWantCancelSuccess', dataGot => {
-            HandleThings(countTabs, "cancelByChef")
-        })
-
-        socketRef.current.on('ChefWantCancelSuccess2', dataGot => {
-            if (dataGot.mag === decode.userId) {
-                Swal.fire(
-                    'Send to chef success!',
-                    "",
-                    'success'
-                ).then(() => window.location.reload())
-            } else {
-                getPagination()
-            }
-        })
-
         socketRef.current.on('CustomerWantCancel', dataGot => {
             HandleThings(countTabs, "pendingCancel")
         })

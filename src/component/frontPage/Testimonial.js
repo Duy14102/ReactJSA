@@ -1,5 +1,5 @@
 import jQuery from "jquery";
-import "../lib/owlcarousel/assets/owl.carousel.min.css";
+import "../../lib/owlcarousel/assets/owl.carousel.min.css";
 import { useState, useEffect } from "react";
 import axios from "axios";
 window.jQuery = jQuery

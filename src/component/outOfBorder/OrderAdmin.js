@@ -30,7 +30,7 @@ function OrderAdmin({ Data, checkBack }) {
         secondDoorState: null,
         deliverState: null,
         driverInfo: {},
-        seeMore: null,
+        seeMore: false,
         changeMerge: null,
         changeMerge2: null,
         reject: false,
@@ -188,7 +188,7 @@ function OrderAdmin({ Data, checkBack }) {
         currency: 'VND',
     });
 
-    var fulltotal = 0, inTotal = 0, enTotal = 0, countTotal = 0, fulltotal2 = 0, maxTotal = 0
+    var fulltotal = 0, inTotal = 0, fulltotal2 = 0, maxTotal = 0
     return (
         <>
             {checkBack ? (
@@ -202,23 +202,13 @@ function OrderAdmin({ Data, checkBack }) {
                 const date = new Date(i.createdAt).toLocaleDateString()
                 const time = new Date(i.createdAt).toLocaleTimeString()
                 const datetime = date + " - " + time
-                enTotal = i.orderitems.reduce((acc, o) => acc + parseInt(o.data.foodprice), 0)
-                let quantityArray = i.orderitems.reduce(function (accumulator, curValue) {
-                    return curValue.quantity
-                }, [])
                 let toppingArray = i.orderitems.reduce(function (accumulator, curValue) {
                     return accumulator.concat(curValue.topping)
                 }, [])
-                if (toppingArray) {
-                    inTotal = toppingArray.reduce((acc, o) => acc + parseInt(o?.foodprice), 0)
-                    countTotal = (inTotal + enTotal) * parseInt(quantityArray)
-                } else {
-                    countTotal = enTotal * parseInt(quantityArray)
-                }
-                fulltotal = countTotal + i.shippingfee
+                const totalMainArray = i.orderitems.reduce((acc, o) => { return acc + parseInt(o.data.foodprice) }, 0)
                 return (
                     <Fragment key={index}>
-                        <OrderDisplayHandle i={i} datetime={datetime} father={orderAdminState} setFather={setOrderAdminState} index={index} decode={decode} socketRef={socketRef} setModalOpenDetail2={setModalOpenDetail2} toppingArray={toppingArray} fulltotal={fulltotal} checkBack={checkBack} />
+                        <OrderDisplayHandle i={i} datetime={datetime} father={orderAdminState} setFather={setOrderAdminState} index={index} decode={decode} socketRef={socketRef} setModalOpenDetail2={setModalOpenDetail2} toppingArray={toppingArray} checkBack={checkBack} totalMainArray={totalMainArray} />
                     </Fragment>
                 )
             })}
@@ -356,13 +346,9 @@ function OrderAdmin({ Data, checkBack }) {
                             {decode.userRole === 3 && orderAdminState.ModalData.paymentmethod?.type !== "Paypal" ? (
                                 <button onClick={() => setOrderAdminState({ modalOpenDetail3: true })} className="btn btn-danger">Cancel</button>
                             ) : null}
+                            <button onClick={() => shippingOrder(orderAdminState.ModalData._id, orderAdminState.ModalData.address, orderAdminState.ModalData.phonenumber, orderAdminState.ModalData.user[0].fullname)} className="btn btn-success">Shipping</button>
                         </div>
                     </div>
-                ) : null}
-                {orderAdminState.ModalData.status === 2.3 ? (
-                    <button onClick={() => shippingOrder(orderAdminState.ModalData._id, orderAdminState.ModalData.address, orderAdminState.ModalData.phonenumber, orderAdminState.ModalData.user[0].fullname)} className="btn btn-success">Shipping</button>
-                ) : orderAdminState.ModalData.status === 2.1 ? (
-                    <button onClick={() => { setOrderAdminState({ secondDoor: true, secondDoorState: 6 }); setModalOpenDetail2(false) }} className="btn btn-info">to chef</button>
                 ) : null}
                 <div className="d-flex justify-content-around">
                     {orderAdminState.ModalData.status === 1 ? (

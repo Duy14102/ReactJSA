@@ -1,4 +1,4 @@
-import PAndT from "../component/PAndT";
+import PAndT from "../component/frontPage/PAndT";
 import Layout from "../Layout";
 import Header from "../component/Header";
 import HeroBadge from "../component/outOfBorder/HeroBadge";

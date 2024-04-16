@@ -1,5 +1,5 @@
 import { useReducer } from 'react';
-import '../css/Admin.css'
+import '../../css/Admin.css'
 import axios from 'axios';
 import Modal from 'react-modal';
 import { Fragment } from 'react';

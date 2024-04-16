@@ -294,7 +294,6 @@ function MainUser() {
                                     <option disabled hidden selected>Choose Role</option>
                                     <option value={3}>Manager</option>
                                     <option value={2}>Order coordinator</option>
-                                    <option value={2.5}>Chef</option>
                                 </select>
                             </div>
                         </div>

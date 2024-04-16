@@ -1,8 +1,8 @@
-import Testimonial from "../component/Testimonial";
-import HeroBanner from "../component/HeroBanner";
+import Testimonial from "../component/frontPage/Testimonial";
+import HeroBanner from "../component/frontPage/HeroBanner";
 import Layout from "../Layout";
 import Header from "../component/Header";
-import BestSeller from "../component/BestSeller";
+import BestSeller from "../component/frontPage/BestSeller";
 
 function App() {
   document.title = "EatCom - Home";

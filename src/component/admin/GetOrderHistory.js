@@ -13,7 +13,7 @@ function GetOrderHistory({ DateInput, filter }) {
     const decode = jwtDecode(token)
     const [Order, setOrder] = useState([])
     const [ModalData, setModalData] = useState([])
-    const [seeMore, setSeeMore] = useState()
+    const [seeMore, setSeeMore] = useState(false)
     const [checkBack, setCheckBack] = useState(false)
     const [modalOpenDetail, setModalOpenDetail] = useState(false);
     const socketRef = useRef();
@@ -138,18 +138,19 @@ function GetOrderHistory({ DateInput, filter }) {
                     let toppingArray = i.orderitems.reduce(function (accumulator, curValue) {
                         return accumulator.concat(curValue.topping)
                     }, [])
+                    const totalMainArray = i.orderitems.reduce((acc, o) => { return acc + parseInt(o.data.foodprice) }, 0)
                     return (
                         <Fragment key={i._id}>
                             {i.employee?.map((a) => {
                                 if (a.id === decode.userId && decode.userRole === 2) {
                                     return (
-                                        <OrderHistoryHandle i={i} datetime={datetime} seeMore={seeMore} setSeeMore={setSeeMore} index={index} toppingArray={toppingArray} setModalOpenDetail={setModalOpenDetail} setModalData={setModalData} checkBack={checkBack} />
+                                        <OrderHistoryHandle i={i} datetime={datetime} seeMore={seeMore} setSeeMore={setSeeMore} index={index} toppingArray={toppingArray} setModalOpenDetail={setModalOpenDetail} setModalData={setModalData} checkBack={checkBack} totalMainArray={totalMainArray} />
                                     )
                                 }
                                 return null
                             })}
                             {decode.userRole === 3 ? (
-                                <OrderHistoryHandle i={i} datetime={datetime} seeMore={seeMore} setSeeMore={setSeeMore} index={index} toppingArray={toppingArray} setModalOpenDetail={setModalOpenDetail} setModalData={setModalData} checkBack={checkBack} />
+                                <OrderHistoryHandle i={i} datetime={datetime} seeMore={seeMore} setSeeMore={setSeeMore} index={index} toppingArray={toppingArray} setModalOpenDetail={setModalOpenDetail} setModalData={setModalData} checkBack={checkBack} totalMainArray={totalMainArray} />
                             ) : null}
                         </Fragment>
                     )

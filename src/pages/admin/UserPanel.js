@@ -44,7 +44,6 @@ function UserPanel() {
         shippingOrder: false,
         expiredOrder: false,
         cancelByMag: false,
-        readyShipping: false,
         cancelOrder: false,
         seePassword: false,
         bookingDeny: false,
@@ -88,10 +87,6 @@ function UserPanel() {
     function HandleExpired() {
         getOrder()
         setSocketState({ expiredOrder: true })
-    }
-    function HandleReadyShipping() {
-        getOrder()
-        setSocketState({ readyShipping: true })
     }
 
     useEffect(() => {
@@ -219,12 +214,6 @@ function UserPanel() {
             }
         })
 
-        socketRef.current.on('ChefReadySuccess', dataGot => {
-            if (dataGot?.user === name.userId) {
-                HandleReadyShipping()
-            }
-        })
-
         socketRef.current.on('ShippingReadySuccess', dataGot => {
             if (dataGot?.user === name.userId) {
                 HandleShipping()
@@ -296,12 +285,7 @@ function UserPanel() {
                 setSocketState({ expiredOrder: false })
             }, 1500);
         }
-        if (socketState.readyShipping) {
-            setTimeout(() => {
-                setSocketState({ readyShipping: false })
-            }, 1500);
-        }
-    }, [socketState.newOrder, socketState.cancelOrder, socketState.orderComplete, socketState.cancelByMag, socketState.bookingDeny, socketState.changeTable, socketState.checkoutBook, socketState.shippingOrder, socketState.expiredOrder, socketState.readyShipping])
+    }, [socketState.newOrder, socketState.cancelOrder, socketState.orderComplete, socketState.cancelByMag, socketState.bookingDeny, socketState.changeTable, socketState.checkoutBook, socketState.shippingOrder, socketState.expiredOrder])
 
     useEffect(() => {
         if (name.userRole !== 1.5) {
@@ -473,11 +457,6 @@ function UserPanel() {
                     {socketState.shippingOrder ? (
                         <div className="newUserNoti" style={{ backgroundColor: "#03ba5f" }}>
                             <h6>✓ Order shipping!</h6>
-                        </div>
-                    ) : null}
-                    {socketState.readyShipping ? (
-                        <div className="newUserNoti" style={{ backgroundColor: "#03ba5f" }}>
-                            <h6>✓ Order is ready to shipping!</h6>
                         </div>
                     ) : null}
                     {socketState.cancelOrder ? (

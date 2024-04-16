@@ -1291,6 +1291,12 @@ app.post("/Login", (request, response) => {
                         });
                     }
 
+                    if ((request.body.type === "Admin" && user.role === 1) || (request.body.type === "User" && user.role === 2) || (request.body.type === "User" && user.role === 3) || (request.body.type === "User" && user.role === 4)) {
+                        return response.status(400).send({
+                            message: "Account type invalid"
+                        });
+                    }
+
                     //   create JWT token
                     const token = jwt.sign(
                         {
@@ -1775,7 +1781,7 @@ app.get("/GetAllOrderHistory", async (req, res) => {
 app.get("/GetAllOrderActive", async (req, res) => {
     const filter = { status: -1, datetime: -1 }
     try {
-        var getOrder = await getThisOrder.find({ status: { $in: [1, 2, 2.1, 2.3, 4, 5.1] } }).sort(filter)
+        var getOrder = await getThisOrder.find({ status: { $in: [1, 2, 4, 5.1] } }).sort(filter)
         if (req.query.date) {
             const dateHa = new Date(req.query.date)
             let today = new Date(dateHa)

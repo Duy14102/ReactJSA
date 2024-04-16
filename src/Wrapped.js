@@ -9,6 +9,7 @@ const mainBooking = lazy(() => import("./pages/BookingSite"))
 const mainTrack = lazy(() => import("./pages/TrackOrder"))
 const mainPnT = lazy(() => import("./pages/PrivacyAndTerm"))
 const mainLogin = lazy(() => import("./pages/admin/LoginSite"))
+const mainLoginAdmin = lazy(() => import("./pages/admin/LoginAdmin"))
 const mainSignup = lazy(() => import("./pages/admin/Register"))
 const mainCart = lazy(() => import("./pages/Cart"))
 const mainCheckout = lazy(() => import("./pages/Checkout"))
@@ -18,7 +19,6 @@ const mainQr = lazy(() => import("./pages/QrCodeTable"))
 const mainNotFound = lazy(() => import("./component/outOfBorder/NotFound"))
 const mainUserPanel = lazy(() => import("./pages/admin/UserPanel"))
 const mainEmPanel = lazy(() => import("./pages/admin/EmployeePanel"))
-const mainChefPanel = lazy(() => import("./pages/admin/ChefPanel"))
 const mainAdminPanel = lazy(() => import("./pages/admin/AdminPanel"))
 const mainManaPanel = lazy(() => import("./pages/admin/ManagerPanel"))
 const mainAnnounce = lazy(() => import("./pages/Announcement"))
@@ -36,18 +36,18 @@ function Wrapped() {
                 <Route path="TrackOrder" Component={mainTrack} />
                 <Route path="PAndT" Component={mainPnT} />
                 <Route path="LoginSite" Component={mainLogin} />
+                <Route path="LoginAdmin" Component={mainLoginAdmin} />
                 <Route path="SignupSite" Component={mainSignup} />
                 <Route path="Cart" Component={mainCart} />
                 <Route path="Checkout" Component={mainCheckout} />
                 <Route path="OrderComplete" Component={mainOrderComplete} />
                 <Route path="DetailMenuPage/:id/:cate" Component={mainDetail} />
                 <Route path="QrCodeTable/:id/:qr/:cate/:fil" Component={mainQr} />
-                <Route path="*" Component={mainNotFound} />
                 <Route path="UserPanel/:id" Component={mainUserPanel} />
                 <Route path="EmployeePanel" Component={mainEmPanel} />
-                <Route path="ChefPanel" Component={mainChefPanel} />
                 <Route path="AdminPanel" Component={mainAdminPanel} />
                 <Route path="ManagerPanel" Component={mainManaPanel} />
+                <Route path="*" Component={mainNotFound} />
             </Routes>
         </Suspense>
     );

@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import ItemMenuComponent from './outOfBorder/ItemMenuComponent';
+import ItemMenuComponent from '../outOfBorder/ItemMenuComponent';
 import { NavLink } from 'react-router-dom';
 import Hammer from 'hammerjs'
 import { Fragment, useEffect, useRef, useReducer } from 'react';
