@@ -824,6 +824,36 @@ iframe {
     transition: all 0.2s;
 }
 
+.editButton {
+    width: 30px;
+    height: 30px;
+    padding: 2px 6px 6px 6px;
+    border-radius: 50%;
+}
+
+.barsButton {
+    width: 40px;
+    height: 40px;
+    padding: 5px 10px 5px 10px;
+    border-radius: 50%;
+}
+
+.barsButton:hover,
+.editButton:hover {
+    background: #5a5a5a;
+    transition: all 0.2s;
+}
+
+.barsButton:active,
+.editButton:active {
+    scale: 0.9;
+}
+
+.barsButton svg,
+.editButton svg {
+    fill: #fff;
+}
+
 .back-to-top {
     position: fixed;
     display: none;

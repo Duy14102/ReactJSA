@@ -228,6 +228,10 @@ function Checkout() {
         }
         setCheckoutState({ loadBit: true })
         axios(miniConfiguration).then((resa) => {
+            var feeX = 0
+            if (total2 < 100000) {
+                feeX = resa.data
+            }
             const configuration = {
                 method: "post",
                 url: "https://eatcom.onrender.com/UploadOrder",
@@ -236,7 +240,7 @@ function Checkout() {
                     phonenumber: checkoutState.phonenumber,
                     address: checkoutState.address,
                     paymentmethod,
-                    shippingfee: resa.data,
+                    shippingfee: feeX,
                     orderitems
                 }
             }

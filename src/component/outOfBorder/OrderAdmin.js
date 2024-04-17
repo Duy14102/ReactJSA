@@ -31,6 +31,7 @@ function OrderAdmin({ Data, checkBack }) {
         deliverState: null,
         driverInfo: {},
         seeMore: false,
+        wantChange: false,
         changeMerge: null,
         changeMerge2: null,
         reject: false,

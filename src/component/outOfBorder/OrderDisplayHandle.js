@@ -130,7 +130,11 @@ function OrderDisplayHandle({ i, datetime, father, setFather, index, decode, soc
             <table className="table solotable m-0 border-none">
                 <thead>
                     <tr style={{ color: "#0F172B", backgroundColor: "#4285f4" }}>
-                        <th style={{ textAlign: "center", color: "#fff" }}>{window.innerWidth > 575 ? "No" : "Quantity"}</th>
+                        {i.status === 1 || i.status === 2 ? (
+                            <th style={{ textAlign: "center", color: "#fff" }}></th>
+                        ) : (
+                            <th style={{ textAlign: "center", color: "#fff" }}>{window.innerWidth > 575 ? "No" : "Quantity"}</th>
+                        )}
                         <th colSpan={window.innerWidth > 575 ? null : 2} style={{ color: "#fff" }}>Items</th>
                         {window.innerWidth > 575 ? (
                             <>
@@ -153,24 +157,40 @@ function OrderDisplayHandle({ i, datetime, father, setFather, index, decode, soc
                             fulltotal = maxTotal + i.shippingfee
                             return (
                                 <tr key={indexK} style={{ verticalAlign: "middle", background: "#2C343A", color: "lightgray" }}>
-                                    <td className='text-center'>{window.innerWidth > 575 ? indexK + 1 : a.quantity}</td>
+                                    {i.status === 1 || i.status === 2 ? (
+                                        <td className='text-center'><button style={{ rotate: father.wantChange ? "90deg" : null }} onClick={() => father.wantChange ? setFather({ wantChange: false }) : setFather({ wantChange: true })} className='barsButton'>
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z" /></svg>
+                                        </button></td>
+                                    ) : (
+                                        <td className='text-center'>{window.innerWidth > 575 ? index + 1 : a.quantity}</td>
+                                    )}
                                     <td colSpan={window.innerWidth > 575 ? null : 2}>
                                         <div>
                                             <div className="d-flex align-items-center" style={{ gap: 10 }}>
-                                                <img alt="" src={a.data.foodimage} width={70} height={60} />
-                                                <div>
-                                                    <p className="m-0" style={{ fontSize: 17 }}>{a.data.foodname}</p>
-                                                    <p className="m-0 text-start" style={{ fontSize: 15, color: "#FEA116" }}><b>{VND.format(a.data.foodprice)}</b></p>
+                                                {father.wantChange ? (
+                                                    <button className='editButton'><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160V416c0 53 43 96 96 96H352c53 0 96-43 96-96V320c0-17.7-14.3-32-32-32s-32 14.3-32 32v96c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H96z" /></svg></button>
+                                                ) : null}
+                                                <div className="d-flex align-items-center" style={{ gap: 10 }}>
+                                                    <img alt="" src={a.data.foodimage} width={70} height={60} />
+                                                    <div>
+                                                        <p className="m-0" style={{ fontSize: 17 }}>{a.data.foodname}</p>
+                                                        <p className="m-0 text-start" style={{ fontSize: 15, color: "#FEA116" }}><b>{VND.format(a.data.foodprice)}</b></p>
+                                                    </div>
                                                 </div>
                                             </div>
                                             {a.topping ? (
                                                 a.topping.map((p) => {
                                                     return (
-                                                        <div key={p._id} className="d-flex align-items-center" style={{ gap: 10, marginLeft: 25, marginTop: 10 }}>
-                                                            <img alt="" src={p.foodimage} width={45} height={40} />
-                                                            <div>
-                                                                <p className="m-0" style={{ fontSize: 15 }}>{p.foodname}</p>
-                                                                <p className="m-0 text-start" style={{ color: "#FEA116", fontSize: 13 }}><b>{VND.format(p.foodprice)}</b></p>
+                                                        <div key={p._id} className='d-flex align-items-center' style={{ gap: 10, marginLeft: 25, marginTop: 10 }}>
+                                                            {father.wantChange ? (
+                                                                <button className='editButton'><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160V416c0 53 43 96 96 96H352c53 0 96-43 96-96V320c0-17.7-14.3-32-32-32s-32 14.3-32 32v96c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H96z" /></svg></button>
+                                                            ) : null}
+                                                            <div className="d-flex align-items-center" style={{ gap: 10 }}>
+                                                                <img alt="" src={p.foodimage} width={45} height={40} />
+                                                                <div>
+                                                                    <p className="m-0" style={{ fontSize: 15 }}>{p.foodname}</p>
+                                                                    <p className="m-0 text-start" style={{ color: "#FEA116", fontSize: 13 }}><b>{VND.format(p.foodprice)}</b></p>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     )
@@ -193,7 +213,13 @@ function OrderDisplayHandle({ i, datetime, father, setFather, index, decode, soc
                         })
                     ) : (
                         <tr style={{ verticalAlign: "middle", background: "#2C343A", color: "lightgray" }}>
-                            <td className='text-center'>1</td>
+                            {i.status === 1 || i.status === 2 ? (
+                                <td className='text-center'><button onClick={() => setFather({ seeMore: true, wantChange: true })} className='barsButton'>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z" /></svg>
+                                </button></td>
+                            ) : (
+                                <td className='text-center'>1</td>
+                            )}
                             <td colSpan={window.innerWidth > 575 ? null : 2}>
                                 <div>
                                     <div className="d-flex align-items-center" style={{ gap: 10 }}>
