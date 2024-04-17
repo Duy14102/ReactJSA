@@ -2198,6 +2198,15 @@ app.get("/GetDetailMenu", async (req, res) => {
         console.log(e);
     }
 })
+//Get detail for topping2.js
+app.get("/GetDetailMenu2", async (req, res) => {
+    try {
+        const getMenuDetail = await getThisMenu.findOne({ _id: req.query.id })
+        res.send({ data: getMenuDetail });
+    } catch (e) {
+        console.log(e);
+    }
+})
 
 //Get Search Debounce
 app.get("/GetDebounce", async (req, res) => {
@@ -2312,6 +2321,28 @@ app.get("/GetOrder4Complete", async (req, res) => {
     }
 })
 
+//Update main items topping2
+app.post("/UpdateMainItemsX", (req, res) => {
+    getThisOrder.updateOne({ _id: req.body.id, "orderitems.data._id": req.body.id2 }, {
+        "orderitems.$.data": req.body.data
+    }).then(() => res.send("Success")).catch((err) => { console.log(err) })
+})
+
+//Update topping items topping2
+app.post("/UpdateToppingItemsX", (req, res) => {
+    getThisOrder.updateOne({ _id: req.body.id, "orderitems.data._id": req.body.id2 }, {
+        $pull: {
+            "orderitems.$.topping": { _id: req.body.oldId }
+        }
+    }).then(() => {
+        getThisOrder.updateOne({ _id: req.body.id, "orderitems.data._id": req.body.id2 }, {
+            $push: {
+                "orderitems.$.topping": req.body.data
+            }
+        }).then(() => res.send("success"))
+    })
+})
+
 // Get Topping
 app.get("/GetTopping", async (req, res) => {
     try {
@@ -2328,6 +2359,40 @@ app.get("/GetToppingByCate", async (req, res) => {
     try {
         const sort = { foodquantity: -1 }
         const getIt = await getThisMenu.find({ foodcategory: req.query.cate }).sort(sort);
+
+        const page = parseInt(req.query.page)
+        const limit = parseInt(req.query.limit)
+
+        const start = (page - 1) * limit
+        const end = page * limit
+
+        const results = {}
+        results.total = getIt.length
+        results.pageCount = Math.ceil(getIt.length / limit)
+
+        if (end < getIt.length) {
+            results.next = {
+                page: page + 1
+            }
+        }
+        if (start > 0) {
+            results.prev = {
+                page: page - 1
+            }
+        }
+
+        results.result = getIt.slice(start, end)
+        res.send({ results });
+    } catch (e) {
+        console.log(e);
+    }
+})
+
+// Get Topping by Cate for orderdisplayhandle
+app.get("/GetToppingByCate5", async (req, res) => {
+    try {
+        const sort = { foodquantity: -1 }
+        const getIt = await getThisMenu.find({ foodcategory: { $in: ["Meat", "Vegetables", "Drink"] } }).sort(sort);
 
         const page = parseInt(req.query.page)
         const limit = parseInt(req.query.limit)

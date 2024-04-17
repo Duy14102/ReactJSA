@@ -3,6 +3,7 @@ import CancelByMag from '../admin/CancelByMag';
 import CancelRequest from '../admin/CancelRequest';
 import axios from "axios";
 import { useEffect } from 'react';
+import Topping2 from './Topping2';
 
 function OrderDisplayHandle({ i, datetime, father, setFather, index, decode, socketRef, setModalOpenDetail2, toppingArray, checkBack, totalMainArray }) {
     const VND = new Intl.NumberFormat('vi-VN', {
@@ -157,18 +158,12 @@ function OrderDisplayHandle({ i, datetime, father, setFather, index, decode, soc
                             fulltotal = maxTotal + i.shippingfee
                             return (
                                 <tr key={indexK} style={{ verticalAlign: "middle", background: "#2C343A", color: "lightgray" }}>
-                                    {i.status === 1 || i.status === 2 ? (
-                                        <td className='text-center'><button style={{ rotate: father.wantChange ? "90deg" : null }} onClick={() => father.wantChange ? setFather({ wantChange: false }) : setFather({ wantChange: true })} className='barsButton'>
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z" /></svg>
-                                        </button></td>
-                                    ) : (
-                                        <td className='text-center'>{window.innerWidth > 575 ? index + 1 : a.quantity}</td>
-                                    )}
+                                    <td className='text-center'>{window.innerWidth > 575 ? index + 1 : a.quantity}</td>
                                     <td colSpan={window.innerWidth > 575 ? null : 2}>
                                         <div>
                                             <div className="d-flex align-items-center" style={{ gap: 10 }}>
                                                 {father.wantChange ? (
-                                                    <button className='editButton'><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160V416c0 53 43 96 96 96H352c53 0 96-43 96-96V320c0-17.7-14.3-32-32-32s-32 14.3-32 32v96c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H96z" /></svg></button>
+                                                    <button onClick={() => setFather({ secondDoor: true, secondDoorState: "Main", indexChange: a.data._id, mainChangeX: a.data._id })} className='editButton'><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160V416c0 53 43 96 96 96H352c53 0 96-43 96-96V320c0-17.7-14.3-32-32-32s-32 14.3-32 32v96c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H96z" /></svg></button>
                                                 ) : null}
                                                 <div className="d-flex align-items-center" style={{ gap: 10 }}>
                                                     <img alt="" src={a.data.foodimage} width={70} height={60} />
@@ -183,7 +178,7 @@ function OrderDisplayHandle({ i, datetime, father, setFather, index, decode, soc
                                                     return (
                                                         <div key={p._id} className='d-flex align-items-center' style={{ gap: 10, marginLeft: 25, marginTop: 10 }}>
                                                             {father.wantChange ? (
-                                                                <button className='editButton'><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160V416c0 53 43 96 96 96H352c53 0 96-43 96-96V320c0-17.7-14.3-32-32-32s-32 14.3-32 32v96c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H96z" /></svg></button>
+                                                                <button onClick={() => setFather({ secondDoor: true, secondDoorState: "Topping", indexChange: p._id, mainChangeX: a.data._id, indexChange2: p._id })} className='editButton'><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M471.6 21.7c-21.9-21.9-57.3-21.9-79.2 0L362.3 51.7l97.9 97.9 30.1-30.1c21.9-21.9 21.9-57.3 0-79.2L471.6 21.7zm-299.2 220c-6.1 6.1-10.8 13.6-13.5 21.9l-29.6 88.8c-2.9 8.6-.6 18.1 5.8 24.6s15.9 8.7 24.6 5.8l88.8-29.6c8.2-2.7 15.7-7.4 21.9-13.5L437.7 172.3 339.7 74.3 172.4 241.7zM96 64C43 64 0 107 0 160V416c0 53 43 96 96 96H352c53 0 96-43 96-96V320c0-17.7-14.3-32-32-32s-32 14.3-32 32v96c0 17.7-14.3 32-32 32H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h96c17.7 0 32-14.3 32-32s-14.3-32-32-32H96z" /></svg></button>
                                                             ) : null}
                                                             <div className="d-flex align-items-center" style={{ gap: 10 }}>
                                                                 <img alt="" src={p.foodimage} width={45} height={40} />
@@ -213,13 +208,7 @@ function OrderDisplayHandle({ i, datetime, father, setFather, index, decode, soc
                         })
                     ) : (
                         <tr style={{ verticalAlign: "middle", background: "#2C343A", color: "lightgray" }}>
-                            {i.status === 1 || i.status === 2 ? (
-                                <td className='text-center'><button onClick={() => setFather({ seeMore: true, wantChange: true })} className='barsButton'>
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z" /></svg>
-                                </button></td>
-                            ) : (
-                                <td className='text-center'>1</td>
-                            )}
+                            <td className='text-center'>1</td>
                             <td colSpan={window.innerWidth > 575 ? null : 2}>
                                 <div>
                                     <div className="d-flex align-items-center" style={{ gap: 10 }}>
@@ -309,7 +298,12 @@ function OrderDisplayHandle({ i, datetime, father, setFather, index, decode, soc
                         </div>
                     ) : null}
                 </div>
-                <button onClick={() => { setModalOpenDetail2(true); setFather({ ModalData: i }) }} className="btn btn-warning inforItKK"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" /></svg></button>
+                <div className='d-flex' style={{ gap: 10 }}>
+                    {i.status === 1 || i.status === 2 ? (
+                        <button onClick={() => father.wantChange ? setFather({ seeMore: false, wantChange: false }) : setFather({ seeMore: true, wantChange: true })} className='btn btn-info'>{father.wantChange ? "Unedit" : "Edit"}</button>
+                    ) : null}
+                    <button onClick={() => { setModalOpenDetail2(true); setFather({ ModalData: i }) }} className="btn btn-warning inforItKK"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" /></svg></button>
+                </div>
             </div>
             {i.status === 5.1 ? (
                 <div style={{ background: "#2C343A", padding: 15 }}>
@@ -375,6 +369,32 @@ function OrderDisplayHandle({ i, datetime, father, setFather, index, decode, soc
                         </div>
                     ) : father.secondDoorState === 3 ? (
                         <CancelRequest fulltotal={fulltotal} ModalData={father.ModalData} setmodal={setFather} />
+                    ) : father.secondDoorState === "Main" || father.secondDoorState === "Topping" ? (
+                        <div className="buhhuh2 py-3" style={{ width: "100%", height: "100%" }}>
+                            <h3 className='text-center'>{father.secondDoorState === "Main" ? "Change main" : father.secondDoorState === "Topping" ? "Change toppings" : null}</h3>
+                            {father.secondDoorState === "Topping" ? (
+                                <>
+                                    <div className='conquerLeft2'>
+                                        <button style={{ backgroundColor: father.meat ? "#959595" : null, color: father.meat ? "#fff" : "#6d6f71" }} onClick={() => setFather({ meat: true, vege: false, drink: false })}>Meat</button>
+                                        <button style={{ backgroundColor: father.vege ? "#959595" : null, color: father.vege ? "#fff" : "#6d6f71" }} onClick={() => setFather({ meat: false, vege: true, drink: false })}>Vegetables</button>
+                                        <button style={{ backgroundColor: father.drink ? "#959595" : null, color: father.drink ? "#fff" : "#6d6f71" }} onClick={() => setFather({ meat: false, vege: false, drink: true })}>Drink</button>
+                                    </div>
+                                    <div className='conquerRight2'>
+                                        <div className='py-3'>
+                                            {father.meat ? (
+                                                <Topping2 cate={"Meat"} father={father} setFather={setFather} i={i} indexChange={father.mainChangeX} />
+                                            ) : father.vege ? (
+                                                <Topping2 cate={"Vegetables"} father={father} setFather={setFather} i={i} indexChange={father.mainChangeX} />
+                                            ) : father.drink ? (
+                                                <Topping2 cate={"Drink"} father={father} setFather={setFather} i={i} indexChange={father.mainChangeX} />
+                                            ) : null}
+                                        </div>
+                                    </div>
+                                </>
+                            ) : father.secondDoorState === "Main" ? (
+                                <Topping2 cate={"Main"} father={father} setFather={setFather} i={i} indexChange={father.mainChangeX} />
+                            ) : null}
+                        </div>
                     ) : null}
                 </div>
                 <button className='closeModal' onClick={() => setFather({ secondDoor: false })}>x</button>
