@@ -38,7 +38,7 @@ function AddAnnounce() {
             })
     }
 
-    
+
 
     var titles = "Title (optional)"
     return (
@@ -59,8 +59,8 @@ function AddAnnounce() {
                         marginRight: "-50%",
                         transform: "translate(-50%, -50%)",
                         backgroundColor: "white",
-                        width: "70vw",
-                        height: "52vh",
+                        width: window.innerWidth > 575 ? "70vw" : "90vw",
+                        height: "auto",
                         zIndex: 999
                     },
                 }}>

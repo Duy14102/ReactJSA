@@ -246,7 +246,8 @@ function MainTable() {
                         marginRight: "-50%",
                         transform: "translate(-50%, -50%)",
                         backgroundColor: "white",
-                        width: "70vw",
+                        width: window.innerWidth > 575 ? "35vw" : "90vw",
+                        height: "auto",
                         zIndex: 999
                     },
                 }}>

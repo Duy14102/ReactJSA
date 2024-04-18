@@ -58,6 +58,7 @@ function MainOrder() {
                                 {decode.userRole === 3 ? (
                                     <option value={4}>Cancel pending</option>
                                 ) : null}
+                                <option value={5.1}>Shipping</option>
                             </select>
                         </>
                     ) : (

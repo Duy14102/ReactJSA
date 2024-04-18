@@ -6,7 +6,7 @@ import Modal from 'react-modal';
 import Swal from "sweetalert2";
 import socketIOClient from "socket.io-client";
 
-function GetTable({ decode }) {
+function GetTable({ decode, dateInput, cityName }) {
     const [booking, setBooking] = useState([])
     const [ModalData, setModalData] = useState([])
     const [GetTable, setGetTable] = useState([])
@@ -14,6 +14,7 @@ function GetTable({ decode }) {
     const [modalOpenDetail, setModalOpenDetail] = useState(false);
     const [Denyreason, setDenyreason] = useState("")
     const [correct, setCorrect] = useState(false)
+    const [spinner, setSpinner] = useState(false)
     const [deny, setDeny] = useState(false)
     const [CheckTableId, setCheckTableId] = useState(false)
     const [newOrder, setNewOrder] = useState(false)
@@ -186,6 +187,13 @@ function GetTable({ decode }) {
         }
     }, [newOrder, cancelOrder, denyOrder])
 
+    useEffect(() => {
+        if (cityName === "London") {
+            getPagination()
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [dateInput])
+
     function handlePageClick(e) {
         currentPage.current = e.selected + 1
         getPagination();
@@ -196,18 +204,24 @@ function GetTable({ decode }) {
             method: "get",
             url: "https://eatcom.onrender.com/GetBookingByStatus",
             params: {
+                date: dateInput,
                 page: currentPage.current,
                 limit: limit
             }
         };
-        axios(configuration)
-            .then((result) => {
-                setBooking(result.data.results.result);
-                setPageCount(result.data.results.pageCount)
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+        setSpinner(true)
+        setTimeout(() => {
+            axios(configuration)
+                .then((result) => {
+                    setSpinner(false)
+                    setBooking(result.data.results.result);
+                    setPageCount(result.data.results.pageCount)
+                })
+                .catch((error) => {
+                    setSpinner(false)
+                    console.log(error);
+                });
+        }, 500);
     }
 
     function getTableActive() {
@@ -248,7 +262,14 @@ function GetTable({ decode }) {
     const datemodal = date + " - " + time
     const datemodal2 = date2 + " - " + time2
     return (
-        <>
+        <div className="pt-4" style={{ position: "relative" }}>
+            {spinner ? (
+                <div id="spinner" className="show position-absolute translate-middle w-100 vh-100 top-0 start-50 d-flex align-items-center justify-content-center">
+                    <div className="spinner-border text-primary" style={{ width: 3 + "rem", height: 3 + "rem" }} role="status">
+                        <span className="sr-only"></span>
+                    </div>
+                </div>
+            ) : null}
             <div className="fatherNewUserNoti">
                 {newOrder ? (
                     <div className="newUserNoti" style={{ backgroundColor: "#03ba5f" }}>
@@ -266,7 +287,7 @@ function GetTable({ decode }) {
                     </div>
                 ) : null}
             </div>
-            <table className='table table-bordered text-center'>
+            <table className='table table-bordered text-center' style={spinner ? { opacity: 0.5, pointerEvents: "none" } : null}>
                 <thead>
                     <tr className="text-white text-center" style={{ background: "#374148" }}>
                         <th >Name</th>
@@ -414,7 +435,7 @@ function GetTable({ decode }) {
                 ) : null}
                 <button className='closeModal' onClick={() => setModalOpenDetail(false)}>x</button>
             </Modal>
-        </>
+        </div>
     )
 }
 export default GetTable

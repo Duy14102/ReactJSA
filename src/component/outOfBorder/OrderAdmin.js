@@ -263,15 +263,9 @@ function OrderAdmin({ Data, checkBack }) {
                                 ) : (
                                     <p><b>Fullname</b> : {t.fullname}</p>
                                 )}
-                                {orderAdminState.ModalData.employee?.map((o) => {
-                                    return (
-                                        <>
-                                            {orderAdminState.ModalData.status !== 1 ? (
-                                                <p><b>Employee</b> : {o.email}</p>
-                                            ) : null}
-                                        </>
-                                    )
-                                })}
+                                {orderAdminState.ModalData.status !== 1 ? (
+                                    <p><b>Employee</b> : {orderAdminState.ModalData?.employee[0].email}</p>
+                                ) : null}
                             </div>
                         )
                     })}

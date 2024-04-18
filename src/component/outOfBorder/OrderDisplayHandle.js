@@ -131,11 +131,7 @@ function OrderDisplayHandle({ i, datetime, father, setFather, index, decode, soc
             <table className="table solotable m-0 border-none">
                 <thead>
                     <tr style={{ color: "#0F172B", backgroundColor: "#4285f4" }}>
-                        {i.status === 1 || i.status === 2 ? (
-                            <th style={{ textAlign: "center", color: "#fff" }}></th>
-                        ) : (
-                            <th style={{ textAlign: "center", color: "#fff" }}>{window.innerWidth > 575 ? "No" : "Quantity"}</th>
-                        )}
+                        <th style={{ textAlign: "center", color: "#fff" }}>{window.innerWidth > 575 ? "No" : "Quantity"}</th>
                         <th colSpan={window.innerWidth > 575 ? null : 2} style={{ color: "#fff" }}>Items</th>
                         {window.innerWidth > 575 ? (
                             <>
@@ -272,7 +268,7 @@ function OrderDisplayHandle({ i, datetime, father, setFather, index, decode, soc
                     {i.status === 2 ? (
                         <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
                             {decode.userRole === 3 && i.paymentmethod?.type !== "Paypal" ? (
-                                <button onClick={() => setFather({ secondDoor: true, secondDoorState: 2 })} className="btn btn-danger">Cancel</button>
+                                <button onClick={() => setFather({ secondDoor: true, secondDoorState: 2, ModalData: i })} className="btn btn-danger">Cancel</button>
                             ) : null}
                             <button onClick={() => shippingOrder(i._id, i.address, i.phonenumber, i.user[0].fullname)} className="btn btn-success">Shipping</button>
                         </div>

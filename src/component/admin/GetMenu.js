@@ -4,7 +4,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import ReactPaginate from 'react-paginate';
 
-function GetMenu({ cate }) {
+function GetMenu({ cate, search, spinner2, setSpinner2, cityName }) {
     const [menu, setMenu] = useState([]);
     const [ModalData, setModalData] = useState([])
     const [reviewData, setReviewData] = useState([])
@@ -29,6 +29,14 @@ function GetMenu({ cate }) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
+    useEffect(() => {
+        if (cityName === cate) {
+            currentPage.current = 1;
+            getPagination()
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [search])
+
     /*      Pagination     */
     function handlePageClick(e) {
         currentPage.current = e.selected + 1
@@ -41,18 +49,24 @@ function GetMenu({ cate }) {
             url: "https://eatcom.onrender.com/GetAdminMenu",
             params: {
                 cate: cate,
+                search: search,
                 page: currentPage.current,
                 limit: limit
             }
         };
-        axios(configuration)
-            .then((result) => {
-                setMenu(result.data.results.result);
-                setPageCount(result.data.results.pageCount)
-            })
-            .catch((error) => {
-                console.log(error);
-            });
+        setSpinner2(true)
+        setTimeout(() => {
+            axios(configuration)
+                .then((result) => {
+                    setSpinner2(false)
+                    setMenu(result.data.results.result);
+                    setPageCount(result.data.results.pageCount)
+                })
+                .catch((error) => {
+                    setSpinner2(false)
+                    console.log(error);
+                });
+        }, 500);
     }
 
     //Delte Menu
@@ -171,31 +185,38 @@ function GetMenu({ cate }) {
     const rating = stars => '★★★★★☆☆☆☆☆'.slice(5 - stars, 10 - stars);
 
     return (
-        <>
-            <table className='table table-bordered text-center'>
-                <thead>
-                    <tr className="text-white text-center" style={{ background: "#374148" }}>
-                        <th>Name</th>
-                        <th className="thhuhu">Price</th>
-                        <th className="thhuhu">Quantity</th>
-                        <th >Category</th>
-                        <th ></th>
-                    </tr>
-                </thead>
-                {menu.map(i => {
+        <div style={{ position: "relative" }}>
+            {spinner2 ? (
+                <div id="spinner" className="show position-absolute translate-middle w-100 vh-100 top-0 start-50 d-flex align-items-center justify-content-center">
+                    <div className="spinner-border text-primary" style={{ width: 3 + "rem", height: 3 + "rem" }} role="status">
+                        <span className="sr-only"></span>
+                    </div>
+                </div>
+            ) : null}
+            <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", opacity: spinner2 ? 0.5 : null, pointerEvents: spinner2 ? "none" : null }}>
+                {menu.map((i, index) => {
                     return (
-                        <tbody key={i._id}>
-                            <tr style={{ background: "#2C343A", color: "lightgray", verticalAlign: "middle" }}>
-                                <td>{i.foodname}</td>
-                                <td className="thhuhu">{VND.format(i.foodprice)}</td>
-                                <td className="thhuhu">{i.foodquantity}</td>
-                                <td>{i.foodcategory}</td>
-                                <td><button onClick={() => { setModalData(i); setModalOpenDetail(true) }} className='btn btn-success'>Detail</button></td>
-                            </tr>
-                        </tbody>
+                        <div key={i._id} style={{ width: "47%", height: "auto", marginTop: window.innerWidth > 991 && index > 1 ? 30 : window.innerWidth <= 991 && index >= 1 ? 30 : null }}>
+                            <div style={{ background: "#374148", color: "#fff", padding: 15 }}>
+                                <p className="m-0">Id : {i._id}</p>
+                            </div>
+                            <div style={{ background: "#2C343A", color: "lightgray", padding: 15 }}>
+                                <div style={{ display: "flex", gap: 10 }}>
+                                    <img alt="" src={i.foodimage} width={100} height={90} />
+                                    <div style={{ display: "flex", flexDirection: "column" }}>
+                                        <div className="d-flex justify-content-between align-items-center">
+                                            <p style={{ fontWeight: "bold" }}>{i.foodname}</p>
+                                            <button onClick={() => { setModalOpenDetail(true); setModalData(i) }} className="btn btn-warning inforItKK"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM216 336h24V272H216c-13.3 0-24-10.7-24-24s10.7-24 24-24h48c13.3 0 24 10.7 24 24v88h8c13.3 0 24 10.7 24 24s-10.7 24-24 24H216c-13.3 0-24-10.7-24-24s10.7-24 24-24zm40-208a32 32 0 1 1 0 64 32 32 0 1 1 0-64z" /></svg></button>
+                                        </div>
+                                        <p>{i.foodquantity} x <span style={{ color: "#fea116" }}>{VND.format(i.foodprice)}</span></p>
+                                        <p className="cutTextRightNow m-0">{i.fooddescription}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     )
                 })}
-            </table>
+            </div>
             <ReactPaginate
                 breakLabel="..."
                 nextLabel=">"
@@ -205,7 +226,7 @@ function GetMenu({ cate }) {
                 previousLabel="<"
                 renderOnZeroPageCount={null}
                 marginPagesDisplayed={2}
-                containerClassName="pagination justify-content-center text-nowrap"
+                containerClassName="pagination justify-content-center text-nowrap mt-4"
                 pageClassName="page-item"
                 pageLinkClassName="page-link"
                 previousClassName="page-item"
@@ -231,7 +252,7 @@ function GetMenu({ cate }) {
                         transform: "translate(-50%, -50%)",
                         backgroundColor: "white",
                         width: "70vw",
-                        height: "55vh",
+                        height: "auto",
                         zIndex: 999
                     },
                 }}>
@@ -318,7 +339,7 @@ function GetMenu({ cate }) {
                             <button type='submit' className='btn btn-primary'>Update</button>
                         </div>
                     </form>
-                </div >
+                </div>
                 <button className='closeModal' onClick={() => setModalOpenDetail(false)}>x</button>
             </Modal>
             <Modal isOpen={modalOpenDetail2} onRequestClose={() => setModalOpenDetail2(false)} ariaHideApp={false}
@@ -337,7 +358,7 @@ function GetMenu({ cate }) {
                         transform: "translate(-50%, -50%)",
                         backgroundColor: "white",
                         width: "70vw",
-                        height: "45vh",
+                        height: "auto",
                         zIndex: 999
                     },
                 }}>
@@ -360,7 +381,7 @@ function GetMenu({ cate }) {
                 </div>
                 <button className='closeModal' onClick={() => { setModalOpenDetail2(false); setModalOpenDetail(true) }}>x</button>
             </Modal>
-        </>
+        </div>
     );
 }
 export default GetMenu;

@@ -1122,8 +1122,19 @@ app.get("/GetTheFooter", async (req, res) => {
 
 //Get All News
 app.get("/GetAllNews", async (req, res) => {
+    var getIt = null
     try {
-        const getIt = await GetNews.find({}).sort({ status: -1 })
+        if (req.query.date) {
+            const dateHa = new Date(req.query.date)
+            let today = new Date(dateHa)
+            let tomorrow = new Date(dateHa)
+            today.setHours(today.getHours() - 7)
+            tomorrow.setHours(tomorrow.getHours() - 7 + 23)
+            tomorrow.setMinutes(tomorrow.getMinutes() + 59)
+            getIt = await GetNews.find({ createdAt: { $gte: today, $lte: tomorrow } }).sort({ status: -1 })
+        } else {
+            getIt = await GetNews.find({}).sort({ status: -1 })
+        }
         const page = parseInt(req.query.page)
         const limit = parseInt(req.query.limit)
 
@@ -2127,8 +2138,14 @@ app.get("/GetCartItem", async (req, res) => {
 
 //Get Menu 4 Admin
 app.get("/GetAdminMenu", async (req, res) => {
+    var getIt = null
     try {
-        const getIt = await getThisMenu.find({ foodcategory: req.query.cate });
+        if (req.query.search !== "") {
+            const regex = new RegExp(req.query.search, 'i')
+            getIt = await getThisMenu.find({ foodcategory: req.query.cate, foodname: regex });
+        } else {
+            getIt = await getThisMenu.find({ foodcategory: req.query.cate });
+        }
         const page = parseInt(req.query.page)
         const limit = parseInt(req.query.limit)
 
@@ -2642,8 +2659,20 @@ app.get("/SearchAllBooking", async (req, res) => {
 
 //Get Booking By Status
 app.get("/GetBookingByStatus", async (req, res) => {
+    var getIt = null
     try {
-        const getIt = await GetBooking.find({ status: { $in: [1, 2] } });
+        if (req.query.date) {
+            const dateHa = new Date(req.query.date)
+            let today = new Date(dateHa)
+            let tomorrow = new Date(dateHa)
+            today.setHours(today.getHours() - 7)
+            tomorrow.setHours(tomorrow.getHours() - 7 + 23)
+            tomorrow.setMinutes(tomorrow.getMinutes() + 59)
+            console.log(today.toLocaleString() + " " + tomorrow.toLocaleString());
+            getIt = await GetNews.find({ status: { $in: [1, 2] }, createdAt: { $gte: today, $lte: tomorrow } })
+        } else {
+            getIt = await GetBooking.find({ status: { $in: [1, 2] } });
+        }
         const page = parseInt(req.query.page)
         const limit = parseInt(req.query.limit)
 
