@@ -2,9 +2,9 @@ import { useParams } from 'react-router-dom';
 import { useEffect, useRef, useReducer } from 'react';
 import axios from 'axios';
 import $ from 'jquery'
-import Layout from '../Layout';
-import Header from '../component/Header';
-import Menu from '../component/frontPage/Menu'
+import Layout from '../../Layout';
+import Header from '../../component/Header';
+import Menu from '../../component/frontPage/Menu'
 
 function CategoryPage() {
     let appler = useParams()

@@ -1,11 +1,11 @@
 import { NavLink, useParams } from "react-router-dom";
 import { useEffect, useRef, useReducer } from "react";
-import NotFound from "../component/outOfBorder/NotFound";
+import NotFound from "../../component/outOfBorder/NotFound";
 import $ from 'jquery';
 import axios from "axios";
 import ReactPaginate from 'react-paginate';
-import Layout from '../Layout';
-import Header from "../component/Header";
+import Layout from '../../Layout';
+import Header from "../../component/Header";
 
 function SearchSite() {
     let appler = useParams()

@@ -1,13 +1,13 @@
 import { NavLink, useLocation } from "react-router-dom";
-import NotFound from "../component/outOfBorder/NotFound";
+import NotFound from "../../component/outOfBorder/NotFound";
 import { Fragment, useEffect, useReducer } from "react";
 import axios from "axios";
 import Cookies from "universal-cookie";
 import { jwtDecode } from "jwt-decode";
-import Layout from "../Layout";
+import Layout from "../../Layout";
 import { PayPalButton } from "react-paypal-button-v2";
-import "../css/Cart.css";
-import Header from "../component/Header";
+import "../../css/Cart.css";
+import Header from "../../component/Header";
 
 function Checkout() {
     var paymentmethod = 0

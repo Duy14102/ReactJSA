@@ -1,7 +1,7 @@
-import Reservation from "../component/frontPage/Reservation";
-import Layout from "../Layout";
-import Header from "../component/Header";
-import HeroBadge from "../component/outOfBorder/HeroBadge";
+import Reservation from "../../component/frontPage/Reservation";
+import Layout from "../../Layout";
+import Header from "../../component/Header";
+import HeroBadge from "../../component/outOfBorder/HeroBadge";
 
 function BookingSite() {
     document.title = "EatCom - Booking";

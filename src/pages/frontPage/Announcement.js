@@ -1,7 +1,7 @@
-import AnnounceMe from "../component/frontPage/AnnounceMe"
-import Layout from "../Layout"
-import Header from "../component/Header"
-import HeroBadge from "../component/outOfBorder/HeroBadge"
+import AnnounceMe from "../../component/frontPage/AnnounceMe"
+import Layout from "../../Layout"
+import Header from "../../component/Header"
+import HeroBadge from "../../component/outOfBorder/HeroBadge"
 
 function Announcement() {
     return (

@@ -1,11 +1,11 @@
 import { NavLink } from "react-router-dom";
 import { useEffect, useReducer, useState } from "react";
-import Layout from "../Layout";
-import "../css/Cart.css";
-import "../css/DetailMenuPage.css";
-import Header from "../component/Header";
+import Layout from "../../Layout";
+import "../../css/Cart.css";
+import "../../css/DetailMenuPage.css";
+import Header from "../../component/Header";
 import Modal from 'react-modal';
-import ToppingCart from "../component/outOfBorder/ToppingCart";
+import ToppingCart from "../../component/outOfBorder/ToppingCart";
 
 function Cart() {
     const [meat, setMeat] = useState(true)
