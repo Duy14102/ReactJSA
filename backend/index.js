@@ -1964,8 +1964,8 @@ app.get("/GetThisMenu", async (req, res) => {
 //Get Home Menu
 app.get("/GetHomeMenu", async (req, res) => {
     try {
-        const sort = { foodquantity: -1, foodcategory: -1 }
-        const getIt = await getThisMenu.find({}).limit(10).sort(sort);
+        const sort = { foodquantity: -1 }
+        const getIt = await getThisMenu.find({ foodcategory: "Main" }).limit(10).sort(sort);
         res.send({ data: getIt })
     } catch (e) {
         console.log(e);
