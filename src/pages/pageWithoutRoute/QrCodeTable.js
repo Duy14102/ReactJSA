@@ -1,16 +1,16 @@
 import { useState, useEffect, useRef, Fragment, useCallback } from "react"
 import { NavLink, useParams } from "react-router-dom"
 import Modal from 'react-modal';
-import NotFound from "../component/outOfBorder/NotFound";
+import NotFound from "../../component/outOfBorder/NotFound";
 import ReactPaginate from "react-paginate";
 import axios from "axios";
 import $ from 'jquery'
 import Swal from "sweetalert2";
-import Layout from "../Layout";
+import Layout from "../../Layout";
 import Cookies from "universal-cookie";
 import { jwtDecode } from "jwt-decode";
 import socketIOClient from "socket.io-client";
-import Header from "../component/Header";
+import Header from "../../component/Header";
 // import "../css/CategoryCss.css";
 
 function QrCodeTable() {

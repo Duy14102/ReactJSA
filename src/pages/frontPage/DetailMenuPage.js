@@ -1,16 +1,16 @@
 import { NavLink, useParams } from 'react-router-dom';
-import NotFound from '../component/outOfBorder/NotFound';
+import NotFound from '../../component/outOfBorder/NotFound';
 import { useEffect, Fragment, useState, useRef, useReducer } from 'react';
 import axios from 'axios';
 import jQuery from "jquery";
-import "../lib/owlcarousel/assets/owl.carousel.min.css";
+import "../../lib/owlcarousel/assets/owl.carousel.min.css";
 import Swal from 'sweetalert2';
 import { jwtDecode } from "jwt-decode";
 import Cookies from "universal-cookie";
 import ReactPaginate from 'react-paginate';
-import Layout from '../Layout';
-import "../css/DetailMenuPage.css";
-import Header from '../component/Header';
+import Layout from '../../Layout';
+import "../../css/DetailMenuPage.css";
+import Header from '../../component/Header';
 
 function DetailMenuPage() {
     var candecode = null

@@ -1,7 +1,7 @@
-import Tracking from "../component/frontPage/Tracking";
-import Layout from "../Layout";
-import Header from "../component/Header";
-import HeroBadge from "../component/outOfBorder/HeroBadge";
+import Tracking from "../../component/frontPage/Tracking";
+import Layout from "../../Layout";
+import Header from "../../component/Header";
+import HeroBadge from "../../component/outOfBorder/HeroBadge";
 
 function TrackOrder() {
     document.title = "EatCom - Contact";

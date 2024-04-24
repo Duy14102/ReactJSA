@@ -1,7 +1,7 @@
-import PAndT from "../component/frontPage/PAndT";
-import Layout from "../Layout";
-import Header from "../component/Header";
-import HeroBadge from "../component/outOfBorder/HeroBadge";
+import PAndT from "../../component/frontPage/PAndT";
+import Layout from "../../Layout";
+import Header from "../../component/Header";
+import HeroBadge from "../../component/outOfBorder/HeroBadge";
 
 function PrivacyAndTerm() {
     document.title = "EatCom - Privacy and policy || Term and conditions";

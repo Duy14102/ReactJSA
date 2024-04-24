@@ -1,12 +1,12 @@
-import NotFound from "../component/outOfBorder/NotFound";
-import Layout from "../Layout";
+import NotFound from "../../component/outOfBorder/NotFound";
+import Layout from "../../Layout";
 import axios from "axios";
-import TransactionUI from "../component/outOfBorder/TransactionUI";
+import TransactionUI from "../../component/outOfBorder/TransactionUI";
 import { useEffect, useRef, useReducer } from "react";
 import { NavLink } from "react-router-dom";
 import socketIOClient from "socket.io-client";
-import "../css/Cart.css";
-import Header from "../component/Header";
+import "../../css/Cart.css";
+import Header from "../../component/Header";
 import html2canvas from 'html2canvas';
 
 function OrderComplete() {
