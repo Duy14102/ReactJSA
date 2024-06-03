@@ -279,7 +279,7 @@ function GetUsingTable() {
     if (ModalData.tablestatus === 3) {
         denver = "Checkout Pending"
     }
-    var codeQr = `http://localhost:3001/QrCodeTable/${ModalData._id}/1/Meat/nto`
+    var codeQr = `https://eatcom.store/QrCodeTable/${ModalData._id}/1/Meat/nto`
 
     const downloadQR = () => {
         const canvas = document.getElementById('qrcode');

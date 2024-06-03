@@ -2678,88 +2678,89 @@ app.get("/GetIncomeYear", async (req, res) => {
         var one2 = 0, two2 = 0, three2 = 0, four2 = 0, five2 = 0, six2 = 0, seven2 = 0, eight2 = 0, nine2 = 0, ten2 = 0, elen2 = 0, twel2 = 0
         for (var i = 0; i < getIt.length; i++) {
             for (var j = 0; j < getIt[i].orderitems.length; j++) {
-                const dateGetit = new Date(getIt[i].createdAt)
+                const date2Getit = new Date(getIt[i].createdAt)
+                const dateGetit = date2Getit.getMonth() + 1
                 const dataGetit = getIt[i].orderitems
                 var total = 0, fulltotal = 0
-                if (date.getFullYear() === dateGetit.getFullYear()) {
-                    if (dateGetit.getMonth() === 1) {
+                if (date.getFullYear() === date2Getit.getFullYear()) {
+                    if (dateGetit === 1) {
                         total = dataGetit[j].quantity * dataGetit[j].data.foodprice
                         var total2 = 0
                         total2 += total
                         fulltotal = total2 + getIt[i].shippingfee
                         one += fulltotal
                     }
-                    if (dateGetit.getMonth() === 2) {
+                    if (dateGetit === 2) {
                         total = dataGetit[j].quantity * dataGetit[j].data.foodprice
                         var total2 = 0
                         total2 += total
                         fulltotal = total2 + getIt[i].shippingfee
                         two += fulltotal
                     }
-                    if (dateGetit.getMonth() === 3) {
+                    if (dateGetit === 3) {
                         total = dataGetit[j].quantity * dataGetit[j].data.foodprice
                         var total2 = 0
                         total2 += total
                         fulltotal = total2 + getIt[i].shippingfee
                         three += fulltotal
                     }
-                    if (dateGetit.getMonth() === 4) {
+                    if (dateGetit === 4) {
                         total = dataGetit[j].quantity * dataGetit[j].data.foodprice
                         var total2 = 0
                         total2 += total
                         fulltotal = total2 + getIt[i].shippingfee
                         four += fulltotal
                     }
-                    if (dateGetit.getMonth() === 5) {
+                    if (dateGetit === 5) {
                         total = dataGetit[j].quantity * dataGetit[j].data.foodprice
                         var total2 = 0
                         total2 += total
                         fulltotal = total2 + getIt[i].shippingfee
                         five += fulltotal
                     }
-                    if (dateGetit.getMonth() === 6) {
+                    if (dateGetit === 6) {
                         total = dataGetit[j].quantity * dataGetit[j].data.foodprice
                         var total2 = 0
                         total2 += total
                         fulltotal = total2 + getIt[i].shippingfee
                         six += fulltotal
                     }
-                    if (dateGetit.getMonth() === 7) {
+                    if (dateGetit === 7) {
                         total = dataGetit[j].quantity * dataGetit[j].data.foodprice
                         var total2 = 0
                         total2 += total
                         fulltotal = total2 + getIt[i].shippingfee
                         seven += fulltotal
                     }
-                    if (dateGetit.getMonth() === 8) {
+                    if (dateGetit === 8) {
                         total = dataGetit[j].quantity * dataGetit[j].data.foodprice
                         var total2 = 0
                         total2 += total
                         fulltotal = total2 + getIt[i].shippingfee
                         eight += fulltotal
                     }
-                    if (dateGetit.getMonth() === 9) {
+                    if (dateGetit === 9) {
                         total = dataGetit[j].quantity * dataGetit[j].data.foodprice
                         var total2 = 0
                         total2 += total
                         fulltotal = total2 + getIt[i].shippingfee
                         nine += fulltotal
                     }
-                    if (dateGetit.getMonth() === 10) {
+                    if (dateGetit === 10) {
                         total = dataGetit[j].quantity * dataGetit[j].data.foodprice
                         var total2 = 0
                         total2 += total
                         fulltotal = total2 + getIt[i].shippingfee
                         ten += fulltotal
                     }
-                    if (dateGetit.getMonth() === 11) {
+                    if (dateGetit === 11) {
                         total = dataGetit[j].quantity * dataGetit[j].data.foodprice
                         var total2 = 0
                         total2 += total
                         fulltotal = total2 + getIt[i].shippingfee
                         elen += fulltotal
                     }
-                    if (dateGetit.getMonth() === 12) {
+                    if (dateGetit === 12) {
                         total = dataGetit[j].quantity * dataGetit[j].data.foodprice
                         var total2 = 0
                         total2 += total
@@ -2771,77 +2772,78 @@ app.get("/GetIncomeYear", async (req, res) => {
         }
         for (var h = 0; h < atteg.length; h++) {
             for (var k = 0; k < atteg[h].tableitems.length; k++) {
-                const dateAtteg = new Date(atteg[i].tabledate)
+                const date2Atteg = new Date(atteg[i].tabledate)
+                const dateAtteg = date2Atteg.getMonth() + 1
                 const dataAtteg = atteg[h].tableitems
                 var total = 0
-                if (date.getFullYear() === dateAtteg.getFullYear()) {
-                    if (dateAtteg.getMonth() === 1) {
+                if (date.getFullYear() === date2Atteg.getFullYear()) {
+                    if (dateAtteg === 1) {
                         total = dataAtteg[k].quantity * dataAtteg[k].item.foodprice
                         var total2 = 0
                         total2 += total
                         one2 += total2
                     }
-                    if (dateAtteg.getMonth() === 2) {
+                    if (dateAtteg === 2) {
                         total = dataAtteg[k].quantity * dataAtteg[k].item.foodprice
                         var total2 = 0
                         total2 += total
                         two2 += total2
                     }
-                    if (dateAtteg.getMonth() === 3) {
+                    if (dateAtteg === 3) {
                         total = dataAtteg[k].quantity * dataAtteg[k].item.foodprice
                         var total2 = 0
                         total2 += total
                         three2 += total2
                     }
-                    if (dateAtteg.getMonth() === 4) {
+                    if (dateAtteg === 4) {
                         total = dataAtteg[k].quantity * dataAtteg[k].item.foodprice
                         var total2 = 0
                         total2 += total
                         four2 += total2
                     }
-                    if (dateAtteg.getMonth() === 5) {
+                    if (dateAtteg === 5) {
                         total = dataAtteg[k].quantity * dataAtteg[k].item.foodprice
                         var total2 = 0
                         total2 += total
                         five2 += total2
                     }
-                    if (dateAtteg.getMonth() === 6) {
+                    if (dateAtteg === 6) {
                         total = dataAtteg[k].quantity * dataAtteg[k].item.foodprice
                         var total2 = 0
                         total2 += total
                         six2 += total2
                     }
-                    if (dateAtteg.getMonth() === 7) {
+                    if (dateAtteg === 7) {
                         total = dataAtteg[k].quantity * dataAtteg[k].item.foodprice
                         var total2 = 0
                         total2 += total
                         seven2 += total2
                     }
-                    if (dateAtteg.getMonth() === 8) {
+                    if (dateAtteg === 8) {
                         total = dataAtteg[k].quantity * dataAtteg[k].item.foodprice
                         var total2 = 0
                         total2 += total
                         eight2 += total2
                     }
-                    if (dateAtteg.getMonth() === 9) {
+                    if (dateAtteg === 9) {
                         total = dataAtteg[k].quantity * dataAtteg[k].item.foodprice
                         var total2 = 0
                         total2 += total
                         nine2 += total2
                     }
-                    if (dateAtteg.getMonth() === 10) {
+                    if (dateAtteg === 10) {
                         total = dataAtteg[k].quantity * dataAtteg[k].item.foodprice
                         var total2 = 0
                         total2 += total
                         ten2 += total2
                     }
-                    if (dateAtteg.getMonth() === 11) {
+                    if (dateAtteg === 11) {
                         total = dataAtteg[k].quantity * dataAtteg[k].item.foodprice
                         var total2 = 0
                         total2 += total
                         elen2 += total2
                     }
-                    if (dateAtteg.getMonth() === 12) {
+                    if (dateAtteg === 12) {
                         total = dataAtteg[k].quantity * dataAtteg[k].item.foodprice
                         var total2 = 0
                         total2 += total
